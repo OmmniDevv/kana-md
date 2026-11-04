@@ -14,22 +14,16 @@ export const config = {
 export const i18n = {
   id: {
     lang: {
-      current: 'Bahasa kamu sekarang: {lang}. Ketik .lang id atau .lang en buat ganti ya~',
-      changed: 'Siap~ bahasa diganti ke {lang}. {mood}',
-      invalid: 'Bahasa "{lang}" nggak ada. Pilihan: id atau en~',
-      btnMenu: 'Menu utama',
-      btnHelp: 'Bantuan',
-      followUp: 'Lanjutan: .menu • .help',
+      current: '╭─❏ 🌐 「 *BAHASA* 」\n┊ ʙᴀʜᴀꜱᴀ ᴋᴀᴍᴜ ꜱᴇᴋᴀʀᴀɴɢ: *{lang}*\n┊ Ketik *.lang id* atau *.lang en* buat ganti ya~\n╰━━━━━━━',
+      changed: '╭─❏ 🌐 「 *BAHASA DIGANTI* 」\n┊ Siap~ bahasa diganti ke *{lang}*.\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ ⚠️ 「 *BAHASA TIDAK ADA* 」\n┊ Bahasa *"{lang}"* nggak ada. ᴘɪʟɪʜᴀɴ: *id* atau *en*~\n╰━━━━━━━',
     },
   },
   en: {
     lang: {
-      current: 'Your current language: {lang}. Type .lang id or .lang en to change it~',
-      changed: 'Got it~ language changed to {lang}. {mood}',
-      invalid: 'Language "{lang}" does not exist. Options: id or en~',
-      btnMenu: 'Main menu',
-      btnHelp: 'Help',
-      followUp: 'Next: .menu • .help',
+      current: '╭─❏ 🌐 「 *LANGUAGE* 」\n┊ ʏᴏᴜʀ ᴄᴜʀʀᴇɴᴛ ʟᴀɴɢᴜᴀɢᴇ: *{lang}*\n┊ Type *.lang id* or *.lang en* to change it~\n╰━━━━━━━',
+      changed: '╭─❏ 🌐 「 *LANGUAGE CHANGED* 」\n┊ Got it~ language changed to *{lang}*.\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ ⚠️ 「 *LANGUAGE NOT FOUND* 」\n┊ Language *"{lang}"* does not exist. ᴏᴘᴛɪᴏɴꜱ: *id* or *en*~\n╰━━━━━━━',
     },
   },
 }
@@ -57,15 +51,5 @@ export async function handler(ctx) {
   }
   const userKey = `${ctx.sender.replace(/\D/g, '')}:lang`
   await ctx.storage.set('users', userKey, target)
-  const body = [ctx.t('lang.changed', { lang: target, mood: ctx.say('senang') }), ctx.t('lang.followUp')].join('\n')
-  return sendButtons(ctx.sock, ctx.chat, {
-    title: 'KANA',
-    body,
-    footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('lang.btnMenu'), id: '.menu' },
-      { text: ctx.t('lang.btnHelp'), id: '.help' },
-    ],
-    textFallback: body,
-  })
+  return ctx.reply(ctx.t('lang.changed', { lang: target, mood: ctx.say('senang') }))
 }

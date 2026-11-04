@@ -1,5 +1,3 @@
-import { sendButtons } from '../../src/ui/buttons.js'
-
 export const config = {
   name: 'ping',
   alias: ['p', 'testspeed'],
@@ -13,20 +11,12 @@ export const config = {
 export const i18n = {
   id: {
     ping: {
-      reply: 'Pong~ KANA hidup kok! Latensi {ms} ms. {mood}',
-      btnMenu: 'Menu utama',
-      btnHelp: 'Bantuan',
-      btnProfile: 'Profil saya',
-      followUp: 'Lanjutan: .menu • .help • .profil',
+      reply: '╭─❏ 🏓 「 *PONG* 」\n┊ Pong~ KANA hidup kok!\n┊ ʟᴀᴛᴇɴꜱɪ: *{ms} ms*\n╰━━━━━━━ {mood}',
     },
   },
   en: {
     ping: {
-      reply: 'Pong~ KANA is alive! Latency {ms} ms. {mood}',
-      btnMenu: 'Main menu',
-      btnHelp: 'Help',
-      btnProfile: 'My profile',
-      followUp: 'Next: .menu • .help • .profil',
+      reply: '╭─❏ 🏓 「 *PONG* 」\n┊ Pong~ KANA is alive!\n┊ ʟᴀᴛᴇɴᴄʏ: *{ms} ms*\n╰━━━━━━━ {mood}',
     },
   },
 }
@@ -36,16 +26,5 @@ export const test = { input: '.ping', expect: /pong/i }
 export async function handler(ctx) {
   const startedAt = ctx.raw?.messageTimestamp ? Number(ctx.raw.messageTimestamp) * 1000 : Date.now()
   const ms = Math.max(0, Date.now() - startedAt)
-  const body = [ctx.t('ping.reply', { ms, mood: ctx.say('senang') }), ctx.t('ping.followUp')].join('\n')
-  return sendButtons(ctx.sock, ctx.chat, {
-    title: 'KANA',
-    body,
-    footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('ping.btnMenu'), id: '.menu' },
-      { text: ctx.t('ping.btnHelp'), id: '.help' },
-      { text: ctx.t('ping.btnProfile'), id: '.profil' },
-    ],
-    textFallback: body,
-  })
+  return ctx.reply(ctx.t('ping.reply', { ms, mood: ctx.say('senang') }))
 }

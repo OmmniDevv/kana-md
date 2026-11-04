@@ -9,8 +9,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { totalfitur: { body: '📊 KANA punya *{plugins} fitur* dengan total *{commands} perintah* (termasuk alias) dari {categories} kategori. Semua siap dipakai, mulai dari .menu yaa~ {mood}' } },
-  en: { totalfitur: { body: '📊 KANA has *{plugins} features* with a total of *{commands} commands* (aliases included) across {categories} categories. All ready to use, start from .menu~ {mood}' } },
+  id: { totalfitur: { body: '╭─❏ 📊 「 *TOTAL FITUR* 」\n┊ KANA punya *{plugins} fitur* dengan total *{commands} perintah* (termasuk alias) dari *{categories} kategori*.\n┊ Semua siap dipakai, mulai dari *.menu* yaa~\n╰━━━━━━━ {mood}' } },
+  en: { totalfitur: { body: '╭─❏ 📊 「 *TOTAL FEATURES* 」\n┊ KANA has *{plugins} features* with a total of *{commands} commands* (aliases included) across *{categories} categories*.\n┊ All ready to use, start from *.menu*~\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.totalfitur', expect: /fitur|feature/i }

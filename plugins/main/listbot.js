@@ -18,25 +18,23 @@ export const config = {
 export const i18n = {
   id: {
     listbot: {
-      body: 'Daftar Bot\nBot utama: KANA\nNomor: {number}\nStatus: Online, siap nemenin kamu~\n\nSesi Jadibot Aktif:\n{sessions}\n{mood}',
+      body: '╭─❏ 🤖 「 *DAFTAR BOT* 」\n┊ ʙᴏᴛ ᴜᴛᴀᴍᴀ: *KANA*\n┊ ɴᴏᴍᴏʀ: *{number}*\n┊ ꜱᴛᴀᴛᴜꜱ: *Online*, siap nemenin kamu~\n┊\n┊ 📜 ꜱᴇꜱɪ ᴊᴀᴅɪʙᴏᴛ ᴀᴋᴛɪꜰ:\n{sessions}\n╰━━━━━━━ {mood}',
       numberUnknown: 'belum diatur di env',
-      empty: 'Belum ada sesi jadibot yang aktif nih, slotnya masih kosong~',
-      sessionLine: '{index}. {name} : {number}',
-      imageCaption: 'Daftar bot KANA ada di pesan berikutnya yaa~',
-      hint: 'Pencet tombolnya buat lanjut yaa~',
-      btnMenu: 'Menu Utama',
+      empty: '┊ Belum ada sesi jadibot yang aktif nih, slotnya masih kosong~',
+      sessionLine: '┊ {index}. *{name}* : {number}',
+      imageCaption: '╭─❏ 🤖 「 *DAFTAR BOT KANA* 」\n┊ Daftar lengkapnya ada di pesan berikutnya yaa~\n╰━━━━━━━',
+      hint: '╭─❏ 🤖 「 *DAFTAR BOT* 」\n┊ Pencet tombolnya buat lanjut yaa~\n╰━━━━━━━',
       btnOwner: 'Info Owner',
     },
   },
   en: {
     listbot: {
-      body: 'Bot List\nMain bot: KANA\nNumber: {number}\nStatus: Online, ready to keep you company~\n\nActive Jadibot Sessions:\n{sessions}\n{mood}',
+      body: '╭─❏ 🤖 「 *BOT LIST* 」\n┊ ᴍᴀɪɴ ʙᴏᴛ: *KANA*\n┊ ɴᴜᴍʙᴇʀ: *{number}*\n┊ ꜱᴛᴀᴛᴜꜱ: *Online*, ready to keep you company~\n┊\n┊ 📜 ᴀᴄᴛɪᴠᴇ ᴊᴀᴅɪʙᴏᴛ ꜱᴇꜱꜱɪᴏɴꜱ:\n{sessions}\n╰━━━━━━━ {mood}',
       numberUnknown: 'not set in env yet',
-      empty: 'No active jadibot session yet, the slots are still empty~',
-      sessionLine: '{index}. {name} : {number}',
-      imageCaption: 'The KANA bot list is in the next message~',
-      hint: 'Tap a button to continue~',
-      btnMenu: 'Main Menu',
+      empty: '┊ No active jadibot session yet, the slots are still empty~',
+      sessionLine: '┊ {index}. *{name}* : {number}',
+      imageCaption: '╭─❏ 🤖 「 *KANA BOT LIST* 」\n┊ The full list is in the next message~\n╰━━━━━━━',
+      hint: '╭─❏ 🤖 「 *BOT LIST* 」\n┊ Tap a button to continue~\n╰━━━━━━━',
       btnOwner: 'Owner Info',
     },
   },
@@ -79,7 +77,6 @@ export async function handler(ctx) {
     body: image ? ctx.t('listbot.hint') : body,
     footer: ctx.t('menu.footer'),
     replies: [
-      { text: ctx.t('listbot.btnMenu'), id: '.menu' },
       { text: ctx.t('listbot.btnOwner'), id: '.owner' },
     ],
     textFallback: body,

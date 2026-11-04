@@ -12,15 +12,15 @@ export const i18n = {
   id: {
     help: {
       detail:
-        '╭───「 HELP 」───\n│ ◦ Perintah : .{name}\n│ ◦ Deskripsi : {desc}\n│ ◦ Cara pakai : {usage}\n│ ◦ Contoh : {example}\n╰━━━━━━━',
-      hint: '╭─❏ 💡 ───\n│ Ketik .help <perintah> buat detailnya yaa~\n│ Contoh : .help ping\n╰━━━━━━━',
+        '╭─❏ ❓ 「 *HELP* 」\n┊ ᴘᴇʀɪɴᴛᴀʜ: *.{name}*\n┊ ᴅᴇꜱᴋʀɪᴘꜱɪ: {desc}\n┊ ᴄᴀʀᴀ ᴘᴀᴋᴀɪ: *{usage}*\n┊ ᴄᴏɴᴛᴏʜ: *{example}*\n╰━━━━━━━',
+      hint: '╭─❏ 💡 「 *BANTUAN* 」\n┊ Ketik *.help <perintah>* buat detailnya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.help ping*\n╰━━━━━━━',
     },
   },
   en: {
     help: {
       detail:
-        '╭───「 HELP 」───\n│ ◦ Command : .{name}\n│ ◦ Description : {desc}\n│ ◦ Usage : {usage}\n│ ◦ Example : {example}\n╰━━━━━━━',
-      hint: '╭─❏ 💡 ───\n│ Type .help <command> for the details~\n│ Example : .help ping\n╰━━━━━━━',
+        '╭─❏ ❓ 「 *HELP* 」\n┊ ᴄᴏᴍᴍᴀɴᴅ: *.{name}*\n┊ ᴅᴇꜱᴄʀɪᴘᴛɪᴏɴ: {desc}\n┊ ᴜꜱᴀɢᴇ: *{usage}*\n┊ ᴇxᴀᴍᴘʟᴇ: *{example}*\n╰━━━━━━━',
+      hint: '╭─❏ 💡 「 *HELP* 」\n┊ Type *.help <command>* for the details~\n┊ ᴇxᴀᴍᴘʟᴇ: *.help ping*\n╰━━━━━━━',
     },
   },
 }

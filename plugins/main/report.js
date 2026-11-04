@@ -13,18 +13,18 @@ export const config = {
 export const i18n = {
   id: {
     report: {
-      hint: 'Tulis isi laporannya yaa~ Contoh: .report Ada bug di perintah cuaca tadi',
-      sent: 'Laporanmu sudah KANA teruskan ke owner. Makasih sudah lapor~ {mood}',
-      forward: '📩 LAPORAN PENGGUNA\nDari: {from} ({chat})\n\n{message}',
-      fail: 'Gagal meneruskan laporannya sekarang. Coba lagi nanti yaa~',
+      hint: '╭─❏ 📩 「 *LAPOR KE OWNER* 」\n┊ Tulis isi laporannya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.report Ada bug di perintah cuaca tadi*\n╰━━━━━━━',
+      sent: '╭─❏ ✅ 「 *LAPORAN TERKIRIM* 」\n┊ Laporanmu sudah KANA teruskan ke owner.\n┊ Makasih sudah lapor~\n╰━━━━━━━ {mood}',
+      forward: '╭─❏ 📩 「 *LAPORAN PENGGUNA* 」\n┊ ᴅᴀʀɪ: *{from}* ({chat})\n┊\n┊ {message}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *LAPORAN GAGAL* 」\n┊ Gagal meneruskan laporannya sekarang. Coba lagi nanti yaa~\n╰━━━━━━━',
     },
   },
   en: {
     report: {
-      hint: 'Write your report please~ Example: .report The weather command had a bug',
-      sent: 'Your report has been forwarded to the owner. Thanks for reporting~ {mood}',
-      forward: '📩 USER REPORT\nFrom: {from} ({chat})\n\n{message}',
-      fail: 'Failed to forward the report right now. Try again later please~',
+      hint: '╭─❏ 📩 「 *REPORT TO OWNER* 」\n┊ Write your report please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.report The weather command had a bug*\n╰━━━━━━━',
+      sent: '╭─❏ ✅ 「 *REPORT SENT* 」\n┊ Your report has been forwarded to the owner.\n┊ Thanks for reporting~\n╰━━━━━━━ {mood}',
+      forward: '╭─❏ 📩 「 *USER REPORT* 」\n┊ ꜰʀᴏᴍ: *{from}* ({chat})\n┊\n┊ {message}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *REPORT FAILED* 」\n┊ Failed to forward the report right now. Try again later please~\n╰━━━━━━━',
     },
   },
 }

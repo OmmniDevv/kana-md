@@ -11,12 +11,12 @@ export const config = {
 export const i18n = {
   id: {
     script: {
-      body: '🤖 *KANA-MD*\nBot WhatsApp moe open source buatan OmniDevv.\n\nRepo: https://github.com/OmmniDevv/kana-md\nLisensi: MIT\nLibrary: @rexxhayanasi/elaina-baileys 1.4.7\nDashboard: https://kana.omnicorp.web.id\n\nSilakan dipelajari, jangan lupa bintang dan kreditnya yaa~ {mood}',
+      body: '╭─❏ 🤖 「 *KANA-MD* 」\n┊ Bot WhatsApp moe open source buatan *OmniDevv*.\n┊\n┊ 🔗 ʀᴇᴘᴏ: *https://github.com/OmmniDevv/kana-md*\n┊ 📜 ʟɪꜱᴇɴꜱɪ: *MIT*\n┊ 📚 ʟɪʙʀᴀʀʏ: *@rexxhayanasi/elaina-baileys 1.4.7*\n┊ 🌐 ᴅᴀꜱʜʙᴏᴀʀᴅ: *https://kana.omnicorp.web.id*\n╰━━━━━━━\nSilakan dipelajari, jangan lupa bintang dan kreditnya yaa~ {mood}',
     },
   },
   en: {
     script: {
-      body: '🤖 *KANA-MD*\nAn open source moe WhatsApp bot by OmniDevv.\n\nRepo: https://github.com/OmmniDevv/kana-md\nLicense: MIT\nLibrary: @rexxhayanasi/elaina-baileys 1.4.7\nDashboard: https://kana.omnicorp.web.id\n\nFeel free to learn from it, keep the star and credits please~ {mood}',
+      body: '╭─❏ 🤖 「 *KANA-MD* 」\n┊ An open source moe WhatsApp bot by *OmniDevv*.\n┊\n┊ 🔗 ʀᴇᴘᴏ: *https://github.com/OmmniDevv/kana-md*\n┊ 📜 ʟɪᴄᴇɴꜱᴇ: *MIT*\n┊ 📚 ʟɪʙʀᴀʀʏ: *@rexxhayanasi/elaina-baileys 1.4.7*\n┊ 🌐 ᴅᴀꜱʜʙᴏᴀʀᴅ: *https://kana.omnicorp.web.id*\n╰━━━━━━━\nFeel free to learn from it, keep the star and credits please~ {mood}',
     },
   },
 }

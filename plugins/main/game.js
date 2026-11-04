@@ -13,8 +13,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { hello: { label: 'Mini game contoh dari KANA. Di luar Android, game tampil sebagai label teks saja ya~' } },
-  en: { hello: { label: 'Sample mini game from KANA. Outside Android, the game shows as a text label only~' } },
+  id: { hello: { label: '╭─❏ 🎮 「 *MINI GAME KANA* 」\n┊ Mini game contoh dari KANA. Di luar Android, game tampil sebagai label teks saja ya~\n╰━━━━━━━' } },
+  en: { hello: { label: '╭─❏ 🎮 「 *KANA MINI GAME* 」\n┊ Sample mini game from KANA. Outside Android, the game shows as a text label only~\n╰━━━━━━━' } },
 }
 
 const here = dirname(fileURLToPath(import.meta.url))

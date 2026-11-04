@@ -9,8 +9,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { runtime: { body: '⏱️ KANA sudah berjalan selama *{duration}* tanpa putus. {mood}' } },
-  en: { runtime: { body: '⏱️ KANA has been running for *{duration}* without dropping. {mood}' } },
+  id: { runtime: { body: '╭─❏ ⏱️ 「 *RUNTIME* 」\n┊ KANA sudah berjalan selama *{duration}* tanpa putus.\n╰━━━━━━━ {mood}' } },
+  en: { runtime: { body: '╭─❏ ⏱️ 「 *RUNTIME* 」\n┊ KANA has been running for *{duration}* without dropping.\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.runtime', expect: /berjalan|running/i }
