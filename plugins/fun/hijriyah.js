@@ -14,8 +14,8 @@ export const i18n = {
   id: {
     hijriyah: {
       title: 'Kalender Hijriah',
-      body: '🕌 KALENDER HIJRIAH\n\nMasehi: {greg}\nHijriah: {hijri}\n\nDihitung lokal memakai kalender Islam bawaan sistem yaa~ {mood}',
-      invalid: 'Format tanggalnya YYYY-MM-DD yaa, contoh .hijriyah 2026-11-04. Kosongkan saja untuk hari ini~',
+      body: '╭─❏ 🕌 「 *KALENDER HIJRIAH* 」\n┊ ᴍᴀꜱᴇʜɪ: *{greg}*\n┊ ʜɪᴊʀɪᴀʜ: *{hijri}*\n┊\n┊ Dihitung lokal memakai kalender Islam bawaan sistem yaa~\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ 🕌 「 *FORMAT TANGGAL SALAH* 」\n┊ Format tanggalnya *YYYY-MM-DD* yaa, contoh *.hijriyah 2026-11-04*.\n┊ Kosongkan saja untuk hari ini~\n╰━━━━━━━',
       btnToday: '📅 Hari Ini',
       btnSholat: '🕐 Jadwal Sholat',
     },
@@ -23,8 +23,8 @@ export const i18n = {
   en: {
     hijriyah: {
       title: 'Hijri Calendar',
-      body: '🕌 HIJRI CALENDAR\n\nGregorian: {greg}\nHijri: {hijri}\n\nCalculated locally with the built-in Islamic calendar~ {mood}',
-      invalid: 'Use the date format YYYY-MM-DD, for example .hijriyah 2026-11-04. Leave it empty for today~',
+      body: '╭─❏ 🕌 「 *HIJRI CALENDAR* 」\n┊ ɢʀᴇɢᴏʀɪᴀɴ: *{greg}*\n┊ ʜɪᴊʀɪ: *{hijri}*\n┊\n┊ Calculated locally with the built-in Islamic calendar~\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ 🕌 「 *WRONG DATE FORMAT* 」\n┊ Use the date format *YYYY-MM-DD*, for example *.hijriyah 2026-11-04*.\n┊ Leave it empty for today~\n╰━━━━━━━',
       btnToday: '📅 Today',
       btnSholat: '🕐 Prayer Times',
     },

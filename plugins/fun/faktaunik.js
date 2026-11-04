@@ -14,7 +14,7 @@ export const i18n = {
   id: {
     faktaunik: {
       title: 'Fakta Unik',
-      body: '🧠 FAKTA UNIK UNTUKMU\n\n{item}\n\nNah, sekarang kamu tahu~ {mood}',
+      body: '╭─❏ 🧠 「 *FAKTA UNIK* 」\n┊ {item}\n┊\n┊ Nah, sekarang kamu tahu~\n╰━━━━━━━ {mood}',
       pool: [
   "Madu tidak pernah basi. Madu berusia ribuan tahun dari makam Mesir kuno masih bisa dimakan.",
   "Gurita punya tiga jantung dan darahnya berwarna biru.",
@@ -38,13 +38,12 @@ export const i18n = {
   "Jantung paus biru sangat besar, anak kecil bisa berenang lewat pembuluh arterinya."
 ],
       btnAgain: 'Fakta Lain',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     faktaunik: {
       title: 'Unique Facts',
-      body: '🧠 UNIQUE FACT FOR YOU\n\n{item}\n\nNow you know~ {mood}',
+      body: '╭─❏ 🧠 「 *UNIQUE FACT* 」\n┊ {item}\n┊\n┊ Now you know~\n╰━━━━━━━ {mood}',
       pool: [
   "Honey never spoils. Jars of honey thousands of years old found in ancient Egyptian tombs are still edible.",
   "An octopus has three hearts and blue blood.",
@@ -68,7 +67,6 @@ export const i18n = {
   "The heart of a blue whale is so big that a small child could swim through its arteries."
 ],
       btnAgain: 'Another Fact',
-      btnMenu: 'Fun Menu',
     },
   },
 }

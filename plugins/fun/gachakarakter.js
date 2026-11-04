@@ -39,17 +39,15 @@ export const i18n = {
   id: {
     gachakarakter: {
       title: 'Gacha Karakter',
-      body: '🎁 GACHA KARAKTER\n\n⭐ {rarity}\n*{name}*\n{trait}\n\nKoleksimu: {owned} dari {total} karakter, total tarikan {pulls}x. {mood}',
+      body: '╭─❏ 🎁 「 *GACHA KARAKTER* 」\n┊ ʀᴀʀɪᴛᴀꜱ: ⭐ {rarity}\n┊ ɴᴀᴍᴀ: *{name}*\n┊ {trait}\n┊\n┊ ᴋᴏʟᴇᴋꜱɪᴍᴜ: *{owned} dari {total} karakter*\n┊ ᴛᴏᴛᴀʟ ᴛᴀʀɪᴋᴀɴ: *{pulls}x*\n╰━━━━━━━ {mood}',
       btnAgain: '🎁 Tarik Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     gachakarakter: {
       title: 'Character Gacha',
-      body: '🎁 CHARACTER GACHA\n\n⭐ {rarity}\n*{name}*\n{trait}\n\nYour collection: {owned} of {total} characters, total pulls {pulls}x. {mood}',
+      body: '╭─❏ 🎁 「 *CHARACTER GACHA* 」\n┊ ʀᴀʀɪᴛʏ: ⭐ {rarity}\n┊ ɴᴀᴍᴇ: *{name}*\n┊ {trait}\n┊\n┊ ʏᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ: *{owned} of {total} characters*\n┊ ᴛᴏᴛᴀʟ ᴘᴜʟʟꜱ: *{pulls}x*\n╰━━━━━━━ {mood}',
       btnAgain: '🎁 Pull Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }

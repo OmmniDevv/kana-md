@@ -24,8 +24,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { gombal: { body: '💌 {line} {mood}' } },
-  en: { gombal: { body: '💌 {line} {mood}' } },
+  id: { gombal: { body: '╭─❏ 💌 「 *GOMBALAN BUATMU* 」\n┊ {line}\n╰━━━━━━━ {mood}' } },
+  en: { gombal: { body: '╭─❏ 💌 「 *A SWEET LINE FOR YOU* 」\n┊ {line}\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.gombal', expect: /💌/ }

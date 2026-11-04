@@ -14,8 +14,8 @@ export const i18n = {
   id: {
     kapankah: {
       title: 'Bola Kristal: Kapankah?',
-      ask: '⏳ {question}\n\nJawaban bola kristal KANA: {answer} {mood}',
-      usage: 'Tanya dulu dong~ Contoh: .kapankah <pertanyaan kamu>',
+      ask: '╭─❏ ⏳ 「 *BOLA KRISTAL: KAPANKAH?* 」\n┊ ᴘᴇʀᴛᴀɴʏᴀᴀɴ: {question}\n┊ ᴊᴀᴡᴀʙᴀɴ: *{answer}*\n╰━━━━━━━ {mood}',
+      usage: '╭─❏ ⏳ 「 *BOLA KRISTAL: KAPANKAH?* 」\n┊ Tanya dulu dong~\n┊ Contoh: *.kapankah <pertanyaan kamu>*\n╰━━━━━━━',
       answers: [
   "Besok, kalau kamu tidak bangun kesiangan~",
   "Minggu depan, tandai kalendermu!",
@@ -27,14 +27,13 @@ export const i18n = {
   "Di hari yang paling tidak kamu sangka~"
 ],
       btnAgain: 'Tanya Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     kapankah: {
       title: 'Crystal Ball: When?',
-      ask: '⏳ {question}\n\nKANA crystal ball answer: {answer} {mood}',
-      usage: 'Ask something first~ Example: .kapankah <your question>',
+      ask: '╭─❏ ⏳ 「 *CRYSTAL BALL: WHEN?* 」\n┊ ǫᴜᴇꜱᴛɪᴏɴ: {question}\n┊ ᴀɴꜱᴡᴇʀ: *{answer}*\n╰━━━━━━━ {mood}',
+      usage: '╭─❏ ⏳ 「 *CRYSTAL BALL: WHEN?* 」\n┊ Ask something first~\n┊ Example: *.kapankah <your question>*\n╰━━━━━━━',
       answers: [
   "Tomorrow, if you do not oversleep~",
   "Next week, mark your calendar!",
@@ -46,7 +45,6 @@ export const i18n = {
   "On the day you least suspect~"
 ],
       btnAgain: 'Ask Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -57,14 +55,7 @@ export async function handler(ctx) {
   const question = (ctx.text || '').trim()
   const pool = i18n[ctx.lang]?.kapankah?.answers ?? i18n.id.kapankah.answers
   if (!question) {
-    const body = ctx.t('kapankah.usage')
-    return sendButtons(ctx.sock, ctx.chat, {
-      title: ctx.t('kapankah.title'),
-      body,
-      footer: ctx.t('menu.footer'),
-      replies: [{ text: ctx.t('kapankah.btnMenu'), id: '.menu fun' }],
-      textFallback: body,
-    })
+    return ctx.reply(ctx.t('kapankah.usage'))
   }
   const list = Array.isArray(pool) ? pool : []
   const answer = list[Math.floor(Math.random() * list.length)] ?? ''
@@ -79,7 +70,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('kapankah.btnAgain'), id: '.kapankah' },
-      { text: ctx.t('kapankah.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

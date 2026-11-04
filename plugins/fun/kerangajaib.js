@@ -14,7 +14,7 @@ export const i18n = {
   id: {
     kerangajaib: {
       title: 'Kerang Ajaib',
-      body: '🐚 KERANG AJAIB BERKATA\n\n{item}\n\nBegitulah kata kerang ajaib~ {mood}',
+      body: '╭─❏ 🐚 「 *KERANG AJAIB BERKATA* 」\n┊ {item}\n┊\n┊ Begitulah kata kerang ajaib~\n╰━━━━━━━ {mood}',
       pool: [
   "Iya. Kerang menyetujui.",
   "Tidak. Bukan hari ini, manusia.",
@@ -30,13 +30,12 @@ export const i18n = {
   "Iya banget, pakai taburan di atasnya."
 ],
       btnAgain: 'Tanya Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     kerangajaib: {
       title: 'Magic Conch',
-      body: '🐚 THE MAGIC CONCH SAYS\n\n{item}\n\nThe conch has spoken~ {mood}',
+      body: '╭─❏ 🐚 「 *THE MAGIC CONCH SAYS* 」\n┊ {item}\n┊\n┊ The conch has spoken~\n╰━━━━━━━ {mood}',
       pool: [
   "Yes. The conch approves.",
   "No. Not today, human.",
@@ -52,7 +51,6 @@ export const i18n = {
   "Absolutely yes, with sprinkles on top."
 ],
       btnAgain: 'Ask Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }

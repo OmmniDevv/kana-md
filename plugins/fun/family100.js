@@ -15,20 +15,18 @@ export const i18n = {
   id: {
     family100: {
       title: 'Kuis Family 100',
-      intro: '🎉 KUIS FAMILY 100\n\n{question}\n\nAda {count} jawaban populer, total {points} poin. Balas (reply) pesan ini dengan jawabanmu satu-satu. Waktunya {seconds} detik, menyerah pakai .nyerah yaa~ {mood}',
-      already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
+      intro: '╭─❏ 🎉 「 *KUIS FAMILY 100* 」\n┊ {question}\n┊\n┊ ᴀᴅᴀ *{count} ᴊᴀᴡᴀʙᴀɴ ᴘᴏᴘᴜʟᴇʀ*, total *{points} ᴘᴏɪɴ*\n┊ Balas (reply) pesan ini dengan jawabanmu satu-satu.\n┊ ᴡᴀᴋᴛᴜ: *{seconds} detik*, menyerah pakai *.nyerah* yaa~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ 🎉 「 *KUIS MASIH JALAN* 」\n┊ Masih ada kuis *{type}* yang jalan di chat ini.\n┊ Selesaikan dulu atau pencet tombol menyerah di bawah yaa~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
-      menuBtn: '🎲 Menu Fun',
       footer: 'Kuis KANA',
     },
   },
   en: {
     family100: {
       title: 'Family 100 Quiz',
-      intro: '🎉 FAMILY 100 QUIZ\n\n{question}\n\nThere are {count} popular answers worth {points} points in total. Reply to this message with your answers one by one. You have {seconds} seconds, give up with .nyerah~ {mood}',
-      already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
+      intro: '╭─❏ 🎉 「 *FAMILY 100 QUIZ* 」\n┊ {question}\n┊\n┊ ᴛʜᴇʀᴇ ᴀʀᴇ *{count} ᴘᴏᴘᴜʟᴀʀ ᴀɴꜱᴡᴇʀꜱ* worth *{points} ᴘᴏɪɴᴛꜱ* in total.\n┊ Reply to this message with your answers one by one.\n┊ ᴛɪᴍᴇ: *{seconds} seconds*, give up with *.nyerah*~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ 🎉 「 *QUIZ STILL RUNNING* 」\n┊ A *{type}* quiz is still running in this chat.\n┊ Finish it first or tap the give up button below~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
-      menuBtn: '🎲 Fun Menu',
       footer: 'KANA Quiz',
     },
   },

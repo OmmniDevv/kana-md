@@ -13,19 +13,19 @@ export const config = {
 export const i18n = {
   id: {
     coinflip: {
-      hint: 'Caranya: .coinflip angka 100 atau .coinflip gambar 50. Taruhan memakai koin profilmu yaa~',
-      poor: 'Koinmu {coins}, kurang buat taruhan {bet}. Kumpulkan dulu lewat .kerja atau .daily yaa~ {mood}',
-      win: '🪙 Koin menunjukkan *{side}*!\nKamu benar, menang *{bet} koin*. Saldo sekarang {balance} koin {mood}',
-      lose: '🪙 Koin menunjukkan *{side}*!\nPilihanmu {pick}, jadi kalah *{bet} koin*. Saldo sekarang {balance} koin {mood}',
+      hint: '╭─❏ 🪙 「 *LEMPAR KOIN* 」\n┊ Caranya: *.coinflip angka 100* atau *.coinflip gambar 50*\n┊ Taruhan memakai koin profilmu yaa~\n╰━━━━━━━',
+      poor: '╭─❏ 🪙 「 *KOIN KURANG* 」\n┊ ᴋᴏɪɴᴍᴜ: *{coins}*\n┊ ᴛᴀʀᴜʜᴀɴ: *{bet}*\n┊ Kumpulkan dulu lewat *.kerja* atau *.daily* yaa~\n╰━━━━━━━ {mood}',
+      win: '╭─❏ 🪙 「 *KAMU MENANG* 」\n┊ Koin menunjukkan *{side}*!\n┊ Kamu benar, menang *{bet} koin*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} koin*\n╰━━━━━━━ {mood}',
+      lose: '╭─❏ 🪙 「 *KAMU KALAH* 」\n┊ Koin menunjukkan *{side}*!\n┊ ᴘɪʟɪʜᴀɴᴍᴜ: *{pick}*, jadi kalah *{bet} koin*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} koin*\n╰━━━━━━━ {mood}',
       heads: 'ANGKA', tails: 'GAMBAR',
     },
   },
   en: {
     coinflip: {
-      hint: 'How: .coinflip angka 100 or .coinflip gambar 50. Bets use your profile coins~',
-      poor: 'You have {coins} coins, not enough for a {bet} bet. Earn some with .kerja or .daily first~ {mood}',
-      win: '🪙 The coin shows *{side}*!\nYou are right, won *{bet} coins*. Balance now {balance} coins {mood}',
-      lose: '🪙 The coin shows *{side}*!\nYou picked {pick}, so you lost *{bet} coins*. Balance now {balance} coins {mood}',
+      hint: '╭─❏ 🪙 「 *COIN FLIP* 」\n┊ How: *.coinflip angka 100* or *.coinflip gambar 50*\n┊ Bets use your profile coins~\n╰━━━━━━━',
+      poor: '╭─❏ 🪙 「 *NOT ENOUGH COINS* 」\n┊ ʏᴏᴜʀ ᴄᴏɪɴꜱ: *{coins}*\n┊ ʙᴇᴛ: *{bet}*\n┊ Earn some with *.kerja* or *.daily* first~\n╰━━━━━━━ {mood}',
+      win: '╭─❏ 🪙 「 *YOU WIN* 」\n┊ The coin shows *{side}*!\n┊ You are right, won *{bet} coins*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} coins*\n╰━━━━━━━ {mood}',
+      lose: '╭─❏ 🪙 「 *YOU LOSE* 」\n┊ The coin shows *{side}*!\n┊ ʏᴏᴜ ᴘɪᴄᴋᴇᴅ: *{pick}*, so you lost *{bet} coins*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} coins*\n╰━━━━━━━ {mood}',
       heads: 'HEADS', tails: 'TAILS',
     },
   },

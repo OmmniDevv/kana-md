@@ -15,7 +15,7 @@ export const i18n = {
   id: {
     dare: {
       title: 'Dare',
-      body: 'Waktunya DARE! Berani terima tantangan KANA?\n\n😈 {challenge}\n\nLakukan yaa, jangan cuma dibaca~ {mood}',
+      body: '╭─❏ 😈 「 *DARE* 」\n┊ Waktunya dare! Berani terima tantangan KANA?\n┊\n┊ 😈 {challenge}\n┊\n┊ Lakukan yaa, jangan cuma dibaca~\n╰━━━━━━━ {mood}',
       truthBtn: '💬 Ganti Truth Aja',
       dareBtn: '😈 Dare Lagi',
       footer: 'Truth or Dare KANA',
@@ -24,7 +24,7 @@ export const i18n = {
   en: {
     dare: {
       title: 'Dare',
-      body: 'Time for DARE! Brave enough for KANA challenge?\n\n😈 {challenge}\n\nActually do it, do not just read it~ {mood}',
+      body: '╭─❏ 😈 「 *DARE* 」\n┊ Time for dare! Brave enough for KANA challenge?\n┊\n┊ 😈 {challenge}\n┊\n┊ Actually do it, do not just read it~\n╰━━━━━━━ {mood}',
       truthBtn: '💬 Switch to Truth',
       dareBtn: '😈 Another Dare',
       footer: 'KANA Truth or Dare',

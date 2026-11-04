@@ -15,20 +15,18 @@ export const i18n = {
   id: {
     kataacak: {
       title: 'Kuis Kata Acak',
-      intro: '🔤 KUIS KATA ACAK\n\nAcak huruf ini jadi kata yang benar, kata-katanya lebih panjang dari Susun Kata:\n\n{letters}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan katanya langsung yaa~ {mood}',
-      already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
+      intro: '╭─❏ 🔤 「 *KUIS KATA ACAK* 」\n┊ Susun huruf ini jadi kata yang benar, kata-katanya lebih panjang dari Susun Kata:\n┊\n┊ *{letters}*\n┊\n┊ ᴘᴏɪɴ: *{points}* | ᴡᴀᴋᴛᴜ: *{seconds} detik*\n┊ Balas (reply) pesan ini dengan katanya langsung yaa~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ 🔤 「 *KUIS MASIH JALAN* 」\n┊ Masih ada kuis *{type}* yang jalan di chat ini.\n┊ Selesaikan dulu atau pencet tombol menyerah di bawah yaa~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
-      menuBtn: '🎲 Menu Fun',
       footer: 'Kuis KANA',
     },
   },
   en: {
     kataacak: {
       title: 'Kata Acak Word Scramble Quiz',
-      intro: '🔤 KATA ACAK WORD QUIZ\n\nUnscramble these letters into the right word, longer words than Word Scramble:\n\n{letters}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the word directly~ {mood}',
-      already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
+      intro: '╭─❏ 🔤 「 *KATA ACAK WORD QUIZ* 」\n┊ Unscramble these letters into the right word, longer words than Word Scramble:\n┊\n┊ *{letters}*\n┊\n┊ ᴘᴏɪɴᴛꜱ: *{points}* | ᴛɪᴍᴇ: *{seconds} seconds*\n┊ Reply to this message with the word directly~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ 🔤 「 *QUIZ STILL RUNNING* 」\n┊ A *{type}* quiz is still running in this chat.\n┊ Finish it first or tap the give up button below~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
-      menuBtn: '🎲 Fun Menu',
       footer: 'KANA Quiz',
     },
   },

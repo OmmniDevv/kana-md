@@ -21,8 +21,8 @@ export const i18n = {
   id: {
     kecocokannama: {
       title: 'Kecocokan Nama',
-      hint: 'Tulis dua namanya dipisah tanda & yaa~ Contoh: .kecocokannama Budi & Sari',
-      body: '💘 KECOCOKAN NAMA\n\n{a} x {b}: {pct}%\n\n{verdict}',
+      hint: '╭─❏ 💘 「 *KECOCOKAN NAMA* 」\n┊ Tulis dua namanya dipisah tanda & yaa~\n┊ Contoh: *.kecocokannama Budi & Sari*\n╰━━━━━━━',
+      body: '╭─❏ 💘 「 *KECOCOKAN NAMA* 」\n┊ *{a}* x *{b}*\n┊ ᴋᴇᴄᴏᴄᴏᴋᴀɴ: *{pct}%*\n┊\n┊ {verdict}\n╰━━━━━━━',
       high: 'Wahh cocok banget! Chemistry-nya kuat nih~',
       mid: 'Lumayan cocok, tinggal diasah komunikasinya~',
       low: 'Hmm, perlu usaha ekstra nih. Namanya juga ramalan~',
@@ -32,8 +32,8 @@ export const i18n = {
   en: {
     kecocokannama: {
       title: 'Name Match',
-      hint: 'Write two names separated by & please~ Example: .kecocokannama Budi & Sari',
-      body: '💘 NAME MATCH\n\n{a} x {b}: {pct}%\n\n{verdict}',
+      hint: '╭─❏ 💘 「 *NAME MATCH* 」\n┊ Write two names separated by & please~\n┊ Example: *.kecocokannama Budi & Sari*\n╰━━━━━━━',
+      body: '╭─❏ 💘 「 *NAME MATCH* 」\n┊ *{a}* x *{b}*\n┊ ᴍᴀᴛᴄʜ: *{pct}%*\n┊\n┊ {verdict}\n╰━━━━━━━',
       high: 'Wow, a great match! Strong chemistry~',
       mid: 'Pretty compatible, just needs better communication~',
       low: 'Hmm, needs extra effort. It is just a fortune game anyway~',

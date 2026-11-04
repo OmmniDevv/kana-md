@@ -18,7 +18,7 @@ export const i18n = {
   id: {
     gennama: {
       title: 'Generator Nama',
-      body: '✨ NAMA BUATAN UNTUKMU\n\n{name}\n\nKurang cocok? Pencet tombol buat lagi yaa~ {mood}',
+      body: '╭─❏ ✨ 「 *NAMA BUATAN UNTUKMU* 」\n┊ *{name}*\n┊\n┊ Kurang cocok? Pencet tombol buat lagi yaa~\n╰━━━━━━━ {mood}',
       btnAgain: '🎲 Buat Lagi',
       btnMale: '👦 Versi Cowo',
       btnFemale: '👧 Versi Cewe',
@@ -27,7 +27,7 @@ export const i18n = {
   en: {
     gennama: {
       title: 'Name Generator',
-      body: '✨ A GENERATED NAME FOR YOU\n\n{name}\n\nNot feeling it? Tap the button to roll again~ {mood}',
+      body: '╭─❏ ✨ 「 *A GENERATED NAME FOR YOU* 」\n┊ *{name}*\n┊\n┊ Not feeling it? Tap the button to roll again~\n╰━━━━━━━ {mood}',
       btnAgain: '🎲 Generate Again',
       btnMale: '👦 Male Version',
       btnFemale: '👧 Female Version',

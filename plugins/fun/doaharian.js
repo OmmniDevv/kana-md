@@ -32,10 +32,10 @@ export const i18n = {
   id: {
     doaharian: {
       title: 'Doa Harian',
-      body: '🤲 DOA {judul}\n\n{arab}\n\nLatin: {latin}\n\nArtinya: {arti}',
-      listTitle: '🤲 DAFTAR DOA HARIAN\n',
-      listHint: '\n\nPakai .doaharian <kata kunci>, contoh .doaharian tidur yaa~',
-      notFound: 'KANA tidak menemukan doa dengan kata kunci "{q}". Coba .doaharian untuk lihat daftarnya yaa~',
+      body: '╭─❏ 🤲 「 *DOA {judul}* 」\n┊ {arab}\n┊\n┊ ʟᴀᴛɪɴ: {latin}\n┊\n┊ ᴀʀᴛɪɴʏᴀ: {arti}\n╰━━━━━━━',
+      listTitle: '╭─❏ 🤲 「 *DAFTAR DOA HARIAN* 」\n',
+      listHint: '\n╰━━━━━━━\nPakai *.doaharian <kata kunci>*, contoh *.doaharian tidur* yaa~',
+      notFound: '╭─❏ 🔍 「 *DOA TIDAK KETEMU* 」\n┊ KANA tidak menemukan doa dengan kata kunci *"{q}"*.\n┊ Coba *.doaharian* untuk lihat daftarnya yaa~\n╰━━━━━━━',
       niatBtn: '🕌 Niat Sholat',
       asmaBtn: '📜 Asmaul Husna',
     },
@@ -43,10 +43,10 @@ export const i18n = {
   en: {
     doaharian: {
       title: 'Daily Duas',
-      body: '🤲 DUA FOR {judul}\n\n{arab}\n\nLatin: {latin}\n\nMeaning (Indonesian): {arti}',
-      listTitle: '🤲 LIST OF DAILY DUAS\n',
-      listHint: '\n\nUse .doaharian <keyword>, for example .doaharian tidur~',
-      notFound: 'KANA could not find a dua with keyword "{q}". Try .doaharian to see the list~',
+      body: '╭─❏ 🤲 「 *DUA FOR {judul}* 」\n┊ {arab}\n┊\n┊ ʟᴀᴛɪɴ: {latin}\n┊\n┊ ᴍᴇᴀɴɪɴɢ (Indonesian): {arti}\n╰━━━━━━━',
+      listTitle: '╭─❏ 🤲 「 *LIST OF DAILY DUAS* 」\n',
+      listHint: '\n╰━━━━━━━\nUse *.doaharian <keyword>*, for example *.doaharian tidur*~',
+      notFound: '╭─❏ 🔍 「 *DUA NOT FOUND* 」\n┊ KANA could not find a dua with keyword *"{q}"*.\n┊ Try *.doaharian* to see the list~\n╰━━━━━━━',
       niatBtn: '🕌 Prayer Intentions',
       asmaBtn: '📜 Asmaul Husna',
     },
@@ -62,7 +62,7 @@ export async function handler(ctx) {
     { text: ctx.t('doaharian.asmaBtn'), id: '.asmaulhusna' },
   ]
   if (!arg) {
-    const lines = DOA.map((d) => `• ${d.key}`)
+    const lines = DOA.map((d) => `┊ • ${d.key}`)
     const body = ctx.t('doaharian.listTitle') + lines.join('\n') + ctx.t('doaharian.listHint')
     return sendButtons(ctx.sock, ctx.chat, {
       title: ctx.t('doaharian.title'),

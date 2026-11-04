@@ -16,8 +16,8 @@ export const i18n = {
   id: {
     kuisumum: {
       title: 'Kuis Umum',
-      intro: '🌐 KUIS UMUM\n\n{question}\n\n{options}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan huruf jawabannya, atau pencet tombolnya yaa~ {mood}',
-      already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
+      intro: '╭─❏ 🌐 「 *KUIS UMUM* 」\n┊ {question}\n┊\n┊ {options}\n┊\n┊ ᴘᴏɪɴ: *{points}* | ᴡᴀᴋᴛᴜ: *{seconds} detik*\n┊ Balas (reply) pesan ini dengan huruf jawabannya, atau pencet tombolnya yaa~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ 🌐 「 *KUIS MASIH JALAN* 」\n┊ Masih ada kuis *{type}* yang jalan di chat ini.\n┊ Selesaikan dulu atau pencet tombol menyerah di bawah yaa~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
       footer: 'Kuis KANA',
     },
@@ -25,8 +25,8 @@ export const i18n = {
   en: {
     kuisumum: {
       title: 'General Quiz',
-      intro: '🌐 GENERAL QUIZ\n\n{question}\n\n{options}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the answer letter, or tap an answer button~ {mood}',
-      already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
+      intro: '╭─❏ 🌐 「 *GENERAL QUIZ* 」\n┊ {question}\n┊\n┊ {options}\n┊\n┊ ᴘᴏɪɴᴛꜱ: *{points}* | ᴛɪᴍᴇ: *{seconds} seconds*\n┊ Reply to this message with the answer letter, or tap an answer button~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ 🌐 「 *QUIZ STILL RUNNING* 」\n┊ A *{type}* quiz is still running in this chat.\n┊ Finish it first or tap the give up button below~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
       footer: 'KANA Quiz',
     },

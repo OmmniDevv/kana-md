@@ -18,8 +18,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { dimana: { hint: 'Tanya yang lengkap yaa~ Contoh: .dimana jodohku berada', body: '📍 {answer} {mood}' } },
-  en: { dimana: { hint: 'Ask a full question please~ Example: .dimana is my soulmate', body: '📍 {answer} {mood}' } },
+  id: { dimana: { hint: '╭─❏ 📍 「 *DIMANA* 」\n┊ Tanya yang lengkap yaa~\n┊ Contoh: *.dimana jodohku berada*\n╰━━━━━━━', body: '╭─❏ 📍 「 *JAWABAN KANA* 」\n┊ {answer}\n╰━━━━━━━ {mood}' } },
+  en: { dimana: { hint: '╭─❏ 📍 「 *WHERE* 」\n┊ Ask a full question please~\n┊ Example: *.dimana is my soulmate*\n╰━━━━━━━', body: '╭─❏ 📍 「 *KANA ANSWER* 」\n┊ {answer}\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.dimana', expect: /tanya|ask/i }

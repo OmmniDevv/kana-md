@@ -15,7 +15,7 @@ export const i18n = {
   id: {
     hadits: {
       title: 'Hadits Pilihan',
-      body: '🌙 HADITS PILIHAN UNTUKMU\n\n"{text}"\n\n({source})\n\nSemoga jadi pengingat yang baik yaa~ {mood}',
+      body: '╭─❏ 🌙 「 *HADITS PILIHAN* 」\n┊ "{text}"\n┊\n┊ ꜱᴜᴍʙᴇʀ: *({source})*\n┊\n┊ Semoga jadi pengingat yang baik yaa~\n╰━━━━━━━ {mood}',
       haditsBtn: '🌙 Hadits Lain',
       ayatBtn: '📖 Ayat',
       religiBtn: '🕌 Religi Harian',
@@ -25,7 +25,7 @@ export const i18n = {
   en: {
     hadits: {
       title: 'Selected Hadith',
-      body: '🌙 A HADITH FOR YOU\n\n"{text}"\n\n({source})\n\nMay it be a gentle reminder~ {mood}',
+      body: '╭─❏ 🌙 「 *A HADITH FOR YOU* 」\n┊ "{text}"\n┊\n┊ ꜱᴏᴜʀᴄᴇ: *({source})*\n┊\n┊ May it be a gentle reminder~\n╰━━━━━━━ {mood}',
       haditsBtn: '🌙 Another Hadith',
       ayatBtn: '📖 Verse',
       religiBtn: '🕌 Daily Religion',

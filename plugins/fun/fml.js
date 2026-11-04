@@ -22,8 +22,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { fml: { body: '😅 FML hari ini:\n{story}\n\nFML. {mood}' } },
-  en: { fml: { body: '😅 Today FML:\n{story}\n\nFML. {mood}' } },
+  id: { fml: { body: '╭─❏ 😅 「 *FML HARI INI* 」\n┊ {story}\n┊\n┊ FML.\n╰━━━━━━━ {mood}' } },
+  en: { fml: { body: '╭─❏ 😅 「 *FML TODAY* 」\n┊ {story}\n┊\n┊ FML.\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.fml', expect: /fml/i }

@@ -15,10 +15,10 @@ export const i18n = {
   id: {
     kisahnabi: {
       title: 'Kisah Nabi',
-      story: '📖 KISAH NABI {nama}\n\n{kisah}\n\nSemoga bisa diambil hikmahnya yaa~ {mood}',
-      listTitle: '📖 DAFTAR 25 NABI\n',
-      listHint: '\n\nPakai .kisahnabi <nama> untuk membaca kisahnya, contoh .kisahnabi yusuf~',
-      notFound: 'KANA tidak menemukan nabi bernama "{q}" di daftar 25 nabi. Coba .kisahnabi untuk lihat daftarnya yaa~',
+      story: '╭─❏ 📖 「 *KISAH NABI {nama}* 」\n┊ {kisah}\n┊\n┊ Semoga bisa diambil hikmahnya yaa~\n╰━━━━━━━ {mood}',
+      listTitle: '╭─❏ 📖 「 *DAFTAR 25 NABI* 」\n',
+      listHint: '\n╰━━━━━━━\nPakai *.kisahnabi <nama>* untuk membaca kisahnya, contoh *.kisahnabi yusuf*~',
+      notFound: '╭─❏ 🔍 「 *NABI TIDAK KETEMU* 」\n┊ KANA tidak menemukan nabi bernama *"{q}"* di daftar 25 nabi.\n┊ Coba *.kisahnabi* untuk lihat daftarnya yaa~\n╰━━━━━━━',
       randomBtn: '🎲 Kisah Acak',
       listBtn: '📜 Daftar Nabi',
       asmaBtn: '🕌 Asmaul Husna',
@@ -27,10 +27,10 @@ export const i18n = {
   en: {
     kisahnabi: {
       title: 'Prophet Stories',
-      story: '📖 STORY OF PROPHET {nama}\n\n{kisah}\n\nMay you take wisdom from it~ {mood}',
-      listTitle: '📖 LIST OF 25 PROPHETS\n',
-      listHint: '\n\nUse .kisahnabi <name> to read the story, for example .kisahnabi yusuf~',
-      notFound: 'KANA could not find a prophet named "{q}" in the 25 prophets list. Try .kisahnabi to see the list~',
+      story: '╭─❏ 📖 「 *STORY OF PROPHET {nama}* 」\n┊ {kisah}\n┊\n┊ May you take wisdom from it~\n╰━━━━━━━ {mood}',
+      listTitle: '╭─❏ 📖 「 *LIST OF 25 PROPHETS* 」\n',
+      listHint: '\n╰━━━━━━━\nUse *.kisahnabi <name>* to read the story, for example *.kisahnabi yusuf*~',
+      notFound: '╭─❏ 🔍 「 *PROPHET NOT FOUND* 」\n┊ KANA could not find a prophet named *"{q}"* in the 25 prophets list.\n┊ Try *.kisahnabi* to see the list~\n╰━━━━━━━',
       randomBtn: '🎲 Random Story',
       listBtn: '📜 Prophet List',
       asmaBtn: '🕌 Asmaul Husna',
@@ -48,7 +48,7 @@ export async function handler(ctx) {
     { text: ctx.t('kisahnabi.asmaBtn'), id: '.asmaulhusna' },
   ]
   if (!arg) {
-    const lines = KISAH_NABI.map((x, i) => `${i + 1}. Nabi ${x.nama}`)
+    const lines = KISAH_NABI.map((x, i) => `┊ ${i + 1}. Nabi ${x.nama}`)
     const body = ctx.t('kisahnabi.listTitle') + lines.join('\n') + ctx.t('kisahnabi.listHint')
     return sendButtons(ctx.sock, ctx.chat, {
       title: ctx.t('kisahnabi.title'),

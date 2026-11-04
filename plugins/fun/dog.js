@@ -14,8 +14,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { dog: { caption: 'Guk guk! Nih anjing lucunya~ 🐶', fail: 'Gagal ambil foto anjing: {error}' } },
-  en: { dog: { caption: 'Woof woof! Here is a cute dog~ 🐶', fail: 'Failed to fetch a dog photo: {error}' } },
+  id: { dog: { caption: '╭─❏ 🐶 「 *ANJING LUCU* 」\n┊ Guk guk! Nih anjing lucunya~\n╰━━━━━━━', fail: '╭─❏ 🐶 「 *GAGAL AMBIL FOTO* 」\n┊ Gagal ambil foto anjing: {error}\n╰━━━━━━━' } },
+  en: { dog: { caption: '╭─❏ 🐶 「 *CUTE DOG* 」\n┊ Woof woof! Here is a cute dog~\n╰━━━━━━━', fail: '╭─❏ 🐶 「 *FAILED TO FETCH PHOTO* 」\n┊ Failed to fetch a dog photo: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.dog', expect: /guk|woof/i }

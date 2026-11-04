@@ -12,14 +12,14 @@ export const config = {
 export const i18n = {
   id: {
     jadian: {
-      single: 'Kamu masih jomblo. Berani nembak seseorang pakai .nembak @user? {mood}',
-      couple: '💕 Kamu jadian sama @{partner} sejak {date}. Sudah {days} hari bareng~',
+      single: '╭─❏ 💕 「 *STATUS HUBUNGAN* 」\n┊ Kamu masih jomblo nih~\n┊ Berani nembak seseorang pakai *.nembak @user*?\n╰━━━━━━━ {mood}',
+      couple: '╭─❏ 💕 「 *STATUS HUBUNGAN* 」\n┊ Kamu jadian sama *@{partner}*\n┊ ꜱᴇᴊᴀᴋ: *{date}*\n┊ Sudah *{days} hari* bareng~\n╰━━━━━━━',
     },
   },
   en: {
     jadian: {
-      single: 'You are still single. Dare to confess to someone with .nembak @user? {mood}',
-      couple: '💕 You have been dating @{partner} since {date}. That is {days} days together~',
+      single: '╭─❏ 💕 「 *RELATIONSHIP STATUS* 」\n┊ You are still single~\n┊ Dare to confess to someone with *.nembak @user*?\n╰━━━━━━━ {mood}',
+      couple: '╭─❏ 💕 「 *RELATIONSHIP STATUS* 」\n┊ You have been dating *@{partner}*\n┊ ᴅᴀᴛɪɴɢ ꜱɪɴᴄᴇ: *{date}*\n┊ That is *{days} days* together~\n╰━━━━━━━',
     },
   },
 }

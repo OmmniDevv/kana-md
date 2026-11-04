@@ -38,13 +38,13 @@ export const config = {
 }
 
 export const i18n = {
-  id: { islamquotes: { head: '🕌 KUTIPAN ISLAMI\n\n' } },
-  en: { islamquotes: { head: '🕌 ISLAMIC QUOTE\n\n' } },
+  id: { islamquotes: { head: '╭─❏ 🕌 「 *KUTIPAN ISLAMI* 」\n┊ ', foot: '\n╰━━━━━━━' } },
+  en: { islamquotes: { head: '╭─❏ 🕌 「 *ISLAMIC QUOTE* 」\n┊ ', foot: '\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.islamquotes', expect: /islami|islamic/i }
 
 export async function handler(ctx) {
   const pool = QUOTES[ctx.lang] ?? QUOTES.id
-  return ctx.reply(`${ctx.t('islamquotes.head')}${pool[Math.floor(Math.random() * pool.length)]}`)
+  return ctx.reply(`${ctx.t('islamquotes.head')}${pool[Math.floor(Math.random() * pool.length)]}${ctx.t('islamquotes.foot')}`)
 }

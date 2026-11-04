@@ -16,7 +16,7 @@ export const config = {
 export const i18n = {
   id: {
     joke: {
-      title: '😂 Lelucon KANA',
+      title: '╭─❏ 😂 「 *LELUCON KANA* 」',
       btnAgain: '😂 Lagi Dong',
       btnTruth: '🫣 Truth',
       btnDare: '😈 Dare',
@@ -24,7 +24,7 @@ export const i18n = {
   },
   en: {
     joke: {
-      title: '😂 KANA Joke',
+      title: '╭─❏ 😂 「 *KANA JOKE* 」',
       btnAgain: '😂 One More',
       btnTruth: '🫣 Truth',
       btnDare: '😈 Dare',
@@ -40,7 +40,7 @@ export function pickJoke(lang, rng = Math.random) {
 export const test = { input: '.joke', expect: /lelucon|joke/i }
 
 export async function handler(ctx) {
-  const body = `${ctx.t('joke.title')}\n\n${pickJoke(ctx.lang)}\n\n${ctx.say('senang')}`
+  const body = `${ctx.t('joke.title')}\n┊ ${pickJoke(ctx.lang)}\n╰━━━━━━━ ${ctx.say('senang')}`
   return sendButtons(ctx.sock, ctx.chat, {
     title: 'KANA',
     body,

@@ -18,8 +18,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { hidetext: { hint: 'Formatnya: .hidetext <teks sampul> | <teks rahasia>. Contoh: .hidetext Halo semua | ini spoiler endingnya' } },
-  en: { hidetext: { hint: 'Format: .hidetext <cover text> | <secret text>. Example: .hidetext Hello everyone | this is the ending spoiler' } },
+  id: { hidetext: { hint: '╭─❏ 🙈 「 *SEMBUNYIKAN TEKS* 」\n┊ Formatnya: *.hidetext <teks sampul> | <teks rahasia>*\n┊ Contoh: *.hidetext Halo semua | ini spoiler endingnya*\n╰━━━━━━━' } },
+  en: { hidetext: { hint: '╭─❏ 🙈 「 *HIDE TEXT* 」\n┊ Format: *.hidetext <cover text> | <secret text>*\n┊ Example: *.hidetext Hello everyone | this is the ending spoiler*\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.hidetext', expect: /sampul|cover/i }
