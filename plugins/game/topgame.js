@@ -19,9 +19,9 @@ export const i18n = {
       summaryLine: '🏆 {game} : {name} ({score})',
       boardTitle: '🏆 Top skor {game}:',
       boardLine: '{rank}. {name} : {score}',
-      empty: 'Belum ada skor tercatat nih~ Main dulu lewat .games, jadilah yang pertama cetak skor yaa! {mood}',
-      emptyGame: 'Belum ada skor buat game ini nih~ Main lewat .game {id} dan jadilah yang pertama yaa! {mood}',
-      unknown: 'Ehh, game "{id}" nggak ada nih. Game yang ada: {list}~',
+      empty: '╭─❏ ✨ 「 *TOPGAME* 」\n┊ Belum ada skor tercatat nih~ Main dulu lewat .games, jadilah yang pertama cetak skor yaa! {mood}\n╰━━━━━━━',
+      emptyGame: '╭─❏ ✨ 「 *TOPGAME* 」\n┊ Belum ada skor buat game ini nih~ Main lewat .game {id} dan jadilah yang pertama yaa! {mood}\n╰━━━━━━━',
+      unknown: '╭─❏ ✨ 「 *TOPGAME* 」\n┊ Ehh, game "{id}" nggak ada nih. Game yang ada: {list}~\n╰━━━━━━━',
       footer: 'KANA, bot WhatsApp moe',
       gamesButton: '🎮 Daftar Game',
     },
@@ -33,9 +33,9 @@ export const i18n = {
       summaryLine: '🏆 {game} : {name} ({score})',
       boardTitle: '🏆 Top scores for {game}:',
       boardLine: '{rank}. {name} : {score}',
-      empty: 'No scores recorded yet~ Play via .games and be the first to set one! {mood}',
-      emptyGame: 'No scores for this game yet~ Play via .game {id} and be the first one! {mood}',
-      unknown: 'Eh, game "{id}" does not exist. Available games: {list}~',
+      empty: '╭─❏ ✨ 「 *TOPGAME* 」\n┊ No scores recorded yet~ Play via .games and be the first to set one! {mood}\n╰━━━━━━━',
+      emptyGame: '╭─❏ ✨ 「 *TOPGAME* 」\n┊ No scores for this game yet~ Play via .game {id} and be the first one! {mood}\n╰━━━━━━━',
+      unknown: '╭─❏ ✨ 「 *TOPGAME* 」\n┊ Eh, game "{id}" does not exist. Available games: {list}~\n╰━━━━━━━',
       footer: 'KANA, moe WhatsApp bot',
       gamesButton: '🎮 Game List',
     },
@@ -56,14 +56,18 @@ export async function handler(ctx) {
     ...games.slice(0, 5).map((g) => ({ text: `🏆 ${g.title}`.slice(0, 25), id: `.topgame ${g.id}` })),
     { text: ctx.t('topgame.gamesButton'), id: '.games' },
   ]
-  const sendBoard = (body) =>
-    sendButtons(ctx.sock, ctx.chat, {
+  const sendBoard = (rawBody) => {
+    const body = rawBody.startsWith('╭')
+      ? rawBody
+      : `╭─❏ 🏆 「 *${ctx.t('topgame.title').toUpperCase()}* 」\n${rawBody.split('\n').map((ln) => (ln.trim() ? `┊ ${ln}` : ln)).join('\n')}\n╰━━━━━━━`
+    return sendButtons(ctx.sock, ctx.chat, {
       title: ctx.t('topgame.title'),
       body,
       footer: ctx.t('menu.footer'),
       replies,
       textFallback: body,
     })
+  }
 
   const id = (ctx.args?.[0] || '').toLowerCase()
   if (id) {

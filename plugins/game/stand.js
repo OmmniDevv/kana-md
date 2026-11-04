@@ -15,22 +15,22 @@ export const config = {
 export const i18n = {
   id: {
     stand: {
-      noGame: 'Belum ada permainan blackjack yang jalan nih. Mulai dulu pakai .blackjack <bet> yaa~ 🃏',
-      bust: 'BUST! 💥 Kamu ({value}): {hand}\nLewat 21, bet {bet} koin melayang... (╥﹏╥) Saldo sekarang {balance} koin.',
-      win: 'Menang! 🎉 Kamu ({pvalue}): {hand}\nDealer ({dvalue}): {dealer}\nTotal kembali {payout} koin. Saldo sekarang {balance} koin~',
-      lose: 'Kalah nih... Kamu ({pvalue}): {hand}\nDealer ({dvalue}): {dealer}\nBet {bet} koin melayang. Saldo sekarang {balance} koin (╥﹏╥)',
-      push: 'Seri! Kamu ({pvalue}): {hand}\nDealer ({dvalue}): {dealer}\nBet {bet} koin balik utuh. Saldo sekarang {balance} koin~ 🌸',
+      noGame: '╭─❏ ✨ 「 *STAND* 」\n┊ Belum ada permainan blackjack yang jalan nih. Mulai dulu pakai .blackjack <bet> yaa~ 🃏\n╰━━━━━━━',
+      bust: '╭─❏ ✨ 「 *STAND* 」\n┊ BUST! 💥 Kamu ({value}): {hand}\n┊ Lewat 21, bet {bet} koin melayang... (╥﹏╥) Saldo sekarang {balance} koin.\n╰━━━━━━━',
+      win: '╭─❏ ✨ 「 *STAND* 」\n┊ Menang! 🎉 Kamu ({pvalue}): {hand}\n┊ Dealer ({dvalue}): {dealer}\n┊ Total kembali {payout} koin. Saldo sekarang {balance} koin~\n╰━━━━━━━',
+      lose: '╭─❏ ✨ 「 *STAND* 」\n┊ Kalah nih... Kamu ({pvalue}): {hand}\n┊ Dealer ({dvalue}): {dealer}\n┊ Bet {bet} koin melayang. Saldo sekarang {balance} koin (╥﹏╥)\n╰━━━━━━━',
+      push: '╭─❏ ✨ 「 *STAND* 」\n┊ Seri! Kamu ({pvalue}): {hand}\n┊ Dealer ({dvalue}): {dealer}\n┊ Bet {bet} koin balik utuh. Saldo sekarang {balance} koin~ 🌸\n╰━━━━━━━',
       btnStart: 'Mulai Blackjack',
       btnAgain: 'Main Lagi',
     },
   },
   en: {
     stand: {
-      noGame: 'No blackjack game is running yet. Start one with .blackjack <bet> first~ 🃏',
-      bust: 'BUST! 💥 You ({value}): {hand}\nOver 21, your {bet} coin bet is gone... (╥﹏╥) Balance now {balance} coins.',
-      win: 'You win! 🎉 You ({pvalue}): {hand}\nDealer ({dvalue}): {dealer}\nTotal return {payout} coins. Balance now {balance} coins~',
-      lose: 'You lose... You ({pvalue}): {hand}\nDealer ({dvalue}): {dealer}\nYour {bet} coin bet is gone. Balance now {balance} coins (╥﹏╥)',
-      push: 'A push! You ({pvalue}): {hand}\nDealer ({dvalue}): {dealer}\nYour {bet} coin bet returns in full. Balance now {balance} coins~ 🌸',
+      noGame: '╭─❏ ✨ 「 *STAND* 」\n┊ No blackjack game is running yet. Start one with .blackjack <bet> first~ 🃏\n╰━━━━━━━',
+      bust: '╭─❏ ✨ 「 *STAND* 」\n┊ BUST! 💥 You ({value}): {hand}\n┊ Over 21, your {bet} coin bet is gone... (╥﹏╥) Balance now {balance} coins.\n╰━━━━━━━',
+      win: '╭─❏ ✨ 「 *STAND* 」\n┊ You win! 🎉 You ({pvalue}): {hand}\n┊ Dealer ({dvalue}): {dealer}\n┊ Total return {payout} coins. Balance now {balance} coins~\n╰━━━━━━━',
+      lose: '╭─❏ ✨ 「 *STAND* 」\n┊ You lose... You ({pvalue}): {hand}\n┊ Dealer ({dvalue}): {dealer}\n┊ Your {bet} coin bet is gone. Balance now {balance} coins (╥﹏╥)\n╰━━━━━━━',
+      push: '╭─❏ ✨ 「 *STAND* 」\n┊ A push! You ({pvalue}): {hand}\n┊ Dealer ({dvalue}): {dealer}\n┊ Your {bet} coin bet returns in full. Balance now {balance} coins~ 🌸\n╰━━━━━━━',
       btnStart: 'Start Blackjack',
       btnAgain: 'Play Again',
     },
