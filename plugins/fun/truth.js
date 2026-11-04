@@ -15,7 +15,7 @@ export const i18n = {
   id: {
     truth: {
       title: 'Truth',
-      body: 'Waktunya TRUTH! Jujur-jujuran yuk~\n\n❓ {question}\n\nJawab sejujurnya yaa, tidak boleh ngeles~ {mood}',
+      body: '╭─❏ 💬 「 *TRUTH* 」\n┊ Waktunya TRUTH! Jujur-jujuran yuk~\n┊ ❓ {question}\n┊ Jawab sejujurnya yaa, tidak boleh ngeles~\n╰━━━━━━━ {mood}',
       dareBtn: '😈 Berani Dare?',
       truthBtn: '💬 Truth Lagi',
       footer: 'Truth or Dare KANA',
@@ -24,7 +24,7 @@ export const i18n = {
   en: {
     truth: {
       title: 'Truth',
-      body: 'Time for TRUTH!\n\n❓ {question}\n\nAnswer honestly, no dodging~ {mood}',
+      body: '╭─❏ 💬 「 *TRUTH* 」\n┊ Time for TRUTH!\n┊ ❓ {question}\n┊ Answer honestly, no dodging~\n╰━━━━━━━ {mood}',
       dareBtn: '😈 Dare Instead?',
       truthBtn: '💬 Another Truth',
       footer: 'KANA Truth or Dare',

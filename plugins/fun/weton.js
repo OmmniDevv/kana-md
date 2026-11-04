@@ -5,7 +5,7 @@ export const config = {
   alias: ['wetonjawa'],
   category: 'fun',
   description: { id: 'Hitung weton (hari dan pasaran Jawa) dari tanggal lahir', en: 'Find the weton (day and Javanese pasaran) of a birth date' },
-  usage: '.weton <DD-MM-YYYY>',
+  usage: '╭─❏ 🌙 「 *WETON* 」\n┊ .weton <DD-MM-YYYY>\n╰━━━━━━━',
   example: '.weton 17-08-1945',
   cooldown: 3,
 }
@@ -37,9 +37,9 @@ export function wetonOf(dateStr) {
 export const i18n = {
   id: {
     weton: {
-      usage: 'Tulis tanggalnya format DD-MM-YYYY yaa, contoh: .weton 17-08-1945~',
+      usage: '╭─❏ 🌙 「 *WETON* 」\n┊ Tulis tanggalnya format DD-MM-YYYY yaa, contoh: .weton 17-08-1945~\n╰━━━━━━━',
       title: 'Weton Kamu 🌙',
-      result: 'Tanggal {date} itu hari {day}, pasarannya {pasaran}.\nJadi weton kamu: {day} {pasaran}!\n\nSifat umum versi tradisi: {trait}\n\n{disclaimer}',
+      result: '╭─❏ 🌙 「 *WETON KAMU* 」\n┊ Tanggal {date} itu hari {day}, pasarannya {pasaran}.\n┊ ᴊᴀᴅɪ ᴡᴇᴛᴏɴ ᴋᴀᴍᴜ: *{day} {pasaran}*!\n┊ ꜱɪꜰᴀᴛ ᴜᴍᴜᴍ ᴠᴇʀꜱɪ ᴛʀᴀᴅɪꜱɪ: {trait}\n┊ {disclaimer}\n╰━━━━━━━',
       disclaimer: 'Catatan: sifat weton ini kepercayaan tradisi dan cuma buat hiburan yaa, bukan penentu nasib~ (≧▽≦)',
       days: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
       traits: {
@@ -50,14 +50,13 @@ export const i18n = {
         Kliwon: 'peka, penuh ide, dan punya daya tarik alami di pergaulan.',
       },
       btnAgain: 'Cek Tanggal Lain',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     weton: {
-      usage: 'Write the date in DD-MM-YYYY format, example: .weton 17-08-1945~',
+      usage: '╭─❏ 🌙 「 *WETON* 」\n┊ Write the date in DD-MM-YYYY format, example: .weton 17-08-1945~\n╰━━━━━━━',
       title: 'Your Weton 🌙',
-      result: '{date} was a {day}, with pasaran {pasaran}.\nSo your weton is: {day} {pasaran}!\n\nGeneral traits by tradition: {trait}\n\n{disclaimer}',
+      result: '╭─❏ 🌙 「 *YOUR WETON* 」\n┊ {date} was a {day}, with pasaran {pasaran}.\n┊ ꜱᴏ ʏᴏᴜʀ ᴡᴇᴛᴏɴ ɪꜱ: *{day} {pasaran}*!\n┊ ɢᴇɴᴇʀᴀʟ ᴛʀᴀɪᴛꜱ ʙʏ ᴛʀᴀᴅɪᴛɪᴏɴ: {trait}\n┊ {disclaimer}\n╰━━━━━━━',
       disclaimer: 'Note: weton traits are traditional belief and just for fun, not a fate decider~ (≧▽≦)',
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       traits: {
@@ -68,7 +67,6 @@ export const i18n = {
         Kliwon: 'perceptive, full of ideas, and naturally charming in social circles.',
       },
       btnAgain: 'Check Another Date',
-      btnMenu: 'Fun Menu',
     },
   },
 }

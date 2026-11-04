@@ -5,7 +5,7 @@ export const config = {
   alias: ['zodiac'],
   category: 'fun',
   description: { id: 'Cek zodiak dari tanggal lahir plus sifat umumnya, untuk hiburan', en: 'Check your zodiac sign from your birth date plus general traits, for fun' },
-  usage: '.zodiak <DD-MM atau DD-MM-YYYY>',
+  usage: '╭─❏ ✨ 「 *ZODIAK* 」\n┊ .zodiak <DD-MM atau DD-MM-YYYY>\n╰━━━━━━━',
   example: '.zodiak 17-08',
   cooldown: 3,
 }
@@ -63,21 +63,19 @@ export function parseBirthDate(text) {
 export const i18n = {
   id: {
     zodiak: {
-      usage: 'Pakai: .zodiak <tanggal lahir>, contoh .zodiak 17-08 atau .zodiak 17-08-2008 yaa~',
-      result: '✨ ZODIAK KAMU ✨\n\nTanggal: {date}\nZodiak: {sign}\nSifat umumnya: {trait}\n\nKira-kira cocok tidak sama kamu? Ehehe~ {mood}\n\n{disclaimer}',
+      usage: '╭─❏ ✨ 「 *ZODIAK* 」\n┊ Pakai: .zodiak <tanggal lahir>, contoh .zodiak 17-08 atau .zodiak 17-08-2008 yaa~\n╰━━━━━━━',
+      result: '╭─❏ ✨ 「 *ZODIAK KAMU ✨* 」\n┊ ᴛᴀɴɢɢᴀʟ: {date}\n┊ ᴢᴏᴅɪᴀᴋ: *{sign}*\n┊ ꜱɪꜰᴀᴛ ᴜᴍᴜᴍɴʏᴀ: {trait}\n┊ Kira-kira cocok tidak sama kamu? Ehehe~ {mood}\n┊ {disclaimer}\n╰━━━━━━━',
       disclaimer: 'Catatan: ini cuma hiburan ringan dari KANA yaa, sifat orang tidak ditentukan tanggal lahir kok~',
       againBtn: '✨ Cek Zodiak Lagi',
-      menuBtn: '🎲 Menu Fun',
       footer: 'Cek-cek hiburan KANA',
     },
   },
   en: {
     zodiak: {
-      usage: 'Use: .zodiak <birth date>, for example .zodiak 17-08 or .zodiak 17-08-2008~',
-      result: '✨ YOUR ZODIAC ✨\n\nDate: {date}\nSign: {sign}\nGeneral traits: {trait}\n\nDoes it sound like you? Ehehe~ {mood}\n\n{disclaimer}',
+      usage: '╭─❏ ✨ 「 *ZODIAC* 」\n┊ Use: .zodiak <birth date>, for example .zodiak 17-08 or .zodiak 17-08-2008~\n╰━━━━━━━',
+      result: '╭─❏ ✨ 「 *YOUR ZODIAC ✨* 」\n┊ ᴅᴀᴛᴇ: {date}\n┊ ꜱɪɢɴ: *{sign}*\n┊ ɢᴇɴᴇʀᴀʟ ᴛʀᴀɪᴛꜱ: {trait}\n┊ Does it sound like you? Ehehe~ {mood}\n┊ {disclaimer}\n╰━━━━━━━',
       disclaimer: 'Note: this is just light fun from KANA, a birth date does not define a person~',
       againBtn: '✨ Check Zodiac Again',
-      menuBtn: '🎲 Fun Menu',
       footer: 'KANA fun checks',
     },
   },
