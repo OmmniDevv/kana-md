@@ -22,8 +22,8 @@ const TAGLINES = [
 ]
 
 export const i18n = {
-  id: { movieposter: { hint: 'Tulis judul filmnya yaa~ Contoh: .movieposter Kana Menyelamatkan Kota', caption: 'Poster film *{title}* ({genre}) 🎬', fail: 'Gagal bikin poster film: {error}' } },
-  en: { movieposter: { hint: 'Write the movie title please~ Example: .movieposter Kana Saves the City', caption: 'Movie poster of *{title}* ({genre}) 🎬', fail: 'Failed to make the movie poster: {error}' } },
+  id: { movieposter: { hint: '╭─❏ 🎬 「 *BUTUH JUDUL FILM* 」\n┊ Tulis judul filmnya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.movieposter Kana Menyelamatkan Kota*\n╰━━━━━━━', caption: '╭─❏ 🎬 「 *POSTER FILM JADI* 」\n┊ ᴊᴜᴅᴜʟ: *{title}*\n┊ ɢᴇɴʀᴇ: *{genre}* 🎬\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL BIKIN POSTER* 」\n┊ Mouu, gagal bikin poster film: *{error}*~\n╰━━━━━━━' } },
+  en: { movieposter: { hint: '╭─❏ 🎬 「 *MOVIE TITLE NEEDED* 」\n┊ Write the movie title please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.movieposter Kana Saves the City*\n╰━━━━━━━', caption: '╭─❏ 🎬 「 *MOVIE POSTER READY* 」\n┊ ᴛɪᴛʟᴇ: *{title}*\n┊ ɢᴇɴʀᴇ: *{genre}* 🎬\n╰━━━━━━━', fail: '╭─❏ 💦 「 *POSTER FAILED* 」\n┊ Mouu, failed to make the movie poster: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.movieposter', expect: /judul|title/i }

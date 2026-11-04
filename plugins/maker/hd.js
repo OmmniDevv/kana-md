@@ -22,18 +22,18 @@ export const config = {
 export const i18n = {
   id: {
     hd: {
-      needImage: 'Kutip gambarnya dulu yaa, terus ketik .hd~',
-      tooBig: 'Mouu, gambarnya kegedean (di atas 16 MB)~',
-      failed: 'Mouu, gagal perbesar gambarnya: {message}~',
-      caption: 'Ini hasil perbesarannyaa. Catatan jujur: ini perbesaran biasa 2x pakai lanczos plus penajaman ringan, bukan AI, jadi detail baru nggak bakal muncul~',
+      needImage: '╭─❏ 🖼️ 「 *BUTUH GAMBAR* 」\n┊ Kutip gambarnya dulu yaa, terus ketik *.hd*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *KEGEDEAN* 」\n┊ Mouu, gambarnya kegedean, di atas *16 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL PERBESAR* 」\n┊ Mouu, gagal perbesar gambarnya: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ ✨ 「 *PERBESARAN JADI* 」\n┊ Ini hasil perbesarannyaa. Catatan jujur: ini perbesaran biasa *2x* pakai lanczos plus penajaman ringan, bukan AI, jadi detail baru nggak bakal muncul~\n╰━━━━━━━',
     },
   },
   en: {
     hd: {
-      needImage: 'Quote an image first, then type .hd~',
-      tooBig: 'Mouu, the image is too big (over 16 MB)~',
-      failed: 'Mouu, failed to upscale the image: {message}~',
-      caption: 'Here is the upscaled result. Honest note: this is a plain 2x upscale with lanczos plus light sharpening, not AI, so no new detail will appear~',
+      needImage: '╭─❏ 🖼️ 「 *IMAGE NEEDED* 」\n┊ Quote an image first, then type *.hd*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *TOO BIG* 」\n┊ Mouu, the image is too big, over *16 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *UPSCALE FAILED* 」\n┊ Mouu, failed to upscale the image: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ ✨ 「 *UPSCALE READY* 」\n┊ Here is the upscaled result. Honest note: this is a plain *2x* upscale with lanczos plus light sharpening, not AI, so no new detail will appear~\n╰━━━━━━━',
     },
   },
 }

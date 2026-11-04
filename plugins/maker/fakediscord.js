@@ -12,8 +12,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { fakediscord: { hint: 'Formatnya: .fakediscord <nama> | <isi pesan>. Contoh: .fakediscord Malik | Besok kita push fitur baru', fail: 'Gagal bikin kartunya: {error}' } },
-  en: { fakediscord: { hint: 'Format: .fakediscord <name> | <message text>. Example: .fakediscord Malik | We ship the new feature tomorrow', fail: 'Failed to make the card: {error}' } },
+  id: { fakediscord: { hint: '╭─❏ 💬 「 *FORMAT FAKEDISCORD* 」\n┊ ꜰᴏʀᴍᴀᴛ: *.fakediscord <nama> | <isi pesan>*\n┊ ᴄᴏɴᴛᴏʜ: *.fakediscord Malik | Besok kita push fitur baru*\n╰━━━━━━━', caption: '╭─❏ 💬 「 *KARTU DISCORD JADI* 」\n┊ Kartu Discord meme kamu jadii~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL BIKIN KARTU* 」\n┊ Mouu, gagal bikin kartunya: *{error}*~\n╰━━━━━━━' } },
+  en: { fakediscord: { hint: '╭─❏ 💬 「 *FAKEDISCORD FORMAT* 」\n┊ ꜰᴏʀᴍᴀᴛ: *.fakediscord <name> | <message text>*\n┊ ᴇxᴀᴍᴘʟᴇ: *.fakediscord Malik | We ship the new feature tomorrow*\n╰━━━━━━━', caption: '╭─❏ 💬 「 *DISCORD CARD READY* 」\n┊ Your meme Discord card is ready~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *CARD FAILED* 」\n┊ Mouu, failed to make the card: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.fakediscord', expect: /fakediscord/i }
@@ -29,7 +29,7 @@ export async function handler(ctx) {
     const now = new Date()
     const time = `Hari ini ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}`
     const png = await fakeDiscordCard({ name, text, time })
-    return sendImage(ctx, png, {})
+    return sendImage(ctx, png, { caption: ctx.t('fakediscord.caption') })
   } catch (err) {
     return ctx.reply(ctx.t('fakediscord.fail', { error: err.message }))
   }

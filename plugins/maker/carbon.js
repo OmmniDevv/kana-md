@@ -15,17 +15,17 @@ export const config = {
 export const i18n = {
   id: {
     carbon: {
-      needCode: 'Ketik kodenya dulu yaa, contoh: .carbon console.log("halo")~',
-      failed: 'Mouu, gagal bikin kartu kodenya: {message}~',
-      caption: 'Kartu kodenya jadii~',
+      needCode: '╭─❏ 💻 「 *BUTUH KODE* 」\n┊ Ketik kodenya dulu yaa, contoh: *.carbon console.log("halo")*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL BIKIN KARTU KODE* 」\n┊ Mouu, gagal bikin kartu kodenya: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 💻 「 *KARTU KODE JADI* 」\n┊ Kartu kodenya jadii, tampilannya kece~\n╰━━━━━━━',
       dots: '●●●',
     },
   },
   en: {
     carbon: {
-      needCode: 'Type the code first, example: .carbon console.log("hello")~',
-      failed: 'Mouu, failed to make the code card: {message}~',
-      caption: 'Your code card is ready~',
+      needCode: '╭─❏ 💻 「 *CODE NEEDED* 」\n┊ Type the code first, example: *.carbon console.log("hello")*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *CODE CARD FAILED* 」\n┊ Mouu, failed to make the code card: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 💻 「 *CODE CARD READY* 」\n┊ Your code card is ready, looking sharp~\n╰━━━━━━━',
       dots: '●●●',
     },
   },

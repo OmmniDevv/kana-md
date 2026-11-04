@@ -15,9 +15,9 @@ export const config = {
 export const i18n = {
   id: {
     faketweet: {
-      needArgs: 'Formatnya: .faketweet <nama>|<isi>, contoh: .faketweet Budi|halo semua~ Kartunya selalu berlabel PARODI yaa.',
-      failed: 'Mouu, gagal bikin kartu unggahannya: {message}~',
-      caption: 'Kartu unggahan PARODI, bukan unggahan asli yaa~',
+      needArgs: '╭─❏ 🐦 「 *FORMAT FAKETWEET* 」\n┊ ꜰᴏʀᴍᴀᴛ: *.faketweet <nama>|<isi>*\n┊ ᴄᴏɴᴛᴏʜ: *.faketweet Budi|halo semua*~ Kartunya selalu berlabel *PARODI* yaa.\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL BIKIN KARTU* 」\n┊ Mouu, gagal bikin kartu unggahannya: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 🐦 「 *KARTU PARODI JADI* 」\n┊ Kartu unggahan PARODI, bukan unggahan asli yaa~\n╰━━━━━━━',
       parody: 'PARODI',
       handle: '@parodi_bukan_asli',
       parodyNote: 'Ini kartu parodi buatan KANA, bukan unggahan asli.',
@@ -25,9 +25,9 @@ export const i18n = {
   },
   en: {
     faketweet: {
-      needArgs: 'Format: .faketweet <name>|<content>, example: .faketweet Budi|hello all~ The card is always labelled PARODY.',
-      failed: 'Mouu, failed to make the post card: {message}~',
-      caption: 'A PARODY post card, not a real post~',
+      needArgs: '╭─❏ 🐦 「 *FAKETWEET FORMAT* 」\n┊ ꜰᴏʀᴍᴀᴛ: *.faketweet <name>|<content>*\n┊ ᴇxᴀᴍᴘʟᴇ: *.faketweet Budi|hello all*~ The card is always labelled *PARODY*.\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *POST CARD FAILED* 」\n┊ Mouu, failed to make the post card: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 🐦 「 *PARODY CARD READY* 」\n┊ A PARODY post card, not a real post~\n╰━━━━━━━',
       parody: 'PARODI',
       handle: '@parody_not_real',
       parodyNote: 'This is a parody card made by KANA, not a real post.',

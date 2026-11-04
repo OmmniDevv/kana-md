@@ -17,22 +17,20 @@ export const config = {
 export const i18n = {
   id: {
     emojimix: {
-      needEmoji: 'Kasih dua emoji yaa, contoh: .emojimix 😀 🔥~',
-      notAvailable: 'Mouu, kombinasi itu nggak tersedia di Emoji Kitchen. Nggak semua pasangan emoji ada gambarnya, coba pasangan lain ya~',
-      failed: 'Mouu, gagal bikin emojimix: {message}~',
-      done: 'Emojimixnya jadii~',
+      needEmoji: '╭─❏ 😀 「 *BUTUH DUA EMOJI* 」\n┊ Kasih dua emoji yaa, contoh: *.emojimix 😀 🔥*~\n╰━━━━━━━',
+      notAvailable: '╭─❏ 🔍 「 *KOMBINASI TIDAK ADA* 」\n┊ Mouu, kombinasi itu nggak tersedia di Emoji Kitchen. Nggak semua pasangan emoji ada gambarnya, coba pasangan lain ya~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL BIKIN EMOJIMIX* 」\n┊ Mouu, gagal bikin emojimix: *{message}*~\n╰━━━━━━━',
+      done: '╭─❏ ✨ 「 *EMOJIMIX JADI* 」\n┊ Emojimixnya jadii, lucu banget~\n╰━━━━━━━',
       tryButton: 'Coba 😀 ❤️',
-      menuButton: 'Menu Maker',
     },
   },
   en: {
     emojimix: {
-      needEmoji: 'Give me two emojis, example: .emojimix 😀 🔥~',
-      notAvailable: 'Mouu, that combo is not available in Emoji Kitchen. Not every emoji pair has an image, try another pair~',
-      failed: 'Mouu, failed to make the emojimix: {message}~',
-      done: 'Your emojimix is ready~',
+      needEmoji: '╭─❏ 😀 「 *TWO EMOJIS NEEDED* 」\n┊ Give me two emojis, example: *.emojimix 😀 🔥*~\n╰━━━━━━━',
+      notAvailable: '╭─❏ 🔍 「 *COMBO NOT AVAILABLE* 」\n┊ Mouu, that combo is not available in Emoji Kitchen. Not every emoji pair has an image, try another pair~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *EMOJIMIX FAILED* 」\n┊ Mouu, failed to make the emojimix: *{message}*~\n╰━━━━━━━',
+      done: '╭─❏ ✨ 「 *EMOJIMIX READY* 」\n┊ Your emojimix is ready, so cute~\n╰━━━━━━━',
       tryButton: 'Try 😀 ❤️',
-      menuButton: 'Maker Menu',
     },
   },
 }
@@ -82,7 +80,6 @@ export async function handler(ctx) {
     }
   }
   if (!buffer) {
-    await ctx.reply(ctx.t('emojimix.notAvailable'))
     return sendButtons(ctx.sock, ctx.chat, {
       title: 'KANA',
       body: ctx.t('emojimix.notAvailable'),
@@ -94,13 +91,7 @@ export async function handler(ctx) {
   try {
     const webp = await toStickerWebp(buffer, { animated: false })
     await sendSticker(ctx, webp)
-    await sendButtons(ctx.sock, ctx.chat, {
-      title: 'KANA',
-      body: ctx.t('emojimix.done'),
-      footer: ctx.t('menu.footer'),
-      replies: [{ text: ctx.t('emojimix.menuButton'), id: '.menu maker' }],
-      textFallback: ctx.t('emojimix.done'),
-    })
+    return ctx.reply(ctx.t('emojimix.done'))
   } catch (err) {
     return ctx.reply(ctx.t('emojimix.failed', { message: err.message }))
   }

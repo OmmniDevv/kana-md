@@ -15,18 +15,18 @@ export const config = {
 export const i18n = {
   id: {
     fakechat: {
-      needArgs: 'Formatnya: .fakechat <nama>|<pesan>, contoh: .fakechat Budi|halo~ Kartunya selalu berlabel PARODI yaa.',
-      failed: 'Mouu, gagal bikin kartu obrolannya: {message}~',
-      caption: 'Kartu obrolan PARODI, bukan chat asli yaa~',
+      needArgs: '╭─❏ 💬 「 *FORMAT FAKECHAT* 」\n┊ ꜰᴏʀᴍᴀᴛ: *.fakechat <nama>|<pesan>*\n┊ ᴄᴏɴᴛᴏʜ: *.fakechat Budi|halo*~ Kartunya selalu berlabel *PARODI* yaa.\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL BIKIN KARTU* 」\n┊ Mouu, gagal bikin kartu obrolannya: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 💬 「 *KARTU PARODI JADI* 」\n┊ Kartu obrolan PARODI, bukan chat asli yaa~\n╰━━━━━━━',
       parody: 'PARODI',
       parodyNote: 'Ini kartu parodi buatan KANA, bukan tangkapan layar asli.',
     },
   },
   en: {
     fakechat: {
-      needArgs: 'Format: .fakechat <name>|<message>, example: .fakechat Budi|hello~ The card is always labelled PARODY.',
-      failed: 'Mouu, failed to make the chat card: {message}~',
-      caption: 'A PARODY chat card, not a real chat~',
+      needArgs: '╭─❏ 💬 「 *FAKECHAT FORMAT* 」\n┊ ꜰᴏʀᴍᴀᴛ: *.fakechat <name>|<message>*\n┊ ᴇxᴀᴍᴘʟᴇ: *.fakechat Budi|hello*~ The card is always labelled *PARODY*.\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *CHAT CARD FAILED* 」\n┊ Mouu, failed to make the chat card: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 💬 「 *PARODY CARD READY* 」\n┊ A PARODY chat card, not a real chat~\n╰━━━━━━━',
       parody: 'PARODI',
       parodyNote: 'This is a parody card made by KANA, not a real screenshot.',
     },

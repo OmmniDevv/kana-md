@@ -32,8 +32,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { nulis: { hint: 'Tulis teksnya yaa~ Contoh: .nulis Besok jangan lupa bawa buku matematika', fail: 'Gagal nulisnya: {error}' } },
-  en: { nulis: { hint: 'Write the text please~ Example: .nulis Do not forget the math book tomorrow', fail: 'Failed to write it: {error}' } },
+  id: { nulis: { hint: '╭─❏ ✏️ 「 *BUTUH TEKS* 」\n┊ Tulis teksnya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.nulis Besok jangan lupa bawa buku matematika*\n╰━━━━━━━', caption: '╭─❏ 📝 「 *TULISAN JADI* 」\n┊ Nih tulisan tangannya, rapi kan~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL NULIS* 」\n┊ Mouu, gagal nulisnya: *{error}*~\n╰━━━━━━━' } },
+  en: { nulis: { hint: '╭─❏ ✏️ 「 *TEXT NEEDED* 」\n┊ Write the text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.nulis Do not forget the math book tomorrow*\n╰━━━━━━━', caption: '╭─❏ 📝 「 *HANDWRITING READY* 」\n┊ Here is the handwriting, neat right~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *WRITING FAILED* 」\n┊ Mouu, failed to write it: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.nulis', expect: /teks|text/i }
@@ -70,7 +70,7 @@ export async function handler(ctx) {
     g.fillStyle = '#27408f'
     const lines = wrap(g, text.slice(0, 600), 780)
     lines.forEach((line, i) => g.fillText(line, 88, 78 + i * 42))
-    return sendImage(ctx, canvas.toBuffer('image/png'), {})
+    return sendImage(ctx, canvas.toBuffer('image/png'), { caption: ctx.t('nulis.caption') })
   } catch (err) {
     return ctx.reply(ctx.t('nulis.fail', { error: err.message }))
   }

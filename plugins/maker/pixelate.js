@@ -21,16 +21,16 @@ export const config = {
 export const i18n = {
   id: {
     pixelate: {
-      needImage: 'Kutip gambarnya dulu yaa, terus ketik .pixelate~',
-      caption: 'Pixelate level {level} jadii~ {mood}',
-      failed: 'Mouu, gagal pixelate gambarnya: {message}~',
+      needImage: '╭─❏ 🖼️ 「 *BUTUH GAMBAR* 」\n┊ Kutip gambarnya dulu yaa, terus ketik *.pixelate*~\n╰━━━━━━━',
+      caption: '╭─❏ 🟦 「 *PIXELATE JADI* 」\n┊ Pixelate level *{level}* jadii~ {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL PIXELATE* 」\n┊ Mouu, gagal pixelate gambarnya: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     pixelate: {
-      needImage: 'Quote the image first, then type .pixelate~',
-      caption: 'Pixelate level {level} is ready~ {mood}',
-      failed: 'Mouu, failed to pixelate the image: {message}~',
+      needImage: '╭─❏ 🖼️ 「 *IMAGE NEEDED* 」\n┊ Quote the image first, then type *.pixelate*~\n╰━━━━━━━',
+      caption: '╭─❏ 🟦 「 *PIXELATE READY* 」\n┊ Pixelate level *{level}* is ready~ {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *PIXELATE FAILED* 」\n┊ Mouu, failed to pixelate the image: *{message}*~\n╰━━━━━━━',
     },
   },
 }

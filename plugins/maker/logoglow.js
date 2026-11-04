@@ -12,8 +12,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { logoglow: { hint: 'Tulis teks logonya yaa~ Contoh: .logoglow OMNIDEVV', caption: 'Logo glow *{text}* jadii~ {mood}', fail: 'Gagal bikin logo: {error}' } },
-  en: { logoglow: { hint: 'Write the logo text please~ Example: .logoglow OMNIDEVV', caption: 'Glow logo *{text}* is ready~ {mood}', fail: 'Failed to make the logo: {error}' } },
+  id: { logoglow: { hint: '╭─❏ ✏️ 「 *BUTUH TEKS LOGO* 」\n┊ Tulis teks logonya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.logoglow OMNIDEVV*\n╰━━━━━━━', caption: '╭─❏ ✨ 「 *LOGO GLOW JADI* 」\n┊ Logo glow *{text}* jadii~ {mood}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL BIKIN LOGO* 」\n┊ Mouu, gagal bikin logo: *{error}*~\n╰━━━━━━━' } },
+  en: { logoglow: { hint: '╭─❏ ✏️ 「 *LOGO TEXT NEEDED* 」\n┊ Write the logo text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.logoglow OMNIDEVV*\n╰━━━━━━━', caption: '╭─❏ ✨ 「 *GLOW LOGO READY* 」\n┊ Glow logo *{text}* is ready~ {mood}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *LOGO FAILED* 」\n┊ Mouu, failed to make the logo: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.logoglow', expect: /logo/i }

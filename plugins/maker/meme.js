@@ -4,7 +4,6 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { withTempDir } from '../../src/scrapers/runner.js'
 import { sendImage, MAX_IMAGE_BYTES } from '../../src/ui/media.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 import { fetchSourceMedia } from './sticker.js'
 
 const execFileP = promisify(execFile)
@@ -24,22 +23,18 @@ export const config = {
 export const i18n = {
   id: {
     meme: {
-      needText: 'Ketik teksnya dulu yaa, formatnya: .meme teks atas | teks bawah~',
-      tooBig: 'Mouu, gambar sumbernya kegedean (di atas 16 MB)~',
-      failed: 'Mouu, gagal bikin meme: {message}~',
-      caption: 'Memenya jadii~',
-      done: 'Memenya jadii~',
-      menuButton: 'Menu Maker',
+      needText: '╭─❏ ✏️ 「 *BUTUH TEKS MEME* 」\n┊ Ketik teksnya dulu yaa, ꜰᴏʀᴍᴀᴛ: *.meme teks atas | teks bawah*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *KEGEDEAN* 」\n┊ Mouu, gambar sumbernya kegedean, di atas *16 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL BIKIN MEME* 」\n┊ Mouu, gagal bikin meme: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 😂 「 *MEME JADI* 」\n┊ Memenya jadii, ngakak banget~\n╰━━━━━━━',
     },
   },
   en: {
     meme: {
-      needText: 'Type the text first, format: .meme top text | bottom text~',
-      tooBig: 'Mouu, the source image is too big (over 16 MB)~',
-      failed: 'Mouu, failed to make the meme: {message}~',
-      caption: 'Your meme is ready~',
-      done: 'Your meme is ready~',
-      menuButton: 'Maker Menu',
+      needText: '╭─❏ ✏️ 「 *MEME TEXT NEEDED* 」\n┊ Type the text first, ꜰᴏʀᴍᴀᴛ: *.meme top text | bottom text*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *TOO BIG* 」\n┊ Mouu, the source image is too big, over *16 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *MEME FAILED* 」\n┊ Mouu, failed to make the meme: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 😂 「 *MEME READY* 」\n┊ Your meme is ready, so funny~\n╰━━━━━━━',
     },
   },
 }
@@ -104,13 +99,6 @@ export async function handler(ctx) {
   try {
     const png = await drawMeme(source, top, bottom)
     await sendImage(ctx, png, { caption: ctx.t('meme.caption') })
-    await sendButtons(ctx.sock, ctx.chat, {
-      title: 'KANA',
-      body: ctx.t('meme.done'),
-      footer: ctx.t('menu.footer'),
-      replies: [{ text: ctx.t('meme.menuButton'), id: '.menu maker' }],
-      textFallback: ctx.t('meme.done'),
-    })
   } catch (err) {
     return ctx.reply(ctx.t('meme.failed', { message: err.message }))
   }

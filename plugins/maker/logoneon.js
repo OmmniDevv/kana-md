@@ -12,8 +12,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { logoneon: { hint: 'Tulis teks logonya yaa~ Contoh: .logoneon OMNIDEVV', caption: 'Logo neon *{text}* jadii~ {mood}', fail: 'Gagal bikin logo: {error}' } },
-  en: { logoneon: { hint: 'Write the logo text please~ Example: .logoneon OMNIDEVV', caption: 'Neon logo *{text}* is ready~ {mood}', fail: 'Failed to make the logo: {error}' } },
+  id: { logoneon: { hint: '╭─❏ ✏️ 「 *BUTUH TEKS LOGO* 」\n┊ Tulis teks logonya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.logoneon OMNIDEVV*\n╰━━━━━━━', caption: '╭─❏ ✨ 「 *LOGO NEON JADI* 」\n┊ Logo neon *{text}* jadii~ {mood}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL BIKIN LOGO* 」\n┊ Mouu, gagal bikin logo: *{error}*~\n╰━━━━━━━' } },
+  en: { logoneon: { hint: '╭─❏ ✏️ 「 *LOGO TEXT NEEDED* 」\n┊ Write the logo text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.logoneon OMNIDEVV*\n╰━━━━━━━', caption: '╭─❏ ✨ 「 *NEON LOGO READY* 」\n┊ Neon logo *{text}* is ready~ {mood}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *LOGO FAILED* 」\n┊ Mouu, failed to make the logo: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.logoneon', expect: /logo/i }

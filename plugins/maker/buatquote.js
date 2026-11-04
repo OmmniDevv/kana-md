@@ -14,16 +14,16 @@ export const config = {
 export const i18n = {
   id: {
     buatquote: {
-      hint: 'Tulis kutipannya yaa~ Contoh: .buatquote Tetap semangat | Kana',
-      caption: 'Kartu kutipanmu jadii~ {mood}',
-      fail: 'Gagal bikin kartu kutipan: {error}',
+      hint: '╭─❏ 💬 「 *BUTUH KUTIPAN* 」\n┊ Tulis kutipannya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.buatquote Tetap semangat | Kana*\n╰━━━━━━━',
+      caption: '╭─❏ 💬 「 *KARTU KUTIPAN JADI* 」\n┊ Kartu kutipanmu jadii~ {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *GAGAL BIKIN KUTIPAN* 」\n┊ Mouu, gagal bikin kartu kutipan: *{error}*~\n╰━━━━━━━',
     },
   },
   en: {
     buatquote: {
-      hint: 'Write the quote please~ Example: .buatquote Keep going | Kana',
-      caption: 'Your quote card is ready~ {mood}',
-      fail: 'Failed to make the quote card: {error}',
+      hint: '╭─❏ 💬 「 *QUOTE NEEDED* 」\n┊ Write the quote please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.buatquote Keep going | Kana*\n╰━━━━━━━',
+      caption: '╭─❏ 💬 「 *QUOTE CARD READY* 」\n┊ Your quote card is ready~ {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *QUOTE CARD FAILED* 」\n┊ Mouu, failed to make the quote card: *{error}*~\n╰━━━━━━━',
     },
   },
 }

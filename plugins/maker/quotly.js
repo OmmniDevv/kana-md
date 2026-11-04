@@ -1,6 +1,5 @@
 import { textImage } from '../../src/services/text-image.js'
 import { sendImage } from '../../src/ui/media.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'quotly',
@@ -16,23 +15,19 @@ export const config = {
 export const i18n = {
   id: {
     quotly: {
-      needQuoted: 'Kutip pesannya dulu yaa, terus ketik .quotly~',
-      noText: 'Mouu, pesan yang dikutip nggak ada teksnya. Kutip pesan teks yaa~',
-      failed: 'Mouu, gagal bikin kartu kutipannya: {message}~',
-      caption: 'Kartu kutipannya jadii~',
-      done: 'Kartu kutipannya jadii~',
-      menuButton: 'Menu Maker',
+      needQuoted: '╭─❏ 💬 「 *BUTUH KUTIPAN* 」\n┊ Kutip pesannya dulu yaa, terus ketik *.quotly*~\n╰━━━━━━━',
+      noText: '╭─❏ 🔍 「 *TIDAK ADA TEKS* 」\n┊ Mouu, pesan yang dikutip nggak ada teksnya. Kutip pesan teks yaa~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL BIKIN KARTU* 」\n┊ Mouu, gagal bikin kartu kutipannya: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 💬 「 *KARTU KUTIPAN JADI* 」\n┊ Kartu kutipannya jadii, estetik banget~\n╰━━━━━━━',
       unknown: 'tidak dikenal',
     },
   },
   en: {
     quotly: {
-      needQuoted: 'Quote a message first, then type .quotly~',
-      noText: 'Mouu, the quoted message has no text. Quote a text message~',
-      failed: 'Mouu, failed to make the quote card: {message}~',
-      caption: 'Your quote card is ready~',
-      done: 'Your quote card is ready~',
-      menuButton: 'Maker Menu',
+      needQuoted: '╭─❏ 💬 「 *QUOTE NEEDED* 」\n┊ Quote a message first, then type *.quotly*~\n╰━━━━━━━',
+      noText: '╭─❏ 🔍 「 *NO TEXT FOUND* 」\n┊ Mouu, the quoted message has no text. Quote a text message~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *QUOTE CARD FAILED* 」\n┊ Mouu, failed to make the quote card: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 💬 「 *QUOTE CARD READY* 」\n┊ Your quote card is ready, so aesthetic~\n╰━━━━━━━',
       unknown: 'unknown',
     },
   },
@@ -69,13 +64,6 @@ export async function handler(ctx) {
       ],
     })
     await sendImage(ctx, png, { caption: ctx.t('quotly.caption') })
-    await sendButtons(ctx.sock, ctx.chat, {
-      title: 'KANA',
-      body: ctx.t('quotly.done'),
-      footer: ctx.t('menu.footer'),
-      replies: [{ text: ctx.t('quotly.menuButton'), id: '.menu maker' }],
-      textFallback: ctx.t('quotly.done'),
-    })
   } catch (err) {
     return ctx.reply(ctx.t('quotly.failed', { message: err.message }))
   }

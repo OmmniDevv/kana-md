@@ -12,8 +12,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { logometal: { hint: 'Tulis teks logonya yaa~ Contoh: .logometal OMNIDEVV', caption: 'Logo metal *{text}* jadii~ {mood}', fail: 'Gagal bikin logo: {error}' } },
-  en: { logometal: { hint: 'Write the logo text please~ Example: .logometal OMNIDEVV', caption: 'Metal logo *{text}* is ready~ {mood}', fail: 'Failed to make the logo: {error}' } },
+  id: { logometal: { hint: '╭─❏ ✏️ 「 *BUTUH TEKS LOGO* 」\n┊ Tulis teks logonya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.logometal OMNIDEVV*\n╰━━━━━━━', caption: '╭─❏ ✨ 「 *LOGO METAL JADI* 」\n┊ Logo metal *{text}* jadii~ {mood}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL BIKIN LOGO* 」\n┊ Mouu, gagal bikin logo: *{error}*~\n╰━━━━━━━' } },
+  en: { logometal: { hint: '╭─❏ ✏️ 「 *LOGO TEXT NEEDED* 」\n┊ Write the logo text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.logometal OMNIDEVV*\n╰━━━━━━━', caption: '╭─❏ ✨ 「 *METAL LOGO READY* 」\n┊ Metal logo *{text}* is ready~ {mood}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *LOGO FAILED* 」\n┊ Mouu, failed to make the logo: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.logometal', expect: /logo/i }

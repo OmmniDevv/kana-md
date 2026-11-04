@@ -15,16 +15,16 @@ export const config = {
 export const i18n = {
   id: {
     logo: {
-      needText: 'Ketik teks logonya dulu yaa, contoh: .logo OmniDevv~',
-      failed: 'Mouu, gagal bikin logonya: {message}~',
-      caption: 'Logonya jadii~',
+      needText: '╭─❏ ✏️ 「 *BUTUH TEKS LOGO* 」\n┊ Ketik teks logonya dulu yaa, contoh: *.logo OmniDevv*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL BIKIN LOGO* 」\n┊ Mouu, gagal bikin logonya: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ ✨ 「 *LOGO JADI* 」\n┊ Logonya jadii, ungu fuchsianya cakep~\n╰━━━━━━━',
     },
   },
   en: {
     logo: {
-      needText: 'Type the logo text first, example: .logo OmniDevv~',
-      failed: 'Mouu, failed to make the logo: {message}~',
-      caption: 'Your logo is ready~',
+      needText: '╭─❏ ✏️ 「 *LOGO TEXT NEEDED* 」\n┊ Type the logo text first, example: *.logo OmniDevv*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *LOGO FAILED* 」\n┊ Mouu, failed to make the logo: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ ✨ 「 *LOGO READY* 」\n┊ Your logo is ready, the purple fuchsia looks pretty~\n╰━━━━━━━',
     },
   },
 }

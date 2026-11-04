@@ -23,22 +23,20 @@ export const config = {
 export const i18n = {
   id: {
     circle: {
-      needImage: 'Kutip gambarnya dulu yaa, terus ketik .circle~',
-      tooBig: 'Mouu, gambarnya kegedean (di atas 16 MB)~',
-      failed: 'Mouu, jujur yaa, KANA gagal motong lingkarannya kali ini: {message}. Coba gambar lain atau pakai .hd dulu yaa~',
-      caption: 'Ini gambar lingkarannyaa, pinggirnya transparan~ ⭕✨',
+      needImage: '╭─❏ 🖼️ 「 *BUTUH GAMBAR* 」\n┊ Kutip gambarnya dulu yaa, terus ketik *.circle*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *KEGEDEAN* 」\n┊ Mouu, gambarnya kegedean, di atas *16 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL POTONG LINGKARAN* 」\n┊ Mouu, jujur yaa, KANA gagal motong lingkarannya kali ini: *{message}*. Coba gambar lain atau pakai *.hd* dulu yaa~\n╰━━━━━━━',
+      caption: '╭─❏ ⭕ 「 *LINGKARAN JADI* 」\n┊ Ini gambar lingkarannyaa, pinggirnya transparan~ ✨\n╰━━━━━━━',
       btnHd: 'Perbesar HD',
-      btnMenu: 'Menu Maker',
     },
   },
   en: {
     circle: {
-      needImage: 'Quote an image first, then type .circle~',
-      tooBig: 'Mouu, the image is too big (over 16 MB)~',
-      failed: 'Mouu, honestly, KANA failed to cut the circle this time: {message}. Try another image or use .hd first~',
-      caption: 'Here is your circle image, the edges are transparent~ ⭕✨',
+      needImage: '╭─❏ 🖼️ 「 *IMAGE NEEDED* 」\n┊ Quote an image first, then type *.circle*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *TOO BIG* 」\n┊ Mouu, the image is too big, over *16 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *CIRCLE CUT FAILED* 」\n┊ Mouu, honestly, KANA failed to cut the circle this time: *{message}*. Try another image or use *.hd* first~\n╰━━━━━━━',
+      caption: '╭─❏ ⭕ 「 *CIRCLE READY* 」\n┊ Here is your circle image, the edges are transparent~ ✨\n╰━━━━━━━',
       btnHd: 'Upscale HD',
-      btnMenu: 'Maker Menu',
     },
   },
 }
@@ -81,10 +79,7 @@ export async function handler(ctx) {
       title: 'KANA',
       body,
       footer: ctx.t('menu.footer'),
-      replies: [
-        { text: ctx.t('circle.btnHd'), id: '.hd' },
-        { text: ctx.t('circle.btnMenu'), id: '.menu maker' },
-      ],
+      replies: [{ text: ctx.t('circle.btnHd'), id: '.hd' }],
       textFallback: body,
     })
   }

@@ -13,8 +13,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { levelcard: { caption: 'Kartu level {name}: level {level} ⭐', fail: 'Gagal bikin kartu level: {error}' } },
-  en: { levelcard: { caption: 'Level card of {name}: level {level} ⭐', fail: 'Failed to make the level card: {error}' } },
+  id: { levelcard: { caption: '╭─❏ ⭐ 「 *KARTU LEVEL* 」\n┊ ᴋᴀʀᴛᴜ ʟᴇᴠᴇʟ: *{name}*\n┊ ʟᴇᴠᴇʟ: *{level}* ⭐\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL BIKIN KARTU LEVEL* 」\n┊ Mouu, gagal bikin kartu level: *{error}*~\n╰━━━━━━━' } },
+  en: { levelcard: { caption: '╭─❏ ⭐ 「 *LEVEL CARD* 」\n┊ ʟᴇᴠᴇʟ ᴄᴀʀᴅ: *{name}*\n┊ ʟᴇᴠᴇʟ: *{level}* ⭐\n╰━━━━━━━', fail: '╭─❏ 💦 「 *LEVEL CARD FAILED* 」\n┊ Mouu, failed to make the level card: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.levelcard', expect: /level/i }

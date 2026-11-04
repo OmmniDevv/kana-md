@@ -32,16 +32,16 @@ export const config = {
 export const i18n = {
   id: {
     imgstyle: {
-      need: 'Balas gambarnya dan pilih gayanya yaa: anime, manga, watercolor, vintage, abu, cermin. Contoh: .imgstyle anime. {mood}',
-      caption: 'Nih gambar gaya {style}-nya~ 🎨',
-      fail: 'Gagal kasih gayanya: {error}',
+      need: '╭─❏ 🎨 「 *PILIH GAYA DULU* 」\n┊ Balas gambarnya dan pilih gayanya yaa: *anime, manga, watercolor, vintage, abu, cermin*.\n┊ ᴄᴏɴᴛᴏʜ: *.imgstyle anime* {mood}\n╰━━━━━━━',
+      caption: '╭─❏ 🎨 「 *GAYA JADI* 」\n┊ Nih gambar gaya *{style}*-nya, cakep kan~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *GAGAL KASIH GAYA* 」\n┊ Mouu, gagal kasih gayanya: *{error}*~\n╰━━━━━━━',
     },
   },
   en: {
     imgstyle: {
-      need: 'Reply to the image and pick a style please: anime, manga, watercolor, vintage, gray, mirror. Example: .imgstyle anime. {mood}',
-      caption: 'Here is your {style} styled image~ 🎨',
-      fail: 'Failed to style the image: {error}',
+      need: '╭─❏ 🎨 「 *PICK A STYLE* 」\n┊ Reply to the image and pick a style please: *anime, manga, watercolor, vintage, gray, mirror*.\n┊ ᴇxᴀᴍᴘʟᴇ: *.imgstyle anime* {mood}\n╰━━━━━━━',
+      caption: '╭─❏ 🎨 「 *STYLE READY* 」\n┊ Here is your *{style}* styled image, pretty right~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *STYLE FAILED* 」\n┊ Mouu, failed to style the image: *{error}*~\n╰━━━━━━━',
     },
   },
 }

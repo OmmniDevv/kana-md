@@ -5,7 +5,6 @@ import { join } from 'node:path'
 import { textImage } from '../../src/services/text-image.js'
 import { toStickerWebp } from '../../src/services/sticker.js'
 import { withTempDir } from '../../src/scrapers/runner.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 import { sendSticker } from './sticker.js'
 
 const execFileP = promisify(execFile)
@@ -25,18 +24,16 @@ export const config = {
 export const i18n = {
   id: {
     attp: {
-      needText: 'Ketik teksnya dulu yaa, contoh: .attp keren banget~',
-      failed: 'Mouu, gagal bikin stiker attp: {message}~',
-      done: 'Stiker attpnya jadii~',
-      menuButton: 'Menu Maker',
+      needText: '╭─❏ ✏️ 「 *BUTUH TEKS* 」\n┊ Ketik teksnya dulu yaa, contoh: *.attp keren banget*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL BIKIN ATTP* 」\n┊ Mouu, gagal bikin stiker attp: *{message}*~\n╰━━━━━━━',
+      done: '╭─❏ 🎨 「 *STIKER ATTP JADI* 」\n┊ Stiker attpnya jadii, warna-warninya gemas~\n╰━━━━━━━',
     },
   },
   en: {
     attp: {
-      needText: 'Type the text first, example: .attp so cool~',
-      failed: 'Mouu, failed to make the attp sticker: {message}~',
-      done: 'Your attp sticker is ready~',
-      menuButton: 'Maker Menu',
+      needText: '╭─❏ ✏️ 「 *TEXT NEEDED* 」\n┊ Type the text first, example: *.attp so cool*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *ATTP FAILED* 」\n┊ Mouu, failed to make the attp sticker: *{message}*~\n╰━━━━━━━',
+      done: '╭─❏ 🎨 「 *ATTP STICKER READY* 」\n┊ Your attp sticker is ready, so colorful~\n╰━━━━━━━',
     },
   },
 }
@@ -80,13 +77,7 @@ export async function handler(ctx) {
       webp = await toStickerWebp(frames[0], { animated: false })
     }
     await sendSticker(ctx, webp)
-    await sendButtons(ctx.sock, ctx.chat, {
-      title: 'KANA',
-      body: ctx.t('attp.done'),
-      footer: ctx.t('menu.footer'),
-      replies: [{ text: ctx.t('attp.menuButton'), id: '.menu maker' }],
-      textFallback: ctx.t('attp.done'),
-    })
+    return ctx.reply(ctx.t('attp.done'))
   } catch (err) {
     return ctx.reply(ctx.t('attp.failed', { message: err.message }))
   }
