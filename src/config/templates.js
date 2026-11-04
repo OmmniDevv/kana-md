@@ -341,6 +341,12 @@ export const COMMAND_EMOJI = {
   bisakah: 'check',
   benarkah: 'search',
   akankah: 'random',
+  asmaulhusna: 'book',
+  kisahnabi: 'book',
+  hijriyah: 'calendar',
+  niatsholat: 'book',
+  doaharian: 'book',
+  murottal: 'mic',
 }
 
 // Emoji untuk id tombol atau nama aksi. Id perintah (mis. ".menu user"
