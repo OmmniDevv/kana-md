@@ -80,6 +80,12 @@ await startConnection({
   onParticipants: pipeline.handleParticipants,
   onOpen: async (sock) => {
     if (!ownerNumber) return
+    // Sapaan online dibatasi maksimal sekali per 6 jam, dicatat persisten
+    // di storage: koneksi yang putus sambung beruntun (reconnect) tidak
+    // boleh berubah menjadi spam sapaan ke owner.
+    const lastNotify = Number((await storage.get('bot_meta', 'last_online_notify_at').catch(() => 0)) || 0)
+    if (Date.now() - lastNotify < 6 * 60 * 60 * 1000) return
+    await storage.set('bot_meta', 'last_online_notify_at', Date.now()).catch(() => {})
     const text = `${botName} online~ ${say(defaultLang, 'salam')}\nPlugin aktif: ${registry.list().length}, storage: ${storage.driver}, Node ${process.version}`
     await sock.sendMessage(`${ownerNumber}@s.whatsapp.net`, { text })
   },
