@@ -92,6 +92,52 @@ audio 16 MB, video 64 MB, gambar 16 MB, dokumen 64 MB.
 
 Status tes live menu tombol: ⏳ menunggu tes live bareng user (kode terpasang + tes unit hijau).
 
-## Belum dibangun (sesuai Gate 1)
-- Semua fitur katalog Fase 2 dan seterusnya di luar scraper di atas.
-- Kanal skor WebSocket untuk game, Dockerfile, scheduler.
+## Aset resmi dari user (2026-11-04)
+
+| Item | Status |
+|---|---|
+| assets/menu-banner.jpg (banner KANA MD hijau): gambar header .menu utama, .menu all, dan sub-menu kategori (caption ikon + judul kategori), menggantikan welcome.png untuk menu | Terpasang |
+| thumbnail.png root repo diganti banner KANA MD 1280x720 dari user; README meng-embed thumbnail.png | Terpasang, terverifikasi di GitHub |
+| assets/welcome.jpg: gambar utama kartu welcome grup (caption moe + mention member baru) | Terpasang di plugin welcome Fase 4 |
+| assets/goodbye.jpg: gambar pesan goodbye grup (caption moe + nama member keluar) | Terpasang di plugin welcome Fase 4 |
+| assets/listbot.jpg: header perintah .listbot | Terpasang Fase 2 |
+| assets/rpg.jpg: header menu dan profil RPG, menggantikan rpg.png untuk semua pemakaian RPG | Dipakai Fase 8 |
+| welcome.png dan rpg.png hasil generate lama tetap di repo sebagai cadangan, tidak dipakai lagi | Tercatat |
+
+## Aturan tetap: semua fitur memakai button (keputusan user 2026-11-04)
+
+Setiap keluaran fitur yang punya langkah lanjutan wajib menyertakan tombol MB.Button lewat src/ui/buttons.js (quick_reply maks 10, tidak dicampur jenis lain; id tombol adalah perintah valid berprefix titik), badan pesan tetap memuat versi teks perintahnya, dan kegagalan kirim tombol selalu jatuh ke fallback teks. Label tombol lewat i18n id+en. Rincian per kategori ada di laporan pembangunan dan di plugin masing-masing.
+
+## Persona ekspresif (keputusan user 2026-11-04)
+
+Keluaran bot dibuat ekspresif: pool persona moe di src/persona/moe.js diperkaya variasi emoji dan kaomoji per mood. Batas lama prompt (maks 1 kaomoji + 3 emoji) dilonggarkan atas perintah langsung user; informasi inti (angka, tautan, perintah, error) tetap jelas terbaca.
+
+## Sistem daftar wajib (keputusan user 2026-11-04)
+
+| Item | Status |
+|---|---|
+| Field profil: registered (bool), regName, registeredAt di user-service | Terpasang, dites unit |
+| .daftar (alias register, kategori main): .daftar <nama> mendaftar; .daftar auto memakai pushName (tombol Daftar Otomatis); yang sudah terdaftar mendapat info akunnya; balasan sukses bertombol ke .menu dan .profil | Terpasang, dites unit |
+| Gate di pipeline: user belum terdaftar hanya boleh .daftar dan .help daftar; perintah lain termasuk .menu ditolak dengan peringatan moe + tombol [Daftar Otomatis .daftar auto] [Cara Daftar .help daftar]; owner selalu lolos | Terpasang, dites unit (test/registration-gate.test.js, 6 tes) |
+| Statistik web (kv bot_stats): totalUsers hanya menghitung user terdaftar sebagai member | Terpasang di scheduler |
+| Pengingat pribadi .ingatkan (Fase ekstra) disimpan di namespace reminders dan dikirim scheduler saat jatuh tempo | Scheduler terpasang; plugin di gelombang ekstra |
+
+## Gelombang Fase 2 sampai 6 (2026-11-04)
+
+Status umum gelombang ini: kode terpasang + tes unit hijau (total suite 127 tes, i18n:check hijau, loader 99 plugin 0 karantina). ⏳ Semua menunggu tes live bareng user; belum ada yang dinyatakan lulus live.
+
+| Fase | Isi | Perintah |
+|---|---|---|
+| Fase 2 Core UX | Profil, XP/level, limit harian, leaderboard XP, pencarian fitur, mode public/self, ban/unban, broadcast ke grup opt-in (.subscribe/.subscribe off) dengan jeda antar kirim, statistik storage, kesehatan scraper, reload plugin, daftar bot | .daftar .profil .level .limit .leaderboard .carifitur .listbot .subscribe .mode .ban .unban .broadcast .dbstats .scraperhealth .reload |
+| Fase 3 Game HTML | Token HMAC per pemain, server skor WebSocket murni Node (aktif hanya bila SCORE_WS_PORT diisi; validasi token, rate limit, batas skor per game, skor terbaik ke namespace scores), katalog game dari folder games/, 11 game mandiri (8 wajib + 3 tambahan) dengan kontrol sentuh, pause saat hidden, kirim skor via window.__BOT | .games .game .topgame; game: dino, flappy, snake, 2048, tetris, memory, breakout, tictactoe, minesweeper, whackamole, blockblast |
+| Fase 4 Grup | Proteksi middleware (antilink, antispam/flood, antitoxic dengan daftar kata grup, antijudol, antiphising) dengan warn otomatis dan auto-kick, welcome/goodbye memakai aset resmi user, admin (kick/add/promote/demote), tagall/hidetag, buka/tutup + jadwal grup (dieksekusi scheduler), set nama/deskripsi/foto, link/revoke, AFK, absen, polling native, rules, custom command per grup | .protect .guard .welcome .warn .warnings .kick .add .promote .demote .tagall .hidetag .grup .jadwalgrup .setname .setdesc .setppgrup .linkgrup .revoke .afk .absen .poll .rules .setrules .customcmd |
+| Fase 5 Pencarian dan unduhan | 12 modul scraper search + mediafire/gdrive/ytmp4; tes jaringan jujur: Wikipedia, myQuran, Open-Meteo, BMKG, er-api, Bing Images, mShots, TinyURL terbukti jalan dari VM; KBBI, Jikan, Google Translate gtx gagal dari lingkungan VM (plugin menjawab jujur); chordtela hasil dirender client-side sehingga parser berakhir jujur belum bisa dijangkau | .wiki .kbbi .chord .gambar .anime .cuaca .gempa .sholat .kurs .terjemah .qr .scanqr .shortlink .ssweb .ocr .aio .ytmp4 .mediafire .gdrive .soundcloud .threads .capcut |
+| Fase 6 Stiker dan maker | Konversi stiker WebP + injeksi EXIF pack/author (parser baca-balik dites), konversi media ffmpeg, brat/attp/ttp, emojimix Emoji Kitchen, meme, fakechat/faketweet berlabel PARODI jelas, quotly, carbon, textstyle, logo, hd (perbesaran biasa, diberi label jujur bukan AI) | .sticker .toimg .tovideo .tomp3 .tovn .brat .attp .ttp .emojimix .meme .fakechat .faketweet .quotly .carbon .textstyle .logo .hd .removebg |
+
+## Belum dibangun atau ditunda (jujur)
+
+- OCR (.ocr): plugin menjawab jujur belum tersedia; tesseract.js dinilai terlalu berat dan data latihnya butuh unduhan runtime.
+- Remove background (.removebg): belum ada cara lokal gratis yang nyata tanpa model atau key; plugin menjawab jujur.
+- SoundCloud, Threads, CapCut (.soundcloud .threads .capcut): belum ada sumber publik gratis yang terverifikasi; plugin menjawab jujur, tidak mengarang endpoint.
+- Skor game hanya tercatat bila owner mengisi SCORE_WS_PORT dan SCORE_WS_HOST yang bisa dijangkau HP; tanpa itu game tetap bisa dimainkan tanpa papan skor online.
+- Harness tes live Mode A (scripts/livetest.js), Fase 7 AI lanjutan, Fase 8 RPG, Fase 9 kuis/fun/religi, Fase 10 jadibot, kontrak login web, dan batch ekstra: sedang dibangun di gelombang berikutnya.
