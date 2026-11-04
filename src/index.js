@@ -6,6 +6,7 @@ import { createPipeline } from '../src/core/pipeline.js'
 import { startConnection } from '../src/core/connection.js'
 import { startScheduler } from '../src/core/scheduler.js'
 import { startWebLoginWatcher } from './services/web-login-watcher.js'
+import { startTmpCleaner } from './services/tmp-cleaner.js'
 import { createSupabaseRest } from './services/supabase-rest.js'
 import { createBridgeStorage, isBridgeEnabled } from './services/web-bridge.js'
 import { createStorage, createAuthState } from '../src/storage/index.js'
@@ -68,6 +69,17 @@ startScheduler({
 // namespace web_login_requests (kontrak docs/WEB.md). Berjalan bersama
 // scheduler memakai session socket yang sama.
 startWebLoginWatcher({ session, storage: bridgeStorage })
+
+// Sapuan temp otomatis: buang folder kerja kana- di tmpdir yang sudah
+// lebih tua dari TMP_MAX_AGE_MIN menit, tiap TMP_CLEAN_INTERVAL_MIN
+// menit. Matikan dengan AUTO_CLEAN_TMP=false.
+if ((process.env.AUTO_CLEAN_TMP ?? 'true').toLowerCase() !== 'false') {
+  startTmpCleaner({
+    logger,
+    intervalMin: Number(process.env.TMP_CLEAN_INTERVAL_MIN) || 30,
+    maxAgeMin: Number(process.env.TMP_MAX_AGE_MIN) || 60,
+  })
+}
 
 await startConnection({
   auth,
