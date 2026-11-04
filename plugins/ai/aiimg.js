@@ -4,7 +4,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'aiimg',
-  alias: ['aiimage', 'buatgambar'],
+  alias: ['aiimage', 'buatgambar', 'text2img', 't2i', 'imggen', 'imagegen', 'txt2img', 'animeimg', 'fantasyimg', 'realimg', 'pixelimg'],
   category: 'ai',
   description: { id: 'Buat gambar dari teks memakai AI (Pollinations)', en: 'Generate an image from text with AI (Pollinations)' },
   usage: '.aiimg <deskripsi gambar>',
@@ -16,24 +16,22 @@ export const config = {
 export const i18n = {
   id: {
     aiimg: {
-      needPrompt: 'Tulis deskripsi gambarnya dulu yaa, contoh: .aiimg kucing astronot lucu di bulan~ 🎨',
-      generating: 'Siap, KANA gambar dulu yaa... tunggu bentar~ {mood} 🎨✨',
-      failed: 'Mouu, gambarnya gagal dibuat: {message}. Layanan gambar gratisnya lagi bermasalah, coba lagi nanti ya~ (╥﹏╥)',
-      tooBig: 'Aduh, gambarnya kegedean buat dikirim lewat WhatsApp nih. Coba deskripsi lain ya~',
-      caption: 'Nih gambar buat "{prompt}"~ Gimana, lucu kan? (≧▽≦) 🎨✨',
+      needPrompt: '╭─❏ 🎨 「 *TULIS DESKRIPSINYA DULU* 」\n┊ Tulis deskripsi gambarnya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.aiimg kucing astronot lucu di bulan* 🎨\n╰━━━━━━━',
+      generating: '╭─❏ 🎨 「 *LAGI DIGAMBAR* 」\n┊ Siap, KANA gambar dulu yaa... tunggu bentar~ {mood} ✨\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAMBAR GAGAL DIBUAT* 」\n┊ Mouu, gambarnya gagal dibuat: *{message}*\n┊ Layanan gambar gratisnya lagi bermasalah, coba lagi nanti ya~ (╥﹏╥)\n╰━━━━━━━',
+      tooBig: '╭─❏ 💦 「 *GAMBAR KEGADEAN* 」\n┊ Aduh, gambarnya kegedean buat dikirim lewat WhatsApp nih.\n┊ Coba deskripsi lain ya~\n╰━━━━━━━',
+      caption: '╭─❏ 🎨 「 *GAMBAR AI JADI* 」\n┊ ᴘʀᴏᴍᴘᴛ: *"{prompt}"*~\n┊ Gimana, lucu kan? (≧▽≦) ✨\n╰━━━━━━━',
       btnAgain: 'Buat Lagi',
-      btnMenu: 'Menu AI',
     },
   },
   en: {
     aiimg: {
-      needPrompt: 'Write the image description first, example: .aiimg cute astronaut cat on the moon~ 🎨',
-      generating: 'Got it, KANA is drawing it now... wait a bit~ {mood} 🎨✨',
-      failed: 'Mouu, the image failed to generate: {message}. The free image service is having trouble, try again later~ (╥﹏╥)',
-      tooBig: 'Oops, the image is too big to send over WhatsApp. Try another description~',
-      caption: 'Here is the image for "{prompt}"~ Cute, right? (≧▽≦) 🎨✨',
+      needPrompt: '╭─❏ 🎨 「 *WRITE THE DESCRIPTION FIRST* 」\n┊ Write the image description first please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.aiimg cute astronaut cat on the moon* 🎨\n╰━━━━━━━',
+      generating: '╭─❏ 🎨 「 *DRAWING IT NOW* 」\n┊ Got it, KANA is drawing it now... wait a bit~ {mood} ✨\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *IMAGE FAILED* 」\n┊ Mouu, the image failed to generate: *{message}*\n┊ The free image service is having trouble, try again later~ (╥﹏╥)\n╰━━━━━━━',
+      tooBig: '╭─❏ 💦 「 *IMAGE TOO BIG* 」\n┊ Oops, the image is too big to send over WhatsApp.\n┊ Try another description~\n╰━━━━━━━',
+      caption: '╭─❏ 🎨 「 *AI IMAGE READY* 」\n┊ ᴘʀᴏᴍᴘᴛ: *"{prompt}"*~\n┊ Cute, right? (≧▽≦) ✨\n╰━━━━━━━',
       btnAgain: 'Make Again',
-      btnMenu: 'AI Menu',
     },
   },
 }
@@ -61,10 +59,7 @@ export async function handler(ctx) {
     title: process.env.BOT_NAME || 'KANA',
     body: caption,
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('aiimg.btnAgain'), id: `.aiimg ${shortPrompt}` },
-      { text: ctx.t('aiimg.btnMenu'), id: '.menu ai' },
-    ],
+    replies: [{ text: ctx.t('aiimg.btnAgain'), id: `.aiimg ${shortPrompt}` }],
     textFallback: caption,
   })
 }

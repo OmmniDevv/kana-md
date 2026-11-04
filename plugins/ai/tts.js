@@ -20,22 +20,20 @@ export const config = {
 export const i18n = {
   id: {
     tts: {
-      needText: 'Tulis teksnya dulu yaa, contoh: .tts halo selamat pagi~ 🎙️',
-      tooLong: 'Teksnya kepanjangan nih, KANA potong sampai 600 karakter yaa~ Sisanya nggak dibacakan ✂️',
-      failed: 'Mouu, suara KANA gagal dibuat: {message}. Layanan TTS gratisnya lagi bermasalah, coba lagi nanti ya~ (╥﹏╥)',
-      done: 'Voice note-nya udah KANA kirim di atas yaa~ 🎙️✨ {mood}',
+      needText: '╭─❏ 🎙️ 「 *TULIS TEKSNYA DULU* 」\n┊ Tulis teksnya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.tts halo selamat pagi*\n╰━━━━━━━',
+      tooLong: '╭─❏ ✂️ 「 *TEKS DIPOTONG* 」\n┊ Teksnya kepanjangan nih, KANA potong sampai *600 karakter* yaa~\n┊ Sisanya nggak dibacakan ✂️\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *SUARA GAGAL DIBUAT* 」\n┊ Mouu, suara KANA gagal dibuat: *{message}*\n┊ Layanan TTS gratisnya lagi bermasalah, coba lagi nanti ya~ (╥﹏╥)\n╰━━━━━━━',
+      done: '╭─❏ 🎙️ 「 *VOICE NOTE TERKIRIM* 」\n┊ Voice note-nya udah KANA kirim di atas yaa~ ✨ {mood}\n╰━━━━━━━',
       btnAgain: 'Ucapkan Lagi',
-      btnMenu: 'Menu AI',
     },
   },
   en: {
     tts: {
-      needText: 'Write the text first, example: .tts hello good morning~ 🎙️',
-      tooLong: 'That text is too long, KANA trimmed it to 600 characters~ The rest was not read out ✂️',
-      failed: 'Mouu, KANA failed to make the voice: {message}. The free TTS service is having trouble, try again later~ (╥﹏╥)',
-      done: 'KANA sent the voice note above~ 🎙️✨ {mood}',
+      needText: '╭─❏ 🎙️ 「 *WRITE THE TEXT FIRST* 」\n┊ Write the text first please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.tts hello good morning*\n╰━━━━━━━',
+      tooLong: '╭─❏ ✂️ 「 *TEXT TRIMMED* 」\n┊ That text is too long, KANA trimmed it to *600 characters*~\n┊ The rest was not read out ✂️\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *VOICE FAILED* 」\n┊ Mouu, KANA failed to make the voice: *{message}*\n┊ The free TTS service is having trouble, try again later~ (╥﹏╥)\n╰━━━━━━━',
+      done: '╭─❏ 🎙️ 「 *VOICE NOTE SENT* 」\n┊ KANA sent the Voice note above~ ✨ {mood}\n╰━━━━━━━',
       btnAgain: 'Say Again',
-      btnMenu: 'AI Menu',
     },
   },
 }
@@ -91,10 +89,7 @@ export async function handler(ctx) {
     title: process.env.BOT_NAME || 'KANA',
     body,
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('tts.btnAgain'), id: `.tts ${shortText}` },
-      { text: ctx.t('tts.btnMenu'), id: '.menu ai' },
-    ],
+    replies: [{ text: ctx.t('tts.btnAgain'), id: `.tts ${shortText}` }],
     textFallback: body,
   })
 }

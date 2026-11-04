@@ -25,34 +25,32 @@ export const config = {
 export const i18n = {
   id: {
     vision: {
-      needImage: 'Balas gambar yang mau KANA lihat dulu yaa, baru ketik .vision~ 👀',
-      tooBig: 'Aduh, gambarnya kegedean nih (di atas 4 MB). Coba gambar yang lebih kecil ya~',
-      downloadFailed: 'Mouu, KANA gagal mengunduh gambarnya: {message}. Coba kirim ulang gambarnya ya~',
+      needImage: '╭─❏ 👀 「 *BALAS GAMBARNYA DULU* 」\n┊ Balas gambar yang mau KANA lihat dulu yaa, baru ketik *.vision*~\n╰━━━━━━━',
+      tooBig: '╭─❏ 💦 「 *GAMBAR KEGADEAN* 」\n┊ Aduh, gambarnya kegedean nih (di atas *4 MB*).\n┊ Coba gambar yang lebih kecil ya~\n╰━━━━━━━',
+      downloadFailed: '╭─❏ 💦 「 *GAMBAR GAGAL DIUNDUH* 」\n┊ Mouu, KANA gagal mengunduh gambarnya: *{message}*\n┊ Coba kirim ulang gambarnya ya~\n╰━━━━━━━',
       notConfigured:
-        'Mouu, fitur lihat gambar belum terkonfigurasi di rilis ini (╥﹏╥) Provider vision gratis yang andal belum ada, jadi KANA nggak mau pura-pura menganalisis gambar kamu. Master bisa mengaktifkan lewat VISION_API_URL di .env nanti yaa~',
-      analyzing: 'Hmm, KANA lihat gambarnya dulu yaa... {mood} 👀✨',
-      failed: 'Mouu, analisis gambarnya gagal: {message}. Coba lagi nanti ya~ (╥﹏╥)',
-      empty: 'Ehh? Hasil analisisnya kosong. Coba gambar lain ya~',
-      resultHeader: 'Hasil lihat gambarnya nih~ 👀✨',
+        '╭─❏ ⚙️ 「 *VISION BELUM DIKONFIGURASI* 」\n┊ Mouu, fitur lihat gambar belum terkonfigurasi di rilis ini (╥﹏╥)\n┊ Provider vision gratis yang andal belum ada, jadi KANA nggak mau pura-pura menganalisis gambar kamu.\n┊ Master bisa mengaktifkan lewat *VISION_API_URL* di .env nanti yaa~\n╰━━━━━━━',
+      analyzing: '╭─❏ 👀 「 *LAGI DILIHAT* 」\n┊ Hmm, KANA lihat gambarnya dulu yaa... {mood} ✨\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *ANALISIS GAGAL* 」\n┊ Mouu, analisis gambarnya gagal: *{message}*\n┊ Coba lagi nanti ya~ (╥﹏╥)\n╰━━━━━━━',
+      empty: '╭─❏ 💭 「 *HASIL KOSONG* 」\n┊ Ehh? Hasil analisisnya kosong.\n┊ Coba gambar lain ya~\n╰━━━━━━━',
+      resultHeader: '╭─❏ 👀 「 *HASIL LIHAT GAMBAR* 」\n╰━━━━━━━',
       describePrompt: 'Deskripsikan gambar ini dengan detail dalam Bahasa Indonesia. Sebutkan objek utama, warna, suasana, dan teks yang terlihat bila ada.',
       btnAi: 'Ngobrol AI',
-      btnMenu: 'Menu AI',
     },
   },
   en: {
     vision: {
-      needImage: 'Reply to the image you want KANA to look at first, then type .vision~ 👀',
-      tooBig: 'Oops, the image is too big (over 4 MB). Try a smaller image~',
-      downloadFailed: 'Mouu, KANA failed to download the image: {message}. Please resend the image~',
+      needImage: '╭─❏ 👀 「 *REPLY TO THE IMAGE FIRST* 」\n┊ Reply to the image you want KANA to look at first, then type *.vision*~\n╰━━━━━━━',
+      tooBig: '╭─❏ 💦 「 *IMAGE TOO BIG* 」\n┊ Oops, the image is too big (over *4 MB*).\n┊ Try a smaller image~\n╰━━━━━━━',
+      downloadFailed: '╭─❏ 💦 「 *IMAGE DOWNLOAD FAILED* 」\n┊ Mouu, KANA failed to download the image: *{message}*\n┊ Please resend the image~\n╰━━━━━━━',
       notConfigured:
-        'Mouu, the image vision feature is not configured in this release (╥﹏╥) There is no reliable free vision provider yet, so KANA will not pretend to analyze your image. Master can enable it later via VISION_API_URL in .env~',
-      analyzing: 'Hmm, KANA is looking at the image... {mood} 👀✨',
-      failed: 'Mouu, image analysis failed: {message}. Try again later~ (╥﹏╥)',
-      empty: 'Eh? The analysis came back empty. Try another image~',
-      resultHeader: 'Here is what KANA sees~ 👀✨',
+        '╭─❏ ⚙️ 「 *VISION NOT CONFIGURED* 」\n┊ Mouu, the image vision feature is not configured in this release (╥﹏╥)\n┊ There is no reliable free vision provider yet, so KANA will not pretend to analyze your image.\n┊ Master can enable it later via *VISION_API_URL* in .env~\n╰━━━━━━━',
+      analyzing: '╭─❏ 👀 「 *LOOKING AT IT* 」\n┊ Hmm, KANA is looking at the image... {mood} ✨\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *ANALYSIS FAILED* 」\n┊ Mouu, image analysis failed: *{message}*\n┊ Try again later~ (╥﹏╥)\n╰━━━━━━━',
+      empty: '╭─❏ 💭 「 *EMPTY RESULT* 」\n┊ Eh? The analysis came back empty.\n┊ Try another image~\n╰━━━━━━━',
+      resultHeader: '╭─❏ 👀 「 *WHAT KANA SEES* 」\n╰━━━━━━━',
       describePrompt: 'Describe this image in detail in English. Mention the main objects, colors, mood, and any visible text.',
       btnAi: 'Chat AI',
-      btnMenu: 'AI Menu',
     },
   },
 }
@@ -73,10 +71,7 @@ export async function handler(ctx) {
       title: process.env.BOT_NAME || 'KANA',
       body,
       footer: ctx.t('menu.footer'),
-      replies: [
-        { text: ctx.t('vision.btnAi'), id: '.ai' },
-        { text: ctx.t('vision.btnMenu'), id: '.menu ai' },
-      ],
+      replies: [{ text: ctx.t('vision.btnAi'), id: '.ai' }],
       textFallback: body,
     })
   }
@@ -124,10 +119,7 @@ export async function handler(ctx) {
     title: process.env.BOT_NAME || 'KANA',
     body,
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('vision.btnAi'), id: '.ai' },
-      { text: ctx.t('vision.btnMenu'), id: '.menu ai' },
-    ],
+    replies: [{ text: ctx.t('vision.btnAi'), id: '.ai' }],
     textFallback: body,
   })
 }

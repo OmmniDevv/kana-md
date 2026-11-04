@@ -14,16 +14,14 @@ export const config = {
 export const i18n = {
   id: {
     aireset: {
-      done: 'Udah KANA lupain semua percakapan AI kita yaa~ Mulai dari awal lagi yuk, bersih bersih! ✨ (≧▽≦)',
+      done: '╭─❏ ✨ 「 *PERCAKAPAN DIRESET* 」\n┊ Udah KANA lupain semua percakapan AI kita yaa~\n┊ Mulai dari awal lagi yuk, bersih bersih! ✨ (≧▽≦)\n╰━━━━━━━',
       btnAi: 'Ngobrol AI',
-      btnMenu: 'Menu AI',
     },
   },
   en: {
     aireset: {
-      done: 'KANA has forgotten all our AI chats~ Let us start fresh, all clean! ✨ (≧▽≦)',
+      done: '╭─❏ ✨ 「 *CHAT RESET* 」\n┊ KANA has forgotten all our AI chats~\n┊ Let us start fresh, all clean! ✨ (≧▽≦)\n╰━━━━━━━',
       btnAi: 'Chat AI',
-      btnMenu: 'AI Menu',
     },
   },
 }
@@ -37,10 +35,7 @@ export async function handler(ctx) {
     title: process.env.BOT_NAME || 'KANA',
     body,
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('aireset.btnAi'), id: '.ai' },
-      { text: ctx.t('aireset.btnMenu'), id: '.menu ai' },
-    ],
+    replies: [{ text: ctx.t('aireset.btnAi'), id: '.ai' }],
     textFallback: body,
   })
 }

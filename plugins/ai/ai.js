@@ -25,30 +25,28 @@ export const config = {
 export const i18n = {
   id: {
     ai: {
-      needText: 'Ketik pesannya dulu yaa, contoh: .ai jelaskan fotosintesis dengan singkat~',
+      needText: '╭─❏ ✏️ 「 *TULIS PESANNYA DULU* 」\n┊ Ketik pesannya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.ai jelaskan fotosintesis dengan singkat*\n╰━━━━━━━',
       notConfigured:
-        'Mouu, fitur AI belum dikonfigurasi sama Master nih (╥﹏╥) Provider AI belum tersedia, jadi KANA belum bisa ngobrol AI dulu ya~',
-      thinking: 'Hmm, KANA tanya ke AI dulu ya... {mood}',
-      failed: 'Mouu, AI-nya gagal jawab: {message}. Coba lagi sebentar lagi ya~ (╥﹏╥)',
-      failedNetwork: 'Mouu, KANA gagal menghubungi AI-nya nih: {message}. Jaringannya lagi bermasalah, coba lagi nanti ya~ (╥﹏╥) 💦',
-      empty: 'Ehh? AI-nya jawab kosong. Coba tanya dengan kalimat lain ya~',
+        '╭─❏ ⚙️ 「 *AI BELUM DIKONFIGURASI* 」\n┊ Mouu, fitur AI belum dikonfigurasi sama Master nih (╥﹏╥)\n┊ ᴘʀᴏᴠɪᴅᴇʀ: *belum tersedia*, jadi KANA belum bisa ngobrol AI dulu ya~\n╰━━━━━━━',
+      thinking: '╭─❏ 🤖 「 *KANA MIKIR DULU* 」\n┊ Hmm, KANA tanya ke AI dulu ya... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *AI GAGAL MENJAWAB* 」\n┊ Mouu, AI-nya gagal jawab: *{message}*\n┊ Coba lagi sebentar lagi ya~ (╥﹏╥)\n╰━━━━━━━',
+      failedNetwork: '╭─❏ 📡 「 *JARINGAN BERMASALAH* 」\n┊ Mouu, KANA gagal menghubungi AI-nya nih: *{message}*\n┊ Jaringannya lagi bermasalah, coba lagi nanti ya~ (╥﹏╥) 💦\n╰━━━━━━━',
+      empty: '╭─❏ 💭 「 *JAWABAN KOSONG* 」\n┊ Ehh? AI-nya jawab kosong.\n┊ Coba tanya dengan kalimat lain ya~\n╰━━━━━━━',
       truncated: '\n\n(Dipotong KANA biar nggak kepanjangan~)',
       btnReset: 'Lupa Percakapan',
-      btnMenu: 'Menu AI',
     },
   },
   en: {
     ai: {
-      needText: 'Type your message first, example: .ai explain photosynthesis briefly~',
+      needText: '╭─❏ ✏️ 「 *WRITE YOUR MESSAGE FIRST* 」\n┊ Type your message first please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.ai explain photosynthesis briefly*\n╰━━━━━━━',
       notConfigured:
-        'Mouu, the AI feature is not configured by Master yet (╥﹏╥) No AI provider is available, so KANA cannot do AI chat yet~',
-      thinking: 'Hmm, let KANA ask the AI first... {mood}',
-      failed: 'Mouu, the AI failed to answer: {message}. Please try again in a bit~ (╥﹏╥)',
-      failedNetwork: 'Mouu, KANA could not reach the AI: {message}. The network is having trouble, try again later~ (╥﹏╥) 💦',
-      empty: 'Eh? The AI answered with nothing. Try rephrasing your question~',
+        '╭─❏ ⚙️ 「 *AI NOT CONFIGURED* 」\n┊ Mouu, the AI feature is not configured by Master yet (╥﹏╥)\n┊ ᴘʀᴏᴠɪᴅᴇʀ: *not available*, so KANA cannot do AI chat yet~\n╰━━━━━━━',
+      thinking: '╭─❏ 🤖 「 *KANA IS THINKING* 」\n┊ Hmm, let KANA ask the AI first... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *AI FAILED TO ANSWER* 」\n┊ Mouu, the AI failed to answer: *{message}*\n┊ Please try again in a bit~ (╥﹏╥)\n╰━━━━━━━',
+      failedNetwork: '╭─❏ 📡 「 *NETWORK TROUBLE* 」\n┊ Mouu, KANA could not reach the AI: *{message}*\n┊ The network is having trouble, try again later~ (╥﹏╥) 💦\n╰━━━━━━━',
+      empty: '╭─❏ 💭 「 *EMPTY ANSWER* 」\n┊ Eh? The AI answered with nothing.\n┊ Try rephrasing your question~\n╰━━━━━━━',
       truncated: '\n\n(Trimmed by KANA so it does not get too long~)',
       btnReset: 'Forget Chat',
-      btnMenu: 'AI Menu',
     },
   },
 }
@@ -112,10 +110,7 @@ export async function handler(ctx) {
     title: botName,
     body: trimmed,
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('ai.btnReset'), id: '.aireset' },
-      { text: ctx.t('ai.btnMenu'), id: '.menu ai' },
-    ],
+    replies: [{ text: ctx.t('ai.btnReset'), id: '.aireset' }],
     textFallback: trimmed,
   })
 }
