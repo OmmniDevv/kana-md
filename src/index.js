@@ -5,6 +5,7 @@ import { loadPlugins } from '../src/core/plugin-loader.js'
 import { createPipeline } from '../src/core/pipeline.js'
 import { startConnection } from '../src/core/connection.js'
 import { startScheduler } from '../src/core/scheduler.js'
+import { startWebLoginWatcher } from './services/web-login-watcher.js'
 import { createStorage, createAuthState } from '../src/storage/index.js'
 import { say } from './persona/moe.js'
 import { logger } from './services/logger.js'
@@ -44,6 +45,10 @@ startScheduler({
     pluginCount: registry.list().length,
   }),
 })
+// Watcher login web: mengirim kode verifikasi untuk record pending di
+// namespace web_login_requests (kontrak docs/WEB.md). Berjalan bersama
+// scheduler memakai session socket yang sama.
+startWebLoginWatcher({ session, storage })
 
 await startConnection({
   auth,

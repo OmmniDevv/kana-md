@@ -39,12 +39,20 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 | `.help [command]` | Command details |
 | `.lang [id\|en]` | Change language per user |
 | `.webcode` (alias `.loginweb`) | One-time web dashboard login code |
-| `.daftar <name>` | Register a profile |
+| `.credits` | Project credits and thanks |
+| `.daftar <name>` or `.daftar auto` | Register as a member (required before using the bot); auto uses your WhatsApp name |
 | `.profil` (alias `.me`) | Your profile: level, XP, limit, balance |
 | `.level` | Your level and XP progress |
 | `.limit` | Your remaining daily limit |
 | `.leaderboard` (alias `.lb`) | XP leaderboard |
 | `.carifitur <keyword>` | Search commands by keyword |
+| `.kalkulator <expr>` | Safe calculator (no eval) |
+| `.konversi <value> <from> <to>` | Unit conversion (length, weight, temperature, data, time) |
+| `.todo <add\|list\|done\|del>` | Personal todo list |
+| `.catatan <save\|list\|show\|del>` | Personal notes per user |
+| `.ingatkan <minutes> <text>` | Personal reminder, delivered by the scheduler |
+| `.transfer <number> <amount>` | Send coins to another member |
+| `.jam` | Current time in WIB, WITA, WIT, and UTC |
 
 ### Download
 
@@ -84,6 +92,8 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 | `.scanqr` (reply to an image) | Read a QR code from an image |
 | `.shortlink <url>` | Shorten a URL |
 | `.ssweb <url>` | Website screenshot |
+| `.resep <keyword>` | Recipe search (TheMealDB) |
+| `.film <title>` | TV show info (TVMaze) |
 | `.ocr` (reply to an image) | Honest status: OCR is not available yet, the bot says so clearly |
 
 ### HTML games
@@ -91,14 +101,19 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 | Command | Function |
 |---|---|
 | `.games` | Game list with play buttons |
-| `.game <id>` | Send a game: `dino`, `flappy`, `snake`, `2048`, `tetris`, `memory`, `breakout`, `tictactoe`, plus `minesweeper`, `whackamole`, `blockblast` when available |
+| `.game <id>` | Send a game: `dino`, `flappy`, `snake`, `2048`, `tetris`, `memory`, `breakout`, `tictactoe`, plus `minesweeper`, `whackamole`, `blockblast`; `.hello` sends the built-in sample game |
 | `.topgame [id]` | Game leaderboards |
+| `.slot <bet>` | Coin slot machine (virtual coins only) |
+| `.blackjack <bet>`, `.hit`, `.stand` | Blackjack against the dealer |
+| `.daduvs <bet>` | Dice duel against the bot |
 
 ### Group
 
 | Command | Function |
 |---|---|
 | `.protect <feature> <on\|off>` | Toggle welcome, goodbye, antilink, antispam, antitoxic, antijudol, antiphising |
+| `.guard` | Group protection status (the guard middleware deletes and warns automatically) |
+| `.welcome <on\|off>` | Welcome and goodbye cards using the official banner assets |
 | `.warn @user [reason]`, `.warnings [@user]` | Warn members; auto-kick at the group limit |
 | `.kick`, `.add`, `.promote`, `.demote` | Member administration (admin only, bot must be admin) |
 | `.tagall [text]`, `.hidetag [text]` | Mention everyone, visibly or hidden |
@@ -110,7 +125,7 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 | `.absen <start\|check\|close>` | Attendance sessions |
 | `.poll <question> \| <option1> \| <option2>` | Native WhatsApp poll |
 | `.rules`, `.setrules <text>` | Group rules |
-| `.addcmd`, `.delcmd`, `.listcmd` | Per-group custom commands |
+| `.customcmd <add\|del\|list>` | Per-group custom commands (exact-text triggers) |
 
 ### Sticker and maker
 
@@ -121,6 +136,8 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 | `.brat <text>`, `.attp <text>`, `.ttp <text>` | Text stickers |
 | `.emojimix <emoji1> <emoji2>` | Emoji Kitchen mix when the combination exists |
 | `.meme <top> \| <bottom>` | Simple meme on your image or a generated background |
+| `.smeme <top> \| <bottom>` | Meme sticker from a quoted image |
+| `.circle` (reply to an image) | Circle-cropped transparent PNG |
 | `.fakechat`, `.faketweet` | Parody makers, always watermarked PARODI |
 | `.quotly` (reply to a message) | Quote card |
 | `.carbon <code>` | Code card |
@@ -144,6 +161,7 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 | `.pet` | Adopt and feed a pet |
 | `.job [name]` | Choose a job for gathering bonuses |
 | `.clan`, `.clanwar` | Clan basics and a simple clan war |
+| `.gacha` | Spend 100 coins for a random item |
 
 ### Fun, quiz, and religious
 
@@ -154,7 +172,13 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 | `.jawab <answer>` | Answer the active quiz (buttons also work) |
 | `.nyerah` | Give up the active quiz |
 | `.truth`, `.dare` | Truth or dare prompts (original data) |
+| `.suit <rock\|scissors\|paper>` | Rock paper scissors against the bot |
+| `.bola8 <question>` | Magic 8 ball answers (for fun) |
+| `.joke` | A random original joke |
+| `.motivasi`, `.pantun` | Original motivational quotes and pantun poems |
 | `.cekjodoh`, `.cekkhodam`, `.zodiak` | Just-for-fun checks, with an entertainment disclaimer |
+| `.cekmood`, `.cekberuntung`, `.cekpintar`, `.artinama <name>` | More just-for-fun checks, with an entertainment disclaimer |
+| `.weton <DD-MM-YYYY>` | Javanese weton day calculation (for fun) |
 | `.ayat`, `.hadits` | Daily verse or hadith from a small original dataset |
 | `.religi <HH:mm\|off>` | Daily religious reminder for the group |
 
@@ -162,7 +186,7 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 
 | Command | Function |
 |---|---|
-| `.ai <message>` | AI chat via rudder.chat, owner cookies required; per-user short memory |
+| `.ai <message>` | AI chat: rudder.chat when the owner configured it, otherwise the free Pollinations fallback; per-user short memory |
 | `.aireset` | Clear your AI chat memory |
 | `.aiimg <prompt>` | Text to image via a free public provider |
 | `.vision` (reply to an image) | Ask about an image when a free provider is configured |
@@ -177,11 +201,11 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 | `.mode <public\|self>` | Bot serving mode |
 | `.ban <number>`, `.unban <number>` | Ban and unban users |
 | `.broadcast <text>` | Broadcast to opted-in chats only, rate limited |
-| `.subscribe`, `.unsubscribe` | Group opt-in for broadcasts (group admin) |
+| `.subscribe`, `.subscribe off` | Group opt-in and opt-out for broadcasts (group admin) |
 | `.dbstats` | Storage usage statistics |
 | `.scraperhealth` | Scraper source health |
 | `.reload [plugin]` | Reload plugins without restarting |
-| `.jadibot <number>`, `.stopjadibot <name>` | Extra bot sessions (owner only, small limit) |
+| `.jadibot <name> <number>`, `.stopjadibot <name>` | Extra bot sessions (owner only, max 3) |
 
 ## Installation
 
@@ -309,12 +333,20 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 | `.help [perintah]` | Detail perintah |
 | `.lang [id\|en]` | Ganti bahasa per pengguna |
 | `.webcode` (alias `.loginweb`) | Kode login dashboard web sekali pakai |
-| `.daftar <nama>` | Daftar profil |
+| `.credits` | Kredit dan terima kasih proyek |
+| `.daftar <nama>` atau `.daftar auto` | Daftar jadi member (wajib sebelum memakai bot); auto memakai nama WhatsApp kamu |
 | `.profil` (alias `.me`) | Profil kamu: level, XP, limit, saldo |
 | `.level` | Level dan progres XP kamu |
 | `.limit` | Sisa limit harian kamu |
 | `.leaderboard` (alias `.lb`) | Leaderboard XP |
 | `.carifitur <kata kunci>` | Cari perintah berdasarkan kata kunci |
+| `.kalkulator <ekspresi>` | Kalkulator aman (tanpa eval) |
+| `.konversi <nilai> <dari> <ke>` | Konversi satuan (panjang, berat, suhu, data, waktu) |
+| `.todo <add\|list\|done\|del>` | Daftar todo pribadi |
+| `.catatan <simpan\|list\|lihat\|hapus>` | Catatan pribadi per pengguna |
+| `.ingatkan <menit> <teks>` | Pengingat pribadi, dikirim scheduler |
+| `.transfer <nomor> <jumlah>` | Kirim koin ke member lain |
+| `.jam` | Jam sekarang WIB, WITA, WIT, dan UTC |
 
 ### Download
 
@@ -354,6 +386,8 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 | `.scanqr` (balas gambar) | Baca kode QR dari gambar |
 | `.shortlink <url>` | Pendekkan URL |
 | `.ssweb <url>` | Screenshot situs web |
+| `.resep <kata kunci>` | Pencarian resep (TheMealDB) |
+| `.film <judul>` | Info acara TV (TVMaze) |
 | `.ocr` (balas gambar) | Status jujur: OCR belum tersedia, bot menyatakannya dengan jelas |
 
 ### Game HTML
@@ -361,14 +395,19 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 | Perintah | Fungsi |
 |---|---|
 | `.games` | Daftar game dengan tombol main |
-| `.game <id>` | Kirim game: `dino`, `flappy`, `snake`, `2048`, `tetris`, `memory`, `breakout`, `tictactoe`, plus `minesweeper`, `whackamole`, `blockblast` bila tersedia |
+| `.game <id>` | Kirim game: `dino`, `flappy`, `snake`, `2048`, `tetris`, `memory`, `breakout`, `tictactoe`, plus `minesweeper`, `whackamole`, `blockblast`; `.hello` mengirim game contoh bawaan |
 | `.topgame [id]` | Leaderboard game |
+| `.slot <bet>` | Mesin slot koin (koin virtual saja) |
+| `.blackjack <bet>`, `.hit`, `.stand` | Blackjack melawan dealer |
+| `.daduvs <bet>` | Duel dadu melawan bot |
 
 ### Grup
 
 | Perintah | Fungsi |
 |---|---|
 | `.protect <fitur> <on\|off>` | Alihkan welcome, goodbye, antilink, antispam, antitoxic, antijudol, antiphising |
+| `.guard` | Status proteksi grup (middleware guard menghapus dan memberi warn otomatis) |
+| `.welcome <on\|off>` | Kartu welcome dan goodbye memakai aset banner resmi |
 | `.warn @user [alasan]`, `.warnings [@user]` | Peringatkan member; auto-kick di batas grup |
 | `.kick`, `.add`, `.promote`, `.demote` | Administrasi member (khusus admin, bot wajib admin) |
 | `.tagall [teks]`, `.hidetag [teks]` | Sebut semua member, terlihat atau tersembunyi |
@@ -380,7 +419,7 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 | `.absen <start\|check\|close>` | Sesi absensi |
 | `.poll <pertanyaan> \| <opsi1> \| <opsi2>` | Polling native WhatsApp |
 | `.rules`, `.setrules <teks>` | Rules grup |
-| `.addcmd`, `.delcmd`, `.listcmd` | Custom command per grup |
+| `.customcmd <add\|del\|list>` | Custom command per grup (pemicu teks persis) |
 
 ### Stiker dan maker
 
@@ -391,6 +430,8 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 | `.brat <teks>`, `.attp <teks>`, `.ttp <teks>` | Stiker teks |
 | `.emojimix <emoji1> <emoji2>` | Campuran Emoji Kitchen bila kombinasinya ada |
 | `.meme <atas> \| <bawah>` | Meme sederhana di gambarmu atau latar buatan |
+| `.smeme <atas> \| <bawah>` | Stiker meme dari gambar yang dikutip |
+| `.circle` (balas gambar) | PNG transparan terpotong lingkaran |
 | `.fakechat`, `.faketweet` | Maker parodi, selalu berwatermark PARODI |
 | `.quotly` (balas pesan) | Kartu kutipan |
 | `.carbon <kode>` | Kartu kode |
@@ -414,6 +455,7 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 | `.pet` | Adopsi dan beri makan peliharaan |
 | `.job [nama]` | Pilih pekerjaan untuk bonus mengumpulkan |
 | `.clan`, `.clanwar` | Dasar clan dan perang clan sederhana |
+| `.gacha` | Belanjakan 100 koin untuk item acak |
 
 ### Fun, kuis, dan religi
 
@@ -424,7 +466,13 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 | `.jawab <jawaban>` | Jawab kuis aktif (tombol juga bisa) |
 | `.nyerah` | Menyerah dari kuis aktif |
 | `.truth`, `.dare` | Pertanyaan truth atau dare (data original) |
+| `.suit <batu\|gunting\|kertas>` | Suit melawan bot |
+| `.bola8 <pertanyaan>` | Jawaban bola ajaib (hiburan) |
+| `.joke` | Lelucon acak original |
+| `.motivasi`, `.pantun` | Kutipan motivasi dan pantun original |
 | `.cekjodoh`, `.cekkhodam`, `.zodiak` | Cek hiburan semata, dengan disclaimer hiburan |
+| `.cekmood`, `.cekberuntung`, `.cekpintar`, `.artinama <nama>` | Cek hiburan tambahan, dengan disclaimer hiburan |
+| `.weton <DD-MM-YYYY>` | Hitung weton Jawa (hiburan) |
 | `.ayat`, `.hadits` | Ayat atau hadits harian dari dataset original kecil |
 | `.religi <HH:mm\|off>` | Pengingat religi harian untuk grup |
 
@@ -432,7 +480,7 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 
 | Perintah | Fungsi |
 |---|---|
-| `.ai <pesan>` | Chat AI lewat rudder.chat, butuh cookie owner; memori singkat per pengguna |
+| `.ai <pesan>` | Chat AI: rudder.chat bila owner mengonfigurasinya, selain itu fallback gratis Pollinations; memori singkat per pengguna |
 | `.aireset` | Hapus memori chat AI kamu |
 | `.aiimg <prompt>` | Teks ke gambar lewat penyedia publik gratis |
 | `.vision` (balas gambar) | Tanya tentang gambar saat penyedia gratis terkonfigurasi |
@@ -447,11 +495,11 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 | `.mode <public\|self>` | Mode layanan bot |
 | `.ban <nomor>`, `.unban <nomor>` | Blokir dan buka blokir pengguna |
 | `.broadcast <teks>` | Siaran hanya ke chat yang opt-in, dengan rate limit |
-| `.subscribe`, `.unsubscribe` | Opt-in siaran untuk grup (admin grup) |
+| `.subscribe`, `.subscribe off` | Opt-in dan opt-out siaran untuk grup (admin grup) |
 | `.dbstats` | Statistik pemakaian storage |
 | `.scraperhealth` | Kesehatan sumber scraper |
 | `.reload [plugin]` | Muat ulang plugin tanpa restart |
-| `.jadibot <nomor>`, `.stopjadibot <nama>` | Sesi bot tambahan (khusus owner, batas kecil) |
+| `.jadibot <nama> <nomor>`, `.stopjadibot <nama>` | Sesi bot tambahan (khusus owner, maks 3) |
 
 ## Instalasi
 
