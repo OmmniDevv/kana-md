@@ -49,6 +49,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.absen check', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const action = (ctx.args[0] || '').toLowerCase()
   const settings = await getGroupSettings(ctx.storage, ctx.chat)

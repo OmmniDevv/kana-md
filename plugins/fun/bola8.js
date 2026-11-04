@@ -61,6 +61,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.bola8 apakah hari ini cerah?', expect: /bola ajaib/i }
+
 export async function handler(ctx) {
   const question = ctx.text.trim()
   if (!question) return ctx.reply(ctx.t('bola8.usage'))

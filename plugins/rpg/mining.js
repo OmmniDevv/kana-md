@@ -33,6 +33,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.mining', expect: /tambang|beliung/i }
+
 export async function handler(ctx) {
   const res = await gather(ctx.storage, ctx.senderDigits, 'mining')
   const items = res.items

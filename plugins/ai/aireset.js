@@ -28,6 +28,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.aireset', expect: /percakapan AI/i }
+
 export async function handler(ctx) {
   await clearMemory(ctx.storage, ctx.senderDigits)
   const body = ctx.t('aireset.done')

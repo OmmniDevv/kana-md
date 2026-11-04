@@ -37,6 +37,8 @@ export function pickJoke(lang, rng = Math.random) {
   return item[lang] ?? item.id
 }
 
+export const test = { input: '.joke', expect: /lelucon|joke/i }
+
 export async function handler(ctx) {
   const body = `${ctx.t('joke.title')}\n\n${pickJoke(ctx.lang)}\n\n${ctx.say('senang')}`
   return sendButtons(ctx.sock, ctx.chat, {

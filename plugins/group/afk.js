@@ -46,6 +46,8 @@ function formatDuration(ctx, since) {
   return ctx.t('afk.hours', { count: Math.floor(minutes / 60) })
 }
 
+export const test = { input: '.afk', expect: /AFK/i }
+
 export async function handler(ctx) {
   const reason = ctx.text.trim()
   const entry = { reason, since: Date.now() }

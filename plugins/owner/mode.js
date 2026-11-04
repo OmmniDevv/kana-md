@@ -32,6 +32,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.mode', expect: /mode/i }
+
 export async function handler(ctx) {
   const arg = (ctx.args[0] || '').toLowerCase()
   const saved = await ctx.storage.get('settings', 'bot')

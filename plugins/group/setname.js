@@ -15,6 +15,8 @@ export const i18n = {
   en: { setname: { usage: 'Write the new name, for example .setname Study Group~', ok: 'Got it~ group name changed to "{name}". {mood}', fail: 'Failed to change group name: {error}' } },
 }
 
+export const test = { input: '.setname', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const name = ctx.text.trim()
   if (!name) return ctx.reply(ctx.t('setname.usage'))

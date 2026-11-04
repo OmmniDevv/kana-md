@@ -32,6 +32,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.leaderboard', expect: /peringkat|XP/i }
+
 export async function handler(ctx) {
   const rows = await xpLeaderboard(ctx.storage, 10)
   let body

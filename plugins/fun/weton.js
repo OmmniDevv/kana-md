@@ -73,6 +73,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.weton 17-08-1945', expect: /weton/i }
+
 export async function handler(ctx) {
   const dateStr = (ctx.args[0] || '').trim()
   const result = wetonOf(dateStr)

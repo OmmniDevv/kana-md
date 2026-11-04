@@ -51,6 +51,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.rpg', expect: /profil rpg/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
   const job = profile.job ? JOB_MAP[profile.job] : null

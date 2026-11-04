@@ -27,6 +27,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.threads', expect: /belum tersedia/i }
+
 export async function handler(ctx) {
   const body = ctx.t('threads.unavailable')
   await sendButtons(ctx.sock, ctx.chat, {

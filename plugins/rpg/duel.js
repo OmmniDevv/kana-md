@@ -38,6 +38,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.duel', expect: /duel/i }
+
 export async function handler(ctx) {
   const replies = [
     { text: ctx.t('duel.btnDungeon'), id: '.dungeon' },

@@ -34,6 +34,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.mediafire', expect: /link/i }
+
 export async function handler(ctx) {
   const raw = ctx.args[0]
   if (!raw) return ctx.reply(ctx.t('mediafire.needUrl'))

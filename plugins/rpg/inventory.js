@@ -35,6 +35,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.inventory', expect: /tas/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
   const entries = Object.entries(profile.inventory ?? {}).filter(([, qty]) => qty > 0)

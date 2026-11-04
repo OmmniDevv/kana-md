@@ -265,6 +265,8 @@ async function sendMain(ctx, { categories, commandCount, botName, ownerName }) {
   }
 }
 
+export const test = { input: '.menu', expect: /KANA/i }
+
 export async function handler(ctx) {
   const botName = process.env.BOT_NAME || 'KANA'
   const ownerName = process.env.OWNER_NAME || 'OmniDevv'

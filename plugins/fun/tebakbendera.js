@@ -34,6 +34,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.tebakbendera', expect: /tebak bendera|kuis/i }
+
 export async function handler(ctx) {
   const existing = await getSession(ctx.storage, ctx.chat)
   if (existing) {

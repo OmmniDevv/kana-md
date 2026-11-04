@@ -32,6 +32,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.truth', expect: /truth/i }
+
 export async function handler(ctx) {
   const item = TRUTHS[Math.floor(Math.random() * TRUTHS.length)]
   const body = ctx.t('truth.body', { question: item[ctx.lang] ?? item.id, mood: ctx.say('senang') })

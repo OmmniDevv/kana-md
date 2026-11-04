@@ -75,6 +75,8 @@ async function drawMeme(source, top, bottom) {
   })
 }
 
+export const test = { input: '.smeme', expect: /gambar/i }
+
 export async function handler(ctx) {
   const [topRaw, bottomRaw] = ctx.text.split('|').map((s) => (s ?? '').trim())
   const top = topRaw || ''

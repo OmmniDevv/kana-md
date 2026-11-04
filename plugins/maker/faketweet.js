@@ -35,6 +35,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.faketweet', expect: /format/i }
+
 export async function handler(ctx) {
   const [nameRaw, ...msgParts] = ctx.text.split('|')
   const name = (nameRaw || '').trim()

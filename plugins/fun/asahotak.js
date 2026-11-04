@@ -34,6 +34,8 @@ export const i18n = {
 
 const LETTERS = ['A', 'B', 'C', 'D']
 
+export const test = { input: '.asahotak', expect: /asah otak|kuis/i }
+
 export async function handler(ctx) {
   const existing = await getSession(ctx.storage, ctx.chat)
   if (existing) {

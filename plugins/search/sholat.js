@@ -78,6 +78,8 @@ function todayJakarta() {
   }).format(new Date())
 }
 
+export const test = { input: '.sholat', expect: /kota/i }
+
 export async function handler(ctx) {
   const first = (ctx.args[0] || '').toLowerCase()
   if (first === 'ingatkan' || first === 'matikan' || first === 'off' || first === 'on') {

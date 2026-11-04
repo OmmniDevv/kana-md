@@ -79,6 +79,8 @@ function formatNumber(n) {
   return String(Math.round(n * 1e8) / 1e8)
 }
 
+export const test = { input: '.konversi 5 km m', expect: /5000/i }
+
 export async function handler(ctx) {
   const [rawValue, from, to] = ctx.args
   const value = Number(String(rawValue ?? '').replace(',', '.'))

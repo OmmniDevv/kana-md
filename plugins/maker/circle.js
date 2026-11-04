@@ -61,6 +61,8 @@ export async function circleCrop(buffer) {
   })
 }
 
+export const test = { input: '.circle', expect: /gambar/i }
+
 export async function handler(ctx) {
   let src
   try {

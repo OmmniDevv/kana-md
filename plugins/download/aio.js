@@ -82,6 +82,8 @@ export function detectPlatform(rawUrl) {
   return null
 }
 
+export const test = { input: '.aio', expect: /link/i }
+
 export async function handler(ctx) {
   const raw = ctx.args[0]
   if (!raw) return ctx.reply(ctx.t('aio.needUrl'))

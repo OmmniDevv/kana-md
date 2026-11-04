@@ -43,6 +43,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.cekkhodam Budi', expect: /khodam/i }
+
 export async function handler(ctx) {
   const name = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
   const khodam = khodamFor(name)

@@ -72,6 +72,8 @@ export async function settleAndShow(ctx, state, prefix) {
   })
 }
 
+export const test = { input: '.hit', expect: /blackjack/i }
+
 export async function handler(ctx) {
   const state = await ctx.storage.get('kv', `bj:${ctx.senderDigits}`)
   if (!state || state.phase !== 'player') {

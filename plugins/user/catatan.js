@@ -63,6 +63,8 @@ async function withButtons(ctx, body) {
   })
 }
 
+export const test = { input: '.catatan', expect: /catatan/i }
+
 export async function handler(ctx) {
   const sub = (ctx.args[0] || 'list').toLowerCase()
   const notes = await loadNotes(ctx)

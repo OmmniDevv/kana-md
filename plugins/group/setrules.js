@@ -32,6 +32,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.setrules', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const text = ctx.text.trim()
   if (!text) return ctx.reply(ctx.t('setrules.usage'))

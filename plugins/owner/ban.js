@@ -40,6 +40,8 @@ function targetDigits(ctx) {
   return d.length >= 9 && d.length <= 15 ? d : ''
 }
 
+export const test = { input: '.ban', expect: /nomor/i }
+
 export async function handler(ctx) {
   const digits = targetDigits(ctx)
   if (!digits) return ctx.reply(ctx.t('ban.hint'))

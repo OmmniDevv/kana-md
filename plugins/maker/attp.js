@@ -55,6 +55,8 @@ async function animatedWebp(frames) {
   })
 }
 
+export const test = { input: '.attp', expect: /teks/i }
+
 export async function handler(ctx) {
   const text = ctx.text.trim()
   if (!text) return ctx.reply(ctx.t('attp.needText'))

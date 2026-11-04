@@ -41,6 +41,8 @@ function fmtMap(ctx, map) {
     .join(', ')
 }
 
+export const test = { input: '.recipes', expect: /resep/i }
+
 export async function handler(ctx) {
   const list = RECIPES.map((r) => {
     const givesId = Object.keys(r.gives)[0]

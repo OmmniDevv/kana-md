@@ -34,6 +34,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.nyerah', expect: /belum ada kuis|no quiz/i }
+
 export async function handler(ctx) {
   const result = await giveUp(ctx.storage, ctx.chat)
   if (!result) {

@@ -18,6 +18,8 @@ export const i18n = {
   en: { kick: { noTarget: 'Who should be removed? Mention them, reply to their message, or write their number~', ok: '@{digits} has been removed from the group. Sorry, for the group order~', fail: 'Failed to remove @{digits}: {error}' } },
 }
 
+export const test = { input: '.kick', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const targets = resolveTargetJids(ctx)
   if (!targets.length) return ctx.reply(ctx.t('kick.noTarget'))

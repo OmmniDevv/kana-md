@@ -82,6 +82,8 @@ async function withButtons(ctx, body, { listButton = true } = {}) {
   })
 }
 
+export const test = { input: '.todo', expect: /tugas|todo/i }
+
 export async function handler(ctx) {
   const sub = (ctx.args[0] || 'list').toLowerCase()
   const todos = await loadTodos(ctx)

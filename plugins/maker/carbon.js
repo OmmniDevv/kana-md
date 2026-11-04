@@ -31,6 +31,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.carbon', expect: /kode/i }
+
 export async function handler(ctx) {
   const code = ctx.text
   if (!code.trim()) return ctx.reply(ctx.t('carbon.needCode'))

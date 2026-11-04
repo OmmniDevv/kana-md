@@ -32,6 +32,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.dare', expect: /dare/i }
+
 export async function handler(ctx) {
   const item = DARES[Math.floor(Math.random() * DARES.length)]
   const body = ctx.t('dare.body', { challenge: item[ctx.lang] ?? item.id, mood: ctx.say('senang') })

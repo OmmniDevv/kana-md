@@ -83,6 +83,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.zodiak 17-08', expect: /zodiak/i }
+
 export async function handler(ctx) {
   const parsed = parseBirthDate(ctx.text || ctx.args?.[0] || '')
   if (!parsed) return ctx.reply(ctx.t('zodiak.usage'))

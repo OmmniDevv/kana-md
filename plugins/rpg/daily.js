@@ -32,6 +32,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.daily', expect: /hadiah/i }
+
 export async function handler(ctx) {
   const res = await claim(ctx.storage, ctx.senderDigits, 'daily')
   const body = res.ok

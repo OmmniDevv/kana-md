@@ -49,6 +49,8 @@ async function getImageBuffer(ctx) {
   return null
 }
 
+export const test = { input: '.scanqr', expect: /QR/i }
+
 export async function handler(ctx) {
   const buffer = await getImageBuffer(ctx)
   if (!buffer) return ctx.reply(ctx.t('scanqr.noImage'))

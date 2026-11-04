@@ -19,6 +19,8 @@ export const i18n = {
 
 const here = dirname(fileURLToPath(import.meta.url))
 
+export const test = { input: '.hello', expect: /mini game/i }
+
 export async function handler(ctx) {
   await sendHtmlGame(ctx.sock, ctx.chat, join(here, '../../games/hello/index.html'), {
     title: 'KANA',

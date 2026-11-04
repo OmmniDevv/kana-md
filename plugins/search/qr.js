@@ -31,6 +31,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.qr', expect: /teks/i }
+
 export async function handler(ctx) {
   const text = ctx.text.trim()
   if (!text) return ctx.reply(ctx.t('qr.needText'))

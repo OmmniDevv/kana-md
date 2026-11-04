@@ -42,6 +42,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.listbot', expect: /daftar bot|jadibot/i }
+
 export async function handler(ctx) {
   const number = process.env.BOT_NUMBER || ctx.t('listbot.numberUnknown')
   let sessions = []

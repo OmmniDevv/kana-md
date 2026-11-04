@@ -34,6 +34,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.family100', expect: /family 100|kuis/i }
+
 export async function handler(ctx) {
   const existing = await getSession(ctx.storage, ctx.chat)
   if (existing) {

@@ -47,6 +47,8 @@ const SOURCES = [
   'rudder',
 ]
 
+export const test = { input: '.scraperhealth', expect: /scraper/i }
+
 export async function handler(ctx) {
   const now = Date.now()
   const rows = SOURCES.map((source) => {

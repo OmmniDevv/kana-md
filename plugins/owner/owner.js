@@ -24,6 +24,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.owner', expect: /status KANA|uptime/i }
+
 export async function handler(ctx) {
   await ctx.reply(
     ctx.t('owner.status', {

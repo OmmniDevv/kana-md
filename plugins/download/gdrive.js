@@ -46,6 +46,8 @@ const EXT_BY_TYPE = {
   'text/plain': 'txt',
 }
 
+export const test = { input: '.gdrive', expect: /link/i }
+
 export async function handler(ctx) {
   const raw = ctx.args[0]
   if (!raw) return ctx.reply(ctx.t('gdrive.needUrl'))

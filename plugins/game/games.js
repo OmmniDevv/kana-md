@@ -38,6 +38,8 @@ export const i18n = {
 // khusus konstruksi MB.Button langsung di menu utama, sedangkan daftar ini
 // memakai sendButtons bersama yang tidak punya slot gambar. Tombol dan
 // footer menu.footer dipertahankan apa adanya.
+export const test = { input: '.games', expect: /game/i }
+
 export async function handler(ctx) {
   const games = await listGames()
   if (!games.length) {

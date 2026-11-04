@@ -33,6 +33,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.fishing', expect: /pancingan|ikannya/i }
+
 export async function handler(ctx) {
   const res = await gather(ctx.storage, ctx.senderDigits, 'fishing')
   const items = res.items

@@ -39,6 +39,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.stopjadibot', expect: /jadibot|sesi/i }
+
 export async function handler(ctx) {
   const name = (ctx.args[0] || '').trim()
   const sessions = listJadibotSessions()

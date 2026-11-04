@@ -92,6 +92,8 @@ async function ensureManager(ctx) {
   return manager
 }
 
+export const test = { input: '.jadibot', expect: /jadibot/i }
+
 export async function handler(ctx) {
   const [name, number] = ctx.args
   if (!name || !number) return ctx.reply(ctx.t('jadibot.usage'))

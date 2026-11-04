@@ -41,6 +41,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.dungeon', expect: /dungeon/i }
+
 export async function handler(ctx) {
   const res = await runDungeon(ctx.storage, ctx.senderDigits)
   const byId = Object.fromEntries(MONSTERS.map((m) => [m.id, m]))

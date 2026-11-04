@@ -76,6 +76,8 @@ export function weatherGroup(code) {
 
 const round = (value) => (typeof value === 'number' ? Math.round(value) : '-')
 
+export const test = { input: '.cuaca', expect: /kota/i }
+
 export async function handler(ctx) {
   const city = ctx.text.trim()
   if (!city) return ctx.reply(ctx.t('cuaca.needCity'))

@@ -47,6 +47,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.clan', expect: /clan/i }
+
 export async function handler(ctx) {
   const replies = [
     { text: ctx.t('clan.btnWar'), id: '.clanwar' },

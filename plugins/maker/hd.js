@@ -56,6 +56,8 @@ export async function upscale2x(buffer) {
   })
 }
 
+export const test = { input: '.hd', expect: /gambar/i }
+
 export async function handler(ctx) {
   let src
   try {

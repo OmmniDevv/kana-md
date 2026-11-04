@@ -76,6 +76,8 @@ export async function sendSticker(ctx, webp, meta = {}) {
   return ctx.sock.sendMessage(ctx.chat, { sticker: out }, { quoted: ctx.raw })
 }
 
+export const test = { input: '.sticker', expect: /kutip/i }
+
 export async function handler(ctx) {
   let src
   try {

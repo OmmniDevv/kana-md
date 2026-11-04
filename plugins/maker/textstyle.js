@@ -75,6 +75,8 @@ export function toFancy(text, style) {
   return [...String(text ?? '')].map((ch) => map[ch] ?? ch).join('')
 }
 
+export const test = { input: '.textstyle', expect: /teks/i }
+
 export async function handler(ctx) {
   const text = ctx.text.trim()
   if (!text) return ctx.reply(ctx.t('textstyle.needText'))

@@ -167,6 +167,8 @@ export async function toMp4(buffer) {
   })
 }
 
+export const test = { input: '.tovideo', expect: /kutip/i }
+
 export async function handler(ctx) {
   let src
   try {

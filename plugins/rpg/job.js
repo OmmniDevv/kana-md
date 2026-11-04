@@ -37,6 +37,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.job', expect: /pekerjaan|job/i }
+
 export async function handler(ctx) {
   const action = (ctx.args?.[0] || '').toLowerCase()
   if (['pilih', 'pick', 'ambil'].includes(action)) {

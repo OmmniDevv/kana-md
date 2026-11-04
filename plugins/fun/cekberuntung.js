@@ -49,6 +49,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.cekberuntung', expect: /keberuntungan/i }
+
 export async function handler(ctx) {
   const percent = hashPercent(`${ctx.senderDigits}:luck:${wibDateString()}`)
   const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'

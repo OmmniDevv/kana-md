@@ -33,6 +33,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.brat', expect: /teks/i }
+
 export async function handler(ctx) {
   const text = ctx.text.trim().toLowerCase()
   if (!text) return ctx.reply(ctx.t('brat.needText'))

@@ -29,6 +29,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.rules', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const s = await getGroupSettings(ctx.storage, ctx.chat)
   if (!s.rules) {

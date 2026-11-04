@@ -65,6 +65,8 @@ export async function toVoiceNote(buffer) {
   })
 }
 
+export const test = { input: '.tovn', expect: /kutip/i }
+
 export async function handler(ctx) {
   let src
   try {

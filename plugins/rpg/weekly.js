@@ -32,6 +32,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.weekly', expect: /mingguan/i }
+
 export async function handler(ctx) {
   const res = await claim(ctx.storage, ctx.senderDigits, 'weekly')
   const waitMs = res.waitMs ?? 0

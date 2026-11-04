@@ -62,6 +62,8 @@ export async function toMp3(buffer) {
   })
 }
 
+export const test = { input: '.tomp3', expect: /kutip/i }
+
 export async function handler(ctx) {
   let src
   try {

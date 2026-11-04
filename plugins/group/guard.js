@@ -125,6 +125,8 @@ export async function before(ctx) {
   }
 }
 
+export const test = { input: '.guard', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const s = await getGroupSettings(ctx.storage, ctx.chat)
   const onOff = (v) => ctx.t(v ? 'guard.on' : 'guard.off')

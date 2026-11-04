@@ -60,6 +60,8 @@ export function buildPlayButtons({ title, url }, t) {
   return replies
 }
 
+export const test = { input: '.play', expect: /judul lagu/i }
+
 export async function handler(ctx) {
   const query = ctx.text.trim()
   if (!query) return ctx.reply(ctx.t('play.needQuery'))

@@ -42,6 +42,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.customcmd list', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const sub = (ctx.args[0] || '').toLowerCase()
   const settings = await getGroupSettings(ctx.storage, ctx.chat)

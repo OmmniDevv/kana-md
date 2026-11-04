@@ -49,6 +49,8 @@ export const i18n = {
 
 export const stateKey = (digits) => `bj:${digits}`
 
+export const test = { input: '.blackjack', expect: /bet/i }
+
 export async function handler(ctx) {
   const existing = await ctx.storage.get('kv', stateKey(ctx.senderDigits))
   if (existing && existing.phase === 'player') {

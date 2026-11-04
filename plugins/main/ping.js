@@ -31,6 +31,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.ping', expect: /pong/i }
+
 export async function handler(ctx) {
   const startedAt = ctx.raw?.messageTimestamp ? Number(ctx.raw.messageTimestamp) * 1000 : Date.now()
   const ms = Math.max(0, Date.now() - startedAt)

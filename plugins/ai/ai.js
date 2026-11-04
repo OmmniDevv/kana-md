@@ -63,6 +63,8 @@ function isNetworkError(err) {
   )
 }
 
+export const test = { input: '.ai', expect: /pesan/i }
+
 export async function handler(ctx) {
   const text = ctx.text.trim()
   if (!text) return ctx.reply(ctx.t('ai.needText'))

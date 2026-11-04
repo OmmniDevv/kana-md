@@ -33,6 +33,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.subscribe', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const off = (ctx.args[0] || '').toLowerCase() === 'off'
   await updateGroupSettings(ctx.storage, ctx.chat, { broadcastOptIn: !off })

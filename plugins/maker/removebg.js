@@ -29,6 +29,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.removebg', expect: /belum tersedia/i }
+
 export async function handler(ctx) {
   await ctx.reply(ctx.t('removebg.unavailable'))
   await sendButtons(ctx.sock, ctx.chat, {

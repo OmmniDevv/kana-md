@@ -29,6 +29,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.credits', expect: /kredit|KANA berdiri/i }
+
 export async function handler(ctx) {
   const body = ctx.t('credits.body', { mood: ctx.say('sayang') })
   return sendButtons(ctx.sock, ctx.chat, {

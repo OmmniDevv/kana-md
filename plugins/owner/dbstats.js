@@ -32,6 +32,8 @@ export const i18n = {
 
 const NAMESPACES = ['users', 'groups', 'settings', 'kv', 'scores', 'quiz']
 
+export const test = { input: '.dbstats', expect: /storage/i }
+
 export async function handler(ctx) {
   const rows = []
   for (const ns of NAMESPACES) {

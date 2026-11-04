@@ -62,6 +62,8 @@ export function extractArticleText(html) {
   return parts.join('\n').slice(0, 6000)
 }
 
+export const test = { input: '.ringkas', expect: /URL artikel/i }
+
 export async function handler(ctx) {
   const input = ctx.text.trim()
   if (!input) return ctx.reply(ctx.t('ringkas.needInput'))

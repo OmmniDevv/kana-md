@@ -18,6 +18,8 @@ export const i18n = {
   en: { promote: { noTarget: 'Who should be promoted? Mention them, reply to their message, or write their number~', ok: 'Yayyy, @{digits} is now a group admin. Congrats~', fail: 'Failed to promote @{digits}: {error}' } },
 }
 
+export const test = { input: '.promote', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const targets = resolveTargetJids(ctx)
   if (!targets.length) return ctx.reply(ctx.t('promote.noTarget'))

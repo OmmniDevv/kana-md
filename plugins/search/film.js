@@ -50,6 +50,8 @@ function stripHtml(html) {
     .trim()
 }
 
+export const test = { input: '.film', expect: /judul/i }
+
 export async function handler(ctx) {
   const query = ctx.text.trim()
   if (!query) return ctx.reply(ctx.t('film.needQuery'))

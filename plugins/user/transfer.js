@@ -38,6 +38,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.transfer', expect: /transfer/i }
+
 export async function handler(ctx) {
   const rawNumber = String(ctx.args[0] ?? '').replace(/\D/g, '')
   const amount = Number(ctx.args[1])

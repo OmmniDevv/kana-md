@@ -39,6 +39,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.wiki', expect: /artikel/i }
+
 export async function handler(ctx) {
   const query = ctx.text.trim()
   if (!query) return ctx.reply(ctx.t('wiki.needQuery'))

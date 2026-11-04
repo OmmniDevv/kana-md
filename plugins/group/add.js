@@ -18,6 +18,8 @@ export const i18n = {
   en: { add: { noTarget: 'Write the number to add, for example .add 6281234567890~', ok: '@{digits} has been added to the group. Welcome~', fail: 'Failed to add @{digits}: {error}. Sometimes that number restricts group invites, try .linkgrup instead.' } },
 }
 
+export const test = { input: '.add', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const numbers = ctx.args.map((a) => String(a).replace(/\D/g, '')).filter((d) => d.length >= 9 && d.length <= 15)
   if (!numbers.length) return ctx.reply(ctx.t('add.noTarget'))

@@ -57,6 +57,8 @@ export function buildFbButtons(url, t) {
       ]
 }
 
+export const test = { input: '.fb', expect: /link/i }
+
 export async function handler(ctx) {
   const url = ctx.args[0]
   if (!url) return ctx.reply(ctx.t('fb.needUrl'))

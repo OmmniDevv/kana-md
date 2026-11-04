@@ -41,6 +41,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.bank', expect: /bank/i }
+
 export async function handler(ctx) {
   const args = ctx.args ?? []
   const replies = [

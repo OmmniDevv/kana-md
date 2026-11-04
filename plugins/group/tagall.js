@@ -16,6 +16,8 @@ export const i18n = {
   en: { tagall: { defaultText: 'Hello everyone, KANA is calling you~', header: '{text}\n\nMember list ({count}):\n{list}', fail: 'Failed to get group members: {error}' } },
 }
 
+export const test = { input: '.tagall', expect: /grup|group/i }
+
 export async function handler(ctx) {
   let meta = ctx.groupMetadata
   if (!meta) {

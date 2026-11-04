@@ -32,6 +32,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.kbbi', expect: /kata/i }
+
 export async function handler(ctx) {
   const word = ctx.args[0]
   if (!word) return ctx.reply(ctx.t('kbbi.needWord'))

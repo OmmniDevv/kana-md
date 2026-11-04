@@ -37,6 +37,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.reload', expect: /reload/i }
+
 export async function handler(ctx) {
   const dir = join(here, '..', '..', 'plugins')
   const fresh = await loadPlugins(dir)

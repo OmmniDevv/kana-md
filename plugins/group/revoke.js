@@ -16,6 +16,8 @@ export const i18n = {
   en: { revoke: { ok: 'Got it~ the old link has been revoked. Here is the new link: {link}', fail: 'Failed to reset group link: {error}' } },
 }
 
+export const test = { input: '.revoke', expect: /grup|group/i }
+
 export async function handler(ctx) {
   try {
     const code = await ctx.sock.groupRevokeInvite(ctx.chat)

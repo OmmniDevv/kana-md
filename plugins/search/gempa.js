@@ -53,6 +53,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.gempa', expect: /gempa/i }
+
 export async function handler(ctx) {
   const mode = (ctx.args[0] || '').toLowerCase()
   try {

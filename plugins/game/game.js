@@ -46,6 +46,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.game', expect: /game/i }
+
 export async function handler(ctx) {
   const id = (ctx.args?.[0] || '').toLowerCase()
   const games = await listGames()

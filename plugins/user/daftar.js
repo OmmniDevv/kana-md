@@ -39,6 +39,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.daftar', expect: /daftar|terdaftar/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
 

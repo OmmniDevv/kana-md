@@ -59,6 +59,8 @@ export const i18n = {
 
 const MAX_VISION_BYTES = 4 * 1024 * 1024
 
+export const test = { input: '.vision', expect: /gambar/i }
+
 export async function handler(ctx) {
   const quotedMessage = ctx.quoted?.message
   const imageMessage = quotedMessage?.imageMessage

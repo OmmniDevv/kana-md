@@ -18,6 +18,8 @@ export const i18n = {
   en: { demote: { noTarget: 'Who should be demoted? Mention them, reply to their message, or write their number~', ok: '@{digits} has been demoted to a regular member.', fail: 'Failed to demote @{digits}: {error}' } },
 }
 
+export const test = { input: '.demote', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const targets = resolveTargetJids(ctx)
   if (!targets.length) return ctx.reply(ctx.t('demote.noTarget'))

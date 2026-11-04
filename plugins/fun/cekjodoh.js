@@ -87,6 +87,8 @@ function parseNames(ctx) {
   return null
 }
 
+export const test = { input: '.cekjodoh Budi & Sari', expect: /cek jodoh|kecocokan/i }
+
 export async function handler(ctx) {
   const names = parseNames(ctx)
   if (!names) return ctx.reply(ctx.t('cekjodoh.usage'))

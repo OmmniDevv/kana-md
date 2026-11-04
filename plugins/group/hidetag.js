@@ -16,6 +16,8 @@ export const i18n = {
   en: { hidetag: { defaultText: 'Hello everyone, an announcement from KANA~', fail: 'Failed to get group members: {error}' } },
 }
 
+export const test = { input: '.hidetag', expect: /grup|group/i }
+
 export async function handler(ctx) {
   let meta = ctx.groupMetadata
   if (!meta) {

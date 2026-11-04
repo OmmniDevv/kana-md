@@ -37,6 +37,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.stand', expect: /blackjack/i }
+
 export async function handler(ctx) {
   const state = await ctx.storage.get('kv', `bj:${ctx.senderDigits}`)
   if (!state || state.phase !== 'player') {

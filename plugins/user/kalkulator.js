@@ -32,6 +32,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.kalkulator (12+8)*3', expect: /= 60/i }
+
 export async function handler(ctx) {
   const expr = ctx.text.trim()
   if (!expr) return ctx.reply(ctx.t('kalkulator.usage'))

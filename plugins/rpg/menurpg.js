@@ -44,6 +44,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.menurpg', expect: /RPG/i }
+
 export async function handler(ctx) {
   const body = ctx.t('menurpg.body', { mood: ctx.say('salam') })
   let image = null

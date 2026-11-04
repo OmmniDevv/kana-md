@@ -53,6 +53,8 @@ export async function webpToPng(buffer) {
   })
 }
 
+export const test = { input: '.toimg', expect: /stiker/i }
+
 export async function handler(ctx) {
   let src
   try {

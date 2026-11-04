@@ -27,6 +27,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.soundcloud', expect: /belum tersedia/i }
+
 export async function handler(ctx) {
   const body = ctx.t('soundcloud.unavailable')
   await sendButtons(ctx.sock, ctx.chat, {

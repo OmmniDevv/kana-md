@@ -37,6 +37,8 @@ function clockIn(timeZone, date) {
   }).format(date)
 }
 
+export const test = { input: '.jam', expect: /WIB/i }
+
 export async function handler(ctx) {
   const now = new Date()
   const body = ctx.t('jam.body', {

@@ -23,6 +23,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.ocr', expect: /gambar|ocr/i }
+
 export async function handler(ctx) {
   const hasImage = Boolean(
     ctx.quoted?.message?.imageMessage ||

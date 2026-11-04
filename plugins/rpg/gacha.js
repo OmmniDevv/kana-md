@@ -81,6 +81,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.gacha', expect: /gacha/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
   const balance = profile.balance || 0

@@ -36,6 +36,8 @@ export function parsePoll(text) {
   return { question: question || '', values }
 }
 
+export const test = { input: '.poll', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const { question, values } = parsePoll(ctx.text)
   if (!question || !values.length) return ctx.reply(ctx.t('poll.usage'))

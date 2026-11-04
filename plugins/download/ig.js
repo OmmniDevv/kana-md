@@ -57,6 +57,8 @@ export function buildIgButtons(url, t) {
       ]
 }
 
+export const test = { input: '.ig', expect: /link/i }
+
 export async function handler(ctx) {
   const url = ctx.args[0]
   if (!url) return ctx.reply(ctx.t('ig.needUrl'))

@@ -54,6 +54,8 @@ export function buildYtsButtons(results, t) {
   return replies
 }
 
+export const test = { input: '.yts', expect: /kata kunci/i }
+
 export async function handler(ctx) {
   const query = ctx.text.trim()
   if (!query) return ctx.reply(ctx.t('yts.needQuery'))

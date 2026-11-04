@@ -65,6 +65,8 @@ export function emojiKitchenUrl(a, b) {
   return `https://www.gstatic.com/android/keyboard/emojikitchen/20201001/u${ca}/u${ca}_u${cb}.png`
 }
 
+export const test = { input: '.emojimix', expect: /emoji/i }
+
 export async function handler(ctx) {
   const emojis = splitEmojis(ctx.text)
   if (emojis.length < 2) return ctx.reply(ctx.t('emojimix.needEmoji'))

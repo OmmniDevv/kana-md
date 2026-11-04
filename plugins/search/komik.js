@@ -39,6 +39,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.komik', expect: /komik/i }
+
 export async function handler(ctx) {
   const query = ctx.text.trim()
   if (!query) return ctx.reply(ctx.t('komik.needQuery'))

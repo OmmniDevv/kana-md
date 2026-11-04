@@ -16,6 +16,8 @@ export const i18n = {
   en: { linkgrup: { ok: 'Here is the group link: {link}\nShare it only with trusted people~', fail: 'Failed to get group link: {error}' } },
 }
 
+export const test = { input: '.linkgrup', expect: /grup|group/i }
+
 export async function handler(ctx) {
   try {
     const code = await ctx.sock.groupInviteCode(ctx.chat)

@@ -34,6 +34,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.warn', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const targets = resolveTargetJids(ctx)
   if (!targets.length) return ctx.reply(ctx.t('warn.noTarget'))

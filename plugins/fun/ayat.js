@@ -34,6 +34,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.ayat', expect: /ayat pilihan/i }
+
 export async function handler(ctx) {
   const item = ayat[Math.floor(Math.random() * ayat.length)]
   const body = ctx.t('ayat.body', { text: item.text, source: item.source, mood: ctx.say('sayang') })

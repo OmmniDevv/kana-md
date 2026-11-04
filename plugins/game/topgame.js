@@ -48,6 +48,8 @@ function sortedEntries(board) {
     .sort((a, b) => b.score - a.score)
 }
 
+export const test = { input: '.topgame', expect: /skor|score/i }
+
 export async function handler(ctx) {
   const games = await listGames()
   const replies = [

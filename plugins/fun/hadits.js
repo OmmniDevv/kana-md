@@ -34,6 +34,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.hadits', expect: /hadits pilihan/i }
+
 export async function handler(ctx) {
   const item = hadits[Math.floor(Math.random() * hadits.length)]
   const body = ctx.t('hadits.body', { text: item.text, source: item.source, mood: ctx.say('sayang') })

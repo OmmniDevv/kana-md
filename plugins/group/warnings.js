@@ -38,6 +38,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.warnings', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const settings = await getGroupSettings(ctx.storage, ctx.chat)
   if ((ctx.args[0] || '').toLowerCase() === 'reset') {

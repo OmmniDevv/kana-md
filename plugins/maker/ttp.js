@@ -33,6 +33,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.ttp', expect: /teks/i }
+
 export async function handler(ctx) {
   const text = ctx.text.trim()
   if (!text) return ctx.reply(ctx.t('ttp.needText'))

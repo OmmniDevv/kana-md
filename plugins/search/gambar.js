@@ -41,6 +41,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.gambar', expect: /kata kunci/i }
+
 export async function handler(ctx) {
   const query = ctx.text.trim()
   if (!query) return ctx.reply(ctx.t('gambar.needQuery'))

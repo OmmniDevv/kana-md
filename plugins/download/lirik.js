@@ -49,6 +49,8 @@ export const i18n = {
 
 const MAX_LYRICS_CHARS = 3500
 
+export const test = { input: '.lirik', expect: /judul lagu/i }
+
 export async function handler(ctx) {
   const query = ctx.text.trim()
   if (!query) return ctx.reply(ctx.t('lirik.needQuery'))

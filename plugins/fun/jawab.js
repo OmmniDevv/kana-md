@@ -98,6 +98,8 @@ async function reportResult(ctx, result) {
   })
 }
 
+export const test = { input: '.jawab B', expect: /belum ada kuis|no quiz/i }
+
 export async function handler(ctx) {
   const text = (ctx.text || '').trim()
   if (!text) return ctx.reply(ctx.t('jawab.usage'))

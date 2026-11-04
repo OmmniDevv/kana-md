@@ -50,6 +50,8 @@ export function decideSuit(player, bot) {
   return BEATS[player] === bot ? 'win' : 'lose'
 }
 
+export const test = { input: '.suit batu', expect: /batu|gunting|kertas/i }
+
 export async function handler(ctx) {
   const choice = (ctx.args[0] || '').toLowerCase()
   const buttons = CHOICES.map((c) => ({ text: ctx.t(`suit.choices.${c}`), id: `.suit ${c}` }))

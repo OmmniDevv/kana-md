@@ -58,6 +58,8 @@ export function chunkTtsText(text, maxChars = TTS_CHUNK_CHARS) {
   return chunks.filter(Boolean)
 }
 
+export const test = { input: '.tts', expect: /teksnya/i }
+
 export async function handler(ctx) {
   const rawText = ctx.text.trim()
   if (!rawText) return ctx.reply(ctx.t('tts.needText'))

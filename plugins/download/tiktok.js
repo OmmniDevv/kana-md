@@ -57,6 +57,8 @@ export function buildTiktokButtons(url, t) {
       ]
 }
 
+export const test = { input: '.tiktok', expect: /link/i }
+
 export async function handler(ctx) {
   const url = ctx.args[0]
   if (!url) return ctx.reply(ctx.t('tiktok.needUrl'))

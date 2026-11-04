@@ -25,6 +25,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.help ping', expect: /ping/i }
+
 export async function handler(ctx) {
   const target = ctx.args[0]
   if (!target) return ctx.reply(ctx.t('help.hint'))

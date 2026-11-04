@@ -15,6 +15,8 @@ export const i18n = {
   en: { setdesc: { usage: 'Write the new description~', ok: 'Got it~ group description has been changed. {mood}', fail: 'Failed to change group description: {error}' } },
 }
 
+export const test = { input: '.setdesc', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const desc = ctx.text.trim()
   if (!desc) return ctx.reply(ctx.t('setdesc.usage'))

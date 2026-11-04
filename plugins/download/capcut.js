@@ -27,6 +27,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.capcut', expect: /belum tersedia/i }
+
 export async function handler(ctx) {
   const body = ctx.t('capcut.unavailable')
   await sendButtons(ctx.sock, ctx.chat, {

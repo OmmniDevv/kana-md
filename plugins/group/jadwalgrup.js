@@ -39,6 +39,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.jadwalgrup', expect: /grup|group/i }
+
 export async function handler(ctx) {
   const [a, b] = ctx.args
   if ((a || '').toLowerCase() === 'off') {

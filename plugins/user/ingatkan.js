@@ -70,6 +70,8 @@ async function withButtons(ctx, body) {
   })
 }
 
+export const test = { input: '.ingatkan list', expect: /pengingat/i }
+
 export async function handler(ctx) {
   const sub = (ctx.args[0] || '').toLowerCase()
 

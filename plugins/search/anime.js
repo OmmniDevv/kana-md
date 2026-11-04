@@ -51,6 +51,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.anime', expect: /judul/i }
+
 export async function handler(ctx) {
   const raw = ctx.text.trim()
   if (!raw) return ctx.reply(ctx.t('anime.needQuery'))

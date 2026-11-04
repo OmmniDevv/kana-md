@@ -28,6 +28,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.chord', expect: /judul/i }
+
 export async function handler(ctx) {
   const query = ctx.text.trim()
   if (!query) return ctx.reply(ctx.t('chord.needQuery'))

@@ -50,6 +50,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.webcode', expect: /kode/i }
+
 export async function handler(ctx) {
   const digits = ctx.senderDigits || String(ctx.sender ?? '').replace(/\D/g, '')
   if (!digits) return ctx.reply(ctx.t('webcode.noNumber'))

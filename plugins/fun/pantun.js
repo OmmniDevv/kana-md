@@ -59,6 +59,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.pantun', expect: /pantun/i }
+
 export async function handler(ctx) {
   const pool = i18n[ctx.lang]?.pantun?.poems ?? i18n.id.pantun.poems
   const pantun = pool[Math.floor(Math.random() * pool.length)]

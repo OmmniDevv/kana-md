@@ -16,6 +16,8 @@ export const i18n = {
   en: { setppgrup: { usage: 'Reply to an image with .setppgrup, I could not find the image~', ok: 'Yayyy, group picture has been changed. {mood}', fail: 'Failed to change group picture: {error}. Make sure the image is jpeg or png and reasonably sized.' } },
 }
 
+export const test = { input: '.setppgrup', expect: /grup|group/i }
+
 export async function handler(ctx) {
   let buffer
   try {

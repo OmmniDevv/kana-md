@@ -64,6 +64,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.slot', expect: /bet/i }
+
 export async function handler(ctx) {
   const bet = Number(ctx.args[0])
   if (!ctx.args[0]) return ctx.reply(ctx.t('slot.usage'))

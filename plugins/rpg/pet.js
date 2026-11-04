@@ -52,6 +52,8 @@ function petList(ctx) {
   return PETS.map((p) => ctx.t('pet.listLine', { emoji: p.emoji, name: p.name[ctx.lang] ?? p.name.id, id: p.id })).join(', ')
 }
 
+export const test = { input: '.pet', expect: /pet/i }
+
 export async function handler(ctx) {
   const replies = [
     { text: ctx.t('pet.btnFeed'), id: '.pet makan' },

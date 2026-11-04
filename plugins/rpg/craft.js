@@ -51,6 +51,8 @@ function fmtMap(ctx, map) {
     .join(', ')
 }
 
+export const test = { input: '.craft', expect: /resep/i }
+
 export async function handler(ctx) {
   const id = (ctx.args?.[0] || '').toLowerCase()
   if (!id) {

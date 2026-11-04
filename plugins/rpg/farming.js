@@ -33,6 +33,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.farming', expect: /ladang|panen/i }
+
 export async function handler(ctx) {
   const res = await gather(ctx.storage, ctx.senderDigits, 'farming')
   const items = res.items

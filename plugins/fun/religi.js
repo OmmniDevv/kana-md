@@ -56,6 +56,8 @@ export function dailyReligiItem(date = new Date()) {
   return items[Math.abs(dayIndex) % items.length]
 }
 
+export const test = { input: '.religi', expect: /religi/i }
+
 export async function handler(ctx) {
   const arg = (ctx.args?.[0] || '').trim()
 

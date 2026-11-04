@@ -86,6 +86,8 @@ export function buildSpotifyDoneButtons({ input, title, results }, t) {
   return replies
 }
 
+export const test = { input: '.spotify', expect: /judul lagu/i }
+
 export async function handler(ctx) {
   const input = ctx.text.trim()
   if (!input) return ctx.reply(ctx.t('spotify.needQuery'))

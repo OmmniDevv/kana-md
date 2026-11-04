@@ -33,6 +33,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.ytmp4', expect: /YouTube/i }
+
 export async function handler(ctx) {
   const input = ctx.text.trim()
   if (!input) return ctx.reply(ctx.t('ytmp4.needQuery'))

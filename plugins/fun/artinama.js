@@ -70,6 +70,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.artinama Kana', expect: /artinya/i }
+
 export async function handler(ctx) {
   const name = ctx.text.trim()
   if (!name) return ctx.reply(ctx.t('artinama.usage'))

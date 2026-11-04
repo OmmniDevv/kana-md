@@ -38,6 +38,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.aiimg', expect: /deskripsi/i }
+
 export async function handler(ctx) {
   const prompt = ctx.text.trim()
   if (!prompt) return ctx.reply(ctx.t('aiimg.needPrompt'))
