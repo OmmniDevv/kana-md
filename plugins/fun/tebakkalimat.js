@@ -1,4 +1,4 @@
-import { getSession, startQuiz } from '../../src/quiz/engine.js'
+import { getSession, startQuiz, bindQuestionMessage } from '../../src/quiz/engine.js'
 import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
@@ -6,7 +6,7 @@ export const config = {
   alias: ['kalimat'],
   category: 'fun',
   description: { id: 'Kuis Tebak Kalimat: lengkapi kata yang hilang dalam kalimat', en: 'Sentence quiz: complete the missing word in the sentence' },
-  usage: '.tebakkalimat lalu jawab lewat chat atau .jawab <jawaban>',
+  usage: '.tebakkalimat lalu balas pesan pertanyaannya dengan jawabanmu',
   example: '.tebakkalimat',
   cooldown: 5,
 }
@@ -15,7 +15,7 @@ export const i18n = {
   id: {
     tebakkalimat: {
       title: 'Kuis Tebak Kalimat',
-      intro: '✏️ KUIS TEBAK KALIMAT\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas dengan kata yang hilang atau .jawab <jawaban> yaa~ {mood}',
+      intro: '✏️ KUIS TEBAK KALIMAT\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan kata yang hilang yaa~ {mood}',
       already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
       menuBtn: '🎲 Menu Fun',
@@ -25,7 +25,7 @@ export const i18n = {
   en: {
     tebakkalimat: {
       title: 'Sentence Quiz',
-      intro: '✏️ SENTENCE QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply with the missing word or .jawab <answer>~ {mood}',
+      intro: '✏️ SENTENCE QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the missing word~ {mood}',
       already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
       menuBtn: '🎲 Fun Menu',
@@ -46,7 +46,6 @@ export async function handler(ctx) {
       footer: ctx.t('tebakkalimat.footer'),
       replies: [
         { text: ctx.t('tebakkalimat.giveUpBtn'), id: '.nyerah' },
-        { text: ctx.t('tebakkalimat.menuBtn'), id: '.menu fun' },
       ],
       textFallback: body,
     })
@@ -61,14 +60,15 @@ export async function handler(ctx) {
     seconds: 120,
     mood: ctx.say('senang'),
   })
-  return sendButtons(ctx.sock, ctx.chat, {
+  const sentQuestion = await sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('tebakkalimat.title'),
     body,
     footer: ctx.t('tebakkalimat.footer'),
     replies: [
       { text: ctx.t('tebakkalimat.giveUpBtn'), id: '.nyerah' },
-      { text: ctx.t('tebakkalimat.menuBtn'), id: '.menu fun' },
     ],
     textFallback: body,
   })
+  await bindQuestionMessage(ctx.storage, ctx.chat, sentQuestion?.key?.id)
+  return sentQuestion
 }

@@ -1,4 +1,4 @@
-import { getSession, startQuiz } from '../../src/quiz/engine.js'
+import { getSession, startQuiz, bindQuestionMessage } from '../../src/quiz/engine.js'
 import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
@@ -6,7 +6,7 @@ export const config = {
   alias: ['profesi'],
   category: 'fun',
   description: { id: 'Kuis Tebak Profesi: tebak nama pekerjaan dari petunjuk tugasnya', en: 'Profession quiz: guess the job name from its task clue' },
-  usage: '.tebakprofesi lalu jawab lewat chat atau .jawab <jawaban>',
+  usage: '.tebakprofesi lalu balas pesan pertanyaannya dengan jawabanmu',
   example: '.tebakprofesi',
   cooldown: 5,
 }
@@ -15,7 +15,7 @@ export const i18n = {
   id: {
     tebakprofesi: {
       title: 'Kuis Tebak Profesi',
-      intro: '💼 KUIS TEBAK PROFESI\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas dengan nama profesinya atau .jawab <jawaban> yaa~ {mood}',
+      intro: '💼 KUIS TEBAK PROFESI\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan nama profesinya yaa~ {mood}',
       already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
       menuBtn: '🎲 Menu Fun',
@@ -25,7 +25,7 @@ export const i18n = {
   en: {
     tebakprofesi: {
       title: 'Profession Quiz',
-      intro: '💼 PROFESSION QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply with the profession name or .jawab <answer>~ {mood}',
+      intro: '💼 PROFESSION QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the profession name~ {mood}',
       already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
       menuBtn: '🎲 Fun Menu',
@@ -46,7 +46,6 @@ export async function handler(ctx) {
       footer: ctx.t('tebakprofesi.footer'),
       replies: [
         { text: ctx.t('tebakprofesi.giveUpBtn'), id: '.nyerah' },
-        { text: ctx.t('tebakprofesi.menuBtn'), id: '.menu fun' },
       ],
       textFallback: body,
     })
@@ -61,14 +60,15 @@ export async function handler(ctx) {
     seconds: 120,
     mood: ctx.say('senang'),
   })
-  return sendButtons(ctx.sock, ctx.chat, {
+  const sentQuestion = await sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('tebakprofesi.title'),
     body,
     footer: ctx.t('tebakprofesi.footer'),
     replies: [
       { text: ctx.t('tebakprofesi.giveUpBtn'), id: '.nyerah' },
-      { text: ctx.t('tebakprofesi.menuBtn'), id: '.menu fun' },
     ],
     textFallback: body,
   })
+  await bindQuestionMessage(ctx.storage, ctx.chat, sentQuestion?.key?.id)
+  return sentQuestion
 }
