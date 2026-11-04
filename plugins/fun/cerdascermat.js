@@ -4,7 +4,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'cerdascermat',
-  alias: ['cerdas'],
+  alias: ['cerdas', 'cc'],
   category: 'fun',
   description: { id: 'Kuis Cerdas Cermat: teka-teki logika pilihan ganda', en: 'Cerdas Cermat quiz: multiple choice general knowledge' },
   usage: '.cerdascermat lalu pilih jawaban lewat tombol atau balas pesan ini dengan hurufnya',

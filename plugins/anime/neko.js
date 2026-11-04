@@ -2,7 +2,7 @@ import { animeImageHandler } from '../../src/anime/images.js'
 
 export const config = {
   name: 'neko',
-  alias: [],
+  alias: ['neko2'],
   category: 'anime',
   description: { id: 'Gambar neko anime SFW acak dari nekos.best', en: 'Random SFW anime neko image from nekos.best' },
   usage: '.neko',

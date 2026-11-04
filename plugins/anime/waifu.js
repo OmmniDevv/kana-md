@@ -2,7 +2,7 @@ import { animeImageHandler } from '../../src/anime/images.js'
 
 export const config = {
   name: 'waifu',
-  alias: [],
+  alias: ['shinobu', 'maid', 'megumin'],
   category: 'anime',
   description: { id: 'Gambar waifu anime SFW acak dari nekos.best', en: 'Random SFW anime waifu image from nekos.best' },
   usage: '.waifu',

@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'apakah',
-  alias: [],
+  alias: ['haruskah'],
   category: 'fun',
   description: { id: 'Tanya pertanyaan ya atau tidak, KANA jawab iseng dari bola kristal', en: 'Ask a yes or no question, KANA answers playfully from the crystal ball' },
   usage: '.apakah <pertanyaan>',
@@ -62,7 +62,6 @@ export async function handler(ctx) {
       title: ctx.t('apakah.title'),
       body,
       footer: ctx.t('menu.footer'),
-      replies: [{ text: ctx.t('apakah.btnMenu'), id: '.menu fun' }],
       textFallback: body,
     })
   }
@@ -79,7 +78,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('apakah.btnAgain'), id: '.apakah' },
-      { text: ctx.t('apakah.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

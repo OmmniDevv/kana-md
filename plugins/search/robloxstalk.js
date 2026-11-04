@@ -2,7 +2,7 @@
 // pengecualian setara API game di DECISIONS.md. Data publik saja.
 export const config = {
   name: 'robloxstalk',
-  alias: ['roblox', 'stalkroblox'],
+  alias: ['roblox', 'stalkroblox', 'robloxplayer', 'robloxsearch'],
   category: 'search',
   description: { id: 'Info profil publik Roblox dari username', en: 'Public Roblox profile info from a username' },
   usage: '.robloxstalk <username>',

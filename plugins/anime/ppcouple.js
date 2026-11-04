@@ -6,7 +6,7 @@ import { sendImage } from '../../src/ui/media.js'
 
 export const config = {
   name: 'ppcouple',
-  alias: ['ppcp', 'couplepp'],
+  alias: ['ppcp', 'couplepp', 'couple'],
   category: 'anime',
   description: { id: 'Pasangan foto profil anime couple (waifu + husbando) SFW', en: 'A matching anime couple profile picture pair (waifu + husbando), SFW' },
   usage: '.ppcouple',

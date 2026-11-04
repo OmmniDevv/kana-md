@@ -5,7 +5,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'pinterest',
-  alias: ['pin'],
+  alias: ['pin', 'pindl', 'pinsearch', 'pinterestsearch', 'pindl2'],
   category: 'download',
   description: { id: 'Cari gambar di Pinterest dan kirim hasil teratas', en: 'Search Pinterest images and send the top result' },
   usage: '.pinterest <kata kunci>',

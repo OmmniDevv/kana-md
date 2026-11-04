@@ -1,6 +1,6 @@
 export const config = {
   name: 'runtime',
-  alias: ['uptime'],
+  alias: ['uptime', 'rt'],
   category: 'main',
   description: { id: 'Sudah berapa lama bot berjalan sejak terakhir menyala', en: 'How long the bot has been running since it last started' },
   usage: '.runtime',
