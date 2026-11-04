@@ -18,6 +18,7 @@ Status saat ini: base Fase 1 selesai dan berhenti di Gate 1. Pairing belum dilak
 - Tombol interaktif lewat `MB.Button` dengan fallback teks biasa bila pengiriman tombol gagal.
 - Mini game HTML contoh di `games/hello/` yang dikirim lewat `MB.sendHtmlApp` (tampil penuh di Android, klien lain menerima label teks).
 - Plugin bawaan base: `ping`, `menu`, `lang`, `help`, `owner` (status, khusus owner), dan `hello` (game contoh).
+- Menu `.menu` bergaya bot MD klasik ala Elaina-MD: bingkai box-drawing, sapaan moe, runtime, mode, dan seksi per kategori yang dibangkitkan otomatis dari registry plugin, lengkap dengan gambar header dan tombol pintas.
 - Scraper dan downloader (ditambahkan 2026-11-04 dari kiriman user): `.spotify`, `.play`, `.yts`, `.pinterest`, `.fb`, `.ig`, `.tiktok`, `.lirik`, `.komik`, `.font`, plus `.ai` yang opt-in. Semua lewat kerangka runner yang sama: proteksi SSRF, retry, circuit breaker, dan batas ukuran media (audio 16 MB, video 64 MB). Scraper gratis akan rusak berkala; bila sumber mati, bot membalas dengan pesan error yang jelas, bukan crash. Detail sumber dan kredit ada di [docs/SNIPPETS.md](docs/SNIPPETS.md).
 
 ## Perintah downloader, search, dan AI

@@ -69,6 +69,16 @@ scraper gratis akan rusak berkala; runner dibuat agar kegagalannya rapi
 (error jelas ke pengguna) dan perbaikannya murah. Batas kirim media:
 audio 16 MB, video 64 MB, gambar 16 MB, dokumen 64 MB.
 
+## Menu ala Elaina-MD (2026-11-04, permintaan user)
+
+| Item | Status |
+|---|---|
+| Menu gaya bot MD klasik: bingkai box-drawing, header nama bot + sapaan moe ke user (pushName), runtime, mode (env BOT_MODE, default public), jumlah plugin dan perintah (termasuk alias), tanggal + jam WIB | Terpasang, dites unit + smoke test loader |
+| Seksi per kategori dari registry (main, download, search, ai, owner) dengan ikon dan judul 「 KATEGORI 」, perintah format "│ ◦ .nama" teks polos | Terpasang, dinamis dari registry, tidak ada daftar hardcoded |
+| Formatter murni di src/ui/format.js (formatMenu, formatWibDateTime, sortCategories), label semua lewat i18n; nada id moe + alay, en moe polos | Terpasang, dites unit |
+| Gambar header assets/welcome.png: jadi caption bila menu muat 1024 karakter, selain itu gambar terpisah lalu teks menu; tombol quick reply .ping/.help/.owner dipertahankan dengan fallback teks | Terpasang (smoke test lokal: gambar terkirim, fallback teks jalan) |
+| Help (.help) diselaraskan: detail perintah dan hint dalam bingkai yang sama | Terpasang |
+
 ## Belum dibangun (sesuai Gate 1)
 - Semua fitur katalog Fase 2 dan seterusnya di luar scraper di atas.
 - Kanal skor WebSocket untuk game, Dockerfile, scheduler.
