@@ -103,7 +103,6 @@ export async function handler(ctx) {
     footer: ctx.t('zodiak.footer'),
     replies: [
       { text: ctx.t('zodiak.againBtn'), id: '.zodiak' },
-      { text: ctx.t('zodiak.menuBtn'), id: '.menu fun' },
     ],
     textFallback: body,
   })

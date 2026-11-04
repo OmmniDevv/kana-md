@@ -72,7 +72,6 @@ export async function handler(ctx) {
     replies: [
       { text: ctx.t('pantun.btnAgain'), id: '.pantun' },
       { text: ctx.t('pantun.btnMotivasi'), id: '.motivasi' },
-      { text: ctx.t('pantun.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

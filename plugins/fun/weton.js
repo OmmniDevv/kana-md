@@ -94,7 +94,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('weton.btnAgain'), id: '.weton 17-08-1945' },
-      { text: ctx.t('weton.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

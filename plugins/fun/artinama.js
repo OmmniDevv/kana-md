@@ -91,7 +91,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('artinama.btnAgain'), id: '.artinama Kana' },
-      { text: ctx.t('artinama.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })
