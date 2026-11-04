@@ -204,6 +204,8 @@ Definisi selesai per gerbang kualitas user (2026-11-04 16:01 WIB): tes unit hany
 
 PROSEDUR WAJIB JENDELA TES LIVE (akar masalah terbukti 2026-11-04): cron kana-bot-watchdog (5 menit, self-healing) WAJIB dijeda (enabled false) selama jendela tes live dan diaktifkan lagi sesudahnya. Bukti: dua jendela tanpa jeda menghasilkan gugus kegagalan "Connection Closed" pada plugin pengirim media (watchdog menghidupkan bot produksi saat service sengaja dihentikan untuk harness, dua proses berebut satu sesi WA); jendela yang sama sesudah watchdog dijeda: 6 dari 6 lulus bersih tanpa perubahan kode plugin.
 
+CATATAN JENDELA SEARCH 2026-11-04 16:38-16:43 WIB: film, kurs, ocr, qr, resep, scanqr, shortlink, ssweb LIVE LOLOS (terkirim, 0 handler error; ocr dan scanqr BELUM TERUJI PENUH karena butuh media kutipan yang tidak bisa dikirim harness teks, balasan pengingatnya terkirim anggun). Sepuluh plugin lain (anime, chord, cuaca, font, gambar, gempa, kbbi, sholat, terjemah, wiki) gagal "Connection Closed" BUKAN karena handler atau sumber: run watchdog yang sudah terlanjur mengantre sebelum jeda menghidupkan bot produksi 16 detik sesudah service dihentikan, dua proses berebut satu sesi WA sepanjang jendela (jurnal membuktikan flap tersambung-putus tiap beberapa detik). Prosedur diperkeras (v3): jeda watchdog + service dihentikan lalu dipantau 25 detik dan dihentikan ulang bila hidup lagi sebelum tes dimulai. Kesepuluh plugin itu dites ulang dengan v3.
+
 | Plugin | Uji | Status live | Catatan |
 |---|---|---|---|
 | profil | .profil | LIVE LOLOS 2026-11-04 16:03 WIB | Kartu canvas terkirim, 0 handler error; service dipulihkan dan tersambung lagi sesudah tes |
