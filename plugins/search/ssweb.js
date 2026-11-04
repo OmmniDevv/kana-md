@@ -16,22 +16,22 @@ export const config = {
 export const i18n = {
   id: {
     ssweb: {
-      needUrl: 'Kirim link webnya dulu yaa, contoh: .ssweb https://example.com~',
-      invalidUrl: 'Mouu, link itu nggak valid atau nggak aman. Pastikan formatnya lengkap yaa~',
-      failed: 'Mouu, screenshot-nya gagal: {message}. Coba lagi nanti ya~',
-      caption: 'Screenshot {url}',
-      hint: 'Catatan: kalau gambarnya masih bertuliskan Generating Preview, itu tandanya layanan screenshot lagi menyiapkan tampilannya. Tunggu sebentar lalu coba lagi yaa~',
+      needUrl: '╭─❏ 📸 「 *SCREENSHOT WEB* 」\n┊ Kirim link webnya dulu yaa~\n┊ Contoh: *.ssweb https://example.com*\n╰━━━━━━━',
+      invalidUrl: '╭─❏ 🙈 「 *LINK TIDAK VALID* 」\n┊ Mouu, link itu nggak valid atau nggak aman~\n┊ Pastikan formatnya lengkap yaa~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *SCREENSHOT GAGAL* 」\n┊ Mouu, screenshot-nya gagal: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      caption: '╭─❏ 📸 「 *SCREENSHOT* 」\n┊ {url}\n╰━━━━━━━',
+      hint: '╭─❏ 💡 「 *CATATAN* 」\n┊ Kalau gambarnya masih bertuliskan *Generating Preview*, itu tandanya layanan screenshot lagi menyiapkan tampilannya~\n┊ Tunggu sebentar lalu coba lagi yaa~\n╰━━━━━━━',
       btnAgain: 'Ambil lagi',
       btnShort: 'Pendekkan link',
     },
   },
   en: {
     ssweb: {
-      needUrl: 'Send the web link first, example: .ssweb https://example.com~',
-      invalidUrl: 'Mouu, that link is not valid or not safe. Make sure the format is complete~',
-      failed: 'Mouu, the screenshot failed: {message}. Try again later~',
-      caption: 'Screenshot of {url}',
-      hint: 'Note: if the image still says Generating Preview, the screenshot service is preparing the view. Wait a bit and try again~',
+      needUrl: '╭─❏ 📸 「 *WEB SCREENSHOT* 」\n┊ Send the web link first~\n┊ Example: *.ssweb https://example.com*\n╰━━━━━━━',
+      invalidUrl: '╭─❏ 🙈 「 *INVALID LINK* 」\n┊ Mouu, that link is not valid or not safe~\n┊ Make sure the format is complete~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *SCREENSHOT FAILED* 」\n┊ Mouu, the screenshot failed: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      caption: '╭─❏ 📸 「 *SCREENSHOT* 」\n┊ {url}\n╰━━━━━━━',
+      hint: '╭─❏ 💡 「 *NOTE* 」\n┊ If the image still says *Generating Preview*, the screenshot service is preparing the view~\n┊ Wait a bit and try again~\n╰━━━━━━━',
       btnAgain: 'Take again',
       btnShort: 'Shorten link',
     },

@@ -15,30 +15,28 @@ export const config = {
 export const i18n = {
   id: {
     resep: {
-      needQuery: 'Ketik nama makanannya dulu yaa, contoh: .resep chicken~ 🍳',
-      notFound: 'Mouu, resep "{query}" nggak ketemu di TheMealDB. Coba kata bahasa Inggris lain ya~',
-      failed: 'Mouu, pencarian resep gagal: {message}. Coba lagi nanti ya~',
-      header: '🍳 {name}',
-      meta: 'Kategori: {category} | Asal: {area}',
-      ingredientsTitle: 'Bahan utama:',
-      stepsTitle: 'Cara masak (ringkas):',
-      others: 'Hasil lain: {names}',
+      needQuery: '╭─❏ 🍳 「 *CARI RESEP* 」\n┊ Ketik nama makanannya dulu yaa~\n┊ Contoh: *.resep chicken*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *RESEP TIDAK KETEMU* 」\n┊ Mouu, resep *{query}* nggak ketemu di TheMealDB~\n┊ Coba kata bahasa Inggris lain yaa~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian resep gagal: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      header: '╭─❏ 🍳 「 *{name}* 」',
+      meta: '┊ ᴋᴀᴛᴇɢᴏʀɪ: *{category}*\n┊ ᴀꜱᴀʟ: *{area}*',
+      ingredientsTitle: '┊ ʙᴀʜᴀɴ ᴜᴛᴀᴍᴀ:',
+      stepsTitle: '┊ ᴄᴀʀᴀ ᴍᴀꜱᴀᴋ (ʀɪɴɢᴋᴀꜱ):',
+      others: '┊ ʜᴀꜱɪʟ ʟᴀɪɴ: {names}',
       btnOther: 'Resep {name}',
-      btnMenu: 'Menu Pencarian',
     },
   },
   en: {
     resep: {
-      needQuery: 'Type a food name first, example: .resep chicken~ 🍳',
-      notFound: 'Mouu, recipe "{query}" was not found on TheMealDB. Try another English keyword~',
-      failed: 'Mouu, recipe search failed: {message}. Try again later~',
-      header: '🍳 {name}',
-      meta: 'Category: {category} | Origin: {area}',
-      ingredientsTitle: 'Main ingredients:',
-      stepsTitle: 'Steps (short version):',
-      others: 'Other results: {names}',
+      needQuery: '╭─❏ 🍳 「 *RECIPE SEARCH* 」\n┊ Type a food name first~\n┊ Example: *.resep chicken*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *RECIPE NOT FOUND* 」\n┊ Mouu, recipe *{query}* was not found on TheMealDB~\n┊ Try another English keyword~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *SEARCH FAILED* 」\n┊ Mouu, recipe search failed: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      header: '╭─❏ 🍳 「 *{name}* 」',
+      meta: '┊ ᴄᴀᴛᴇɢᴏʀʏ: *{category}*\n┊ ᴏʀɪɢɪɴ: *{area}*',
+      ingredientsTitle: '┊ ᴍᴀɪɴ ɪɴɢʀᴇᴅɪᴇɴᴛꜱ:',
+      stepsTitle: '┊ ꜱᴛᴇᴘꜱ (ꜱʜᴏʀᴛ ᴠᴇʀꜱɪᴏɴ):',
+      others: '┊ ᴏᴛʜᴇʀ ʀᴇꜱᴜʟᴛꜱ: {names}',
       btnOther: '{name} recipe',
-      btnMenu: 'Search Menu',
     },
   },
 }
@@ -75,20 +73,19 @@ export async function handler(ctx) {
   const lines = [
     ctx.t('resep.header', { name: meal.strMeal }),
     ctx.t('resep.meta', { category: meal.strCategory || '-', area: meal.strArea || '-' }),
-    '',
     ctx.t('resep.ingredientsTitle'),
-    ...ingredients.map((ing) => `• ${ing}`),
-    '',
+    ...ingredients.map((ing) => `┊ • ${ing}`),
     ctx.t('resep.stepsTitle'),
-    steps,
+    `┊ ${steps}`,
   ]
-  if (others.length) lines.push('', ctx.t('resep.others', { names: others.map((m) => m.strMeal).join(', ') }))
+  if (others.length) lines.push(ctx.t('resep.others', { names: others.map((m) => m.strMeal).join(', ') }))
+  lines.push('╰━━━━━━━')
   const body = lines.join('\n')
   const replies = others.slice(0, 3).map((m) => ({
     text: ctx.t('resep.btnOther', { name: String(m.strMeal).slice(0, 14) }),
     id: `.resep ${m.strMeal}`,
   }))
-  replies.push({ text: ctx.t('resep.btnMenu'), id: '.menu search' })
+  if (!replies.length) return ctx.reply(body)
   return sendButtons(ctx.sock, ctx.chat, {
     title: 'KANA',
     body,

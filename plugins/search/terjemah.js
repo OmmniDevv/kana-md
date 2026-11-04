@@ -14,18 +14,18 @@ export const config = {
 export const i18n = {
   id: {
     terjemah: {
-      usage: 'Formatnya: .tr <kode bahasa> <teks>. Kode umum: id (Indonesia), en (Inggris), ja (Jepang), ko (Korea), ar (Arab), zh (Mandarin), es (Spanyol), fr (Prancis), de (Jerman), ru (Rusia). Contoh: .tr en selamat pagi~',
-      failed: 'Mouu, terjemahannya gagal: {message}. Layanan Google kadang memblokir sebentar, coba lagi nanti ya~',
-      detected: 'Bahasa asal terdeteksi: {lang}',
-      result: '{text}',
+      usage: '╭─❏ 🌐 「 *CARA PAKAI TERJEMAH* 」\n┊ Formatnya: *.tr <kode bahasa> <teks>*\n┊ ᴋᴏᴅᴇ ᴜᴍᴜᴍ: *id* (Indonesia), *en* (Inggris), *ja* (Jepang), *ko* (Korea), *ar* (Arab), *zh* (Mandarin), *es* (Spanyol), *fr* (Prancis), *de* (Jerman), *ru* (Rusia)\n┊ Contoh: *.tr en selamat pagi*\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *TERJEMAHAN GAGAL* 」\n┊ Mouu, terjemahannya gagal: *{message}*\n┊ Layanan Google kadang memblokir sebentar, coba lagi nanti yaa~\n╰━━━━━━━',
+      detected: '┊ ʙᴀʜᴀꜱᴀ ᴀꜱᴀʟ ᴛᴇʀᴅᴇᴛᴇᴋꜱɪ: *{lang}*',
+      result: '╭─❏ 🌐 「 *TERJEMAHAN* 」\n┊ {text}',
     },
   },
   en: {
     terjemah: {
-      usage: 'Format: .tr <language code> <text>. Common codes: id (Indonesian), en (English), ja (Japanese), ko (Korean), ar (Arabic), zh (Chinese), es (Spanish), fr (French), de (German), ru (Russian). Example: .tr id good morning~',
-      failed: 'Mouu, translation failed: {message}. The Google service blocks briefly sometimes, try again later~',
-      detected: 'Detected source language: {lang}',
-      result: '{text}',
+      usage: '╭─❏ 🌐 「 *HOW TO USE TRANSLATE* 」\n┊ Format: *.tr <language code> <text>*\n┊ ᴄᴏᴍᴍᴏɴ ᴄᴏᴅᴇꜱ: *id* (Indonesian), *en* (English), *ja* (Japanese), *ko* (Korean), *ar* (Arabic), *zh* (Chinese), *es* (Spanish), *fr* (French), *de* (German), *ru* (Russian)\n┊ Example: *.tr id good morning*\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *TRANSLATION FAILED* 」\n┊ Mouu, translation failed: *{message}*\n┊ The Google service blocks briefly sometimes, try again later~\n╰━━━━━━━',
+      detected: '┊ ᴅᴇᴛᴇᴄᴛᴇᴅ ꜱᴏᴜʀᴄᴇ ʟᴀɴɢᴜᴀɢᴇ: *{lang}*',
+      result: '╭─❏ 🌐 「 *TRANSLATION* 」\n┊ {text}',
     },
   },
 }
@@ -48,5 +48,6 @@ export async function handler(ctx) {
   if (result.detectedLang && result.detectedLang !== target) {
     lines.push(ctx.t('terjemah.detected', { lang: result.detectedLang }))
   }
+  lines.push('╰━━━━━━━')
   await ctx.reply(lines.join('\n'))
 }

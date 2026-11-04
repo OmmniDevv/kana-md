@@ -17,18 +17,18 @@ export const config = {
 export const i18n = {
   id: {
     wiki: {
-      needQuery: 'Ketik judul artikelnya dulu yaa, contoh: .wiki Indonesia~',
-      notFound: 'Mouu, artikelnya nggak ketemu di Wikipedia. Coba judul lain ya~',
-      failed: 'Mouu, pencarian Wikipedia gagal: {message}. Coba lagi nanti ya~',
-      body: '*{title}*\n{description}\n\n{extract}\n\nSumber: {url}',
+      needQuery: '╭─❏ 📚 「 *WIKIPEDIA* 」\n┊ Ketik judul artikelnya dulu yaa~\n┊ Contoh: *.wiki Indonesia*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *ARTIKEL TIDAK KETEMU* 」\n┊ Mouu, artikelnya nggak ketemu di Wikipedia~\n┊ Coba judul lain yaa~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian Wikipedia gagal: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      body: '╭─❏ 📚 「 *{title}* 」\n┊ {description}\n\n{extract}\n\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━',
     },
   },
   en: {
     wiki: {
-      needQuery: 'Type the article title first, example: .wiki Indonesia~',
-      notFound: 'Mouu, the article was not found on Wikipedia. Try another title~',
-      failed: 'Mouu, Wikipedia search failed: {message}. Try again later~',
-      body: '*{title}*\n{description}\n\n{extract}\n\nSource: {url}',
+      needQuery: '╭─❏ 📚 「 *WIKIPEDIA* 」\n┊ Type the article title first~\n┊ Example: *.wiki Indonesia*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *ARTICLE NOT FOUND* 」\n┊ Mouu, the article was not found on Wikipedia~\n┊ Try another title~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *SEARCH FAILED* 」\n┊ Mouu, Wikipedia search failed: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      body: '╭─❏ 📚 「 *{title}* 」\n┊ {description}\n\n{extract}\n\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━',
     },
   },
 }

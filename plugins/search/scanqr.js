@@ -15,18 +15,18 @@ export const config = {
 export const i18n = {
   id: {
     scanqr: {
-      noImage: 'Balas atau kutip gambar yang ada QR-nya dulu yaa, baru ketik .scanqr~',
-      notFound: 'Mouu, QR-nya nggak kebaca dari gambar itu. Coba gambar yang lebih jernih dan QR-nya utuh ya~',
-      result: 'Isi QR-nya: {content}',
+      noImage: '╭─❏ 🔍 「 *SCAN QR* 」\n┊ Balas atau kutip gambar yang ada QR-nya dulu yaa~\n┊ Baru ketik *.scanqr*\n╰━━━━━━━',
+      notFound: '╭─❏ 🙈 「 *QR TIDAK KEBACA* 」\n┊ Mouu, QR-nya nggak kebaca dari gambar itu~\n┊ Coba gambar yang lebih jernih dan QR-nya utuh yaa~\n╰━━━━━━━',
+      result: '╭─❏ 🔍 「 *ISI QR* 」\n┊ {content}\n╰━━━━━━━',
       btnQr: 'Buat QR lagi',
       btnShort: 'Pendekkan link',
     },
   },
   en: {
     scanqr: {
-      noImage: 'Reply to or quote an image containing a QR first, then type .scanqr~',
-      notFound: 'Mouu, the QR could not be read from that image. Try a clearer image with the full QR visible~',
-      result: 'QR content: {content}',
+      noImage: '╭─❏ 🔍 「 *SCAN QR* 」\n┊ Reply to or quote an image containing a QR first~\n┊ Then type *.scanqr*\n╰━━━━━━━',
+      notFound: '╭─❏ 🙈 「 *QR NOT READABLE* 」\n┊ Mouu, the QR could not be read from that image~\n┊ Try a clearer image with the full QR visible~\n╰━━━━━━━',
+      result: '╭─❏ 🔍 「 *QR CONTENT* 」\n┊ {content}\n╰━━━━━━━',
       btnQr: 'Make this QR',
       btnShort: 'Shorten link',
     },

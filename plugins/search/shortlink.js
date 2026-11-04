@@ -15,25 +15,25 @@ export const config = {
 export const i18n = {
   id: {
     shortlink: {
-      needUrl: 'Kirim linknya dulu yaa, contoh: .shortlink https://example.com~',
-      invalidUrl: 'Mouu, link itu nggak valid atau nggak aman buat dipendekkan. Pastikan formatnya lengkap, contoh: https://example.com/halaman~',
-      failed: 'Mouu, gagal memendekkan link: {message}. Coba lagi nanti ya~',
-      result: 'Link pendeknya siap: {short}\nAsli: {original}',
+      needUrl: '╭─❏ 🔗 「 *PENDEKKAN LINK* 」\n┊ Kirim linknya dulu yaa~\n┊ Contoh: *.shortlink https://example.com*\n╰━━━━━━━',
+      invalidUrl: '╭─❏ 🙈 「 *LINK TIDAK VALID* 」\n┊ Mouu, link itu nggak valid atau nggak aman buat dipendekkan~\n┊ Pastikan formatnya lengkap, contoh: *https://example.com/halaman*\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *GAGAL PENDEKKAN LINK* 」\n┊ Mouu, gagal memendekkan link: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      result: '╭─❏ 🔗 「 *LINK PENDEK SIAP* 」\n┊ {short}\n┊ ᴀꜱʟɪ: {original}\n╰━━━━━━━',
       btnQr: 'Buat QR',
     },
   },
   en: {
     shortlink: {
-      needUrl: 'Send the link first, example: .shortlink https://example.com~',
-      invalidUrl: 'Mouu, that link is not valid or not safe to shorten. Make sure the format is complete, example: https://example.com/page~',
-      failed: 'Mouu, failed to shorten the link: {message}. Try again later~',
-      result: 'Your short link is ready: {short}\nOriginal: {original}',
+      needUrl: '╭─❏ 🔗 「 *SHORTEN A LINK* 」\n┊ Send the link first~\n┊ Example: *.shortlink https://example.com*\n╰━━━━━━━',
+      invalidUrl: '╭─❏ 🙈 「 *INVALID LINK* 」\n┊ Mouu, that link is not valid or not safe to shorten~\n┊ Make sure the format is complete, example: *https://example.com/page*\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *FAILED TO SHORTEN LINK* 」\n┊ Mouu, failed to shorten the link: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      result: '╭─❏ 🔗 「 *SHORT LINK READY* 」\n┊ {short}\n┊ ᴏʀɪɢɪɴᴀʟ: {original}\n╰━━━━━━━',
       btnQr: 'Make QR',
     },
   },
 }
 
-export const test = { input: '.shortlink https://omnidevv.vercel.app', expect: /Link pendeknya siap/i }
+export const test = { input: '.shortlink https://omnidevv.vercel.app', expect: /link pendek siap/i }
 
 export async function handler(ctx) {
   const raw = ctx.args[0]

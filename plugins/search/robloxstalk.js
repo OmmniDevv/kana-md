@@ -13,18 +13,18 @@ export const config = {
 export const i18n = {
   id: {
     robloxstalk: {
-      hint: 'Tulis username Roblox-nya yaa~ Contoh: .robloxstalk builderman',
-      body: '🧱 PROFIL ROBLOX\n\nUsername: {username}\nNama tampil: {display}\nID: {id}\nTeman: {friends} · Pengikut: {followers} · Mengikuti: {following}\nBergabung: {joined}\nProfil: {url}',
-      notFound: 'User Roblox itu tidak ditemukan. {mood}',
-      fail: 'Gagal ambil data Roblox: {error}',
+      hint: '╭─❏ 🧱 「 *PROFIL ROBLOX* 」\n┊ Tulis username Roblox-nya yaa~\n┊ Contoh: *.robloxstalk builderman*\n╰━━━━━━━',
+      body: '╭─❏ 🧱 「 *PROFIL ROBLOX* 」\n┊ ᴜꜱᴇʀɴᴀᴍᴇ: *{username}*\n┊ ɴᴀᴍᴀ ᴛᴀᴍᴘɪʟ: *{display}*\n┊ ɪᴅ: *{id}*\n┊ ᴛᴇᴍᴀɴ: *{friends}* · ᴘᴇɴɢɪᴋᴜᴛ: *{followers}* · ᴍᴇɴɢɪᴋᴜᴛɪ: *{following}*\n┊ ʙᴇʀɢᴀʙᴜɴɢ: *{joined}*\n┊ ᴘʀᴏꜰɪʟ: {url}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *USER TIDAK DITEMUKAN* 」\n┊ User Roblox itu tidak ditemukan. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *GAGAL AMBIL DATA* 」\n┊ Gagal ambil data Roblox: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     robloxstalk: {
-      hint: 'Write the Roblox username please~ Example: .robloxstalk builderman',
-      body: '🧱 ROBLOX PROFILE\n\nUsername: {username}\nDisplay name: {display}\nID: {id}\nFriends: {friends} · Followers: {followers} · Following: {following}\nJoined: {joined}\nProfile: {url}',
-      notFound: 'That Roblox user was not found. {mood}',
-      fail: 'Failed to fetch Roblox data: {error}',
+      hint: '╭─❏ 🧱 「 *ROBLOX PROFILE* 」\n┊ Write the Roblox username please~\n┊ Example: *.robloxstalk builderman*\n╰━━━━━━━',
+      body: '╭─❏ 🧱 「 *ROBLOX PROFILE* 」\n┊ ᴜꜱᴇʀɴᴀᴍᴇ: *{username}*\n┊ ᴅɪꜱᴘʟᴀʏ ɴᴀᴍᴇ: *{display}*\n┊ ɪᴅ: *{id}*\n┊ ꜰʀɪᴇɴᴅꜱ: *{friends}* · ꜰᴏʟʟᴏᴡᴇʀꜱ: *{followers}* · ꜰᴏʟʟᴏᴡɪɴɢ: *{following}*\n┊ ᴊᴏɪɴᴇᴅ: *{joined}*\n┊ ᴘʀᴏꜰɪʟᴇ: {url}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *USER NOT FOUND* 」\n┊ That Roblox user was not found. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *FAILED TO FETCH DATA* 」\n┊ Failed to fetch Roblox data: *{error}*\n╰━━━━━━━',
     },
   },
 }
