@@ -87,10 +87,24 @@ export async function getSession(storage, chat, now = Date.now()) {
   return session
 }
 
+// Ikat ID pesan pertanyaan yang terkirim ke sesi aktif di chat, supaya
+// jawaban lewat reply (mengutip pesan itu) bisa dirutekan ke sesi ini.
+// Satu mekanisme bersama untuk semua plugin kuis (standar reply-first).
+export async function bindQuestionMessage(storage, chat, messageId) {
+  if (!messageId) return false
+  const session = await storage.get('kv', KEY(chat))
+  if (!session) return false
+  const ids = Array.isArray(session.questionIds) ? session.questionIds : []
+  if (!ids.includes(messageId)) ids.push(messageId)
+  session.questionIds = ids.slice(-4)
+  await storage.set('kv', KEY(chat), session)
+  return true
+}
+
 export async function startQuiz(storage, chat, type, { lang = 'id', rng = Math.random, now = Date.now(), startedBy = '' } = {}) {
   const data = await loadData(storage)
   const ttl = TTL_MS[type] ?? TTL_MS.default
-  const base = { type, lang, startedBy, startedAt: now, expiresAt: now + ttl, points: 0, earned: 0 }
+  const base = { type, lang, startedBy, startedAt: now, expiresAt: now + ttl, points: 0, earned: 0, questionIds: [] }
   let session
 
   if (type === 'family100') {
