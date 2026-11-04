@@ -1,4 +1,4 @@
-import { getSession, startQuiz } from '../../src/quiz/engine.js'
+import { getSession, startQuiz, bindQuestionMessage } from '../../src/quiz/engine.js'
 import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
@@ -6,7 +6,7 @@ export const config = {
   alias: ['provinsi'],
   category: 'fun',
   description: { id: 'Kuis Tebak Provinsi: tebak nama provinsi Indonesia dari petunjuknya', en: 'Province quiz: guess the Indonesian province name from its clue' },
-  usage: '.tebakprovinsi lalu jawab lewat chat atau .jawab <jawaban>',
+  usage: '.tebakprovinsi lalu balas pesan pertanyaannya dengan jawabanmu',
   example: '.tebakprovinsi',
   cooldown: 5,
 }
@@ -15,7 +15,7 @@ export const i18n = {
   id: {
     tebakprovinsi: {
       title: 'Kuis Tebak Provinsi',
-      intro: '🗺️ KUIS TEBAK PROVINSI\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas dengan nama provinsinya atau .jawab <jawaban> yaa~ {mood}',
+      intro: '🗺️ KUIS TEBAK PROVINSI\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan nama provinsinya yaa~ {mood}',
       already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
       menuBtn: '🎲 Menu Fun',
@@ -25,7 +25,7 @@ export const i18n = {
   en: {
     tebakprovinsi: {
       title: 'Province Quiz',
-      intro: '🗺️ PROVINCE QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply with the province name or .jawab <answer>~ {mood}',
+      intro: '🗺️ PROVINCE QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the province name~ {mood}',
       already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
       menuBtn: '🎲 Fun Menu',
@@ -46,7 +46,6 @@ export async function handler(ctx) {
       footer: ctx.t('tebakprovinsi.footer'),
       replies: [
         { text: ctx.t('tebakprovinsi.giveUpBtn'), id: '.nyerah' },
-        { text: ctx.t('tebakprovinsi.menuBtn'), id: '.menu fun' },
       ],
       textFallback: body,
     })
@@ -61,14 +60,15 @@ export async function handler(ctx) {
     seconds: 120,
     mood: ctx.say('senang'),
   })
-  return sendButtons(ctx.sock, ctx.chat, {
+  const sentQuestion = await sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('tebakprovinsi.title'),
     body,
     footer: ctx.t('tebakprovinsi.footer'),
     replies: [
       { text: ctx.t('tebakprovinsi.giveUpBtn'), id: '.nyerah' },
-      { text: ctx.t('tebakprovinsi.menuBtn'), id: '.menu fun' },
     ],
     textFallback: body,
   })
+  await bindQuestionMessage(ctx.storage, ctx.chat, sentQuestion?.key?.id)
+  return sentQuestion
 }
