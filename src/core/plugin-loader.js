@@ -54,6 +54,9 @@ export async function loadPlugins(dir) {
       // Hook opsional: onParticipantsUpdate(ctx) untuk event grup
       // (add/remove/promote/demote) dari connection.
       onParticipantsUpdate: typeof mod.onParticipantsUpdate === 'function' ? mod.onParticipantsUpdate : null,
+      // Definisi tes live opsional milik plugin ({ input, expect, needs })
+      // untuk harness scripts/livetest.js.
+      test: mod.test && typeof mod.test === 'object' ? mod.test : null,
     }
     plugins.set(name, plugin)
     for (const alias of config.alias ?? []) {

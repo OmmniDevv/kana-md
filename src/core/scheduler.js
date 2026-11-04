@@ -42,9 +42,32 @@ export function isOpenAt(nowMinutes, open, close) {
 
 const PRAYERS = ['imsak', 'subuh', 'dzuhur', 'ashar', 'maghrib', 'isya']
 
-export function startScheduler({ session, storage, defaultLang = 'id' }) {
+export function startScheduler({ session, storage, defaultLang = 'id', statsSource = null }) {
   const prayerCache = new Map()
   let stopped = false
+
+  // Flush statistik bot untuk dashboard web ke kv 'bot_stats' (kontrak
+  // docs/WEB.md): { startedAt, totalUsers, totalCommands, pluginCount }.
+  async function flushBotStats() {
+    if (!statsSource) return
+    try {
+      const prev = await storage.get('kv', 'bot_stats')
+      const stats = statsSource()
+      let totalUsers = prev?.totalUsers ?? 0
+      try {
+        totalUsers = (await storage.keys('users')).filter((k) => /^\d+$/.test(k)).length
+      } catch {}
+      await storage.set('kv', 'bot_stats', {
+        startedAt: prev?.startedAt ?? stats.startedAt,
+        totalUsers,
+        totalCommands: stats.totalCommands,
+        pluginCount: stats.pluginCount,
+        updatedAt: Date.now(),
+      })
+    } catch (err) {
+      logger.warn({ err: err.message }, 'flush bot_stats gagal')
+    }
+  }
 
   async function alreadySent(jid, date, kind) {
     const marker = await storage.get('kv', `sched:${jid}:${date}:${kind}`)
@@ -73,6 +96,7 @@ export function startScheduler({ session, storage, defaultLang = 'id' }) {
 
   async function tick() {
     if (stopped) return
+    await flushBotStats()
     const sock = session?.sock
     if (!sock?.user) return
     const now = wibParts()

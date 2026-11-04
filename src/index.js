@@ -34,7 +34,16 @@ const pipeline = createPipeline({ registry, storage, owners: [ownerNumber], defa
 const auth = await createAuthState(storage)
 // Referensi socket berjalan (diperbarui connection tiap reconnect) untuk scheduler.
 const session = { sock: null }
-startScheduler({ session, storage, defaultLang })
+startScheduler({
+  session,
+  storage,
+  defaultLang,
+  statsSource: () => ({
+    startedAt: pipeline.stats.startedAt,
+    totalCommands: pipeline.stats.totalCommands,
+    pluginCount: registry.list().length,
+  }),
+})
 
 await startConnection({
   auth,

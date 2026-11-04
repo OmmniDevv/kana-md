@@ -33,6 +33,7 @@ export function defaultProfile() {
     balance: 0,
     banned: false,
     registeredAt: null,
+    lastSeen: null,
     name: '',
     limitDate: '',
     limitLeft: DEFAULT_DAILY_LIMIT,
@@ -60,6 +61,18 @@ export async function updateProfile(storage, digits, patch) {
   const profile = await getProfile(storage, digits)
   Object.assign(profile, patch)
   return saveProfile(storage, digits, profile)
+}
+
+// Sentuh profil setelah aktivitas: XP + lastSeen + nama (dari pushName bila
+// ada dan nama belum terisi). Satu kali simpan untuk semua perubahan.
+export async function touchProfile(storage, digits, { xp = 0, pushName = '' } = {}) {
+  const profile = await getProfile(storage, digits)
+  const before = levelFromXp(profile.xp)
+  if (xp) profile.xp = Math.max(0, profile.xp + xp)
+  profile.lastSeen = Date.now()
+  if (!profile.name && pushName) profile.name = pushName
+  await saveProfile(storage, digits, profile)
+  return { profile, leveledUp: levelFromXp(profile.xp) > before, level: levelFromXp(profile.xp) }
 }
 
 // Tambah XP, kembalikan profil terbaru + info naik level.

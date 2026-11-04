@@ -107,14 +107,15 @@ export async function handler(ctx) {
   const fullBody = formatMenu({ ...shared, labels: baseLabels })
   const arg = (ctx.args?.[0] || '').toLowerCase()
 
+  // Gambar header menu: banner resmi dari user (assets/menu-banner.jpg).
   let image = null
   try {
-    image = await readFile(join(here, '../../assets/welcome.png'))
+    image = await readFile(join(here, '../../assets/menu-banner.jpg'))
   } catch {
     image = null
   }
 
-  // .menu <kategori>: sub-menu satu kategori + tombol kembali/kategori lain.
+  // .menu <kategori>: banner + sub-menu satu kategori + tombol kembali/kategori lain.
   // Gagal kirim tombol: sendButtons mengirim teks sub-menu sebagai fallback.
   if (arg && arg !== 'all') {
     const cat = categories.find((c) => c.key === arg)
@@ -124,6 +125,9 @@ export async function handler(ctx) {
       )
     }
     const body = formatMenuCategory({ category: cat, labels: { footer, subHint: ctx.t('menu.subHint') } })
+    if (image) {
+      await ctx.sock.sendMessage(ctx.chat, { image, caption: `${cat.icon} ${cat.title}` }, { quoted: ctx.raw })
+    }
     return sendButtons(ctx.sock, ctx.chat, {
       title,
       body,

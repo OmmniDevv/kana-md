@@ -4,8 +4,12 @@
     "@rexxhayanasi/elaina-baileys": "1.4.7",
     "axios": "1.21.0",
     "cheerio": "1.2.0",
+    "jpeg-js": "0.4.4",
+    "jsqr": "1.4.0",
     "pg": "^8.13.1",
-    "pino": "^9.5.0"
+    "pino": "^9.5.0",
+    "pngjs": "7.0.0",
+    "qrcode": "1.5.4"
   },
   "description": "KANA, bot WhatsApp moe berbasis @rexxhayanasi/elaina-baileys: plugin modular, dwibahasa ID/EN, tombol interaktif, mini game HTML, storage Supabase",
   "engines": {

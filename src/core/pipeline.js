@@ -65,6 +65,8 @@ function shouldRunBefores(message) {
 // resolve -> gates (owner/group/private/admin/botAdmin/ban/mode/limit/
 // cooldown) -> handler (error boundary) -> XP.
 export function createPipeline({ registry, storage, owners = [], defaultLang = 'id' }) {
+  // Statistik ringan untuk dashboard web (kv bot_stats, diflush scheduler).
+  const stats = { startedAt: Date.now(), totalCommands: 0 }
   const cooldowns = new Map()
   const ownerDigits = owners.map(digits).filter(Boolean)
   const groupMetaCache = new Map()
@@ -233,11 +235,11 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
       command: cfg.name,
     }
 
+    stats.totalCommands += 1
     try {
       await plugin.handler(ctx)
-      if (!isOwner && cfg.category !== 'owner') {
-        await users.addXp(storage, primaryDigits, users.XP_PER_COMMAND).catch(() => {})
-      }
+      const xp = !isOwner && cfg.category !== 'owner' ? users.XP_PER_COMMAND : 0
+      await users.touchProfile(storage, primaryDigits, { xp, pushName: raw.pushName || '' }).catch(() => {})
     } catch (err) {
       logger.error({ err: err.message, command: cfg.name }, 'handler error')
       await reply(t('common.error'))
@@ -276,5 +278,5 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
     }
   }
 
-  return { handle, handleParticipants }
+  return { handle, handleParticipants, stats }
 }
