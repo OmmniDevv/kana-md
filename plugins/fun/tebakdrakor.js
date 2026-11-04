@@ -1,4 +1,4 @@
-import { getSession, startQuiz } from '../../src/quiz/engine.js'
+import { getSession, startQuiz, bindQuestionMessage } from '../../src/quiz/engine.js'
 import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
@@ -6,7 +6,7 @@ export const config = {
   alias: ['drakor'],
   category: 'fun',
   description: { id: 'Kuis Tebak Drakor: tebak judul drama Korea dari sinopsis singkatnya', en: 'K-drama quiz: guess the Korean drama title from its short synopsis' },
-  usage: '.tebakdrakor lalu jawab lewat chat atau .jawab <jawaban>',
+  usage: '.tebakdrakor lalu balas pesan pertanyaannya dengan jawabanmu',
   example: '.tebakdrakor',
   cooldown: 5,
 }
@@ -15,7 +15,7 @@ export const i18n = {
   id: {
     tebakdrakor: {
       title: 'Kuis Tebak Drakor',
-      intro: '📺 KUIS TEBAK DRAKOR\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas dengan judul dramanya atau .jawab <jawaban> yaa~ {mood}',
+      intro: '📺 KUIS TEBAK DRAKOR\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan judul dramanya yaa~ {mood}',
       already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
       menuBtn: '🎲 Menu Fun',
@@ -25,7 +25,7 @@ export const i18n = {
   en: {
     tebakdrakor: {
       title: 'K-Drama Quiz',
-      intro: '📺 K-DRAMA QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply with the drama title or .jawab <answer>~ {mood}',
+      intro: '📺 K-DRAMA QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the drama title~ {mood}',
       already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
       menuBtn: '🎲 Fun Menu',
@@ -46,7 +46,6 @@ export async function handler(ctx) {
       footer: ctx.t('tebakdrakor.footer'),
       replies: [
         { text: ctx.t('tebakdrakor.giveUpBtn'), id: '.nyerah' },
-        { text: ctx.t('tebakdrakor.menuBtn'), id: '.menu fun' },
       ],
       textFallback: body,
     })
@@ -61,14 +60,15 @@ export async function handler(ctx) {
     seconds: 120,
     mood: ctx.say('senang'),
   })
-  return sendButtons(ctx.sock, ctx.chat, {
+  const sentQuestion = await sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('tebakdrakor.title'),
     body,
     footer: ctx.t('tebakdrakor.footer'),
     replies: [
       { text: ctx.t('tebakdrakor.giveUpBtn'), id: '.nyerah' },
-      { text: ctx.t('tebakdrakor.menuBtn'), id: '.menu fun' },
     ],
     textFallback: body,
   })
+  await bindQuestionMessage(ctx.storage, ctx.chat, sentQuestion?.key?.id)
+  return sentQuestion
 }
