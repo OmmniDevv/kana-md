@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'senja',
-  alias: [],
+  alias: ['sadboy'],
   category: 'fun',
   description: { id: 'Kirim satu kalimat puitis bertema senja', en: 'Send one poetic evening themed line' },
   usage: '.senja',
