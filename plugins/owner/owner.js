@@ -13,13 +13,13 @@ export const i18n = {
   id: {
     owner: {
       status:
-        'Status KANA\nUptime: {uptime} detik\nPlugin aktif: {plugins}\nPlugin karantina: {quarantined}\nStorage: {driver}\nNode: {node}\n{mood}',
+        '╭─❏ 👑 「 *STATUS KANA* 」\n┊ ᴜᴘᴛɪᴍᴇ: *{uptime} detik*\n┊ ᴘʟᴜɢɪɴ ᴀᴋᴛɪꜰ: *{plugins}*\n┊ ᴘʟᴜɢɪɴ ᴋᴀʀᴀɴᴛɪɴᴀ: *{quarantined}*\n┊ ꜱᴛᴏʀᴀɢᴇ: *{driver}*\n┊ ɴᴏᴅᴇ: *{node}*\n╰━━━━━━━ {mood}',
     },
   },
   en: {
     owner: {
       status:
-        'KANA status\nUptime: {uptime} seconds\nActive plugins: {plugins}\nQuarantined plugins: {quarantined}\nStorage: {driver}\nNode: {node}\n{mood}',
+        '╭─❏ 👑 「 *KANA STATUS* 」\n┊ ᴜᴘᴛɪᴍᴇ: *{uptime} seconds*\n┊ ᴀᴄᴛɪᴠᴇ ᴘʟᴜɢɪɴꜱ: *{plugins}*\n┊ ǫᴜᴀʀᴀɴᴛɪɴᴇᴅ ᴘʟᴜɢɪɴꜱ: *{quarantined}*\n┊ ꜱᴛᴏʀᴀɢᴇ: *{driver}*\n┊ ɴᴏᴅᴇ: *{node}*\n╰━━━━━━━ {mood}',
     },
   },
 }

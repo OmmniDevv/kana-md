@@ -3,7 +3,7 @@ import { getJadibotManager, listJadibotSessions } from '../../src/services/jadib
 
 export const config = {
   name: 'stopjadibot',
-  alias: ['stopbot'],
+  alias: ['stopbot', 'berhentijadibot'],
   category: 'owner',
   description: { id: 'Hentikan sesi jadibot (khusus owner)', en: 'Stop a jadibot session (owner only)' },
   usage: '.stopjadibot [nama]',
@@ -15,24 +15,24 @@ export const config = {
 export const i18n = {
   id: {
     stopjadibot: {
-      noSessions: 'Belum ada sesi jadibot yang aktif kok, Master~ Slotnya masih kosong semua ✨',
-      listHeader: 'Sesi jadibot yang lagi aktif nih, Master:\n{sessions}\nPencet tombolnya buat stop sesi yang dipilih yaa~',
-      sessionLine: '{index}. {name} : {number} (sejak {startedAt})',
-      stopped: 'Beres, Master~ Sesi jadibot "{name}" udah KANA stop. Sampai ketemu lagi yaa sesi kecil~ {mood}',
-      notFound: 'Hmm, sesi jadibot bernama "{name}" nggak ketemu, Master. Cek daftarnya pakai .stopjadibot tanpa nama yaa~',
-      failed: 'Mouu, gagal menghentikan sesinya, Master: {message} (╥﹏╥)',
+      noSessions: '╭─❏ 🤖 「 *SESI JADIBOT* 」\n┊ Belum ada sesi jadibot yang aktif kok, Master~\n┊ Slotnya masih kosong semua ✨\n╰━━━━━━━',
+      listHeader: '╭─❏ 🤖 「 *SESI JADIBOT AKTIF* 」\n{sessions}\n┊ Pencet tombolnya buat stop sesi yang dipilih yaa, Master~\n╰━━━━━━━',
+      sessionLine: '┊ {index}. *{name}* : {number} (ꜱᴇᴊᴀᴋ {startedAt})',
+      stopped: '╭─❏ 🤖 「 *SESI DISTOP* 」\n┊ ꜱᴇꜱɪ: *{name}*\n┊ Beres, Master~ sesi itu udah KANA stop. Sampai ketemu lagi yaa sesi kecil~ {mood}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *SESI TIDAK KETEMU* 」\n┊ Hmm, sesi jadibot bernama *{name}* nggak ketemu, Master.\n┊ Cek daftarnya pakai *.stopjadibot* tanpa nama yaa~\n╰━━━━━━━',
+      failed: '╭─❏ ⚠️ 「 *GAGAL STOP SESI* 」\n┊ Mouu, gagal menghentikan sesinya, Master.\n┊ ᴇʀʀᴏʀ: *{message}* (╥﹏╥)\n╰━━━━━━━',
       btnStop: 'Stop {name}',
       btnList: 'Daftar Bot',
     },
   },
   en: {
     stopjadibot: {
-      noSessions: 'No jadibot session is active yet, Master~ All slots are still empty ✨',
-      stopped: 'Done, Master~ Jadibot session "{name}" has been stopped by KANA. See you again, little session~ {mood}',
-      listHeader: 'Active jadibot sessions, Master:\n{sessions}\nTap a button to stop the chosen session~',
-      sessionLine: '{index}. {name} : {number} (since {startedAt})',
-      notFound: 'Hmm, no jadibot session named "{name}", Master. Check the list with .stopjadibot without a name~',
-      failed: 'Mouu, failed to stop the session, Master: {message} (╥﹏╥)',
+      noSessions: '╭─❏ 🤖 「 *JADIBOT SESSIONS* 」\n┊ No jadibot session is active yet, Master~\n┊ All slots are still empty ✨\n╰━━━━━━━',
+      stopped: '╭─❏ 🤖 「 *SESSION STOPPED* 」\n┊ ꜱᴇꜱꜱɪᴏɴ: *{name}*\n┊ Done, Master~ that session has been stopped by KANA. See you again, little session~ {mood}\n╰━━━━━━━',
+      listHeader: '╭─❏ 🤖 「 *ACTIVE JADIBOT SESSIONS* 」\n{sessions}\n┊ Tap a button to stop the chosen session, Master~\n╰━━━━━━━',
+      sessionLine: '┊ {index}. *{name}* : {number} (ꜱɪɴᴄᴇ {startedAt})',
+      notFound: '╭─❏ 🔍 「 *SESSION NOT FOUND* 」\n┊ Hmm, no jadibot session named *{name}*, Master.\n┊ Check the list with *.stopjadibot* without a name~\n╰━━━━━━━',
+      failed: '╭─❏ ⚠️ 「 *FAILED TO STOP SESSION* 」\n┊ Mouu, failed to stop the session, Master.\n┊ ᴇʀʀᴏʀ: *{message}* (╥﹏╥)\n╰━━━━━━━',
       btnStop: 'Stop {name}',
       btnList: 'Bot List',
     },

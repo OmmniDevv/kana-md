@@ -12,16 +12,16 @@ export const config = {
 export const i18n = {
   id: {
     leave: {
-      hint: 'Perintah ini dipakai di dalam grup, atau sebut JID grupnya yaa, Master: .leave 120363xxx@g.us',
-      done: 'Siap, Master~ KANA keluar dari grup itu. {mood}',
-      fail: 'Gagal keluar, Master: {error}',
+      hint: '╭─❏ 👋 「 *KELUAR GRUP* 」\n┊ Perintah ini dipakai di dalam grup, atau sebut JID grupnya yaa, Master.\n┊ ᴄᴏɴᴛᴏʜ: *.leave 120363xxx@g.us*\n╰━━━━━━━',
+      done: '╭─❏ 👋 「 *SUDAH KELUAR* 」\n┊ Siap, Master~ KANA keluar dari grup itu. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *GAGAL KELUAR* 」\n┊ Mouu, gagal keluar, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     leave: {
-      hint: 'Use this inside a group, or mention the group JID, Master: .leave 120363xxx@g.us',
-      done: 'Done, Master~ KANA left that group. {mood}',
-      fail: 'Failed to leave, Master: {error}',
+      hint: '╭─❏ 👋 「 *LEAVE GROUP* 」\n┊ Use this inside a group, or mention the group JID, Master.\n┊ ᴇxᴀᴍᴘʟᴇ: *.leave 120363xxx@g.us*\n╰━━━━━━━',
+      done: '╭─❏ 👋 「 *LEFT* 」\n┊ Done, Master~ KANA left that group. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *LEAVE FAILED* 」\n┊ Mouu, failed to leave, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
 }

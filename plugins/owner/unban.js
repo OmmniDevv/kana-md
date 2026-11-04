@@ -3,7 +3,7 @@ import { updateProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'unban',
-  alias: [],
+  alias: ['unbanchat'],
   category: 'owner',
   description: { id: 'Cabut ban satu nomor', en: 'Lift the ban of one number' },
   usage: '.unban <nomor>',
@@ -15,16 +15,16 @@ export const config = {
 export const i18n = {
   id: {
     unban: {
-      hint: 'Sebutin nomornya dulu yaa, Master. Contoh: .unban 6281234567890, atau mention orangnya~',
-      done: 'Siap, Master~ ban nomor {number} udah KANA cabut. {mood}',
+      hint: '╭─❏ ✅ 「 *CABUT BAN* 」\n┊ Sebutin nomornya dulu yaa, Master.\n┊ ᴄᴏɴᴛᴏʜ: *.unban 6281234567890*, atau mention orangnya~\n╰━━━━━━━',
+      done: '╭─❏ ✅ 「 *BAN DICABUT* 」\n┊ ɴᴏᴍᴏʀ: *{number}*\n┊ Siap, Master~ ban nomor itu udah KANA cabut. {mood}\n╰━━━━━━━',
       btnBan: 'Ban Lagi',
       btnOwner: 'Status Bot',
     },
   },
   en: {
     unban: {
-      hint: 'Give the number first, Master. Example: .unban 6281234567890, or mention the person~',
-      done: 'Got it, Master~ the ban on number {number} is lifted. {mood}',
+      hint: '╭─❏ ✅ 「 *LIFT BAN* 」\n┊ Give the number first, Master.\n┊ ᴇxᴀᴍᴘʟᴇ: *.unban 6281234567890*, or mention the person~\n╰━━━━━━━',
+      done: '╭─❏ ✅ 「 *BAN LIFTED* 」\n┊ ɴᴜᴍʙᴇʀ: *{number}*\n┊ Got it, Master~ the ban on that number is lifted. {mood}\n╰━━━━━━━',
       btnBan: 'Ban Again',
       btnOwner: 'Bot Status',
     },

@@ -16,16 +16,16 @@ export const config = {
 export const i18n = {
   id: {
     cleartmp: {
-      done: 'Siap, Master~ {count} folder temp dibersihkan, sekitar {kb} KB dibebaskan. {mood}',
-      empty: 'Folder temp sudah bersih kok, Master. {mood}',
-      fail: 'Gagal membersihkan temp, Master: {error}',
+      done: '╭─❏ 🧹 「 *TEMP DIBERSIHKAN* 」\n┊ ꜰᴏʟᴅᴇʀ: *{count} dibersihkan*\n┊ ᴅɪʙᴇʙᴀꜱᴋᴀɴ: *{kb} KB*\n┊ Siap, Master~ {mood}\n╰━━━━━━━',
+      empty: '╭─❏ 🧹 「 *TEMP SUDAH BERSIH* 」\n┊ Folder temp sudah bersih kok, Master. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *GAGAL BERSIHKAN TEMP* 」\n┊ Mouu, gagal membersihkan temp, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     cleartmp: {
-      done: 'Done, Master~ {count} temp folders cleaned, about {kb} KB freed. {mood}',
-      empty: 'The temp folder is already clean, Master. {mood}',
-      fail: 'Failed to clean temp, Master: {error}',
+      done: '╭─❏ 🧹 「 *TEMP CLEANED* 」\n┊ ꜰᴏʟᴅᴇʀꜱ ᴄʟᴇᴀɴᴇᴅ: *{count}*\n┊ ꜰʀᴇᴇᴅ: *{kb} KB*\n┊ Done, Master~ {mood}\n╰━━━━━━━',
+      empty: '╭─❏ 🧹 「 *TEMP ALREADY CLEAN* 」\n┊ The temp folder is already clean, Master. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *TEMP CLEAN FAILED* 」\n┊ Mouu, failed to clean temp, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
 }

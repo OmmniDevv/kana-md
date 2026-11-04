@@ -1,4 +1,5 @@
 import { sendButtons } from '../../src/ui/buttons.js'
+import { smallCaps } from '../../src/config/templates.js'
 
 export const config = {
   name: 'dbstats',
@@ -14,7 +15,7 @@ export const config = {
 export const i18n = {
   id: {
     dbstats: {
-      header: 'Statistik Storage KANA\nDriver: {driver}\n{rows}\n{mood}',
+      header: '╭─❏ 🗄️ 「 *STATISTIK STORAGE* 」\n┊ ᴅʀɪᴠᴇʀ: *{driver}*\n{rows}\n╰━━━━━━━ {mood}',
       error: 'error',
       btnOwner: 'Status Bot',
       btnHealth: 'Scraper Health',
@@ -22,7 +23,7 @@ export const i18n = {
   },
   en: {
     dbstats: {
-      header: 'KANA Storage Statistics\nDriver: {driver}\n{rows}\n{mood}',
+      header: '╭─❏ 🗄️ 「 *STORAGE STATISTICS* 」\n┊ ᴅʀɪᴠᴇʀ: *{driver}*\n{rows}\n╰━━━━━━━ {mood}',
       error: 'error',
       btnOwner: 'Bot Status',
       btnHealth: 'Scraper Health',
@@ -39,9 +40,9 @@ export async function handler(ctx) {
   for (const ns of NAMESPACES) {
     try {
       const keys = await ctx.storage.keys(ns)
-      rows.push(`${ns}: ${keys.length}`)
+      rows.push(`┊ ${smallCaps(ns)}: *${keys.length}*`)
     } catch {
-      rows.push(`${ns}: ${ctx.t('dbstats.error')}`)
+      rows.push(`┊ ${smallCaps(ns)}: *${ctx.t('dbstats.error')}*`)
     }
   }
   const body = ctx.t('dbstats.header', {

@@ -14,16 +14,16 @@ export const config = {
 export const i18n = {
   id: {
     unblock: {
-      hint: 'Sebut nomor atau mention orangnya yaa, Master~',
-      done: 'Siap, Master~ blokir nomor {number} sudah KANA buka. {mood}',
-      fail: 'Gagal membuka blokir, Master: {error}',
+      hint: '╭─❏ 🔓 「 *BUKA BLOKIR* 」\n┊ Sebut nomor atau mention orangnya yaa, Master~\n╰━━━━━━━',
+      done: '╭─❏ 🔓 「 *BLOKIR DIBUKA* 」\n┊ ɴᴏᴍᴏʀ: *{number}*\n┊ Siap, Master~ blokir nomor itu sudah KANA buka. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *GAGAL BUKA BLOKIR* 」\n┊ Mouu, gagal membuka blokir, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     unblock: {
-      hint: 'Mention the number or the person, Master~',
-      done: 'Done, Master~ number {number} is unblocked. {mood}',
-      fail: 'Failed to unblock, Master: {error}',
+      hint: '╭─❏ 🔓 「 *UNBLOCK NUMBER* 」\n┊ Mention the number or the person, Master~\n╰━━━━━━━',
+      done: '╭─❏ 🔓 「 *UNBLOCKED* 」\n┊ ɴᴜᴍʙᴇʀ: *{number}*\n┊ Done, Master~ that number is unblocked. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *UNBLOCK FAILED* 」\n┊ Mouu, failed to unblock, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
 }

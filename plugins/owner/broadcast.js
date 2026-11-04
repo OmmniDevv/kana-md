@@ -15,20 +15,20 @@ export const config = {
 export const i18n = {
   id: {
     broadcast: {
-      hint: 'Tulis teks siarannya dulu yaa, Master. Contoh: .broadcast Halo semua~',
-      noTargets: 'Mouu, belum ada chat yang opt-in siaran nih, Master. Grup bisa opt-in pakai .subscribe dulu yaa~ {mood}',
-      tag: 'Siaran dari KANA:',
-      sending: 'Siap, Master~ KANA kirim siarannya ke {total} chat, pelan pelan biar aman...',
-      done: 'Siaran beres, Master~ Terkirim: {ok}, gagal: {fail}, total target: {total}. {mood}',
+      hint: '╭─❏ 📢 「 *SIARAN* 」\n┊ Tulis teks siarannya dulu yaa, Master.\n┊ ᴄᴏɴᴛᴏʜ: *.broadcast Halo semua~*\n╰━━━━━━━',
+      noTargets: '╭─❏ 📢 「 *BELUM ADA TARGET SIARAN* 」\n┊ Mouu, belum ada chat yang opt-in siaran nih, Master.\n┊ Grup bisa opt-in pakai *.subscribe* dulu yaa~ {mood}\n╰━━━━━━━',
+      tag: '📢 *Siaran dari KANA:*',
+      sending: '╭─❏ 📢 「 *SIARAN DIKIRIM* 」\n┊ ᴛᴀʀɢᴇᴛ: *{total} chat*\n┊ Siap, Master~ KANA kirim siarannya pelan pelan biar aman...\n╰━━━━━━━',
+      done: '╭─❏ 📢 「 *SIARAN BERES* 」\n┊ ᴛᴇʀᴋɪʀɪᴍ: *{ok}*\n┊ ɢᴀɢᴀʟ: *{fail}*\n┊ ᴛᴏᴛᴀʟ ᴛᴀʀɢᴇᴛ: *{total}*\n┊ Siaran beres yaa, Master~ {mood}\n╰━━━━━━━',
     },
   },
   en: {
     broadcast: {
-      hint: 'Write the broadcast text first, Master. Example: .broadcast Hello everyone~',
-      noTargets: 'Mouu, no chat has opted in to broadcasts yet, Master. Groups can opt in with .subscribe first~ {mood}',
-      tag: 'Broadcast from KANA:',
-      sending: 'Got it, Master~ KANA is sending the broadcast to {total} chats, slowly to stay safe...',
-      done: 'Broadcast done, Master~ Sent: {ok}, failed: {fail}, total targets: {total}. {mood}',
+      hint: '╭─❏ 📢 「 *BROADCAST* 」\n┊ Write the broadcast text first, Master.\n┊ ᴇxᴀᴍᴘʟᴇ: *.broadcast Hello everyone~*\n╰━━━━━━━',
+      noTargets: '╭─❏ 📢 「 *NO BROADCAST TARGETS YET* 」\n┊ Mouu, no chat has opted in to broadcasts yet, Master.\n┊ Groups can opt in with *.subscribe* first~ {mood}\n╰━━━━━━━',
+      tag: '📢 *Broadcast from KANA:*',
+      sending: '╭─❏ 📢 「 *BROADCAST SENDING* 」\n┊ ᴛᴀʀɢᴇᴛ: *{total} chats*\n┊ Got it, Master~ KANA is sending it slowly to stay safe...\n╰━━━━━━━',
+      done: '╭─❏ 📢 「 *BROADCAST DONE* 」\n┊ ꜱᴇɴᴛ: *{ok}*\n┊ ꜰᴀɪʟᴇᴅ: *{fail}*\n┊ ᴛᴏᴛᴀʟ ᴛᴀʀɢᴇᴛꜱ: *{total}*\n┊ Broadcast done, Master~ {mood}\n╰━━━━━━━',
     },
   },
 }

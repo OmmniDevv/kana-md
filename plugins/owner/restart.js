@@ -10,8 +10,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { restart: { body: 'Siap, Master~ KANA restart dulu yaa, balik lagi dalam beberapa detik. {mood}' } },
-  en: { restart: { body: 'Got it, Master~ KANA is restarting, back in a few seconds. {mood}' } },
+  id: { restart: { body: '╭─❏ 🔄 「 *RESTART* 」\n┊ Siap, Master~ KANA restart dulu yaa, balik lagi dalam beberapa detik. {mood}\n╰━━━━━━━' } },
+  en: { restart: { body: '╭─❏ 🔄 「 *RESTART* 」\n┊ Got it, Master~ KANA is restarting, back in a few seconds. {mood}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.restart', expect: /restart/i }

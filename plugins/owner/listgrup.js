@@ -12,18 +12,18 @@ export const config = {
 export const i18n = {
   id: {
     listgrup: {
-      title: '📋 GRUP YANG KANA IKUTI ({count})\n\n{list}',
-      line: '{rank}. {name}\n    {jid} · {members} member',
-      empty: 'KANA belum bergabung ke grup mana pun, Master. {mood}',
-      fail: 'Gagal ambil daftar grup, Master: {error}',
+      title: '╭─❏ 👥 「 *GRUP YANG KANA IKUTI ({count})* 」\n{list}\n╰━━━━━━━',
+      line: '┊ {rank}. *{name}*\n┊ {jid} · *{members} ᴍᴇᴍʙᴇʀ*',
+      empty: '╭─❏ 👥 「 *BELUM ADA GRUP* 」\n┊ KANA belum bergabung ke grup mana pun, Master. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *GAGAL AMBIL GRUP* 」\n┊ Mouu, gagal ambil daftar grup, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     listgrup: {
-      title: '📋 GROUPS KANA IS IN ({count})\n\n{list}',
-      line: '{rank}. {name}\n    {jid} · {members} members',
-      empty: 'KANA is not in any group yet, Master. {mood}',
-      fail: 'Failed to get the group list, Master: {error}',
+      title: '╭─❏ 👥 「 *GROUPS KANA IS IN ({count})* 」\n{list}\n╰━━━━━━━',
+      line: '┊ {rank}. *{name}*\n┊ {jid} · *{members} members*',
+      empty: '╭─❏ 👥 「 *NO GROUPS YET* 」\n┊ KANA is not in any group yet, Master. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *FAILED TO GET GROUPS* 」\n┊ Mouu, failed to get the group list, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
 }

@@ -15,16 +15,16 @@ export const config = {
 export const i18n = {
   id: {
     ban: {
-      hint: 'Sebutin nomornya dulu yaa, Master. Contoh: .ban 6281234567890, atau mention orangnya~',
-      done: 'Siap, Master~ nomor {number} udah KANA ban. {mood}',
+      hint: '╭─❏ 🚫 「 *BAN PENGGUNA* 」\n┊ Sebutin nomornya dulu yaa, Master.\n┊ ᴄᴏɴᴛᴏʜ: *.ban 6281234567890*, atau mention orangnya~\n╰━━━━━━━',
+      done: '╭─❏ 🚫 「 *BAN BERHASIL* 」\n┊ ɴᴏᴍᴏʀ: *{number}*\n┊ Siap, Master~ nomor itu udah KANA ban. {mood}\n╰━━━━━━━',
       btnUnban: 'Cabut Ban',
       btnOwner: 'Status Bot',
     },
   },
   en: {
     ban: {
-      hint: 'Give the number first, Master. Example: .ban 6281234567890, or mention the person~',
-      done: 'Got it, Master~ number {number} is banned. {mood}',
+      hint: '╭─❏ 🚫 「 *BAN USER* 」\n┊ Give the number first, Master.\n┊ ᴇxᴀᴍᴘʟᴇ: *.ban 6281234567890*, or mention the person~\n╰━━━━━━━',
+      done: '╭─❏ 🚫 「 *BAN SUCCESSFUL* 」\n┊ ɴᴜᴍʙᴇʀ: *{number}*\n┊ Got it, Master~ that number is banned. {mood}\n╰━━━━━━━',
       btnUnban: 'Lift Ban',
       btnOwner: 'Bot Status',
     },

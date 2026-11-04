@@ -12,16 +12,16 @@ export const config = {
 export const i18n = {
   id: {
     setppbot: {
-      hint: 'Balas (reply) gambar yang mau jadi foto profil KANA dengan .setppbot yaa, Master~',
-      done: 'Siap, Master~ foto profil KANA sudah diganti. {mood}',
-      fail: 'Gagal ganti foto profil, Master: {error}',
+      hint: '╭─❏ 🖼️ 「 *GANTI FOTO PROFIL* 」\n┊ Balas (reply) gambar yang mau jadi foto profil KANA dengan *.setppbot* yaa, Master~\n╰━━━━━━━',
+      done: '╭─❏ 🖼️ 「 *FOTO PROFIL DIGANTI* 」\n┊ Siap, Master~ foto profil KANA sudah diganti. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *GAGAL GANTI FOTO PROFIL* 」\n┊ Mouu, gagal ganti foto profil, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     setppbot: {
-      hint: 'Reply to the image that should become KANA profile picture with .setppbot, Master~',
-      done: 'Done, Master~ KANA profile picture is changed. {mood}',
-      fail: 'Failed to change the profile picture, Master: {error}',
+      hint: '╭─❏ 🖼️ 「 *CHANGE PROFILE PICTURE* 」\n┊ Reply to the image that should become KANA profile picture with *.setppbot*, Master~\n╰━━━━━━━',
+      done: '╭─❏ 🖼️ 「 *PROFILE PICTURE CHANGED* 」\n┊ Done, Master~ KANA profile picture is changed. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *PROFILE PICTURE CHANGE FAILED* 」\n┊ Mouu, failed to change the profile picture, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
 }

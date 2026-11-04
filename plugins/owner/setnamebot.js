@@ -12,16 +12,16 @@ export const config = {
 export const i18n = {
   id: {
     setnamebot: {
-      hint: 'Tulis nama barunya yaa, Master. Contoh: .setnamebot KANA',
-      done: 'Siap, Master~ nama profil KANA sekarang *{name}*. {mood}',
-      fail: 'Gagal ganti nama, Master: {error}',
+      hint: '╭─❏ ✏️ 「 *GANTI NAMA BOT* 」\n┊ Tulis nama barunya yaa, Master.\n┊ ᴄᴏɴᴛᴏʜ: *.setnamebot KANA*\n╰━━━━━━━',
+      done: '╭─❏ ✏️ 「 *NAMA DIGANTI* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ Siap, Master~ nama profil KANA sudah diganti. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *GAGAL GANTI NAMA* 」\n┊ Mouu, gagal ganti nama, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     setnamebot: {
-      hint: 'Write the new name, Master. Example: .setnamebot KANA',
-      done: 'Done, Master~ KANA profile name is now *{name}*. {mood}',
-      fail: 'Failed to change the name, Master: {error}',
+      hint: '╭─❏ ✏️ 「 *CHANGE BOT NAME* 」\n┊ Write the new name, Master.\n┊ ᴇxᴀᴍᴘʟᴇ: *.setnamebot KANA*\n╰━━━━━━━',
+      done: '╭─❏ ✏️ 「 *NAME CHANGED* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ Done, Master~ KANA profile name is changed. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *NAME CHANGE FAILED* 」\n┊ Mouu, failed to change the name, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
 }

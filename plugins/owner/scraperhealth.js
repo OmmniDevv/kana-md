@@ -15,18 +15,18 @@ export const config = {
 export const i18n = {
   id: {
     scraperhealth: {
-      header: 'Kesehatan Scraper\n{rows}\n{mood}',
-      ok: '{source}: OK (gagal: {failures})',
-      down: '{source}: DOWN (gagal: {failures})',
+      header: '╭─❏ 🩺 「 *KESEHATAN SCRAPER* 」\n{rows}\n╰━━━━━━━ {mood}',
+      ok: '┊ ✅ *{source}*: OK (ɢᴀɢᴀʟ *{failures}x*)',
+      down: '┊ ❌ *{source}*: DOWN (ɢᴀɢᴀʟ *{failures}x*)',
       btnDb: 'Statistik Storage',
       btnOwner: 'Status Bot',
     },
   },
   en: {
     scraperhealth: {
-      header: 'Scraper Health\n{rows}\n{mood}',
-      ok: '{source}: OK (failures: {failures})',
-      down: '{source}: DOWN (failures: {failures})',
+      header: '╭─❏ 🩺 「 *SCRAPER HEALTH* 」\n{rows}\n╰━━━━━━━ {mood}',
+      ok: '┊ ✅ *{source}*: OK (ꜰᴀɪʟᴜʀᴇꜱ *{failures}x*)',
+      down: '┊ ❌ *{source}*: DOWN (ꜰᴀɪʟᴜʀᴇꜱ *{failures}x*)',
       btnDb: 'Storage Stats',
       btnOwner: 'Bot Status',
     },

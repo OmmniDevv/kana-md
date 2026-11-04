@@ -12,16 +12,16 @@ export const config = {
 export const i18n = {
   id: {
     join: {
-      hint: 'Kasih link undangannya yaa, Master. Contoh: .join https://chat.whatsapp.com/xxxx',
-      done: 'Siap, Master~ KANA sudah bergabung ke grup itu. {mood}',
-      fail: 'Gagal bergabung, Master: {error}. Linknya mungkin sudah tidak berlaku~',
+      hint: '╭─❏ 👥 「 *GABUNG GRUP* 」\n┊ Kasih link undangannya yaa, Master.\n┊ ᴄᴏɴᴛᴏʜ: *.join https://chat.whatsapp.com/xxxx*\n╰━━━━━━━',
+      done: '╭─❏ 👥 「 *SUDAH BERGABUNG* 」\n┊ Siap, Master~ KANA sudah bergabung ke grup itu. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *GAGAL BERGABUNG* 」\n┊ Mouu, gagal bergabung, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n┊ Linknya mungkin sudah tidak berlaku~\n╰━━━━━━━',
     },
   },
   en: {
     join: {
-      hint: 'Give me the invite link, Master. Example: .join https://chat.whatsapp.com/xxxx',
-      done: 'Done, Master~ KANA joined that group. {mood}',
-      fail: 'Failed to join, Master: {error}. The link may have expired~',
+      hint: '╭─❏ 👥 「 *JOIN GROUP* 」\n┊ Give me the invite link, Master.\n┊ ᴇxᴀᴍᴘʟᴇ: *.join https://chat.whatsapp.com/xxxx*\n╰━━━━━━━',
+      done: '╭─❏ 👥 「 *JOINED* 」\n┊ Done, Master~ KANA joined that group. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *JOIN FAILED* 」\n┊ Mouu, failed to join, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n┊ The link may have expired~\n╰━━━━━━━',
     },
   },
 }

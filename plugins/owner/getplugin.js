@@ -19,14 +19,14 @@ export const config = {
 export const i18n = {
   id: {
     getplugin: {
-      hint: 'Sebut path pluginnya yaa, Master. Contoh: .getplugin fun/cekmood',
-      fail: 'Gagal ambil file plugin, Master: {error}',
+      hint: '╭─❏ 📂 「 *AMBIL PLUGIN* 」\n┊ Sebut path pluginnya yaa, Master.\n┊ ᴄᴏɴᴛᴏʜ: *.getplugin fun/cekmood*\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *GAGAL AMBIL PLUGIN* 」\n┊ Mouu, gagal ambil file plugin, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     getplugin: {
-      hint: 'Mention the plugin path, Master. Example: .getplugin fun/cekmood',
-      fail: 'Failed to get the plugin file, Master: {error}',
+      hint: '╭─❏ 📂 「 *GET PLUGIN* 」\n┊ Mention the plugin path, Master.\n┊ ᴇxᴀᴍᴘʟᴇ: *.getplugin fun/cekmood*\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *GET PLUGIN FAILED* 」\n┊ Mouu, failed to get the plugin file, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
 }

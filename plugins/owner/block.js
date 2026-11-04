@@ -12,16 +12,16 @@ export const config = {
 export const i18n = {
   id: {
     block: {
-      hint: 'Sebut nomor atau mention orangnya yaa, Master~',
-      done: 'Siap, Master~ nomor {number} sudah KANA blokir. {mood}',
-      fail: 'Gagal memblokir, Master: {error}',
+      hint: '╭─❏ ⛔ 「 *BLOKIR NOMOR* 」\n┊ Sebut nomor atau mention orangnya yaa, Master~\n╰━━━━━━━',
+      done: '╭─❏ ⛔ 「 *SUDAH DIBLOKIR* 」\n┊ ɴᴏᴍᴏʀ: *{number}*\n┊ Siap, Master~ nomor itu sudah KANA blokir. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *GAGAL BLOKIR* 」\n┊ Mouu, gagal memblokir, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     block: {
-      hint: 'Mention the number or the person, Master~',
-      done: 'Done, Master~ number {number} is blocked. {mood}',
-      fail: 'Failed to block, Master: {error}',
+      hint: '╭─❏ ⛔ 「 *BLOCK NUMBER* 」\n┊ Mention the number or the person, Master~\n╰━━━━━━━',
+      done: '╭─❏ ⛔ 「 *BLOCKED* 」\n┊ ɴᴜᴍʙᴇʀ: *{number}*\n┊ Done, Master~ that number is blocked. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *BLOCK FAILED* 」\n┊ Mouu, failed to block, Master.\n┊ ᴇʀʀᴏʀ: *{error}*\n╰━━━━━━━',
     },
   },
 }

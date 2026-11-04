@@ -14,18 +14,18 @@ export const config = {
 export const i18n = {
   id: {
     mode: {
-      current: 'Mode bot sekarang: {mode}. Ketik .mode public atau .mode self buat ganti yaa, Master~',
-      changed: 'Siap, Master~ mode bot diganti ke {mode}. {mood}',
-      invalid: 'Mode "{mode}" nggak dikenal. Pilihan: public atau self yaa~',
+      current: '╭─❏ ⚙️ 「 *MODE BOT* 」\n┊ ᴍᴏᴅᴇ ꜱᴇᴋᴀʀᴀɴɢ: *{mode}*\n┊ Ketik *.mode public* atau *.mode self* buat ganti yaa, Master~\n╰━━━━━━━',
+      changed: '╭─❏ ⚙️ 「 *MODE DIGANTI* 」\n┊ ᴍᴏᴅᴇ ꜱᴇᴋᴀʀᴀɴɢ: *{mode}*\n┊ Siap, Master~ mode bot sudah diganti. {mood}\n╰━━━━━━━',
+      invalid: '╭─❏ ⚠️ 「 *MODE TIDAK DIKENAL* 」\n┊ Mode *{mode}* nggak dikenal, Master.\n┊ ᴘɪʟɪʜᴀɴ: *public* atau *self* yaa~\n╰━━━━━━━',
       btnPublic: 'Mode Public',
       btnSelf: 'Mode Self',
     },
   },
   en: {
     mode: {
-      current: 'Current bot mode: {mode}. Type .mode public or .mode self to change it, Master~',
-      changed: 'Got it, Master~ bot mode changed to {mode}. {mood}',
-      invalid: 'Mode "{mode}" is not recognized. Options: public or self~',
+      current: '╭─❏ ⚙️ 「 *BOT MODE* 」\n┊ ᴄᴜʀʀᴇɴᴛ ᴍᴏᴅᴇ: *{mode}*\n┊ Type *.mode public* or *.mode self* to change it, Master~\n╰━━━━━━━',
+      changed: '╭─❏ ⚙️ 「 *MODE CHANGED* 」\n┊ ᴄᴜʀʀᴇɴᴛ ᴍᴏᴅᴇ: *{mode}*\n┊ Got it, Master~ bot mode is changed. {mood}\n╰━━━━━━━',
+      invalid: '╭─❏ ⚠️ 「 *UNKNOWN MODE* 」\n┊ Mode *{mode}* is not recognized, Master.\n┊ ᴏᴘᴛɪᴏɴꜱ: *public* or *self*~\n╰━━━━━━━',
       btnPublic: 'Public Mode',
       btnSelf: 'Self Mode',
     },

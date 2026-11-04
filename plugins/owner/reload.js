@@ -19,19 +19,19 @@ export const config = {
 export const i18n = {
   id: {
     reload: {
-      done: 'Reload beres, Master~ Plugin aktif: {active}, karantina: {quarantined}. {mood}',
-      statusActive: 'Plugin "{name}": aktif.',
-      statusQuarantined: 'Plugin "{name}": karantina. Alasan: {reason}',
-      statusUnknown: 'Plugin "{name}": nggak ketemu setelah reload.',
+      done: '╭─❏ 🔄 「 *RELOAD BERES* 」\n┊ ᴘʟᴜɢɪɴ ᴀᴋᴛɪꜰ: *{active}*\n┊ ᴋᴀʀᴀɴᴛɪɴᴀ: *{quarantined}*\n┊ Reload beres yaa, Master~ {mood}',
+      statusActive: '┊ ᴘʟᴜɢɪɴ *{name}*: *ᴀᴋᴛɪꜰ*',
+      statusQuarantined: '┊ ᴘʟᴜɢɪɴ *{name}*: *ᴋᴀʀᴀɴᴛɪɴᴀ*\n┊ ᴀʟᴀꜱᴀɴ: *{reason}*',
+      statusUnknown: '┊ ᴘʟᴜɢɪɴ *{name}*: *ᴛɪᴅᴀᴋ ᴋᴇᴛᴇᴍᴜ* setelah reload',
       btnOwner: 'Status Bot',
     },
   },
   en: {
     reload: {
-      done: 'Reload done, Master~ Active plugins: {active}, quarantined: {quarantined}. {mood}',
-      statusActive: 'Plugin "{name}": active.',
-      statusQuarantined: 'Plugin "{name}": quarantined. Reason: {reason}',
-      statusUnknown: 'Plugin "{name}": not found after reload.',
+      done: '╭─❏ 🔄 「 *RELOAD DONE* 」\n┊ ᴀᴄᴛɪᴠᴇ ᴘʟᴜɢɪɴꜱ: *{active}*\n┊ ǫᴜᴀʀᴀɴᴛɪɴᴇᴅ: *{quarantined}*\n┊ Reload done, Master~ {mood}',
+      statusActive: '┊ ᴘʟᴜɢɪɴ *{name}*: *ᴀᴄᴛɪᴠᴇ*',
+      statusQuarantined: '┊ ᴘʟᴜɢɪɴ *{name}*: *ǫᴜᴀʀᴀɴᴛɪɴᴇᴅ*\n┊ ʀᴇᴀꜱᴏɴ: *{reason}*',
+      statusUnknown: '┊ ᴘʟᴜɢɪɴ *{name}*: *ɴᴏᴛ ꜰᴏᴜɴᴅ* after reload',
       btnOwner: 'Bot Status',
     },
   },
@@ -92,6 +92,7 @@ export async function handler(ctx) {
       }`
     }
   }
+  body += '\n╰━━━━━━━'
   return sendButtons(ctx.sock, ctx.chat, {
     title: 'KANA',
     body,
