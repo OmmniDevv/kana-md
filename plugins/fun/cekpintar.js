@@ -3,7 +3,7 @@ import { wibDateString } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'cekpintar',
-  alias: [],
+  alias: ['pintar'],
   category: 'fun',
   description: { id: 'Cek persen kepintaran versi iseng KANA, buat hiburan', en: 'Check your smartness percent the playful KANA way, just for fun' },
   usage: '.cekpintar',

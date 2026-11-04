@@ -5,7 +5,7 @@ import { JOKES } from '../../src/data/fun.js'
 // saat integrasi karena dataset JOKES belum punya perintah yang menyajikan.
 export const config = {
   name: 'joke',
-  alias: ['lucu', 'lelucon'],
+  alias: ['lucu', 'lelucon', 'candaan'],
   category: 'fun',
   description: { id: 'Lelucon acak original dari KANA', en: 'A random original joke from KANA' },
   usage: '.joke',

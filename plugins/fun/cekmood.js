@@ -3,7 +3,7 @@ import { wibDateString } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'cekmood',
-  alias: [],
+  alias: ['stress'],
   category: 'fun',
   description: { id: 'Cek persen mood kamu hari ini, buat hiburan', en: 'Check your mood percent for today, just for fun' },
   usage: '.cekmood',

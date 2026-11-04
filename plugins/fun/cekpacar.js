@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'cekpacar',
-  alias: [],
+  alias: ['pacarku'],
   category: 'fun',
   description: { id: 'Cek sifat pacar dari namanya: setia, romantis, dan cemburuannya (hiburan)', en: 'Check a partner traits from their name: loyalty, romance, and jealousy (fun)' },
   usage: '.cekpacar <nama pacar>',

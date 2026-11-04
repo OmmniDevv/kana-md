@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'cekbucin',
-  alias: ['bucin'],
+  alias: ['bucin', 'bucin2'],
   category: 'fun',
   description: { id: 'Cek persen bucin seseorang ke pasangannya, buat hiburan', en: 'Check how much of a love slave someone is, just for fun' },
   usage: '.cekbucin <nama> atau kosongkan untuk dirimu',
@@ -66,7 +66,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekbucin.btnAgain'), id: '.cekbucin' },
-      { text: ctx.t('cekbucin.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

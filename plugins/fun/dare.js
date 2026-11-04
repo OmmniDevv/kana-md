@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'dare',
-  alias: [],
+  alias: ['dare2', 'dareq'],
   category: 'fun',
   description: { id: 'Ambil tantangan dare acak yang aman dan bisa dilakukan di chat', en: 'Draw a random safe dare that can be done in chat' },
   usage: '.dare',

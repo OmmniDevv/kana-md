@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'ayat',
-  alias: [],
+  alias: ['quranrandom'],
   category: 'fun',
   description: { id: 'Kirim satu ayat Al-Quran pilihan beserta sumbernya', en: 'Send one selected Quran verse with its source' },
   usage: '.ayat',
