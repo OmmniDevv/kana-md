@@ -1,0 +1,74 @@
+import { getSession, startQuiz } from '../../src/quiz/engine.js'
+import { sendButtons } from '../../src/ui/buttons.js'
+
+export const config = {
+  name: 'tebakprovinsi',
+  alias: ['provinsi'],
+  category: 'fun',
+  description: { id: 'Kuis Tebak Provinsi: tebak nama provinsi Indonesia dari petunjuknya', en: 'Province quiz: guess the Indonesian province name from its clue' },
+  usage: '.tebakprovinsi lalu jawab lewat chat atau .jawab <jawaban>',
+  example: '.tebakprovinsi',
+  cooldown: 5,
+}
+
+export const i18n = {
+  id: {
+    tebakprovinsi: {
+      title: 'Kuis Tebak Provinsi',
+      intro: '🗺️ KUIS TEBAK PROVINSI\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas dengan nama provinsinya atau .jawab <jawaban> yaa~ {mood}',
+      already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
+      giveUpBtn: '🏳️ Menyerah (.nyerah)',
+      menuBtn: '🎲 Menu Fun',
+      footer: 'Kuis KANA',
+    },
+  },
+  en: {
+    tebakprovinsi: {
+      title: 'Province Quiz',
+      intro: '🗺️ PROVINCE QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply with the province name or .jawab <answer>~ {mood}',
+      already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
+      giveUpBtn: '🏳️ Give Up (.nyerah)',
+      menuBtn: '🎲 Fun Menu',
+      footer: 'KANA Quiz',
+    },
+  },
+}
+
+export const test = { input: '.tebakprovinsi', expect: /tebak provinsi/i }
+
+export async function handler(ctx) {
+  const existing = await getSession(ctx.storage, ctx.chat)
+  if (existing) {
+    const body = ctx.t('tebakprovinsi.already', { type: existing.type })
+    return sendButtons(ctx.sock, ctx.chat, {
+      title: ctx.t('tebakprovinsi.title'),
+      body,
+      footer: ctx.t('tebakprovinsi.footer'),
+      replies: [
+        { text: ctx.t('tebakprovinsi.giveUpBtn'), id: '.nyerah' },
+        { text: ctx.t('tebakprovinsi.menuBtn'), id: '.menu fun' },
+      ],
+      textFallback: body,
+    })
+  }
+  const { question } = await startQuiz(ctx.storage, ctx.chat, 'tebakprovinsi', {
+    lang: ctx.lang,
+    startedBy: ctx.senderDigits,
+  })
+  const body = ctx.t('tebakprovinsi.intro', {
+    clue: question.text,
+    points: question.points,
+    seconds: 120,
+    mood: ctx.say('senang'),
+  })
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: ctx.t('tebakprovinsi.title'),
+    body,
+    footer: ctx.t('tebakprovinsi.footer'),
+    replies: [
+      { text: ctx.t('tebakprovinsi.giveUpBtn'), id: '.nyerah' },
+      { text: ctx.t('tebakprovinsi.menuBtn'), id: '.menu fun' },
+    ],
+    textFallback: body,
+  })
+}

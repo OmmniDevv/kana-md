@@ -6,7 +6,7 @@
 // sendiri saat jawaban benar final, supaya plugin kuis tetap tipis.
 // Dataset diambil dari storage namespace 'quiz' key 'items' bila seed pernah
 // dijalankan dan bentuknya cocok; selain itu fallback ke src/data/quiz.js.
-import { QUIZ_SETS, WORD_LIST, FLAGS, ELEMENTS, IMAGE_WORDS } from '../data/quiz.js'
+import { QUIZ_SETS, WORD_LIST, FLAGS, ELEMENTS, IMAGE_WORDS, TEXT_SETS } from '../data/quiz.js'
 import { addXp } from '../services/user-service.js'
 
 export const MC_TYPES = ['caklontong', 'asahotak', 'tekateki']
@@ -69,11 +69,12 @@ async function loadData(storage) {
           flags: Array.isArray(seeded.flags) ? seeded.flags : FLAGS,
           elements: Array.isArray(seeded.elements) ? seeded.elements : ELEMENTS,
           imageWords: Array.isArray(seeded.imageWords) ? seeded.imageWords : IMAGE_WORDS,
+          textSets: TEXT_SETS,
         }
       }
     }
   } catch {}
-  return { sets: QUIZ_SETS, wordList: WORD_LIST, flags: FLAGS, elements: ELEMENTS, imageWords: IMAGE_WORDS }
+  return { sets: QUIZ_SETS, wordList: WORD_LIST, flags: FLAGS, elements: ELEMENTS, imageWords: IMAGE_WORDS, textSets: TEXT_SETS }
 }
 
 export async function getSession(storage, chat, now = Date.now()) {
@@ -151,6 +152,21 @@ export async function startQuiz(storage, chat, type, { lang = 'id', rng = Math.r
       accepted: [normalizeAnswer(item.word.id), normalizeAnswer(item.word.en)],
       emoji: item.emoji,
       category: item.category[lang] ?? item.category.id,
+      points: TEXT_POINTS,
+    }
+  } else if (data.textSets?.[type]?.length) {
+    // Topik tebak teks bebas generik dari TEXT_SETS (src/data/quiz.js):
+    // petunjuk dua bahasa, satu jawaban benar plus varian yang diterima.
+    const item = pick(data.textSets[type], rng)
+    const answer = item.a[lang] ?? item.a.id
+    const accepted = new Set(
+      [item.a.id, item.a.en, ...(item.accept ?? [])].map((v) => normalizeAnswer(v)).filter(Boolean)
+    )
+    session = {
+      ...base,
+      question: item.q[lang] ?? item.q.id,
+      answerText: answer,
+      accepted: [...accepted],
       points: TEXT_POINTS,
     }
   } else {

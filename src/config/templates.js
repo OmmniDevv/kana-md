@@ -299,6 +299,19 @@ export const COMMAND_EMOJI = {
   reload: 'retry',
   jadibot: 'chat',
   stopjadibot: 'close',
+  tebakhewan: 'quiz',
+  tebaknegara: 'quiz',
+  tebakprovinsi: 'quiz',
+  tebakmakanan: 'quiz',
+  tebakprofesi: 'quiz',
+  tebakkalimat: 'quiz',
+  tebaksurah: 'quiz',
+  tebaklagu: 'quiz',
+  tebaklirik: 'quiz',
+  tebakfilm: 'quiz',
+  tebakgame: 'quiz',
+  tebakbola: 'quiz',
+  tebakdrakor: 'quiz',
 }
 
 // Emoji untuk id tombol atau nama aksi. Id perintah (mis. ".menu user"
