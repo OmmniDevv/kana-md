@@ -22,20 +22,20 @@ export const config = {
 export const i18n = {
   id: {
     tovideo: {
-      needMedia: 'Kutip stiker animasi atau videonya dulu yaa, terus ketik .tovideo~',
-      staticHint: 'Itu gambar diam, bukan animasi. Pakai .toimg aja yaa~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal ubah ke video: {message}~',
-      caption: 'Ini videonyaa~',
+      needMedia: '╭─❏ 🎬 「 *BUTUH MEDIA* 」\n┊ Kutip stiker animasi atau videonya dulu yaa, terus ketik *.tovideo*~\n╰━━━━━━━',
+      staticHint: '╭─❏ 🖼️ 「 *ITU GAMBAR DIAM* 」\n┊ Itu gambar diam, bukan animasi. Pakai *.toimg* aja yaa~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *KEGEDEAN* 」\n┊ Mouu, medianya kegedean, di atas *64 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL UBAH KE VIDEO* 」\n┊ Mouu, gagal ubah ke video: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *VIDEO JADI* 」\n┊ Ini videonyaa, gerakannya aman~\n╰━━━━━━━',
     },
   },
   en: {
     tovideo: {
-      needMedia: 'Quote an animated sticker or a video first, then type .tovideo~',
-      staticHint: 'That is a still image, not an animation. Use .toimg instead~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to convert to video: {message}~',
-      caption: 'Here is the video~',
+      needMedia: '╭─❏ 🎬 「 *MEDIA NEEDED* 」\n┊ Quote an animated sticker or a video first, then type *.tovideo*~\n╰━━━━━━━',
+      staticHint: '╭─❏ 🖼️ 「 *THAT IS A STILL IMAGE* 」\n┊ That is a still image, not an animation. Use *.toimg* instead~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *TOO BIG* 」\n┊ Mouu, the media is too big, over *64 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *VIDEO CONVERT FAILED* 」\n┊ Mouu, failed to convert to video: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *VIDEO READY* 」\n┊ Here is the video, the motion is safe~\n╰━━━━━━━',
     },
   },
 }

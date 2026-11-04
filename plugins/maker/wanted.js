@@ -13,8 +13,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { wanted: { caption: 'Poster wanted {name} dengan bounty {bounty} koin 🤠', fail: 'Gagal bikin poster: {error}' } },
-  en: { wanted: { caption: 'Wanted poster of {name} with a {bounty} coin bounty 🤠', fail: 'Failed to make the poster: {error}' } },
+  id: { wanted: { caption: '╭─❏ 🤠 「 *POSTER WANTED* 」\n┊ ᴘᴏꜱᴛᴇʀ ᴡᴀɴᴛᴇᴅ: *{name}*\n┊ ʙᴏᴜɴᴛʏ: *{bounty} koin* 🤠\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL BIKIN POSTER* 」\n┊ Mouu, gagal bikin poster: *{error}*~\n╰━━━━━━━' } },
+  en: { wanted: { caption: '╭─❏ 🤠 「 *WANTED POSTER* 」\n┊ ᴡᴀɴᴛᴇᴅ ᴘᴏꜱᴛᴇʀ: *{name}*\n┊ ʙᴏᴜɴᴛʏ: *{bounty} coins* 🤠\n╰━━━━━━━', fail: '╭─❏ 💦 「 *POSTER FAILED* 」\n┊ Mouu, failed to make the poster: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.wanted', expect: /wanted/i }

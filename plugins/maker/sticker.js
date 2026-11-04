@@ -16,22 +16,20 @@ export const config = {
 export const i18n = {
   id: {
     sticker: {
-      needMedia: 'Kutip gambar atau videonya dulu yaa, terus ketik .sticker~',
-      tooBig: 'Mouu, medianya kegedean. Batas gambar 16 MB dan video 64 MB ya~',
-      failed: 'Mouu, gagal bikin stikernya: {message}. Coba media lain ya~',
-      done: 'Stikernya jadii~ Mau lanjut ke mana?',
-      menuButton: 'Menu Maker',
+      needMedia: '╭─❏ 🏷️ 「 *BUTUH MEDIA* 」\n┊ Kutip gambar atau videonya dulu yaa, terus ketik *.sticker*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *KEGEDEAN* 」\n┊ Mouu, medianya kegedean. Batas gambar *16 MB* dan video *64 MB* ya~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL BIKIN STIKER* 」\n┊ Mouu, gagal bikin stikernya: *{message}*. Coba media lain ya~\n╰━━━━━━━',
+      done: '╭─❏ 🏷️ 「 *STIKER JADI* 」\n┊ Stikernya jadii, gemas banget~\n╰━━━━━━━',
       toimgButton: 'Jadi Gambar',
       title: 'KANA',
     },
   },
   en: {
     sticker: {
-      needMedia: 'Quote an image or video first, then type .sticker~',
-      tooBig: 'Mouu, the media is too big. Limits are 16 MB for images and 64 MB for videos~',
-      failed: 'Mouu, failed to make the sticker: {message}. Try other media~',
-      done: 'Your sticker is ready~ Where to next?',
-      menuButton: 'Maker Menu',
+      needMedia: '╭─❏ 🏷️ 「 *MEDIA NEEDED* 」\n┊ Quote an image or video first, then type *.sticker*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *TOO BIG* 」\n┊ Mouu, the media is too big. Limits are *16 MB* for images and *64 MB* for videos~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *STICKER FAILED* 」\n┊ Mouu, failed to make the sticker: *{message}*. Try other media~\n╰━━━━━━━',
+      done: '╭─❏ 🏷️ 「 *STICKER READY* 」\n┊ Your sticker is ready, so cute~\n╰━━━━━━━',
       toimgButton: 'To Image',
       title: 'KANA',
     },
@@ -114,10 +112,7 @@ export async function handler(ctx) {
     title: ctx.t('sticker.title'),
     body: ctx.t('sticker.done'),
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('sticker.menuButton'), id: '.menu maker' },
-      { text: ctx.t('sticker.toimgButton'), id: '.toimg' },
-    ],
+    replies: [{ text: ctx.t('sticker.toimgButton'), id: '.toimg' }],
     textFallback: ctx.t('sticker.done'),
   })
 }

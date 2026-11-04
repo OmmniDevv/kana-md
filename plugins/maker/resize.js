@@ -21,16 +21,16 @@ export const config = {
 export const i18n = {
   id: {
     resize: {
-      need: 'Balas gambarnya dan tulis ukurannya yaa, contoh: .resize 512x512. {mood}',
-      caption: 'Nih, sudah KANA ubah ke {w}x{h}~ 📐',
-      fail: 'Gagal ubah ukurannya: {error}',
+      need: '╭─❏ 📐 「 *BUTUH GAMBAR DAN UKURAN* 」\n┊ Balas gambarnya dan tulis ukurannya yaa, contoh: *.resize 512x512* {mood}\n╰━━━━━━━',
+      caption: '╭─❏ 📐 「 *UKURAN DIUBAH* 」\n┊ Nih, sudah KANA ubah ke *{w}x{h}*~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *GAGAL UBAH UKURAN* 」\n┊ Mouu, gagal ubah ukurannya: *{error}*~\n╰━━━━━━━',
     },
   },
   en: {
     resize: {
-      need: 'Reply to the image and write the size please, example: .resize 512x512. {mood}',
-      caption: 'Here, resized to {w}x{h}~ 📐',
-      fail: 'Failed to resize: {error}',
+      need: '╭─❏ 📐 「 *IMAGE AND SIZE NEEDED* 」\n┊ Reply to the image and write the size please, example: *.resize 512x512* {mood}\n╰━━━━━━━',
+      caption: '╭─❏ 📐 「 *RESIZED* 」\n┊ Here, resized to *{w}x{h}*~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *RESIZE FAILED* 」\n┊ Mouu, failed to resize: *{error}*~\n╰━━━━━━━',
     },
   },
 }

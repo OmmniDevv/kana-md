@@ -16,8 +16,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { rpgcard: { caption: 'Kartu RPG {name} ⚔️', none: 'belum ada', fail: 'Gagal bikin kartu RPG: {error}' } },
-  en: { rpgcard: { caption: 'RPG card of {name} ⚔️', none: 'none yet', fail: 'Failed to make the RPG card: {error}' } },
+  id: { rpgcard: { caption: '╭─❏ ⚔️ 「 *KARTU RPG* 」\n┊ ᴋᴀʀᴛᴜ ʀᴘɢ: *{name}* ⚔️\n╰━━━━━━━', none: 'belum ada', fail: '╭─❏ 💦 「 *GAGAL BIKIN KARTU RPG* 」\n┊ Mouu, gagal bikin kartu RPG: *{error}*~\n╰━━━━━━━' } },
+  en: { rpgcard: { caption: '╭─❏ ⚔️ 「 *RPG CARD* 」\n┊ ʀᴘɢ ᴄᴀʀᴅ: *{name}* ⚔️\n╰━━━━━━━', none: 'none yet', fail: '╭─❏ 💦 「 *RPG CARD FAILED* 」\n┊ Mouu, failed to make the RPG card: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.rpgcard', expect: /rpg/i }

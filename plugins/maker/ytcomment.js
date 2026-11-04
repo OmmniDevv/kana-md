@@ -13,8 +13,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { ytcomment: { hint: 'Formatnya: .ytcomment <nama> | <isi komentar>. Contoh: .ytcomment Malik | Videonya keren banget!', fail: 'Gagal bikin kartunya: {error}' } },
-  en: { ytcomment: { hint: 'Format: .ytcomment <name> | <comment text>. Example: .ytcomment Malik | Great video!', fail: 'Failed to make the card: {error}' } },
+  id: { ytcomment: { hint: '╭─❏ 💬 「 *FORMAT YTCOMMENT* 」\n┊ ꜰᴏʀᴍᴀᴛ: *.ytcomment <nama> | <isi komentar>*\n┊ ᴄᴏɴᴛᴏʜ: *.ytcomment Malik | Videonya keren banget!*\n╰━━━━━━━', caption: '╭─❏ 💬 「 *KARTU KOMENTAR JADI* 」\n┊ Kartu komentar YouTube kamu jadii~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL BIKIN KARTU* 」\n┊ Mouu, gagal bikin kartunya: *{error}*~\n╰━━━━━━━' } },
+  en: { ytcomment: { hint: '╭─❏ 💬 「 *YTCOMMENT FORMAT* 」\n┊ ꜰᴏʀᴍᴀᴛ: *.ytcomment <name> | <comment text>*\n┊ ᴇxᴀᴍᴘʟᴇ: *.ytcomment Malik | Great video!*\n╰━━━━━━━', caption: '╭─❏ 💬 「 *COMMENT CARD READY* 」\n┊ Your YouTube comment card is ready~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *CARD FAILED* 」\n┊ Mouu, failed to make the card: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.ytcomment', expect: /ytcomment/i }
@@ -33,7 +33,7 @@ export async function handler(ctx) {
       text,
       likes: hashPercent(`ytc:${name}:${text}`) * 13,
     })
-    return sendImage(ctx, png, {})
+    return sendImage(ctx, png, { caption: ctx.t('ytcomment.caption') })
   } catch (err) {
     return ctx.reply(ctx.t('ytcomment.fail', { error: err.message }))
   }

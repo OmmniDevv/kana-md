@@ -5,7 +5,6 @@ import { join } from 'node:path'
 import { withTempDir } from '../../src/scrapers/runner.js'
 import { toStickerWebp } from '../../src/services/sticker.js'
 import { MAX_IMAGE_BYTES } from '../../src/ui/media.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 import { fetchSourceMedia, sendSticker } from './sticker.js'
 
 const execFileP = promisify(execFile)
@@ -25,22 +24,20 @@ export const config = {
 export const i18n = {
   id: {
     smeme: {
-      needImage: 'Kutip gambarnya dulu yaa, terus ketik .smeme teks atas | teks bawah~',
-      needText: 'Ketik teksnya dulu yaa, formatnya: .smeme teks atas | teks bawah~',
-      tooBig: 'Mouu, gambar sumbernya kegedean (di atas 16 MB)~',
-      failed: 'Mouu, gagal bikin stiker meme: {message}~',
-      done: 'Stiker memenya jadii~ Mau lanjut ke mana?',
-      menuButton: 'Menu Maker',
+      needImage: '╭─❏ 🖼️ 「 *BUTUH GAMBAR* 」\n┊ Kutip gambarnya dulu yaa, terus ketik *.smeme teks atas | teks bawah*~\n╰━━━━━━━',
+      needText: '╭─❏ ✏️ 「 *BUTUH TEKS MEME* 」\n┊ Ketik teksnya dulu yaa, ꜰᴏʀᴍᴀᴛ: *.smeme teks atas | teks bawah*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *KEGEDEAN* 」\n┊ Mouu, gambar sumbernya kegedean, di atas *16 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL BIKIN STIKER MEME* 」\n┊ Mouu, gagal bikin stiker meme: *{message}*~\n╰━━━━━━━',
+      done: '╭─❏ 😂 「 *STIKER MEME JADI* 」\n┊ Stiker memenya jadii, siap bikin ngakak~\n╰━━━━━━━',
     },
   },
   en: {
     smeme: {
-      needImage: 'Quote an image first, then type .smeme top text | bottom text~',
-      needText: 'Type the text first, format: .smeme top text | bottom text~',
-      tooBig: 'Mouu, the source image is too big (over 16 MB)~',
-      failed: 'Mouu, failed to make the meme sticker: {message}~',
-      done: 'Your meme sticker is ready~ Where to next?',
-      menuButton: 'Maker Menu',
+      needImage: '╭─❏ 🖼️ 「 *IMAGE NEEDED* 」\n┊ Quote an image first, then type *.smeme top text | bottom text*~\n╰━━━━━━━',
+      needText: '╭─❏ ✏️ 「 *MEME TEXT NEEDED* 」\n┊ Type the text first, ꜰᴏʀᴍᴀᴛ: *.smeme top text | bottom text*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *TOO BIG* 」\n┊ Mouu, the source image is too big, over *16 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *MEME STICKER FAILED* 」\n┊ Mouu, failed to make the meme sticker: *{message}*~\n╰━━━━━━━',
+      done: '╭─❏ 😂 「 *MEME STICKER READY* 」\n┊ Your meme sticker is ready, ready to make people laugh~\n╰━━━━━━━',
     },
   },
 }
@@ -94,13 +91,7 @@ export async function handler(ctx) {
     const png = await drawMeme(src.buffer, top, bottom)
     const webp = await toStickerWebp(png)
     await sendSticker(ctx, webp)
-    await sendButtons(ctx.sock, ctx.chat, {
-      title: 'KANA',
-      body: ctx.t('smeme.done'),
-      footer: ctx.t('menu.footer'),
-      replies: [{ text: ctx.t('smeme.menuButton'), id: '.menu maker' }],
-      textFallback: ctx.t('smeme.done'),
-    })
+    return ctx.reply(ctx.t('smeme.done'))
   } catch (err) {
     return ctx.reply(ctx.t('smeme.failed', { message: err.message }))
   }

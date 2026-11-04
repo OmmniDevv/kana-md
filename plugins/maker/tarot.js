@@ -29,8 +29,8 @@ const ARCANA = [
 ]
 
 export const i18n = {
-  id: { tarot: { caption: 'Kartumu hari ini: *{name}* 🔮\n{meaning}', fail: 'Gagal menarik kartu tarot: {error}' } },
-  en: { tarot: { caption: 'Your card today: *{name}* 🔮\n{meaning}', fail: 'Failed to draw a tarot card: {error}' } },
+  id: { tarot: { caption: '╭─❏ 🔮 「 *KARTU TAROTMU* 」\n┊ ᴋᴀʀᴛᴜ: *{name}* 🔮\n┊ {meaning}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL TARIK KARTU* 」\n┊ Mouu, gagal menarik kartu tarot: *{error}*~\n╰━━━━━━━' } },
+  en: { tarot: { caption: '╭─❏ 🔮 「 *YOUR TAROT CARD* 」\n┊ ᴄᴀʀᴅ: *{name}* 🔮\n┊ {meaning}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *TAROT DRAW FAILED* 」\n┊ Mouu, failed to draw a tarot card: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.tarot', expect: /tarot/i }

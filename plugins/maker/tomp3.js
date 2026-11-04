@@ -22,16 +22,16 @@ export const config = {
 export const i18n = {
   id: {
     tomp3: {
-      needMedia: 'Kutip video atau audionya dulu yaa, terus ketik .tomp3~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal ubah ke MP3: {message}~',
+      needMedia: '╭─❏ 🎵 「 *BUTUH MEDIA* 」\n┊ Kutip video atau audionya dulu yaa, terus ketik *.tomp3*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *KEGEDEAN* 」\n┊ Mouu, medianya kegedean, di atas *64 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL UBAH KE MP3* 」\n┊ Mouu, gagal ubah ke MP3: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     tomp3: {
-      needMedia: 'Quote a video or audio first, then type .tomp3~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to convert to MP3: {message}~',
+      needMedia: '╭─❏ 🎵 「 *MEDIA NEEDED* 」\n┊ Quote a video or audio first, then type *.tomp3*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *TOO BIG* 」\n┊ Mouu, the media is too big, over *64 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *MP3 CONVERT FAILED* 」\n┊ Mouu, failed to convert to MP3: *{message}*~\n╰━━━━━━━',
     },
   },
 }

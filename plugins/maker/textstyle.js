@@ -1,4 +1,3 @@
-import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'textstyle',
@@ -13,26 +12,26 @@ export const config = {
 export const i18n = {
   id: {
     textstyle: {
-      needText: 'Ketik teksnya dulu yaa, contoh: .textstyle halo kana~',
-      header: 'Varian gaya buat "{text}":',
-      boldLabel: 'Tebal',
-      italicLabel: 'Miring',
-      scriptLabel: 'Script',
-      monoLabel: 'Mono',
-      smallLabel: 'Kecil',
-      menuButton: 'Menu Maker',
+      needText: '╭─❏ ✏️ 「 *BUTUH TEKS* 」\n┊ Ketik teksnya dulu yaa, contoh: *.textstyle halo kana*~\n╰━━━━━━━',
+      header: '╭─❏ ✨ 「 *VARIAN GAYA TEKS* 」\n┊ Varian gaya buat *"{text}"*:',
+      boldLabel: '┊ ᴛᴇʙᴀʟ',
+      italicLabel: '┊ ᴍɪʀɪɴɢ',
+      scriptLabel: '┊ ꜱᴄʀɪᴘᴛ',
+      monoLabel: '┊ ᴍᴏɴᴏ',
+      smallLabel: '┊ ᴋᴇᴄɪʟ',
+      foot: '╰━━━━━━━',
     },
   },
   en: {
     textstyle: {
-      needText: 'Type the text first, example: .textstyle hello kana~',
-      header: 'Style variants for "{text}":',
-      boldLabel: 'Bold',
-      italicLabel: 'Italic',
-      scriptLabel: 'Script',
-      monoLabel: 'Mono',
-      smallLabel: 'Small caps',
-      menuButton: 'Maker Menu',
+      needText: '╭─❏ ✏️ 「 *TEXT NEEDED* 」\n┊ Type the text first, example: *.textstyle hello kana*~\n╰━━━━━━━',
+      header: '╭─❏ ✨ 「 *TEXT STYLE VARIANTS* 」\n┊ Style variants for *"{text}"*:',
+      boldLabel: '┊ ʙᴏʟᴅ',
+      italicLabel: '┊ ɪᴛᴀʟɪᴄ',
+      scriptLabel: '┊ ꜱᴄʀɪᴘᴛ',
+      monoLabel: '┊ ᴍᴏɴᴏ',
+      smallLabel: '┊ ꜱᴍᴀʟʟ ᴄᴀᴘꜱ',
+      foot: '╰━━━━━━━',
     },
   },
 }
@@ -82,18 +81,12 @@ export async function handler(ctx) {
   if (!text) return ctx.reply(ctx.t('textstyle.needText'))
   const lines = [
     ctx.t('textstyle.header', { text }),
-    `${ctx.t('textstyle.boldLabel')}: ${toFancy(text, 'bold')}`,
-    `${ctx.t('textstyle.italicLabel')}: ${toFancy(text, 'italic')}`,
-    `${ctx.t('textstyle.scriptLabel')}: ${toFancy(text, 'script')}`,
-    `${ctx.t('textstyle.monoLabel')}: ${toFancy(text, 'monospace')}`,
-    `${ctx.t('textstyle.smallLabel')}: ${toFancy(text.toLowerCase(), 'smallcaps')}`,
+    `${ctx.t('textstyle.boldLabel')}: *${toFancy(text, 'bold')}*`,
+    `${ctx.t('textstyle.italicLabel')}: *${toFancy(text, 'italic')}*`,
+    `${ctx.t('textstyle.scriptLabel')}: *${toFancy(text, 'script')}*`,
+    `${ctx.t('textstyle.monoLabel')}: *${toFancy(text, 'monospace')}*`,
+    `${ctx.t('textstyle.smallLabel')}: *${toFancy(text.toLowerCase(), 'smallcaps')}*`,
+    ctx.t('textstyle.foot'),
   ]
-  await ctx.reply(lines.join('\n'))
-  await sendButtons(ctx.sock, ctx.chat, {
-    title: 'KANA',
-    body: ctx.t('textstyle.header', { text }),
-    footer: ctx.t('menu.footer'),
-    replies: [{ text: ctx.t('textstyle.menuButton'), id: '.menu maker' }],
-    textFallback: lines.join('\n'),
-  })
+  return ctx.reply(lines.join('\n'))
 }

@@ -18,8 +18,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { togif: { need: 'Balas video yang mau dijadikan GIF yaa~ {mood}', fail: 'Gagal bikin GIF-nya: {error}' } },
-  en: { togif: { need: 'Reply to the video you want as a GIF please~ {mood}', fail: 'Failed to make the GIF: {error}' } },
+  id: { togif: { need: '╭─❏ 🎞️ 「 *BUTUH VIDEO* 」\n┊ Balas video yang mau dijadikan GIF yaa~ {mood}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL BIKIN GIF* 」\n┊ Mouu, gagal bikin GIF-nya: *{error}*~\n╰━━━━━━━' } },
+  en: { togif: { need: '╭─❏ 🎞️ 「 *VIDEO NEEDED* 」\n┊ Reply to the video you want as a GIF please~ {mood}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GIF FAILED* 」\n┊ Mouu, failed to make the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.togif', expect: /balas|reply/i }

@@ -21,20 +21,20 @@ export const config = {
 export const i18n = {
   id: {
     toimg: {
-      needSticker: 'Kutip stikernya dulu yaa, terus ketik .toimg~',
-      animated: 'Ehh, stiker itu animasi. Pakai .tovideo yaa biar gerakannya nggak hilang~',
-      tooBig: 'Mouu, stikernya kegedean (di atas 16 MB)~',
-      failed: 'Mouu, gagal ubah stikernya: {message}~',
-      caption: 'Ini gambarnyaa~',
+      needSticker: '╭─❏ 🏷️ 「 *BUTUH STIKER* 」\n┊ Kutip stikernya dulu yaa, terus ketik *.toimg*~\n╰━━━━━━━',
+      animated: '╭─❏ 🎞️ 「 *ITU STIKER ANIMASI* 」\n┊ Ehh, stiker itu animasi. Pakai *.tovideo* yaa biar gerakannya nggak hilang~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *KEGEDEAN* 」\n┊ Mouu, stikernya kegedean, di atas *16 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL UBAH STIKER* 」\n┊ Mouu, gagal ubah stikernya: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 🖼️ 「 *GAMBAR JADI* 」\n┊ Ini gambarnyaa, stikernya sudah jadi gambar~\n╰━━━━━━━',
     },
   },
   en: {
     toimg: {
-      needSticker: 'Quote the sticker first, then type .toimg~',
-      animated: 'Ehh, that sticker is animated. Use .tovideo so the motion stays~',
-      tooBig: 'Mouu, the sticker is too big (over 16 MB)~',
-      failed: 'Mouu, failed to convert the sticker: {message}~',
-      caption: 'Here is the image~',
+      needSticker: '╭─❏ 🏷️ 「 *STICKER NEEDED* 」\n┊ Quote the sticker first, then type *.toimg*~\n╰━━━━━━━',
+      animated: '╭─❏ 🎞️ 「 *THAT IS ANIMATED* 」\n┊ Ehh, that sticker is animated. Use *.tovideo* so the motion stays~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *TOO BIG* 」\n┊ Mouu, the sticker is too big, over *16 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *CONVERT FAILED* 」\n┊ Mouu, failed to convert the sticker: *{message}*~\n╰━━━━━━━',
+      caption: '╭─❏ 🖼️ 「 *IMAGE READY* 」\n┊ Here is the image, your sticker is now a picture~\n╰━━━━━━━',
     },
   },
 }

@@ -1,6 +1,5 @@
 import { textImage } from '../../src/services/text-image.js'
 import { toStickerWebp } from '../../src/services/sticker.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 import { sendSticker } from './sticker.js'
 
 export const config = {
@@ -17,18 +16,16 @@ export const config = {
 export const i18n = {
   id: {
     ttp: {
-      needText: 'Ketik teksnya dulu yaa, contoh: .ttp semangat~',
-      failed: 'Mouu, gagal bikin stiker ttp: {message}~',
-      done: 'Stiker ttpnya jadii~',
-      menuButton: 'Menu Maker',
+      needText: '╭─❏ ✏️ 「 *BUTUH TEKS* 」\n┊ Ketik teksnya dulu yaa, contoh: *.ttp semangat*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL BIKIN TTP* 」\n┊ Mouu, gagal bikin stiker ttp: *{message}*~\n╰━━━━━━━',
+      done: '╭─❏ ✨ 「 *STIKER TTP JADI* 」\n┊ Stiker ttpnya jadii, hurufnya gede banget~\n╰━━━━━━━',
     },
   },
   en: {
     ttp: {
-      needText: 'Type the text first, example: .ttp you can do it~',
-      failed: 'Mouu, failed to make the ttp sticker: {message}~',
-      done: 'Your ttp sticker is ready~',
-      menuButton: 'Maker Menu',
+      needText: '╭─❏ ✏️ 「 *TEXT NEEDED* 」\n┊ Type the text first, example: *.ttp you can do it*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *TTP FAILED* 」\n┊ Mouu, failed to make the ttp sticker: *{message}*~\n╰━━━━━━━',
+      done: '╭─❏ ✨ 「 *TTP STICKER READY* 」\n┊ Your ttp sticker is ready, big bold letters~\n╰━━━━━━━',
     },
   },
 }
@@ -47,13 +44,7 @@ export async function handler(ctx) {
     })
     const webp = await toStickerWebp(png, { animated: false })
     await sendSticker(ctx, webp)
-    await sendButtons(ctx.sock, ctx.chat, {
-      title: 'KANA',
-      body: ctx.t('ttp.done'),
-      footer: ctx.t('menu.footer'),
-      replies: [{ text: ctx.t('ttp.menuButton'), id: '.menu maker' }],
-      textFallback: ctx.t('ttp.done'),
-    })
+    return ctx.reply(ctx.t('ttp.done'))
   } catch (err) {
     return ctx.reply(ctx.t('ttp.failed', { message: err.message }))
   }

@@ -22,16 +22,16 @@ export const config = {
 export const i18n = {
   id: {
     tovn: {
-      needMedia: 'Kutip audio atau videonya dulu yaa, terus ketik .tovn~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal ubah ke voice note: {message}~',
+      needMedia: '╭─❏ 🎤 「 *BUTUH MEDIA* 」\n┊ Kutip audio atau videonya dulu yaa, terus ketik *.tovn*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *KEGEDEAN* 」\n┊ Mouu, medianya kegedean, di atas *64 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *GAGAL UBAH KE VOICE NOTE* 」\n┊ Mouu, gagal ubah ke voice note: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     tovn: {
-      needMedia: 'Quote an audio or video first, then type .tovn~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to convert to a voice note: {message}~',
+      needMedia: '╭─❏ 🎤 「 *MEDIA NEEDED* 」\n┊ Quote an audio or video first, then type *.tovn*~\n╰━━━━━━━',
+      tooBig: '╭─❏ ⚠️ 「 *TOO BIG* 」\n┊ Mouu, the media is too big, over *64 MB*~\n╰━━━━━━━',
+      failed: '╭─❏ 💦 「 *VOICE NOTE FAILED* 」\n┊ Mouu, failed to convert to a voice note: *{message}*~\n╰━━━━━━━',
     },
   },
 }
