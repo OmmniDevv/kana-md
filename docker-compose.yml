@@ -1,0 +1,20 @@
+# Jalankan bot KANA dengan satu perintah: docker compose up -d --build
+# Pantau kode pairing dan log: docker compose logs -f
+services:
+  bot:
+    build: .
+    container_name: kana-md
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      LOCAL_DATA_DIR: /app/data
+    volumes:
+      - kana-data:/app/data
+    # Buka komentar dua baris di bawah hanya bila memakai kanal skor
+    # WebSocket untuk game HTML (isi SCORE_WS_PORT di .env dulu).
+    # ports:
+    #   - "${SCORE_WS_PORT:-8080}:${SCORE_WS_PORT:-8080}"
+
+volumes:
+  kana-data:

@@ -209,6 +209,8 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 
 ## Installation
 
+New to this? Follow the beginner friendly [TUTORIAL.md](TUTORIAL.md): database setup on Supabase, running the bot with Docker, on a VPS, or in Termux, WhatsApp pairing, and deploying the web dashboard to Vercel, step by step.
+
 Requirements: Node 20 or later (22+ recommended) and ffmpeg.
 
 ```bash
@@ -503,6 +505,8 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 | `.jadibot <nama> <nomor>`, `.stopjadibot <nama>` | Sesi bot tambahan (khusus owner, maks 3) |
 
 ## Instalasi
+
+Baru pertama kali? Ikuti [TUTORIAL.md](TUTORIAL.md) yang ramah pemula: bikin database Supabase, menjalankan bot dengan Docker, di VPS, atau di Termux, pairing WhatsApp, dan deploy dashboard web ke Vercel, langkah demi langkah.
 
 Syarat: Node 20 ke atas (disarankan 22+) dan ffmpeg.
 
