@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekjomblo: {
       title: 'Cek Jomblo 💔',
-      result: 'Tingkat kejombloan {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 💔 「 *CEK JOMBLO* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴋᴇᴊᴏᴍʙʟᴏᴀɴ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Aman, sudah ada yang nemenin tiap hari~',
       mid: 'Setengah jomblo, ada gebetan tapi belum jelas~',
       high: 'Jomblo terdeteksi akut, guling jadi saksi bisu tiap malam~',
       max: 'JOMBLO LEGENDARIS! Statusnya sudah seperti monumen~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekjomblo: {
       title: 'Single Check 💔',
-      result: 'Singleness level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 💔 「 *SINGLE CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ꜱɪɴɢʟᴇɴᴇꜱꜱ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Safe, someone accompanies every day~',
       mid: 'Half single, there is a crush but nothing official~',
       high: 'Acute single detected, the bolster is a silent witness every night~',
       max: 'LEGENDARY SINGLE! The status is basically a monument~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }

@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     ceklapar: {
       title: 'Cek Lapar 🍔',
-      result: 'Tingkat lapar {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🍔 「 *CEK LAPAR* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ʟᴀᴘᴀʀ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Masih kenyang, baru selesai makan kayaknya~',
       mid: 'Mulai lapar dikit, waktunya cari cemilan~',
       high: 'Lapar parah! Suara perutnya sudah konser~',
       max: 'LAPAR MAKSIMAL! Lihat gambar makanan saja langsung ngiler~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     ceklapar: {
       title: 'Hunger Check 🍔',
-      result: 'Hunger level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🍔 「 *HUNGER CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʜᴜɴɢᴇʀ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Still full, probably just finished eating~',
       mid: 'Getting a bit hungry, time to find snacks~',
       high: 'Very hungry! The stomach is holding a concert~',
       max: 'MAXIMUM HUNGER! Drooling just from food pictures~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('ceklapar.btnAgain'), id: '.ceklapar' },
-      { text: ctx.t('ceklapar.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekgila: {
       title: 'Cek Kegilaan 🤪',
-      result: 'Tingkat kegilaan seru {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🤪 「 *CEK KEGILAAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴋᴇɢɪʟᴀᴀɴ ꜱᴇʀᴜ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Waras dan terkendali, aman jadi teman curhat~',
       mid: 'Ada gila-gilanya kalau lagi kumpul sama teman dekat~',
       high: 'Gila seru terdeteksi! Hidupnya jarang yang membosankan~',
       max: 'GILA TOTAL! Ide liarnya tidak habis-habis, tongkrongan auto hidup~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekgila: {
       title: 'Wildness Check 🤪',
-      result: 'Wild fun level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🤪 「 *WILDNESS CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴡɪʟᴅ ꜰᴜɴ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Sane and controlled, safe as a confidant~',
       mid: 'Gets wild when hanging out with close friends~',
       high: 'Fun wildness detected! Life is rarely boring~',
       max: 'TOTALLY WILD! Endless crazy ideas, the hangout instantly livens up~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekgila.btnAgain'), id: '.cekgila' },
-      { text: ctx.t('cekgila.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

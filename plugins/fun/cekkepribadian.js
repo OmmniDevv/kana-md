@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekkepribadian: {
       title: 'Cek Kepribadian 🪞',
-      result: 'Kekuatan kepribadian {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🪞 「 *CEK KEPRIBADIAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴋᴇᴋᴜᴀᴛᴀɴ ᴋᴇᴘʀɪʙᴀᴅɪᴀɴ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Kepribadiannya kalem dan misterius, susah ditebak~',
       mid: 'Kepribadiannya seimbang, enak diajak kerja sama~',
       high: 'Kepribadiannya kuat dan gampang diingat orang~',
       max: 'KEPRIBADIAN BINTANG UTAMA! Semua mata otomatis tertuju~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekkepribadian: {
       title: 'Personality Check 🪞',
-      result: 'Personality strength of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🪞 「 *PERSONALITY CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴘᴇʀꜱᴏɴᴀʟɪᴛʏ ꜱᴛʀᴇɴɢᴛʜ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'A calm and mysterious personality, hard to read~',
       mid: 'A balanced personality, easy to work with~',
       high: 'A strong personality that people easily remember~',
       max: 'MAIN STAR PERSONALITY! All eyes automatically turn~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekkepribadian.btnAgain'), id: '.cekkepribadian' },
-      { text: ctx.t('cekkepribadian.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

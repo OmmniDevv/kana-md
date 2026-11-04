@@ -24,32 +24,30 @@ export const i18n = {
   id: {
     cekpintar: {
       title: 'Cek Pintar 🧠',
-      result: 'Kepintaran {name} versi KANA hari ini: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🧠 「 *CEK PINTAR* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴋᴇᴘɪɴᴛᴀʀᴀɴ: *{percent}%*\n┊ {comment}\n┊\n┊ {disclaimer}\n╰━━━━━━━',
       low: 'Otaknya lagi loading yaa... tidur cukup dulu, besok pasti lebih ngebut~ 😴✨',
       mid: 'Cukup pintar kok, apalagi kalau lagi fokus beneran~ 📚',
       high: 'Pintar nih! Ide-ide kamu hari ini layak didengerin~ (≧▽≦)',
       max: 'Level jenius terdeteksi! KANA sampai kagum nih~ 🎓🌟',
       disclaimer: 'Ini cuma hiburan yaa, persen iseng ini bukan tes IQ dan bukan ukuran pintar beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekpintar: {
       title: 'Smart Check 🧠',
-      result: '{name} smartness, KANA version, today: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🧠 「 *SMART CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ꜱᴍᴀʀᴛɴᴇꜱꜱ: *{percent}%*\n┊ {comment}\n┊\n┊ {disclaimer}\n╰━━━━━━━',
       low: 'Your brain is still loading... get enough sleep first, tomorrow will be faster~ 😴✨',
       mid: 'Smart enough, especially when you truly focus~ 📚',
       high: 'You are sharp! Your ideas today are worth hearing~ (≧▽≦)',
       max: 'Genius level detected! Even KANA is impressed~ 🎓🌟',
       disclaimer: 'This is just for fun, this playful percent is not an IQ test and not a real measure of intelligence~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
 
-export const test = { input: '.cekpintar', expect: /kepintaran/i }
+export const test = { input: '.cekpintar', expect: /cek pintar|smart check/i }
 
 export async function handler(ctx) {
   const percent = hashPercent(`${ctx.senderDigits}:smart:${wibDateString()}`)

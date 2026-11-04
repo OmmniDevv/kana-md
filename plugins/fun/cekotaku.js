@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekotaku: {
       title: 'Cek Otaku 🌸',
-      result: 'Jiwa otaku {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🌸 「 *CEK OTAKU* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴊɪᴡᴀ ᴏᴛᴀᴋᴜ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Nonton anime cuma yang lagi viral saja~',
       mid: 'Setengah otaku, ada beberapa waifu dan husbu simpanan~',
       high: 'Otaku terdeteksi! Hafal opening anime lebih dari lagu kebangsaan~',
       max: 'OTAKU SEJATI! Kamarnya sudah seperti toko merchandise~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekotaku: {
       title: 'Otaku Check 🌸',
-      result: 'Otaku soul of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🌸 「 *OTAKU CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴏᴛᴀᴋᴜ ꜱᴏᴜʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Only watches the viral anime titles~',
       mid: 'Half otaku, keeps a few waifu and husbu~',
       high: 'Otaku detected! Knows anime openings better than the anthem~',
       max: 'TRUE OTAKU! The room looks like a merchandise store~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekotaku.btnAgain'), id: '.cekotaku' },
-      { text: ctx.t('cekotaku.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekkarma: {
       title: 'Cek Karma ☯️',
-      result: 'Saldo karma {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ ☯️ 「 *CEK KARMA* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ꜱᴀʟᴅᴏ ᴋᴀʀᴍᴀ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Karma lagi seret, hati-hati kalau mau iseng ke orang~',
       mid: 'Karmanya seimbang, baik dibalas baik juga~',
       high: 'Karmanya bagus, sering nolong orang diam-diam nih~',
       max: 'KARMA EMAS! Tabungan kebaikannya tidak habis-habis~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekkarma: {
       title: 'Karma Check ☯️',
-      result: 'Karma balance of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ ☯️ 「 *KARMA CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴋᴀʀᴍᴀ ʙᴀʟᴀɴᴄᴇ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Karma is low, be careful before pranking anyone~',
       mid: 'Balanced karma, good returns good~',
       high: 'Good karma, secretly helps people often~',
       max: 'GOLDEN KARMA! An endless savings of good deeds~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekkarma.btnAgain'), id: '.cekkarma' },
-      { text: ctx.t('cekkarma.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekmalas: {
       title: 'Cek Malas 🛋️',
-      result: 'Tingkat malas {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🛋️ 「 *CEK MALAS* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴍᴀʟᴀꜱ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Rajin sekali, matahari saja kalah bangun~',
       mid: 'Malasnya wajar, masih bisa digerakkan pakai makanan~',
       high: 'Malas terdeteksi akut, rebahan adalah jalan ninjanya~',
       max: 'MALAS LEGENDARIS! Menggerakkan jempol saja terasa olahraga~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekmalas: {
       title: 'Laziness Check 🛋️',
-      result: 'Laziness level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🛋️ 「 *LAZINESS CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʟᴀᴢɪɴᴇꜱꜱ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Very diligent, wakes up earlier than the sun~',
       mid: 'Normal laziness, still movable with food~',
       high: 'Acute laziness detected, lying down is the ninja way~',
       max: 'LEGENDARY LAZINESS! Moving a thumb feels like exercise~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekmalas.btnAgain'), id: '.cekmalas' },
-      { text: ctx.t('cekmalas.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

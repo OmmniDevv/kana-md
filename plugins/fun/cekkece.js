@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekkece: {
       title: 'Cek Kece 🆒',
-      result: 'Tingkat kece {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🆒 「 *CEK KECE* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴋᴇᴄᴇ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Kecenya masih disembunyikan, belum mode tampil~',
       mid: 'Cukup kece, apalagi kalau outfitnya lagi pas~',
       high: 'Kece parah, auranya langsung terasa begitu masuk ruangan~',
       max: 'KECE MAKSIMAL! Definisi keren yang berjalan~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekkece: {
       title: 'Coolness Check 🆒',
-      result: 'Coolness level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🆒 「 *COOLNESS CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴄᴏᴏʟɴᴇꜱꜱ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Coolness still hidden, not in show mode yet~',
       mid: 'Cool enough, especially with the right outfit~',
       high: 'Super cool, the aura hits the moment they enter the room~',
       max: 'MAXIMUM COOL! The walking definition of cool~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekkece.btnAgain'), id: '.cekkece' },
-      { text: ctx.t('cekkece.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

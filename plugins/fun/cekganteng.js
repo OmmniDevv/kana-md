@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekganteng: {
       title: 'Cek Kegantengan 😎',
-      result: 'Tingkat kegantengan {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 😎 「 *CEK KEGANTENGAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴋᴇɢᴀɴᴛᴇɴɢᴀɴ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Gantengnya tipe awet, yang penting nyaman dilihat lama-lama~',
       mid: 'Gantengnya pas, apalagi kalau lagi senyum~',
       high: 'Ganteng menonjol! Aura tokoh utamanya kuat~',
       max: 'GANTENG PARAH! Lewat saja bisa bikin orang menoleh dua kali~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekganteng: {
       title: 'Handsome Check 😎',
-      result: 'Handsome level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 😎 「 *HANDSOME CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʜᴀɴᴅꜱᴏᴍᴇ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'The lasting type of handsome, comfortable to look at~',
       mid: 'Just the right handsome, especially when smiling~',
       high: 'Strikingly handsome! Strong main character aura~',
       max: 'EXTREMELY HANDSOME! People turn their heads twice just passing by~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekganteng.btnAgain'), id: '.cekganteng' },
-      { text: ctx.t('cekganteng.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

@@ -21,13 +21,13 @@ const BANDS = [
 export const i18n = {
   id: {
     cektinggi: {
-      body: '📏 CEK TINGGI BADAN\n\nTinggi bercandamu hari ini: *{cm} cm*\n{comment}\n\nTetap ukur pakai meteran beneran buat data asli yaa~ {mood}',
+      body: '╭─❏ 📏 「 *CEK TINGGI BADAN* 」\n┊ ᴛɪɴɢɢɪ ʙᴇʀᴄᴀɴᴅᴀᴍᴜ ʜᴀʀɪ ɪɴɪ: *{cm} cm*\n┊ {comment}\n┊\n┊ Tetap ukur pakai meteran beneran buat data asli yaa~\n╰━━━━━━━ {mood}',
       btnAgain: 'Cek Lagi',
     },
   },
   en: {
     cektinggi: {
-      body: '📏 HEIGHT CHECK\n\nYour joke height today: *{cm} cm*\n{comment}\n\nUse a real measuring tape for actual data~ {mood}',
+      body: '╭─❏ 📏 「 *HEIGHT CHECK* 」\n┊ ʏᴏᴜʀ ᴊᴏᴋᴇ ʜᴇɪɢʜᴛ ᴛᴏᴅᴀʏ: *{cm} cm*\n┊ {comment}\n┊\n┊ Use a real measuring tape for actual data~\n╰━━━━━━━ {mood}',
       btnAgain: 'Check Again',
     },
   },

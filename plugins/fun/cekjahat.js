@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekjahat: {
       title: 'Cek Jahat 😈',
-      result: 'Tingkat jahat iseng {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 😈 「 *CEK JAHAT* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴊᴀʜᴀᴛ ɪꜱᴇɴɢ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Hatinya bersih, jahat saja tidak tega~',
       mid: 'Jahatnya standar, cuma kalau lagi diganggu duluan~',
       high: 'Jahat iseng terdeteksi, suka ngerjain orang diam-diam~',
       max: 'PENJAHAT KELAS KAKAP versi iseng! Rencana jahilnya berlapis-lapis~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekjahat: {
       title: 'Mischief Check 😈',
-      result: 'Mischief level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 😈 「 *MISCHIEF CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴍɪꜱᴄʜɪᴇꜰ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Pure heart, cannot even bring themselves to be mean~',
       mid: 'Standard mischief, only when disturbed first~',
       high: 'Mischief detected, secretly loves pranking people~',
       max: 'MASTER VILLAIN of pranks! Layered evil plans~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekjahat.btnAgain'), id: '.cekjahat' },
-      { text: ctx.t('cekjahat.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

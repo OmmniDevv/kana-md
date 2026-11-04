@@ -24,25 +24,23 @@ export const i18n = {
   id: {
     cekpacar: {
       title: 'Cek Sifat Pacar',
-      ask: 'Sebut nama pacarnya dulu yaa: .cekpacar Dimas {mood}',
-      body: '💘 CEK SIFAT PACAR\n\nNama: *{name}*\nKesetiaan: *{setia}%*\nRomantis: *{romantis}%*\nCemburuan: *{cemburu}%*\n\n{verdict} {mood}',
+      ask: '╭─❏ 💘 「 *CEK SIFAT PACAR* 」\n┊ Sebut nama pacarnya dulu yaa~\n┊ Contoh: *.cekpacar Dimas*\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 💘 「 *CEK SIFAT PACAR* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴋᴇꜱᴇᴛɪᴀᴀɴ: *{setia}%*\n┊ ʀᴏᴍᴀɴᴛɪꜱ: *{romantis}%*\n┊ ᴄᴇᴍʙᴜʀᴜᴀɴ: *{cemburu}%*\n┊\n┊ {verdict}\n╰━━━━━━━ {mood}',
       verdictHigh: 'Paket lengkap, jaga baik-baik orang seperti ini.',
       verdictMix: 'Campuran yang seru, kuncinya komunikasi yang jujur.',
       verdictWild: 'Dinamis sekali, hubungan kalian tidak akan membosankan.',
       btnAgain: '💘 Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekpacar: {
       title: 'Partner Traits Check',
-      ask: 'Tell me the partner name first: .cekpacar Dimas {mood}',
-      body: '💘 PARTNER TRAITS CHECK\n\nName: *{name}*\nLoyalty: *{setia}%*\nRomance: *{romantis}%*\nJealousy: *{cemburu}%*\n\n{verdict} {mood}',
+      ask: '╭─❏ 💘 「 *PARTNER TRAITS CHECK* 」\n┊ Tell me the partner name first~\n┊ Example: *.cekpacar Dimas*\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 💘 「 *PARTNER TRAITS CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʟᴏʏᴀʟᴛʏ: *{setia}%*\n┊ ʀᴏᴍᴀɴᴄᴇ: *{romantis}%*\n┊ ᴊᴇᴀʟᴏᴜꜱʏ: *{cemburu}%*\n┊\n┊ {verdict}\n╰━━━━━━━ {mood}',
       verdictHigh: 'The full package, take good care of someone like this.',
       verdictMix: 'A fun mix, the key is honest communication.',
       verdictWild: 'Very dynamic, your relationship will never be boring.',
       btnAgain: '💘 Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }

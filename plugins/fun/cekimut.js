@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekimut: {
       title: 'Cek Keimutan 🧸',
-      result: 'Tingkat keimutan {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🧸 「 *CEK KEIMUTAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴋᴇɪᴍᴜᴛᴀɴ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Imutnya hemat, muncul cuma ke orang tertentu~',
       mid: 'Imutnya cukup buat bikin orang gemas sesekali~',
       high: 'Imut banget! Senyumnya saja bisa bikin hati meleleh~',
       max: 'IMUT MAKSIMAL! Sudah level maskot yang wajib dilindungi~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekimut: {
       title: 'Cuteness Check 🧸',
-      result: 'Cuteness level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🧸 「 *CUTENESS CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴄᴜᴛᴇɴᴇꜱꜱ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Cuteness on budget, shows up only for certain people~',
       mid: 'Cute enough to make people squeal sometimes~',
       high: 'So cute! The smile alone melts hearts~',
       max: 'MAXIMUM CUTE! Mascot level that must be protected~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekimut.btnAgain'), id: '.cekimut' },
-      { text: ctx.t('cekimut.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

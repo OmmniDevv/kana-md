@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekkpopers: {
       title: 'Cek K-Popers 🎤',
-      result: 'Jiwa K-Popers {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🎤 「 *CEK K-POPERS* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴊɪᴡᴀ ᴋ-ᴘᴏᴘᴇʀꜱ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Dengarnya cuma kalau lagi lewat di kafe~',
       mid: 'Suka beberapa grup, playlistnya campur-campur~',
       high: 'K-Popers terdeteksi! Hafal koreografi lebih dari nama tetangga~',
       max: 'K-POPERS GARIS KERAS! Lightstick selalu siap di tas~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekkpopers: {
       title: 'K-Pop Check 🎤',
-      result: 'K-Pop soul of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🎤 「 *K-POP CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴋ-ᴘᴏᴘ ꜱᴏᴜʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Only hears it when passing by a cafe~',
       mid: 'Likes a few groups, the playlist is mixed~',
       high: 'K-Popper detected! Knows choreographies better than neighbors names~',
       max: 'HARDCORE K-POPPER! The lightstick is always ready in the bag~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekkpopers.btnAgain'), id: '.cekkpopers' },
-      { text: ctx.t('cekkpopers.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

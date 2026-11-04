@@ -25,7 +25,7 @@ export function khodamFor(name) {
 export const i18n = {
   id: {
     cekkhodam: {
-      result: '👻 CEK KHODAM 👻\n\nKhodam penjaga {name} adalah...\n\n✨ {khodam} ✨\nSifatnya: {trait}\n\nJaga dia baik-baik yaa, jangan lupa kasih gorengan sesekali~ {mood}\n\n{disclaimer}',
+      result: '╭─❏ 👻 「 *CEK KHODAM* 」\n┊ ᴋʜᴏᴅᴀᴍ ᴘᴇɴᴊᴀɢᴀ *{name}* adalah...\n┊ ✨ *{khodam}* ✨\n┊ ꜱɪꜰᴀᴛɴʏᴀ: {trait}\n┊ Jaga dia baik-baik yaa, jangan lupa kasih gorengan sesekali~ {mood}\n╰━━━━━━━\n{disclaimer}',
       disclaimer: 'Catatan: ini cuma permainan hiburan dari KANA yaa, bukan beneran ada khodamnya. Jangan dianggap serius~',
       againBtn: '👻 Cek Lagi',
       jodohBtn: '💕 Cek Jodoh',
@@ -34,7 +34,7 @@ export const i18n = {
   },
   en: {
     cekkhodam: {
-      result: '👻 KHODAM CHECK 👻\n\nThe guardian khodam of {name} is...\n\n✨ {khodam} ✨\nTrait: {trait}\n\nTake good care of them, and offer fried snacks once in a while~ {mood}\n\n{disclaimer}',
+      result: '╭─❏ 👻 「 *KHODAM CHECK* 」\n┊ ᴛʜᴇ ɢᴜᴀʀᴅɪᴀɴ ᴋʜᴏᴅᴀᴍ ᴏꜰ *{name}* is...\n┊ ✨ *{khodam}* ✨\n┊ ᴛʀᴀɪᴛ: {trait}\n┊ Take good care of them, and offer fried snacks once in a while~ {mood}\n╰━━━━━━━\n{disclaimer}',
       disclaimer: 'Note: this is just a fun game from KANA, there is no real khodam. Do not take it seriously~',
       againBtn: '👻 Check Again',
       jodohBtn: '💕 Love Check',

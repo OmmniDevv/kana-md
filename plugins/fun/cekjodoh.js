@@ -36,8 +36,8 @@ export function loveCategory(percent) {
 export const i18n = {
   id: {
     cekjodoh: {
-      usage: 'Pakai: .cekjodoh <nama1> & <nama2>, contoh .cekjodoh Budi & Sari. Bisa juga mention dua orang yaa~',
-      result: '💕 CEK JODOH 💕\n\n{name1} 💗 {name2}\nKecocokan: {percent}%\n\n{comment} {mood}\n\n{disclaimer}',
+      usage: '╭─❏ 💕 「 *CEK JODOH* 」\n┊ ᴘᴀᴋᴀɪ: *.cekjodoh <nama1> & <nama2>*\n┊ ᴄᴏɴᴛᴏʜ: *.cekjodoh Budi & Sari*\n┊ Bisa juga mention dua orang yaa~\n╰━━━━━━━',
+      result: '╭─❏ 💕 「 *CEK JODOH* 」\n┊ *{name1}* 💗 *{name2}*\n┊ ᴋᴇᴄᴏᴄᴏᴋᴀɴ: *{percent}%*\n┊ {comment} {mood}\n╰━━━━━━━\n{disclaimer}',
       low: 'Hmm, bintang-bintangnya lagi tidak sejalan nih. Tapi tenang, teman baik juga berharga banget~',
       midlow: 'Ada percikan kecil! Pelan-pelan saja, siapa tahu tumbuh~',
       mid: 'Lumayan serasi! Tinggal sering ngobrol biar makin nyambung~',
@@ -51,8 +51,8 @@ export const i18n = {
   },
   en: {
     cekjodoh: {
-      usage: 'Use: .cekjodoh <name1> & <name2>, for example .cekjodoh Budi & Sari. You can also mention two people~',
-      result: '💕 LOVE CHECK 💕\n\n{name1} 💗 {name2}\nCompatibility: {percent}%\n\n{comment} {mood}\n\n{disclaimer}',
+      usage: '╭─❏ 💕 「 *LOVE CHECK* 」\n┊ ᴜꜱᴇ: *.cekjodoh <name1> & <name2>*\n┊ ᴇxᴀᴍᴘʟᴇ: *.cekjodoh Budi & Sari*\n┊ You can also mention two people~\n╰━━━━━━━',
+      result: '╭─❏ 💕 「 *LOVE CHECK* 」\n┊ *{name1}* 💗 *{name2}*\n┊ ᴄᴏᴍᴘᴀᴛɪʙɪʟɪᴛʏ: *{percent}%*\n┊ {comment} {mood}\n╰━━━━━━━\n{disclaimer}',
       low: 'Hmm, the stars are not aligned right now. But hey, good friends are precious too~',
       midlow: 'There is a small spark! Take it slow, it might grow~',
       mid: 'Pretty compatible! Just chat more to connect even better~',

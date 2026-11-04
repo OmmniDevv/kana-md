@@ -28,25 +28,23 @@ export const i18n = {
   id: {
     cekperfoma: {
       title: 'Cek Perfoma',
-      body: '🚀 CEK PERFOMA\n\nPerfomamu hari ini: *{percent}%*\n\n{comment} {mood}',
+      body: '╭─❏ 🚀 「 *CEK PERFOMA* 」\n┊ ᴘᴇʀꜰᴏᴍᴀᴍᴜ ʜᴀʀɪ ɪɴɪ: *{percent}%*\n┊\n┊ {comment}\n╰━━━━━━━ {mood}',
       low: ['Hari ini mesinmu lagi mode hemat daya. Istirahat yang cukup yaa.', 'Pelan-pelan saja, yang penting tetap jalan.'],
       mid: ['Perfoma standar, cukup buat menyelesaikan hari.', 'Lumayan stabil, tinggal tambah sedikit bensin semangat.'],
       high: ['Mesinmu lagi panas dan efisien, gas terus!', 'Hari ini kamu tajam, manfaatkan momentum ini.'],
       max: ['PERFOMA PUNCAK! Hari ini kamu tidak terbendung.', 'Seratus persen, semua sistem menyala sempurna.'],
       btnAgain: '🚀 Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekperfoma: {
       title: 'Performance Check',
-      body: '🚀 PERFORMANCE CHECK\n\nYour performance today: *{percent}%*\n\n{comment} {mood}',
+      body: '╭─❏ 🚀 「 *PERFORMANCE CHECK* 」\n┊ ʏᴏᴜʀ ᴘᴇʀꜰᴏʀᴍᴀɴᴄᴇ ᴛᴏᴅᴀʏ: *{percent}%*\n┊\n┊ {comment}\n╰━━━━━━━ {mood}',
       low: ['Your engine is on power saving mode today. Get enough rest.', 'Take it slow, what matters is you keep moving.'],
       mid: ['Standard performance, enough to finish the day.', 'Fairly stable, just add a little fuel of spirit.'],
       high: ['Your engine is hot and efficient, keep pushing!', 'You are sharp today, use this momentum.'],
       max: ['PEAK PERFORMANCE! Nothing can stop you today.', 'One hundred percent, all systems firing perfectly.'],
       btnAgain: '🚀 Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }

@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekoverpower: {
       title: 'Cek Overpower 💥',
-      result: 'Tingkat overpower {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 💥 「 *CEK OVERPOWER* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴏᴠᴇʀᴘᴏᴡᴇʀ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Masih karakter figuran, perlu latihan arc dulu~',
       mid: 'Setara tokoh pendukung penting, lumayan bisa diandalkan~',
       high: 'Overpower terdeteksi! Lawan saja sampai malas menyerang~',
       max: 'OVERPOWER MAKSIMAL! Sekali kedip, boss terakhir langsung tumbang~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekoverpower: {
       title: 'Overpower Check 💥',
-      result: 'Overpower level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 💥 「 *OVERPOWER CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴏᴠᴇʀᴘᴏᴡᴇʀ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Still a background character, needs a training arc~',
       mid: 'Equal to an important side character, quite reliable~',
       high: 'Overpowered detected! Even enemies get lazy to attack~',
       max: 'MAXIMUM OVERPOWERED! One blink and the final boss falls~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekoverpower.btnAgain'), id: '.cekoverpower' },
-      { text: ctx.t('cekoverpower.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

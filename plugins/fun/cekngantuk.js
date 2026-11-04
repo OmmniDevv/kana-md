@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekngantuk: {
       title: 'Cek Ngantuk 😪',
-      result: 'Tingkat ngantuk {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 😪 「 *CEK NGANTUK* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ɴɢᴀɴᴛᴜᴋ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Segar bugar, mata masih full baterai~',
       mid: 'Mulai ngantuk, kopi atau tidur siang bisa menyelamatkan~',
       high: 'Ngantuk parah, mata tinggal lima watt~',
       max: 'NGANTUK MAKSIMAL! Berdiri saja bisa tidur ini mah~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekngantuk: {
       title: 'Sleepiness Check 😪',
-      result: 'Sleepiness level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 😪 「 *SLEEPINESS CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ꜱʟᴇᴇᴘɪɴᴇꜱꜱ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Fresh and fit, eyes still fully charged~',
       mid: 'Getting sleepy, coffee or a nap could save the day~',
       high: 'Very sleepy, the eyes are at five watts~',
       max: 'MAXIMUM SLEEPY! Could sleep while standing~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekngantuk.btnAgain'), id: '.cekngantuk' },
-      { text: ctx.t('cekngantuk.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

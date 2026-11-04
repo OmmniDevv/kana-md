@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekkaya: {
       title: 'Cek Kekayaan 💰',
-      result: 'Aura kekayaan {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 💰 「 *CEK KEKAYAAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴀᴜʀᴀ ᴋᴇᴋᴀʏᴀᴀɴ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Masih mode hemat, rezekinya disimpan buat nanti~',
       mid: 'Lumayan, ada bakat jadi orang sukses kalau konsisten~',
       high: 'Aura sultan terdeteksi! Tinggal tunggu waktu saja~',
       max: 'KAYA RAYA MASA DEPAN! Dompet masa depannya full senyum~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekkaya: {
       title: 'Wealth Check 💰',
-      result: 'Wealth aura of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 💰 「 *WEALTH CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴡᴇᴀʟᴛʜ ᴀᴜʀᴀ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Still saving mode, fortune stored for later~',
       mid: 'Decent, has the talent to succeed if consistent~',
       high: 'Sultan aura detected! Just a matter of time~',
       max: 'FUTURE FILTHY RICH! The future wallet smiles widely~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekkaya.btnAgain'), id: '.cekkaya' },
-      { text: ctx.t('cekkaya.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })
