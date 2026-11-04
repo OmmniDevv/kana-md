@@ -14,15 +14,15 @@ export const config = {
 export const i18n = {
   id: {
     cuaca: {
-      needCity: 'Ketik nama kotanya dulu yaa, contoh: .cuaca Jakarta~',
-      notFound: 'Mouu, kota "{city}" nggak ketemu. Coba ejaan lain ya~',
-      failed: 'Mouu, cek cuaca gagal: {message}. Coba lagi nanti ya~',
-      header: 'Cuaca di {place}, {country}',
-      now: 'Sekarang: {condition}, {temp}°C',
-      humidity: 'Kelembaban: {value}%',
-      wind: 'Angin: {value} km/jam',
-      forecastHeader: 'Prakiraan 3 hari ke depan:',
-      day: '{date}: {min}°C sampai {max}°C, peluang hujan {rain}%',
+      needCity: '╭─❏ 🌤️ 「 *CEK CUACA* 」\n┊ Ketik nama kotanya dulu yaa~\n┊ Contoh: *.cuaca Jakarta*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *KOTA TIDAK KETEMU* 」\n┊ Mouu, kota *{city}* nggak ketemu~\n┊ Coba ejaan lain yaa~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *CEK CUACA GAGAL* 」\n┊ Mouu, cek cuaca gagal: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      header: '╭─❏ 🌤️ 「 *CUACA DI {place}, {country}* 」',
+      now: '┊ ꜱᴇᴋᴀʀᴀɴɢ: *{condition}, {temp}°C*',
+      humidity: '┊ ᴋᴇʟᴇᴍʙᴀʙᴀɴ: *{value}%*',
+      wind: '┊ ᴀɴɢɪɴ: *{value} km/jam*',
+      forecastHeader: '┊ ᴘʀᴀᴋɪʀᴀᴀɴ 3 ʜᴀʀɪ ᴋᴇ ᴅᴇᴘᴀɴ:',
+      day: '┊ {date}: *{min}°C* sampai *{max}°C*, peluang hujan *{rain}%*',
       cond: {
         clear: 'cerah',
         cloudy: 'berawan',
@@ -38,15 +38,15 @@ export const i18n = {
   },
   en: {
     cuaca: {
-      needCity: 'Type the city name first, example: .cuaca Jakarta~',
-      notFound: 'Mouu, the city "{city}" was not found. Try another spelling~',
-      failed: 'Mouu, weather check failed: {message}. Try again later~',
-      header: 'Weather in {place}, {country}',
-      now: 'Now: {condition}, {temp}°C',
-      humidity: 'Humidity: {value}%',
-      wind: 'Wind: {value} km/h',
-      forecastHeader: 'Forecast for the next 3 days:',
-      day: '{date}: {min}°C to {max}°C, rain chance {rain}%',
+      needCity: '╭─❏ 🌤️ 「 *WEATHER CHECK* 」\n┊ Type the city name first~\n┊ Example: *.cuaca Jakarta*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *CITY NOT FOUND* 」\n┊ Mouu, the city *{city}* was not found~\n┊ Try another spelling~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *WEATHER CHECK FAILED* 」\n┊ Mouu, weather check failed: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      header: '╭─❏ 🌤️ 「 *WEATHER IN {place}, {country}* 」',
+      now: '┊ ɴᴏᴡ: *{condition}, {temp}°C*',
+      humidity: '┊ ʜᴜᴍɪᴅɪᴛʏ: *{value}%*',
+      wind: '┊ ᴡɪɴᴅ: *{value} km/h*',
+      forecastHeader: '┊ ꜰᴏʀᴇᴄᴀꜱᴛ ꜰᴏʀ ᴛʜᴇ ɴᴇxᴛ 3 ᴅᴀʏꜱ:',
+      day: '┊ {date}: *{min}°C* to *{max}°C*, rain chance *{rain}%*',
       cond: {
         clear: 'clear',
         cloudy: 'cloudy',
@@ -111,5 +111,6 @@ export async function handler(ctx) {
       )
     }
   }
+  lines.push('╰━━━━━━━')
   await ctx.reply(lines.join('\n'))
 }

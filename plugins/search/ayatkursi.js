@@ -12,14 +12,14 @@ export const config = {
 export const i18n = {
   id: {
     ayatkursi: {
-      body: '📖 AYAT KURSI (QS Al-Baqarah: 255)\n\n{arab}\n\n{trans}',
-      fail: 'Gagal ambil Ayat Kursinya: {error}',
+      body: '╭─❏ 📖 「 *AYAT KURSI* 」\n┊ ǫꜱ ᴀʟ-ʙᴀǫᴀʀᴀʜ: *255*\n\n{arab}\n\n{trans}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *GAGAL AMBIL AYAT KURSI* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
   en: {
     ayatkursi: {
-      body: '📖 AYAT KURSI (QS Al-Baqarah: 255)\n\n{arab}\n\n{trans}',
-      fail: 'Failed to fetch Ayat Kursi: {error}',
+      body: '╭─❏ 📖 「 *AYAT KURSI* 」\n┊ ǫꜱ ᴀʟ-ʙᴀǫᴀʀᴀʜ: *255*\n\n{arab}\n\n{trans}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *FAILED TO FETCH AYAT KURSI* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
 }

@@ -11,14 +11,14 @@ export const config = {
 export const i18n = {
   id: {
     ocr: {
-      noImage: 'Balas gambar yang mau dibaca teksnya dulu yaa, baru ketik .ocr~',
-      unavailable: 'Mouu, fitur OCR belum tersedia di rilis ini. Mesin OCR yang ringan belum ada yang cocok dipasang di KANA, jadi KANA nggak mau pura-pura bisa. Nanti kalau sudah siap, KANA kabari yaa~',
+      noImage: '╭─❏ 🔍 「 *OCR* 」\n┊ Balas gambar yang mau dibaca teksnya dulu yaa~\n┊ Baru ketik *.ocr*\n╰━━━━━━━',
+      unavailable: '╭─❏ 🌸 「 *OCR BELUM TERSEDIA* 」\n┊ Mouu, fitur OCR belum tersedia di rilis ini~\n┊ Mesin OCR yang ringan belum ada yang cocok dipasang di KANA, jadi KANA nggak mau pura-pura bisa~\n┊ Nanti kalau sudah siap, KANA kabari yaa~\n╰━━━━━━━',
     },
   },
   en: {
     ocr: {
-      noImage: 'Reply to the image whose text you want read first, then type .ocr~',
-      unavailable: 'Mouu, the OCR feature is not available in this release yet. No lightweight OCR engine fits KANA so far, so KANA will not pretend it works. KANA will let you know once it is ready~',
+      noImage: '╭─❏ 🔍 「 *OCR* 」\n┊ Reply to the image whose text you want read first~\n┊ Then type *.ocr*\n╰━━━━━━━',
+      unavailable: '╭─❏ 🌸 「 *OCR NOT AVAILABLE YET* 」\n┊ Mouu, the OCR feature is not available in this release yet~\n┊ No lightweight OCR engine fits KANA so far, so KANA will not pretend it works~\n┊ KANA will let you know once it is ready~\n╰━━━━━━━',
     },
   },
 }

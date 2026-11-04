@@ -17,24 +17,24 @@ export const config = {
 export const i18n = {
   id: {
     gambar: {
-      needQuery: 'Ketik kata kuncinya dulu yaa, contoh: .gambar kucing lucu~',
-      notFound: 'Mouu, nggak ada gambar buat kata kunci itu. Coba kata lain ya~',
-      failed: 'Mouu, pencarian gambar gagal: {message}. Coba lagi nanti ya~',
-      caption: 'Gambar buat "{query}"',
-      moreHeader: 'Tautan gambar lain buat "{query}":',
-      item: '{n}. {url}',
+      needQuery: '╭─❏ 🖼️ 「 *CARI GAMBAR* 」\n┊ Ketik kata kuncinya dulu yaa~\n┊ Contoh: *.gambar kucing lucu*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *GAMBAR TIDAK KETEMU* 」\n┊ Mouu, nggak ada gambar buat kata kunci itu~\n┊ Coba kata lain yaa~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian gambar gagal: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      caption: '🖼️ ɢᴀᴍʙᴀʀ ʙᴜᴀᴛ *{query}*',
+      moreHeader: '╭─❏ 🔗 「 *GAMBAR LAIN: {query}* 」',
+      item: '┊ {n}. {url}',
       btnAgain: 'Cari lagi',
       btnPinterest: 'Cari di Pinterest',
     },
   },
   en: {
     gambar: {
-      needQuery: 'Type the keywords first, example: .gambar cute cat~',
-      notFound: 'Mouu, no images for those keywords. Try others~',
-      failed: 'Mouu, image search failed: {message}. Try again later~',
-      caption: 'Image for "{query}"',
-      moreHeader: 'More image links for "{query}":',
-      item: '{n}. {url}',
+      needQuery: '╭─❏ 🖼️ 「 *IMAGE SEARCH* 」\n┊ Type the keywords first~\n┊ Example: *.gambar cute cat*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *NO IMAGES FOUND* 」\n┊ Mouu, no images for those keywords~\n┊ Try others~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *SEARCH FAILED* 」\n┊ Mouu, image search failed: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      caption: '🖼️ ɪᴍᴀɢᴇ ꜰᴏʀ *{query}*',
+      moreHeader: '╭─❏ 🔗 「 *MORE IMAGES: {query}* 」',
+      item: '┊ {n}. {url}',
       btnAgain: 'Search again',
       btnPinterest: 'Search on Pinterest',
     },
@@ -71,6 +71,7 @@ export async function handler(ctx) {
     lines.push(ctx.t('gambar.moreHeader', { query }))
     search.results.forEach((url, i) => lines.push(ctx.t('gambar.item', { n: i + 1, url })))
   }
+  if (lines.length) lines.push('╰━━━━━━━')
   const body = lines.join('\n')
   await sendButtons(ctx.sock, ctx.chat, {
     title: 'KANA',

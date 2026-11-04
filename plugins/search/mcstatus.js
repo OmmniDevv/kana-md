@@ -13,18 +13,18 @@ export const config = {
 export const i18n = {
   id: {
     mcstatus: {
-      hint: 'Tulis alamat servernya yaa~ Contoh: .mcstatus mc.hypixel.net',
-      online: '🟢 SERVER ONLINE: {host}\n\nPemain: {now}/{max}\nVersi: {version}\nMOTD: {motd}',
-      offline: '🔴 Server {host} lagi offline atau tidak terjangkau. {mood}',
-      fail: 'Gagal cek statusnya: {error}',
+      hint: '╭─❏ 🎮 「 *STATUS MINECRAFT* 」\n┊ Tulis alamat servernya yaa~\n┊ Contoh: *.mcstatus mc.hypixel.net*\n╰━━━━━━━',
+      online: '╭─❏ 🟢 「 *SERVER ONLINE: {host}* 」\n┊ ᴘᴇᴍᴀɪɴ: *{now}/{max}*\n┊ ᴠᴇʀꜱɪ: *{version}*\n┊ ᴍᴏᴛᴅ: {motd}\n╰━━━━━━━',
+      offline: '╭─❏ 🔴 「 *SERVER OFFLINE* 」\n┊ Server *{host}* lagi offline atau tidak terjangkau. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *GAGAL CEK STATUS* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
   en: {
     mcstatus: {
-      hint: 'Write the server address please~ Example: .mcstatus mc.hypixel.net',
-      online: '🟢 SERVER ONLINE: {host}\n\nPlayers: {now}/{max}\nVersion: {version}\nMOTD: {motd}',
-      offline: '🔴 Server {host} is offline or unreachable. {mood}',
-      fail: 'Failed to check the status: {error}',
+      hint: '╭─❏ 🎮 「 *MINECRAFT STATUS* 」\n┊ Write the server address please~\n┊ Example: *.mcstatus mc.hypixel.net*\n╰━━━━━━━',
+      online: '╭─❏ 🟢 「 *SERVER ONLINE: {host}* 」\n┊ ᴘʟᴀʏᴇʀꜱ: *{now}/{max}*\n┊ ᴠᴇʀꜱɪᴏɴ: *{version}*\n┊ ᴍᴏᴛᴅ: {motd}\n╰━━━━━━━',
+      offline: '╭─❏ 🔴 「 *SERVER OFFLINE* 」\n┊ Server *{host}* is offline or unreachable. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *FAILED TO CHECK STATUS* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
 }

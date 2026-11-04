@@ -19,16 +19,16 @@ export const config = {
 export const i18n = {
   id: {
     berita: {
-      title: '📰 BERITA TERBARU ({source})\n\n{list}',
-      line: '{rank}. {title}\n   {time}',
-      fail: 'Gagal mengambil berita dari semua sumber RSS: {error}',
+      title: '╭─❏ 📰 「 *BERITA TERBARU* 」\n┊ ꜱᴜᴍʙᴇʀ: *{source}*\n{list}\n╰━━━━━━━',
+      line: '┊ {rank}. *{title}*\n┊ {time}',
+      fail: '╭─❏ 😖 「 *GAGAL AMBIL BERITA* 」\n┊ Gagal mengambil berita dari semua sumber RSS: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     berita: {
-      title: '📰 LATEST NEWS ({source})\n\n{list}',
-      line: '{rank}. {title}\n   {time}',
-      fail: 'Failed to fetch news from all RSS sources: {error}',
+      title: '╭─❏ 📰 「 *LATEST NEWS* 」\n┊ ꜱᴏᴜʀᴄᴇ: *{source}*\n{list}\n╰━━━━━━━',
+      line: '┊ {rank}. *{title}*\n┊ {time}',
+      fail: '╭─❏ 😖 「 *FAILED TO FETCH NEWS* 」\n┊ Failed to fetch news from all RSS sources: *{error}*\n╰━━━━━━━',
     },
   },
 }

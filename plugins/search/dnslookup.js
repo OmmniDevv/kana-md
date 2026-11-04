@@ -14,18 +14,18 @@ export const config = {
 export const i18n = {
   id: {
     dnslookup: {
-      hint: 'Tulis domainnya yaa~ Contoh: .dnslookup google.com MX',
-      head: '🌐 DNS {name} ({type})',
-      none: 'Tidak ada record {type} untuk {name}. {mood}',
-      fail: 'Gagal lookup DNS: {error}',
+      hint: '╭─❏ 🌐 「 *DNS LOOKUP* 」\n┊ Tulis domainnya yaa~\n┊ Contoh: *.dnslookup google.com MX*\n╰━━━━━━━',
+      head: '╭─❏ 🌐 「 *DNS {name} ({type})* 」',
+      none: '╭─❏ 🔍 「 *RECORD TIDAK ADA* 」\n┊ Tidak ada record *{type}* untuk *{name}*. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *LOOKUP GAGAL* 」\n┊ Gagal lookup DNS: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     dnslookup: {
-      hint: 'Write the domain please~ Example: .dnslookup google.com MX',
-      head: '🌐 DNS {name} ({type})',
-      none: 'No {type} records for {name}. {mood}',
-      fail: 'DNS lookup failed: {error}',
+      hint: '╭─❏ 🌐 「 *DNS LOOKUP* 」\n┊ Write the domain please~\n┊ Example: *.dnslookup google.com MX*\n╰━━━━━━━',
+      head: '╭─❏ 🌐 「 *DNS {name} ({type})* 」',
+      none: '╭─❏ 🔍 「 *NO RECORDS* 」\n┊ No *{type}* records for *{name}*. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *LOOKUP FAILED* 」\n┊ DNS lookup failed: *{error}*\n╰━━━━━━━',
     },
   },
 }
@@ -47,7 +47,7 @@ export async function handler(ctx) {
     const d = await res.json()
     const answers = (d.Answer ?? []).map((a) => a.data)
     if (!answers.length) return ctx.reply(ctx.t('dnslookup.none', { type: typeName, name, mood: ctx.say('gagal') }))
-    return ctx.reply(`${ctx.t('dnslookup.head', { name, type: typeName })}\n\n${answers.join('\n')}`)
+    return ctx.reply(`${ctx.t('dnslookup.head', { name, type: typeName })}\n${answers.map((a) => `┊ ${a}`).join('\n')}\n╰━━━━━━━`)
   } catch (err) {
     return ctx.reply(ctx.t('dnslookup.fail', { error: err.message }))
   }

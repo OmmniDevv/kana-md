@@ -27,18 +27,18 @@ export const config = {
 export const i18n = {
   id: {
     harilibur: {
-      head: '📅 LIBUR NASIONAL {year}',
-      upcoming: '⏭️ Libur terdekat: {name} ({date}), {days} hari lagi',
-      passed: 'Sudah lewat: {count} hari libur',
-      fail: 'Gagal ambil data liburnya: {error}',
+      head: '╭─❏ 📅 「 *LIBUR NASIONAL {year}* 」',
+      upcoming: '┊ ⏭️ ʟɪʙᴜʀ ᴛᴇʀᴅᴇᴋᴀᴛ: *{name} ({date})*, *{days} hari lagi*',
+      passed: '┊ ꜱᴜᴅᴀʜ ʟᴇᴡᴀᴛ: *{count} hari libur*\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *GAGAL AMBIL DATA LIBUR* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
   en: {
     harilibur: {
-      head: '📅 PUBLIC HOLIDAYS {year}',
-      upcoming: '⏭️ Next holiday: {name} ({date}), in {days} days',
-      passed: 'Already passed: {count} holidays',
-      fail: 'Failed to fetch holiday data: {error}',
+      head: '╭─❏ 📅 「 *PUBLIC HOLIDAYS {year}* 」',
+      upcoming: '┊ ⏭️ ɴᴇxᴛ ʜᴏʟɪᴅᴀʏ: *{name} ({date})*, in *{days} days*',
+      passed: '┊ ᴀʟʀᴇᴀᴅʏ ᴘᴀꜱꜱᴇᴅ: *{count} holidays*\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *FAILED TO FETCH HOLIDAYS* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
 }
@@ -68,10 +68,8 @@ export async function handler(ctx) {
       lines.push(ctx.t('harilibur.upcoming', {
         name: next.localName, date: next.date, days,
       }))
-      lines.push('')
-      for (const h of upcoming.slice(0, 14)) lines.push(`${h.date} · ${h.localName}`)
+      for (const h of upcoming.slice(0, 14)) lines.push(`┊ *${h.date}* · ${h.localName}`)
     }
-    lines.push('')
     lines.push(ctx.t('harilibur.passed', { count: list.length - upcoming.length }))
     return ctx.reply(lines.join('\n'))
   } catch (err) {

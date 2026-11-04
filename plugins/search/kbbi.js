@@ -14,20 +14,20 @@ export const config = {
 export const i18n = {
   id: {
     kbbi: {
-      needWord: 'Ketik katanya dulu yaa, contoh: .kbbi cinta~',
-      notFound: 'Mouu, kata "{word}" nggak ketemu di KBBI, atau halamannya berubah format. Coba kata dasar lain ya~',
-      failed: 'Mouu, KBBI lagi nggak bisa dijangkau: {message}. Situsnya memang sering berat, coba lagi nanti ya~',
-      header: 'Arti kata "{word}" menurut KBBI:',
-      item: '{n}. {definition}',
+      needWord: '╭─❏ 📖 「 *KBBI* 」\n┊ Ketik katanya dulu yaa~\n┊ Contoh: *.kbbi cinta*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *KATA TIDAK KETEMU* 」\n┊ Mouu, kata *{word}* nggak ketemu di KBBI, atau halamannya berubah format~\n┊ Coba kata dasar lain yaa~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *KBBI TIDAK TERJANGKAU* 」\n┊ Mouu, KBBI lagi nggak bisa dijangkau: *{message}*\n┊ Situsnya memang sering berat, coba lagi nanti yaa~\n╰━━━━━━━',
+      header: '╭─❏ 📖 「 *ARTI KATA: {word}* 」\n┊ ᴍᴇɴᴜʀᴜᴛ *KBBI*:',
+      item: '┊ {n}. {definition}',
     },
   },
   en: {
     kbbi: {
-      needWord: 'Type the word first, example: .kbbi cinta~',
-      notFound: 'Mouu, the word "{word}" was not found in KBBI, or its page format changed. Try another base word~',
-      failed: 'Mouu, KBBI cannot be reached right now: {message}. The site is often slow, try again later~',
-      header: 'Meaning of "{word}" according to KBBI:',
-      item: '{n}. {definition}',
+      needWord: '╭─❏ 📖 「 *KBBI* 」\n┊ Type the word first~\n┊ Example: *.kbbi cinta*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *WORD NOT FOUND* 」\n┊ Mouu, the word *{word}* was not found in KBBI, or its page format changed~\n┊ Try another base word~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *KBBI UNREACHABLE* 」\n┊ Mouu, KBBI cannot be reached right now: *{message}*\n┊ The site is often slow, try again later~\n╰━━━━━━━',
+      header: '╭─❏ 📖 「 *MEANING OF: {word}* 」\n┊ ᴀᴄᴄᴏʀᴅɪɴɢ ᴛᴏ *KBBI*:',
+      item: '┊ {n}. {definition}',
     },
   },
 }
@@ -48,5 +48,6 @@ export async function handler(ctx) {
   result.definitions.forEach((definition, i) => {
     lines.push(ctx.t('kbbi.item', { n: i + 1, definition }))
   })
+  lines.push('╰━━━━━━━')
   await ctx.reply(lines.join('\n'))
 }

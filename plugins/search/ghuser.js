@@ -13,19 +13,19 @@ export const config = {
 export const i18n = {
   id: {
     ghuser: {
-      hint: 'Tulis username GitHub-nya yaa~ Contoh: .ghuser OmmniDevv',
-      body: '🐙 PROFIL GITHUB\n\nNama: {name} (@{login})\nBio: {bio}\nRepo publik: {repos}\nPengikut: {followers} · Mengikuti: {following}\nLokasi: {location}\nBergabung: {joined}\nProfil: {url}',
-      notFound: 'User GitHub @{username} tidak ditemukan. {mood}',
-      fail: 'Gagal ambil data GitHub: {error}',
+      hint: '╭─❏ 🐙 「 *PROFIL GITHUB* 」\n┊ Tulis username GitHub-nya yaa~\n┊ Contoh: *.ghuser OmmniDevv*\n╰━━━━━━━',
+      body: '╭─❏ 🐙 「 *PROFIL GITHUB* 」\n┊ ɴᴀᴍᴀ: *{name} (@{login})*\n┊ ʙɪᴏ: {bio}\n┊ ʀᴇᴘᴏ ᴘᴜʙʟɪᴋ: *{repos}*\n┊ ᴘᴇɴɢɪᴋᴜᴛ: *{followers}* · ᴍᴇɴɢɪᴋᴜᴛɪ: *{following}*\n┊ ʟᴏᴋᴀꜱɪ: *{location}*\n┊ ʙᴇʀɢᴀʙᴜɴɢ: *{joined}*\n┊ ᴘʀᴏꜰɪʟ: {url}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *USER TIDAK DITEMUKAN* 」\n┊ User GitHub *@{username}* tidak ditemukan. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *GAGAL AMBIL DATA* 」\n┊ Gagal ambil data GitHub: *{error}*\n╰━━━━━━━',
       empty: '-',
     },
   },
   en: {
     ghuser: {
-      hint: 'Write the GitHub username please~ Example: .ghuser OmmniDevv',
-      body: '🐙 GITHUB PROFILE\n\nName: {name} (@{login})\nBio: {bio}\nPublic repos: {repos}\nFollowers: {followers} · Following: {following}\nLocation: {location}\nJoined: {joined}\nProfile: {url}',
-      notFound: 'GitHub user @{username} was not found. {mood}',
-      fail: 'Failed to fetch GitHub data: {error}',
+      hint: '╭─❏ 🐙 「 *GITHUB PROFILE* 」\n┊ Write the GitHub username please~\n┊ Example: *.ghuser OmmniDevv*\n╰━━━━━━━',
+      body: '╭─❏ 🐙 「 *GITHUB PROFILE* 」\n┊ ɴᴀᴍᴇ: *{name} (@{login})*\n┊ ʙɪᴏ: {bio}\n┊ ᴘᴜʙʟɪᴄ ʀᴇᴘᴏꜱ: *{repos}*\n┊ ꜰᴏʟʟᴏᴡᴇʀꜱ: *{followers}* · ꜰᴏʟʟᴏᴡɪɴɢ: *{following}*\n┊ ʟᴏᴄᴀᴛɪᴏɴ: *{location}*\n┊ ᴊᴏɪɴᴇᴅ: *{joined}*\n┊ ᴘʀᴏꜰɪʟᴇ: {url}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *USER NOT FOUND* 」\n┊ GitHub user *@{username}* was not found. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *FAILED TO FETCH DATA* 」\n┊ Failed to fetch GitHub data: *{error}*\n╰━━━━━━━',
       empty: '-',
     },
   },

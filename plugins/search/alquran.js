@@ -16,22 +16,22 @@ export const config = {
 export const i18n = {
   id: {
     alquran: {
-      hint: 'Tulis nomor surahnya yaa~ Contoh: .alquran 2:255 untuk Ayat Kursi, atau .alquran 1 untuk Al-Fatihah.',
-      head: '📖 QS {latin} ({arti}) ayat {range}',
+      hint: '╭─❏ 📖 「 *AL-QURAN* 」\n┊ Tulis nomor surahnya yaa~\n┊ Contoh: *.alquran 2:255* untuk Ayat Kursi, atau *.alquran 1* untuk Al-Fatihah.\n╰━━━━━━━',
+      head: '╭─❏ 📖 「 *QS {latin} ({arti})* 」\n┊ ᴀʏᴀᴛ: *{range}*',
       verse: '{n}. {arab}\n{trans}',
-      badInput: 'Formatnya surah atau surah:ayat yaa, surah 1 sampai 114. {mood}',
-      fail: 'Gagal ambil ayatnya: {error}',
-      truncated: 'Surahnya panjang, KANA tampilkan 10 ayat pertama dulu yaa~',
+      badInput: '╭─❏ 🙈 「 *FORMAT SALAH* 」\n┊ Formatnya surah atau surah:ayat yaa, surah *1* sampai *114*. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *GAGAL AMBIL AYAT* 」\n┊ {error}\n╰━━━━━━━',
+      truncated: '┊ Surahnya panjang, KANA tampilkan *10 ayat pertama* dulu yaa~',
     },
   },
   en: {
     alquran: {
-      hint: 'Write the surah number please~ Example: .alquran 2:255 for Ayat Kursi, or .alquran 1 for Al-Fatihah.',
-      head: '📖 QS {latin} ({arti}) verses {range}',
+      hint: '╭─❏ 📖 「 *AL-QURAN* 」\n┊ Write the surah number please~\n┊ Example: *.alquran 2:255* for Ayat Kursi, or *.alquran 1* for Al-Fatihah.\n╰━━━━━━━',
+      head: '╭─❏ 📖 「 *QS {latin} ({arti})* 」\n┊ ᴠᴇʀꜱᴇꜱ: *{range}*',
       verse: '{n}. {arab}\n{trans}',
-      badInput: 'The format is surah or surah:verse, surah 1 to 114. {mood}',
-      fail: 'Failed to fetch the verses: {error}',
-      truncated: 'The surah is long, showing the first 10 verses~',
+      badInput: '╭─❏ 🙈 「 *WRONG FORMAT* 」\n┊ The format is surah or surah:verse, surah *1* to *114*. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *FAILED TO FETCH VERSES* 」\n┊ {error}\n╰━━━━━━━',
+      truncated: '┊ The surah is long, showing the *first 10 verses*~',
     },
   },
 }
@@ -60,6 +60,7 @@ export async function handler(ctx) {
     const body = shown.map((v) => ctx.t('alquran.verse', { n: v.nomorAyat, arab: v.teksArab, trans: v.teksIndonesia })).join('\n\n')
     let out = `${ctx.t('alquran.head', { latin: data.namaLatin, arti: data.arti, range })}\n\n${body}`
     if (!verseNo && verses.length > MAX_VERSES) out += `\n\n${ctx.t('alquran.truncated')}`
+    out += '\n╰━━━━━━━'
     return ctx.reply(out)
   } catch (err) {
     return ctx.reply(ctx.t('alquran.fail', { error: err.message }))

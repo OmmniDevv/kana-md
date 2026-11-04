@@ -15,18 +15,18 @@ export const config = {
 export const i18n = {
   id: {
     qr: {
-      needText: 'Ketik teks atau linknya dulu yaa, contoh: .qr https://example.com~',
-      failed: 'Mouu, QR-nya gagal dibuat: {message}. Teksnya mungkin kepanjangan, coba yang lebih pendek ya~',
-      caption: 'QR buat: {text}',
-      hint: 'Buat baca QR dari gambar, balas gambar itu dengan .scanqr yaa~',
+      needText: '╭─❏ 🔲 「 *BUAT QR* 」\n┊ Ketik teks atau linknya dulu yaa~\n┊ Contoh: *.qr https://example.com*\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *QR GAGAL DIBUAT* 」\n┊ Mouu, QR-nya gagal dibuat: *{message}*\n┊ Teksnya mungkin kepanjangan, coba yang lebih pendek yaa~\n╰━━━━━━━',
+      caption: '╭─❏ 🔲 「 *QR BUAT* 」\n┊ {text}\n╰━━━━━━━',
+      hint: '╭─❏ 💡 「 *INFO* 」\n┊ Buat baca QR dari gambar, balas gambar itu dengan *.scanqr* yaa~\n╰━━━━━━━',
     },
   },
   en: {
     qr: {
-      needText: 'Type the text or link first, example: .qr https://example.com~',
-      failed: 'Mouu, failed to make the QR: {message}. The text may be too long, try something shorter~',
-      caption: 'QR for: {text}',
-      hint: 'To read a QR from an image, reply to that image with .scanqr~',
+      needText: '╭─❏ 🔲 「 *MAKE A QR* 」\n┊ Type the text or link first~\n┊ Example: *.qr https://example.com*\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *QR FAILED* 」\n┊ Mouu, failed to make the QR: *{message}*\n┊ The text may be too long, try something shorter~\n╰━━━━━━━',
+      caption: '╭─❏ 🔲 「 *QR FOR* 」\n┊ {text}\n╰━━━━━━━',
+      hint: '╭─❏ 💡 「 *INFO* 」\n┊ To read a QR from an image, reply to that image with *.scanqr*~\n╰━━━━━━━',
     },
   },
 }

@@ -15,26 +15,24 @@ export const config = {
 export const i18n = {
   id: {
     komik: {
-      needQuery: 'Ketik judul komiknya dulu yaa, contoh: .komik solo leveling~',
-      notFound: 'Mouu, komiknya nggak ketemu. Coba judul lain ya~',
-      failed: 'Mouu, pencarian komik gagal: {message}. Sumbernya kadang ngambek, coba lagi nanti ya~',
-      header: 'Hasil komik buat "{query}":',
-      item: '{n}. {title}\n{url}',
+      needQuery: '╭─❏ 📚 「 *CARI KOMIK* 」\n┊ Ketik judul komiknya dulu yaa~\n┊ Contoh: *.komik solo leveling*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *KOMIK TIDAK KETEMU* 」\n┊ Mouu, komiknya nggak ketemu~\n┊ Coba judul lain yaa~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian komik gagal: *{message}*\n┊ Sumbernya kadang ngambek, coba lagi nanti yaa~\n╰━━━━━━━',
+      header: '╭─❏ 📚 「 *HASIL KOMIK: {query}* 」',
+      item: '┊ {n}. *{title}*\n┊ {url}',
       btnAgain: 'Cari lagi',
-      btnMenu: 'Menu pencarian',
-      followUp: 'Lanjutan: .komik {query} • .menu search',
+      followUp: '╰━━━━━━━',
     },
   },
   en: {
     komik: {
-      needQuery: 'Type the comic title first, example: .komik solo leveling~',
-      notFound: 'Mouu, the comic was not found. Try another title~',
-      failed: 'Mouu, comic search failed: {message}. The source acts up sometimes, try again later~',
-      header: 'Comic results for "{query}":',
-      item: '{n}. {title}\n{url}',
+      needQuery: '╭─❏ 📚 「 *COMIC SEARCH* 」\n┊ Type the comic title first~\n┊ Example: *.komik solo leveling*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *COMIC NOT FOUND* 」\n┊ Mouu, the comic was not found~\n┊ Try another title~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *SEARCH FAILED* 」\n┊ Mouu, comic search failed: *{message}*\n┊ The source acts up sometimes, try again later~\n╰━━━━━━━',
+      header: '╭─❏ 📚 「 *COMIC RESULTS: {query}* 」',
+      item: '┊ {n}. *{title}*\n┊ {url}',
       btnAgain: 'Search again',
-      btnMenu: 'Search menu',
-      followUp: 'Next: .komik {query} • .menu search',
+      followUp: '╰━━━━━━━',
     },
   },
 }
@@ -65,7 +63,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('komik.btnAgain'), id: `.komik ${query}` },
-      { text: ctx.t('komik.btnMenu'), id: '.menu search' },
     ],
     textFallback: body,
   })

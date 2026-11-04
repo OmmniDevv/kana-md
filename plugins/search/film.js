@@ -15,28 +15,26 @@ export const config = {
 export const i18n = {
   id: {
     film: {
-      needQuery: 'Ketik judulnya dulu yaa, contoh: .film breaking bad~ 🎬',
-      notFound: 'Mouu, judul "{query}" nggak ketemu di TVMaze. Coba judul lain ya~',
-      failed: 'Mouu, pencarian film gagal: {message}. Coba lagi nanti ya~',
-      header: '🎬 {name}',
-      meta: 'Genre: {genres} | Rating: {rating} | Status: {status}',
+      needQuery: '╭─❏ 🎬 「 *CARI FILM* 」\n┊ Ketik judulnya dulu yaa~\n┊ Contoh: *.film breaking bad*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *JUDUL TIDAK KETEMU* 」\n┊ Mouu, judul *{query}* nggak ketemu di TVMaze~\n┊ Coba judul lain yaa~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian film gagal: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      header: '╭─❏ 🎬 「 *{name}* 」',
+      meta: '┊ ɢᴇɴʀᴇ: *{genres}*\n┊ ʀᴀᴛɪɴɢ: *{rating}*\n┊ ꜱᴛᴀᴛᴜꜱ: *{status}*',
       noSummary: 'Ringkasan belum tersedia.',
-      others: 'Hasil lain: {names}',
+      others: '┊ ʜᴀꜱɪʟ ʟᴀɪɴ: {names}',
       btnOther: '{name}',
-      btnMenu: 'Menu Pencarian',
     },
   },
   en: {
     film: {
-      needQuery: 'Type a title first, example: .film breaking bad~ 🎬',
-      notFound: 'Mouu, title "{query}" was not found on TVMaze. Try another title~',
-      failed: 'Mouu, movie search failed: {message}. Try again later~',
-      header: '🎬 {name}',
-      meta: 'Genres: {genres} | Rating: {rating} | Status: {status}',
+      needQuery: '╭─❏ 🎬 「 *MOVIE SEARCH* 」\n┊ Type a title first~\n┊ Example: *.film breaking bad*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *TITLE NOT FOUND* 」\n┊ Mouu, title *{query}* was not found on TVMaze~\n┊ Try another title~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *SEARCH FAILED* 」\n┊ Mouu, movie search failed: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      header: '╭─❏ 🎬 「 *{name}* 」',
+      meta: '┊ ɢᴇɴʀᴇꜱ: *{genres}*\n┊ ʀᴀᴛɪɴɢ: *{rating}*\n┊ ꜱᴛᴀᴛᴜꜱ: *{status}*',
       noSummary: 'No summary available yet.',
-      others: 'Other results: {names}',
+      others: '┊ ᴏᴛʜᴇʀ ʀᴇꜱᴜʟᴛꜱ: {names}',
       btnOther: '{name}',
-      btnMenu: 'Search Menu',
     },
   },
 }
@@ -75,16 +73,16 @@ export async function handler(ctx) {
       rating: show.rating?.average ?? '-',
       status: show.status || '-',
     }),
-    '',
-    summary,
+    `┊ ${summary}`,
   ]
-  if (others.length) lines.push('', ctx.t('film.others', { names: others.map((s) => s.name).join(', ') }))
+  if (others.length) lines.push(ctx.t('film.others', { names: others.map((s) => s.name).join(', ') }))
+  lines.push('╰━━━━━━━')
   const body = lines.join('\n')
   const replies = others.slice(0, 3).map((s) => ({
     text: ctx.t('film.btnOther', { name: String(s.name).slice(0, 20) }),
     id: `.film ${s.name}`,
   }))
-  replies.push({ text: ctx.t('film.btnMenu'), id: '.menu search' })
+  if (!replies.length) return ctx.reply(body)
   return sendButtons(ctx.sock, ctx.chat, {
     title: 'KANA',
     body,

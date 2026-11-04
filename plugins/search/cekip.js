@@ -13,18 +13,18 @@ export const config = {
 export const i18n = {
   id: {
     cekip: {
-      hint: 'Tulis alamat IP-nya yaa~ Contoh: .cekip 8.8.8.8',
-      body: '🌐 INFO IP {query}\n\nNegara: {country} ({code})\nWilayah: {region}\nKota: {city}\nISP: {isp}\nOrganisasi: {org}\nZona waktu: {tz}',
-      fail: 'Alamat IP itu tidak valid atau tidak ditemukan. {mood}',
-      error: 'Gagal cek IP: {error}',
+      hint: '╭─❏ 🌐 「 *CEK IP* 」\n┊ Tulis alamat IP-nya yaa~\n┊ Contoh: *.cekip 8.8.8.8*\n╰━━━━━━━',
+      body: '╭─❏ 🌐 「 *INFO IP {query}* 」\n┊ ɴᴇɢᴀʀᴀ: *{country} ({code})*\n┊ ᴡɪʟᴀʏᴀʜ: *{region}*\n┊ ᴋᴏᴛᴀ: *{city}*\n┊ ɪꜱᴘ: *{isp}*\n┊ ᴏʀɢᴀɴɪꜱᴀꜱɪ: *{org}*\n┊ ᴢᴏɴᴀ ᴡᴀᴋᴛᴜ: *{tz}*\n╰━━━━━━━',
+      fail: '╭─❏ 🔍 「 *IP TIDAK KETEMU* 」\n┊ Alamat IP itu tidak valid atau tidak ditemukan. {mood}\n╰━━━━━━━',
+      error: '╭─❏ 😖 「 *GAGAL CEK IP* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
   en: {
     cekip: {
-      hint: 'Write the IP address please~ Example: .cekip 8.8.8.8',
-      body: '🌐 IP INFO {query}\n\nCountry: {country} ({code})\nRegion: {region}\nCity: {city}\nISP: {isp}\nOrganization: {org}\nTimezone: {tz}',
-      fail: 'That IP address is not valid or not found. {mood}',
-      error: 'Failed to check the IP: {error}',
+      hint: '╭─❏ 🌐 「 *IP CHECK* 」\n┊ Write the IP address please~\n┊ Example: *.cekip 8.8.8.8*\n╰━━━━━━━',
+      body: '╭─❏ 🌐 「 *IP INFO {query}* 」\n┊ ᴄᴏᴜɴᴛʀʏ: *{country} ({code})*\n┊ ʀᴇɢɪᴏɴ: *{region}*\n┊ ᴄɪᴛʏ: *{city}*\n┊ ɪꜱᴘ: *{isp}*\n┊ ᴏʀɢᴀɴɪᴢᴀᴛɪᴏɴ: *{org}*\n┊ ᴛɪᴍᴇᴢᴏɴᴇ: *{tz}*\n╰━━━━━━━',
+      fail: '╭─❏ 🔍 「 *IP NOT FOUND* 」\n┊ That IP address is not valid or not found. {mood}\n╰━━━━━━━',
+      error: '╭─❏ 😖 「 *FAILED TO CHECK IP* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
 }

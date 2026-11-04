@@ -15,16 +15,16 @@ export const config = {
 export const i18n = {
   id: {
     githubtrend: {
-      head: '🔥 REPO GITHUB TRENDING HARI INI',
-      item: '{n}. {repo} ⭐ {stars} hari ini{lang}\n   {desc}\n   {url}',
-      fail: 'Gagal ambil trendingnya: {error}',
+      head: '╭─❏ 🔥 「 *REPO GITHUB TRENDING HARI INI* 」',
+      item: '┊ {n}. *{repo}* ⭐ {stars} hari ini{lang}\n┊ {desc}\n┊ {url}',
+      fail: '╭─❏ 😖 「 *GAGAL AMBIL TRENDING* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
   en: {
     githubtrend: {
-      head: '🔥 GITHUB TRENDING REPOS TODAY',
-      item: '{n}. {repo} ⭐ {stars} today{lang}\n   {desc}\n   {url}',
-      fail: 'Failed to fetch trending: {error}',
+      head: '╭─❏ 🔥 「 *GITHUB TRENDING REPOS TODAY* 」',
+      item: '┊ {n}. *{repo}* ⭐ {stars} today{lang}\n┊ {desc}\n┊ {url}',
+      fail: '╭─❏ 😖 「 *FAILED TO FETCH TRENDING* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
 }
@@ -56,7 +56,7 @@ export async function handler(ctx) {
     const lines = repos.map((r, i) => ctx.t('githubtrend.item', {
       n: i + 1, repo: r.repo, stars: r.stars, lang: r.lang ? ` · ${r.lang}` : '', desc: r.desc || '-', url: r.url,
     }))
-    return ctx.reply(`${ctx.t('githubtrend.head')}\n\n${lines.join('\n\n')}`)
+    return ctx.reply(`${ctx.t('githubtrend.head')}\n${lines.join('\n')}\n╰━━━━━━━`)
   } catch (err) {
     return ctx.reply(ctx.t('githubtrend.fail', { error: err.message }))
   }

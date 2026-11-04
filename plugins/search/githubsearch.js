@@ -13,20 +13,20 @@ export const config = {
 export const i18n = {
   id: {
     githubsearch: {
-      hint: 'Tulis kata kuncinya yaa~ Contoh: .githubsearch whatsapp bot baileys',
-      head: '🐙 HASIL GITHUB: {query}',
-      item: '{n}. {repo} ⭐ {stars}\n   {desc}\n   {url}',
-      notFound: 'Tidak ada repo untuk "{query}". {mood}',
-      fail: 'Gagal cari di GitHub: {error}',
+      hint: '╭─❏ 🐙 「 *CARI REPO GITHUB* 」\n┊ Tulis kata kuncinya yaa~\n┊ Contoh: *.githubsearch whatsapp bot baileys*\n╰━━━━━━━',
+      head: '╭─❏ 🐙 「 *HASIL GITHUB: {query}* 」',
+      item: '┊ {n}. *{repo}* ⭐ {stars}\n┊ {desc}\n┊ {url}',
+      notFound: '╭─❏ 🔍 「 *REPO TIDAK KETEMU* 」\n┊ Tidak ada repo untuk *{query}*. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *GAGAL CARI REPO* 」\n┊ Gagal cari di GitHub: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     githubsearch: {
-      hint: 'Write the keyword please~ Example: .githubsearch whatsapp bot baileys',
-      head: '🐙 GITHUB RESULTS: {query}',
-      item: '{n}. {repo} ⭐ {stars}\n   {desc}\n   {url}',
-      notFound: 'No repos for "{query}". {mood}',
-      fail: 'Failed to search GitHub: {error}',
+      hint: '╭─❏ 🐙 「 *GITHUB REPO SEARCH* 」\n┊ Write the keyword please~\n┊ Example: *.githubsearch whatsapp bot baileys*\n╰━━━━━━━',
+      head: '╭─❏ 🐙 「 *GITHUB RESULTS: {query}* 」',
+      item: '┊ {n}. *{repo}* ⭐ {stars}\n┊ {desc}\n┊ {url}',
+      notFound: '╭─❏ 🔍 「 *NO REPOS FOUND* 」\n┊ No repos for *{query}*. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *REPO SEARCH FAILED* 」\n┊ Failed to search GitHub: *{error}*\n╰━━━━━━━',
     },
   },
 }
@@ -48,7 +48,7 @@ export async function handler(ctx) {
     const lines = items.map((r, i) => ctx.t('githubsearch.item', {
       n: i + 1, repo: r.full_name, stars: r.stargazers_count, desc: (r.description || '-').slice(0, 90), url: r.html_url,
     }))
-    return ctx.reply(`${ctx.t('githubsearch.head', { query })}\n\n${lines.join('\n\n')}`)
+    return ctx.reply(`${ctx.t('githubsearch.head', { query })}\n${lines.join('\n')}\n╰━━━━━━━`)
   } catch (err) {
     return ctx.reply(ctx.t('githubsearch.fail', { error: err.message }))
   }

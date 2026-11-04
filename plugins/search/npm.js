@@ -13,20 +13,20 @@ export const config = {
 export const i18n = {
   id: {
     npm: {
-      hint: 'Tulis kata kuncinya yaa~ Contoh: .npm express',
-      head: '📦 HASIL NPM: {query}',
-      item: '{n}. {name}@{version}\n   {desc}\n   {url}',
-      notFound: 'Tidak ada paket untuk "{query}". {mood}',
-      fail: 'Gagal cari di npm: {error}',
+      hint: '╭─❏ 📦 「 *CARI PAKET NPM* 」\n┊ Tulis kata kuncinya yaa~\n┊ Contoh: *.npm express*\n╰━━━━━━━',
+      head: '╭─❏ 📦 「 *HASIL NPM: {query}* 」',
+      item: '┊ {n}. *{name}@{version}*\n┊ {desc}\n┊ {url}',
+      notFound: '╭─❏ 🔍 「 *PAKET TIDAK KETEMU* 」\n┊ Tidak ada paket untuk *{query}*. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *GAGAL CARI PAKET* 」\n┊ Gagal cari di npm: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     npm: {
-      hint: 'Write the keyword please~ Example: .npm express',
-      head: '📦 NPM RESULTS: {query}',
-      item: '{n}. {name}@{version}\n   {desc}\n   {url}',
-      notFound: 'No packages for "{query}". {mood}',
-      fail: 'Failed to search npm: {error}',
+      hint: '╭─❏ 📦 「 *NPM PACKAGE SEARCH* 」\n┊ Write the keyword please~\n┊ Example: *.npm express*\n╰━━━━━━━',
+      head: '╭─❏ 📦 「 *NPM RESULTS: {query}* 」',
+      item: '┊ {n}. *{name}@{version}*\n┊ {desc}\n┊ {url}',
+      notFound: '╭─❏ 🔍 「 *NO PACKAGES FOUND* 」\n┊ No packages for *{query}*. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *PACKAGE SEARCH FAILED* 」\n┊ Failed to search npm: *{error}*\n╰━━━━━━━',
     },
   },
 }
@@ -49,7 +49,7 @@ export async function handler(ctx) {
       desc: (o.package.description || '').slice(0, 90),
       url: o.package.links?.npm ?? `https://www.npmjs.com/package/${o.package.name}`,
     }))
-    return ctx.reply(`${ctx.t('npm.head', { query })}\n\n${lines.join('\n\n')}`)
+    return ctx.reply(`${ctx.t('npm.head', { query })}\n${lines.join('\n')}\n╰━━━━━━━`)
   } catch (err) {
     return ctx.reply(ctx.t('npm.fail', { error: err.message }))
   }

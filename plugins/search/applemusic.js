@@ -16,20 +16,20 @@ export const config = {
 export const i18n = {
   id: {
     applemusic: {
-      hint: 'Tulis judul lagunya yaa~ Contoh: .applemusic Hati-Hati di Jalan',
-      body: '🍎 {track}\nArtis: {artist}\nAlbum: {album}\nDengarkan: {url}',
+      hint: '╭─❏ 🍎 「 *APPLE MUSIC* 」\n┊ Tulis judul lagunya yaa~\n┊ Contoh: *.applemusic Hati-Hati di Jalan*\n╰━━━━━━━',
+      body: '╭─❏ 🍎 「 *{track}* 」\n┊ ᴀʀᴛɪꜱ: *{artist}*\n┊ ᴀʟʙᴜᴍ: *{album}*\n┊ ᴅᴇɴɢᴀʀᴋᴀɴ: {url}\n╰━━━━━━━',
       heading: 'Pratinjau: {track} - {artist}',
-      notFound: 'Lagunya tidak ketemu di Apple Music. {mood}',
-      fail: 'Gagal cari di Apple Music: {error}',
+      notFound: '╭─❏ 🔍 「 *LAGU TIDAK KETEMU* 」\n┊ Lagunya tidak ketemu di Apple Music. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *GAGAL CARI LAGU* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
   en: {
     applemusic: {
-      hint: 'Write the song title please~ Example: .applemusic Perfect Ed Sheeran',
-      body: '🍎 {track}\nArtist: {artist}\nAlbum: {album}\nListen: {url}',
+      hint: '╭─❏ 🍎 「 *APPLE MUSIC* 」\n┊ Write the song title please~\n┊ Example: *.applemusic Perfect Ed Sheeran*\n╰━━━━━━━',
+      body: '╭─❏ 🍎 「 *{track}* 」\n┊ ᴀʀᴛɪꜱᴛ: *{artist}*\n┊ ᴀʟʙᴜᴍ: *{album}*\n┊ ʟɪꜱᴛᴇɴ: {url}\n╰━━━━━━━',
       heading: 'Preview: {track} - {artist}',
-      notFound: 'The song was not found on Apple Music. {mood}',
-      fail: 'Failed to search Apple Music: {error}',
+      notFound: '╭─❏ 🔍 「 *SONG NOT FOUND* 」\n┊ The song was not found on Apple Music. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *FAILED TO SEARCH SONGS* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
 }

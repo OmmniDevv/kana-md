@@ -17,36 +17,36 @@ export const config = {
 export const i18n = {
   id: {
     anime: {
-      needQuery: 'Ketik judulnya dulu yaa, contoh: .anime naruto atau .anime manga: one piece~',
-      notFound: 'Mouu, judul itu nggak ketemu di MyAnimeList. Coba judul lain ya~',
-      failed: 'Mouu, pencarian anime gagal: {message}. Sumber Jikan kadang sibuk, coba lagi nanti ya~',
-      title: '{title}',
-      score: 'Skor: {score}',
-      countAnime: 'Episode: {count}',
-      countManga: 'Bab: {count}',
-      status: 'Status: {status}',
-      synopsis: 'Sinopsis: {synopsis}',
-      url: 'Detail: {url}',
+      needQuery: '╭─❏ 🎌 「 *CARI ANIME* 」\n┊ Ketik judulnya dulu yaa~\n┊ Contoh: *.anime naruto* atau *.anime manga: one piece*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, judul itu nggak ketemu di MyAnimeList~\n┊ Coba judul lain yaa~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian anime gagal: *{message}*\n┊ Sumber Jikan kadang sibuk, coba lagi nanti yaa~\n╰━━━━━━━',
+      title: '╭─❏ 🎌 「 *{title}* 」',
+      score: '┊ ꜱᴋᴏʀ: *{score}*',
+      countAnime: '┊ ᴇᴘɪꜱᴏᴅᴇ: *{count}*',
+      countManga: '┊ ʙᴀʙ: *{count}*',
+      status: '┊ ꜱᴛᴀᴛᴜꜱ: *{status}*',
+      synopsis: '┊ ꜱɪɴᴏᴘꜱɪꜱ: {synopsis}',
+      url: '┊ ᴅᴇᴛᴀɪʟ: {url}',
       unknown: 'belum diketahui',
-      otherHeader: 'Hasil lain:',
-      otherItem: '{n}. {title}',
+      otherHeader: '┊ ʜᴀꜱɪʟ ʟᴀɪɴ:',
+      otherItem: '┊ {n}. *{title}*',
     },
   },
   en: {
     anime: {
-      needQuery: 'Type the title first, example: .anime naruto or .anime manga: one piece~',
-      notFound: 'Mouu, that title was not found on MyAnimeList. Try another title~',
-      failed: 'Mouu, anime search failed: {message}. The Jikan source is busy sometimes, try again later~',
-      title: '{title}',
-      score: 'Score: {score}',
-      countAnime: 'Episodes: {count}',
-      countManga: 'Chapters: {count}',
-      status: 'Status: {status}',
-      synopsis: 'Synopsis: {synopsis}',
-      url: 'Details: {url}',
+      needQuery: '╭─❏ 🎌 「 *ANIME SEARCH* 」\n┊ Type the title first~\n┊ Example: *.anime naruto* or *.anime manga: one piece*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, that title was not found on MyAnimeList~\n┊ Try another title~\n╰━━━━━━━',
+      failed: '╭─❏ 😖 「 *SEARCH FAILED* 」\n┊ Mouu, anime search failed: *{message}*\n┊ The Jikan source is busy sometimes, try again later~\n╰━━━━━━━',
+      title: '╭─❏ 🎌 「 *{title}* 」',
+      score: '┊ ꜱᴄᴏʀᴇ: *{score}*',
+      countAnime: '┊ ᴇᴘɪꜱᴏᴅᴇꜱ: *{count}*',
+      countManga: '┊ ᴄʜᴀᴘᴛᴇʀꜱ: *{count}*',
+      status: '┊ ꜱᴛᴀᴛᴜꜱ: *{status}*',
+      synopsis: '┊ ꜱʏɴᴏᴘꜱɪꜱ: {synopsis}',
+      url: '┊ ᴅᴇᴛᴀɪʟꜱ: {url}',
       unknown: 'unknown yet',
-      otherHeader: 'Other results:',
-      otherItem: '{n}. {title}',
+      otherHeader: '┊ ᴏᴛʜᴇʀ ʀᴇꜱᴜʟᴛꜱ:',
+      otherItem: '┊ {n}. *{title}*',
     },
   },
 }
@@ -88,6 +88,7 @@ export async function handler(ctx) {
     lines.push(ctx.t('anime.otherHeader'))
     others.forEach((entry, i) => lines.push(ctx.t('anime.otherItem', { n: i + 2, title: entry.title })))
   }
+  lines.push('╰━━━━━━━')
   const body = lines.join('\n')
   const replies = others.slice(0, 4).map((entry) => ({
     text: entry.title.slice(0, 20),

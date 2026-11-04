@@ -14,22 +14,22 @@ export const config = {
 export const i18n = {
   id: {
     kurs: {
-      failed: 'Mouu, data kurs lagi nggak bisa diambil: {message}. Coba lagi nanti ya~',
-      invalid: 'Formatnya: .kurs <jumlah> <DARI> <KE>, contoh: .kurs 100 USD IDR. Kode mata uang 3 huruf yaa~',
-      unknownCurrency: 'Mouu, kode mata uang "{code}" nggak dikenal. Coba USD, EUR, SGD, JPY, IDR, dan sejenisnya ya~',
-      result: '{amount} {from} = {result} {to}\nKurs: 1 {from} = {rate} {to}',
-      summaryHeader: 'Kurs ke IDR hari ini:',
-      summaryItem: '1 {code} = {value} IDR',
+      failed: '╭─❏ 😖 「 *GAGAL AMBIL KURS* 」\n┊ Mouu, data kurs lagi nggak bisa diambil: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      invalid: '╭─❏ 🙈 「 *FORMAT SALAH* 」\n┊ Formatnya: *.kurs <jumlah> <DARI> <KE>*\n┊ Contoh: *.kurs 100 USD IDR*\n┊ Kode mata uang *3 huruf* yaa~\n╰━━━━━━━',
+      unknownCurrency: '╭─❏ 🔍 「 *MATA UANG TIDAK DIKENAL* 」\n┊ Mouu, kode mata uang *{code}* nggak dikenal~\n┊ Coba *USD, EUR, SGD, JPY, IDR*, dan sejenisnya yaa~\n╰━━━━━━━',
+      result: '╭─❏ 💱 「 *KONVERSI KURS* 」\n┊ *{amount} {from}* = *{result} {to}*\n┊ ᴋᴜʀꜱ: *1 {from} = {rate} {to}*\n╰━━━━━━━',
+      summaryHeader: '╭─❏ 💱 「 *KURS KE IDR HARI INI* 」',
+      summaryItem: '┊ 1 {code} = *{value} IDR*',
     },
   },
   en: {
     kurs: {
-      failed: 'Mouu, exchange rate data cannot be fetched: {message}. Try again later~',
-      invalid: 'Format: .kurs <amount> <FROM> <TO>, example: .kurs 100 USD IDR. Currency codes are 3 letters~',
-      unknownCurrency: 'Mouu, the currency code "{code}" is not recognized. Try USD, EUR, SGD, JPY, IDR, and similar~',
-      result: '{amount} {from} = {result} {to}\nRate: 1 {from} = {rate} {to}',
-      summaryHeader: "Today's rates to IDR:",
-      summaryItem: '1 {code} = {value} IDR',
+      failed: '╭─❏ 😖 「 *FAILED TO FETCH RATES* 」\n┊ Mouu, exchange rate data cannot be fetched: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      invalid: '╭─❏ 🙈 「 *WRONG FORMAT* 」\n┊ Format: *.kurs <amount> <FROM> <TO>*\n┊ Example: *.kurs 100 USD IDR*\n┊ Currency codes are *3 letters*~\n╰━━━━━━━',
+      unknownCurrency: '╭─❏ 🔍 「 *UNKNOWN CURRENCY* 」\n┊ Mouu, the currency code *{code}* is not recognized~\n┊ Try *USD, EUR, SGD, JPY, IDR*, and similar~\n╰━━━━━━━',
+      result: '╭─❏ 💱 「 *CURRENCY CONVERSION* 」\n┊ *{amount} {from}* = *{result} {to}*\n┊ ʀᴀᴛᴇ: *1 {from} = {rate} {to}*\n╰━━━━━━━',
+      summaryHeader: '╭─❏ 💱 「 *RATES TO IDR TODAY* 」',
+      summaryItem: '┊ 1 {code} = *{value} IDR*',
     },
   },
 }
@@ -54,6 +54,7 @@ export async function handler(ctx) {
         if (!perUsd) continue
         lines.push(ctx.t('kurs.summaryItem', { code, value: num(idrPerUsd / perUsd, code === 'JPY' ? 2 : 0) }))
       }
+      lines.push('╰━━━━━━━')
       return ctx.reply(lines.join('\n'))
     }
     if (args.length < 3) return ctx.reply(ctx.t('kurs.invalid'))

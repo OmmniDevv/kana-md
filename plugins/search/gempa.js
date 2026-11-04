@@ -17,36 +17,36 @@ export const config = {
 export const i18n = {
   id: {
     gempa: {
-      failed: 'Mouu, data gempa BMKG lagi nggak bisa diambil: {message}. Coba lagi nanti ya~',
-      notFound: 'Mouu, data gempanya kosong dari BMKG. Coba lagi nanti ya~',
-      header: 'Gempa terbaru (BMKG)',
-      line: '{label}: {value}',
-      dateLabel: 'Waktu',
-      magLabel: 'Magnitudo',
-      depthLabel: 'Kedalaman',
-      regionLabel: 'Wilayah',
-      feltLabel: 'Dirasakan',
+      failed: '╭─❏ 😖 「 *DATA GEMPA GAGAL DIAMBIL* 」\n┊ Mouu, data gempa BMKG lagi nggak bisa diambil: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *DATA GEMPA KOSONG* 」\n┊ Mouu, data gempanya kosong dari BMKG~\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      header: '╭─❏ 🌋 「 *GEMPA TERBARU (BMKG)* 」',
+      line: '┊ {label}: *{value}*',
+      dateLabel: 'ᴡᴀᴋᴛᴜ',
+      magLabel: 'ᴍᴀɢɴɪᴛᴜᴅᴏ',
+      depthLabel: 'ᴋᴇᴅᴀʟᴀᴍᴀɴ',
+      regionLabel: 'ᴡɪʟᴀʏᴀʜ',
+      feltLabel: 'ᴅɪʀᴀꜱᴀᴋᴀɴ',
       caption: 'Peta guncangan gempa {mag} di {region}',
-      listHeader: '5 gempa terakhir (BMKG):',
-      listItem: '{n}. M{mag}, {depth}, {date} {time}\n{region}',
+      listHeader: '╭─❏ 🌋 「 *5 GEMPA TERAKHIR (BMKG)* 」',
+      listItem: '┊ {n}. *M{mag}*, {depth}, {date} {time}\n┊ {region}',
       btnList: 'Lihat 5 terakhir',
       btnLatest: 'Gempa terbaru',
     },
   },
   en: {
     gempa: {
-      failed: 'Mouu, BMKG earthquake data cannot be fetched: {message}. Try again later~',
-      notFound: 'Mouu, the earthquake data from BMKG is empty. Try again later~',
-      header: 'Latest earthquake (BMKG)',
-      line: '{label}: {value}',
-      dateLabel: 'Time',
-      magLabel: 'Magnitude',
-      depthLabel: 'Depth',
-      regionLabel: 'Region',
-      feltLabel: 'Felt',
+      failed: '╭─❏ 😖 「 *EARTHQUAKE DATA FAILED* 」\n┊ Mouu, BMKG earthquake data cannot be fetched: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *EARTHQUAKE DATA EMPTY* 」\n┊ Mouu, the earthquake data from BMKG is empty~\n┊ Try again later~\n╰━━━━━━━',
+      header: '╭─❏ 🌋 「 *LATEST EARTHQUAKE (BMKG)* 」',
+      line: '┊ {label}: *{value}*',
+      dateLabel: 'ᴛɪᴍᴇ',
+      magLabel: 'ᴍᴀɢɴɪᴛᴜᴅᴇ',
+      depthLabel: 'ᴅᴇᴘᴛʜ',
+      regionLabel: 'ʀᴇɢɪᴏɴ',
+      feltLabel: 'ꜰᴇʟᴛ',
       caption: 'Shakemap of the {mag} quake in {region}',
-      listHeader: 'Last 5 earthquakes (BMKG):',
-      listItem: '{n}. M{mag}, {depth}, {date} {time}\n{region}',
+      listHeader: '╭─❏ 🌋 「 *LAST 5 EARTHQUAKES (BMKG)* 」',
+      listItem: '┊ {n}. *M{mag}*, {depth}, {date} {time}\n┊ {region}',
       btnList: 'See last 5',
       btnLatest: 'Latest quake',
     },
@@ -65,6 +65,7 @@ export async function handler(ctx) {
       list.forEach((g, i) => {
         lines.push(ctx.t('gempa.listItem', { n: i + 1, mag: g.magnitude, depth: g.depth, date: g.date, time: g.time, region: g.region }))
       })
+      lines.push('╰━━━━━━━')
       const body = lines.join('\n')
       return sendButtons(ctx.sock, ctx.chat, {
         title: 'KANA',
@@ -85,6 +86,7 @@ export async function handler(ctx) {
       row('gempa.regionLabel', latest.region),
     ]
     if (latest.felt) lines.push(row('gempa.feltLabel', latest.felt))
+    lines.push('╰━━━━━━━')
     const body = lines.join('\n')
     if (latest.shakemapUrl) {
       try {

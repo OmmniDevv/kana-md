@@ -15,24 +15,24 @@ export const config = {
 export const i18n = {
   id: {
     playstore: {
-      hint: 'Tulis nama aplikasinya yaa~ Contoh: .playstore whatsapp',
-      head: '🛍️ HASIL PLAY STORE: {query}',
-      item: '{n}. {title}\n   👨‍💻 {dev} · ⭐ {rating}\n   {url}',
-      itemBare: '{n}. {title}\n   {url}',
-      itemRate: '{n}. {title}\n   ⭐ {rating}\n   {url}',
-      notFound: 'Tidak ada hasil untuk "{query}" di Play Store. {mood}',
-      fail: 'Gagal cari di Play Store: {error}',
+      hint: '╭─❏ 🛍️ 「 *CARI APLIKASI* 」\n┊ Tulis nama aplikasinya yaa~\n┊ Contoh: *.playstore whatsapp*\n╰━━━━━━━',
+      head: '╭─❏ 🛍️ 「 *HASIL PLAY STORE: {query}* 」',
+      item: '┊ {n}. *{title}*\n┊ 👨‍💻 {dev} · ⭐ *{rating}*\n┊ {url}',
+      itemBare: '┊ {n}. *{title}*\n┊ {url}',
+      itemRate: '┊ {n}. *{title}*\n┊ ⭐ *{rating}*\n┊ {url}',
+      notFound: '╭─❏ 🔍 「 *APLIKASI TIDAK KETEMU* 」\n┊ Tidak ada hasil untuk *{query}* di Play Store. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *GAGAL CARI APLIKASI* 」\n┊ Gagal cari di Play Store: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     playstore: {
-      hint: 'Write the app name please~ Example: .playstore whatsapp',
-      head: '🛍️ PLAY STORE RESULTS: {query}',
-      item: '{n}. {title}\n   👨‍💻 {dev} · ⭐ {rating}\n   {url}',
-      itemBare: '{n}. {title}\n   {url}',
-      itemRate: '{n}. {title}\n   ⭐ {rating}\n   {url}',
-      notFound: 'No Play Store results for "{query}". {mood}',
-      fail: 'Failed to search the Play Store: {error}',
+      hint: '╭─❏ 🛍️ 「 *APP SEARCH* 」\n┊ Write the app name please~\n┊ Example: *.playstore whatsapp*\n╰━━━━━━━',
+      head: '╭─❏ 🛍️ 「 *PLAY STORE RESULTS: {query}* 」',
+      item: '┊ {n}. *{title}*\n┊ 👨‍💻 {dev} · ⭐ *{rating}*\n┊ {url}',
+      itemBare: '┊ {n}. *{title}*\n┊ {url}',
+      itemRate: '┊ {n}. *{title}*\n┊ ⭐ *{rating}*\n┊ {url}',
+      notFound: '╭─❏ 🔍 「 *APP NOT FOUND* 」\n┊ No Play Store results for *{query}*. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 😖 「 *APP SEARCH FAILED* 」\n┊ Failed to search the Play Store: *{error}*\n╰━━━━━━━',
     },
   },
 }
@@ -99,7 +99,7 @@ export async function handler(ctx) {
       if (a.rating) return ctx.t('playstore.itemRate', { n: i + 1, title: a.title, rating: a.rating, url: a.url })
       return ctx.t('playstore.itemBare', { n: i + 1, title: a.title, url: a.url })
     })
-    return ctx.reply(`${ctx.t('playstore.head', { query })}\n\n${lines.join('\n\n')}`)
+    return ctx.reply(`${ctx.t('playstore.head', { query })}\n${lines.join('\n')}\n╰━━━━━━━`)
   } catch (err) {
     return ctx.reply(ctx.t('playstore.fail', { error: err.message }))
   }
