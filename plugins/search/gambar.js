@@ -41,7 +41,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.gambar', expect: /kata kunci/i }
+export const test = { input: '.gambar kucing lucu', expect: /kucing lucu/i }
 
 export async function handler(ctx) {
   const query = ctx.text.trim()

@@ -33,7 +33,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.ytmp4', expect: /YouTube/i }
+export const test = { input: '.ytmp4 https://www.youtube.com/watch?v=jNQXAC9IVRw', expect: /Me at the zoo/i }
 
 export async function handler(ctx) {
   const input = ctx.text.trim()

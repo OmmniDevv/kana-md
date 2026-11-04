@@ -38,7 +38,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.ssweb', expect: /link/i }
+export const test = { input: '.ssweb https://omnidevv.vercel.app', expect: /Screenshot/i }
 
 export async function handler(ctx) {
   const raw = ctx.args[0]

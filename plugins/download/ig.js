@@ -57,7 +57,7 @@ export function buildIgButtons(url, t) {
       ]
 }
 
-export const test = { input: '.ig', expect: /link/i }
+export const test = { input: '.ig https://www.instagram.com/reel/DMXCETGSC5i/', expect: /Instagram|reel/i }
 
 export async function handler(ctx) {
   const url = ctx.args[0]

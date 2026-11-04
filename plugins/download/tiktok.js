@@ -57,7 +57,7 @@ export function buildTiktokButtons(url, t) {
       ]
 }
 
-export const test = { input: '.tiktok', expect: /link/i }
+export const test = { input: '.tiktok https://www.tiktok.com/@pojoksatu.id/video/7647074044960984340', expect: /video|TikTok/i }
 
 export async function handler(ctx) {
   const url = ctx.args[0]

@@ -86,7 +86,7 @@ export function buildSpotifyDoneButtons({ input, title, results }, t) {
   return replies
 }
 
-export const test = { input: '.spotify', expect: /judul lagu/i }
+export const test = { input: '.spotify https://open.spotify.com/track/73DWDOjVUyJ8sAiAcySvgS', expect: /Sepatu - Tulus/i }
 
 export async function handler(ctx) {
   const input = ctx.text.trim()

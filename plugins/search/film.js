@@ -50,7 +50,7 @@ function stripHtml(html) {
     .trim()
 }
 
-export const test = { input: '.film', expect: /judul/i }
+export const test = { input: '.film Breaking Bad', expect: /Breaking Bad/i }
 
 export async function handler(ctx) {
   const query = ctx.text.trim()

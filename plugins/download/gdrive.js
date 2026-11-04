@@ -46,7 +46,7 @@ const EXT_BY_TYPE = {
   'text/plain': 'txt',
 }
 
-export const test = { input: '.gdrive', expect: /link/i }
+export const test = { input: '.gdrive https://drive.google.com/file/d/1RG3CAPiwiFlFATUlIIwhk0RrbEU4PgVP/view?usp=sharing', expect: /Google Drive/i }
 
 export async function handler(ctx) {
   const raw = ctx.args[0]

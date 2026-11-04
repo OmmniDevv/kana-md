@@ -34,7 +34,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.mediafire', expect: /link/i }
+export const test = { input: '.mediafire http://www.mediafire.com/file/rqhuey1ouz6z4aq/VervalNoPonsel_04092020_publik.pdf/file', expect: /VervalNoPonsel/i }
 
 export async function handler(ctx) {
   const raw = ctx.args[0]

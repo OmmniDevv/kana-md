@@ -31,7 +31,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.carbon', expect: /kode/i }
+export const test = { input: ".carbon const kana = 'moe'", expect: /Kartu kodenya/i }
 
 export async function handler(ctx) {
   const code = ctx.text

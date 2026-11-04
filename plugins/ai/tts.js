@@ -58,7 +58,7 @@ export function chunkTtsText(text, maxChars = TTS_CHUNK_CHARS) {
   return chunks.filter(Boolean)
 }
 
-export const test = { input: '.tts', expect: /teksnya/i }
+export const test = { input: '.tts Halo semuanya, aku KANA', expect: /Voice note/i }
 
 export async function handler(ctx) {
   const rawText = ctx.text.trim()

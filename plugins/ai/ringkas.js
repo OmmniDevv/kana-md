@@ -62,7 +62,7 @@ export function extractArticleText(html) {
   return parts.join('\n').slice(0, 6000)
 }
 
-export const test = { input: '.ringkas', expect: /URL artikel/i }
+export const test = { input: '.ringkas KANA adalah bot WhatsApp yang membantu pengguna mengunduh media, mencari informasi, dan membuat stiker langsung dari percakapan. Bot ini dibangun dengan arsitektur plugin modular sehingga setiap fitur bisa ditambah atau diperbaiki tanpa mengganggu fitur lain. Seluruh perintahnya didukung dua bahasa, Indonesia dan Inggris, dan dirancang tetap ringan untuk dipakai sehari hari.', expect: /Ringkasan/i }
 
 export async function handler(ctx) {
   const input = ctx.text.trim()

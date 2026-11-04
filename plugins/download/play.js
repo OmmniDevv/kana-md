@@ -60,7 +60,7 @@ export function buildPlayButtons({ title, url }, t) {
   return replies
 }
 
-export const test = { input: '.play', expect: /judul lagu/i }
+export const test = { input: '.play https://www.youtube.com/watch?v=jNQXAC9IVRw', expect: /Me at the zoo/i }
 
 export async function handler(ctx) {
   const query = ctx.text.trim()

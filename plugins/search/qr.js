@@ -31,7 +31,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.qr', expect: /teks/i }
+export const test = { input: '.qr https://omnidevv.vercel.app', expect: /QR buat/i }
 
 export async function handler(ctx) {
   const text = ctx.text.trim()

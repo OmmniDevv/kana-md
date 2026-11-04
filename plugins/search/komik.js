@@ -39,7 +39,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.komik', expect: /komik/i }
+export const test = { input: '.komik Solo Leveling', expect: /Hasil komik/i }
 
 export async function handler(ctx) {
   const query = ctx.text.trim()

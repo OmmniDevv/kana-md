@@ -46,7 +46,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.font', expect: /kata kunci/i }
+export const test = { input: '.font gaming', expect: /Hasil font/i }
 
 export async function handler(ctx) {
   if (ctx.args[0] === 'dl') {

@@ -33,7 +33,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.shortlink', expect: /link/i }
+export const test = { input: '.shortlink https://omnidevv.vercel.app', expect: /Link pendeknya siap/i }
 
 export async function handler(ctx) {
   const raw = ctx.args[0]

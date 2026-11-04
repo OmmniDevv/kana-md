@@ -82,7 +82,7 @@ export function detectPlatform(rawUrl) {
   return null
 }
 
-export const test = { input: '.aio', expect: /link/i }
+export const test = { input: '.aio https://www.tiktok.com/@pojoksatu.id/video/7647074044960984340', expect: /TikTok/i }
 
 export async function handler(ctx) {
   const raw = ctx.args[0]

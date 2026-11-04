@@ -28,7 +28,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.chord', expect: /judul/i }
+export const test = { input: '.chord Sepatu Tulus', expect: /Chord:/i }
 
 export async function handler(ctx) {
   const query = ctx.text.trim()

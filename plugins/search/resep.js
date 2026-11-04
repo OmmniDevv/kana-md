@@ -54,7 +54,7 @@ function mealIngredients(meal) {
   return list
 }
 
-export const test = { input: '.resep', expect: /makanan/i }
+export const test = { input: '.resep Chicken', expect: /Chicken/i }
 
 export async function handler(ctx) {
   const query = ctx.text.trim()

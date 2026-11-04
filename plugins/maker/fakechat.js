@@ -33,7 +33,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.fakechat', expect: /format/i }
+export const test = { input: '.fakechat Budi|halo, apa kabar?', expect: /PARODI/i }
 
 export async function handler(ctx) {
   const [nameRaw, ...msgParts] = ctx.text.split('|')

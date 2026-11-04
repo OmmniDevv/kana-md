@@ -57,7 +57,7 @@ export function buildFbButtons(url, t) {
       ]
 }
 
-export const test = { input: '.fb', expect: /link/i }
+export const test = { input: '.fb https://www.facebook.com/fossbytes/videos/1135171799944065/', expect: /Video Facebook/i }
 
 export async function handler(ctx) {
   const url = ctx.args[0]

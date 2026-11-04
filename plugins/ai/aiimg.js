@@ -38,7 +38,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.aiimg', expect: /deskripsi/i }
+export const test = { input: '.aiimg kucing oren lucu memakai kacamata', expect: /kucing oren/i }
 
 export async function handler(ctx) {
   const prompt = ctx.text.trim()

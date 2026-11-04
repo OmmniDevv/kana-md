@@ -32,7 +32,7 @@ export const i18n = {
 
 const COMMON_CODES = new Set(['id', 'en', 'ja', 'ko', 'ar', 'zh', 'es', 'fr', 'de', 'ru', 'pt', 'it', 'nl', 'th', 'vi', 'ms', 'hi', 'tr'])
 
-export const test = { input: '.tr', expect: /kode bahasa/i }
+export const test = { input: '.tr en selamat pagi dunia', expect: /good morning/i }
 
 export async function handler(ctx) {
   const target = (ctx.args[0] || '').toLowerCase()

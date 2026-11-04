@@ -39,7 +39,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.wiki', expect: /artikel/i }
+export const test = { input: '.wiki Indonesia', expect: /Indonesia/i }
 
 export async function handler(ctx) {
   const query = ctx.text.trim()

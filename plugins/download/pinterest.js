@@ -45,7 +45,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.pinterest', expect: /kata kunci/i }
+export const test = { input: '.pinterest kucing lucu', expect: /kucing/i }
 
 export async function handler(ctx) {
   const query = ctx.text.trim()

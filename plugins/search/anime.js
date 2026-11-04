@@ -51,7 +51,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.anime', expect: /judul/i }
+export const test = { input: '.anime Naruto', expect: /Naruto/i }
 
 export async function handler(ctx) {
   const raw = ctx.text.trim()

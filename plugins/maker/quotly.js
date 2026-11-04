@@ -50,7 +50,7 @@ export function extractQuotedText(message) {
   ).trim()
 }
 
-export const test = { input: '.quotly', expect: /kutip/i }
+export const test = { input: '.quotly Halo semuanya, aku KANA', expect: /kutip/i }
 
 export async function handler(ctx) {
   if (!ctx.quoted) return ctx.reply(ctx.t('quotly.needQuoted'))

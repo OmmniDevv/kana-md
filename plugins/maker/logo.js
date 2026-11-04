@@ -29,7 +29,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.logo', expect: /logo/i }
+export const test = { input: '.logo OmniDevv', expect: /Logonya jadii/i }
 
 export async function handler(ctx) {
   const text = ctx.text.trim()

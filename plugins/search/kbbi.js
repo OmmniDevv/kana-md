@@ -32,7 +32,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.kbbi', expect: /kata/i }
+export const test = { input: '.kbbi cinta', expect: /Arti kata/i }
 
 export async function handler(ctx) {
   const word = ctx.args[0]

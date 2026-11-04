@@ -63,7 +63,7 @@ function isNetworkError(err) {
   )
 }
 
-export const test = { input: '.ai', expect: /pesan/i }
+export const test = { input: '.ai Apa ibu kota Jepang?', expect: /Tokyo/i }
 
 export async function handler(ctx) {
   const text = ctx.text.trim()

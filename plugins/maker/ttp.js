@@ -33,7 +33,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.ttp', expect: /teks/i }
+export const test = { input: '.ttp semangat terus', expect: /Stiker ttpnya/i }
 
 export async function handler(ctx) {
   const text = ctx.text.trim()

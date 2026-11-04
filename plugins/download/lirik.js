@@ -49,7 +49,7 @@ export const i18n = {
 
 const MAX_LYRICS_CHARS = 3500
 
-export const test = { input: '.lirik', expect: /judul lagu/i }
+export const test = { input: '.lirik Tulus Sepatu', expect: /Sepatu/i }
 
 export async function handler(ctx) {
   const query = ctx.text.trim()

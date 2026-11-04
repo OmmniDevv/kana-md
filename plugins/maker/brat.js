@@ -33,7 +33,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.brat', expect: /teks/i }
+export const test = { input: '.brat halo semuanya', expect: /Stiker bratnya/i }
 
 export async function handler(ctx) {
   const text = ctx.text.trim().toLowerCase()
