@@ -1,10 +1,16 @@
 import { downloadMediaMessage } from '@rexxhayanasi/elaina-baileys'
 import pino from 'pino'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { t as translate } from '../i18n/index.js'
 import { say } from '../persona/moe.js'
 import { logger } from '../services/logger.js'
 import { sendButtons } from '../ui/buttons.js'
+import { buildFakeQuoted, cachedThumbnail, forwardedContextInfo, warmFakeThumbnail } from '../ui/fake-thumb.js'
 import * as users from '../services/user-service.js'
+
+// Panaskan thumbnail untuk fake quoted ala _allfake.js Elaina sekali saja.
+warmFakeThumbnail(join(dirname(fileURLToPath(import.meta.url)), '../../assets/menu-banner.jpg'))
 
 export const PREFIXES = ['.', '!', '/', '#']
 
@@ -127,7 +133,21 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
 
     const lang = (await storage.get('users', `${primaryDigits}:lang`)) || defaultLang
     const t = (k, vars) => translate(lang, k, vars)
-    const reply = (txt) => sock.sendMessage(chat, { text: txt }, { quoted: raw })
+    // Balasan teks memakai pola _allfake.js Elaina: quoted fake kontak
+    // berthumbnail plus contextInfo pesan diteruskan. Tanpa penanda
+    // diteruskan, sebagian klien WhatsApp menolak merender pesan bot dan
+    // hanya menampilkan gelembung "versi WhatsApp tidak mendukung".
+    // Plugin bisa memilih fake lain lewat opsi fake ('troli', 'dokumen',
+    // 'toko', 'gif', 'lokasi', 'vn', 'teks') atau mematikan fake dengan
+    // fake: 'none' (quoted kembali ke pesan user apa adanya).
+    const reply = (txt, opts = {}) => {
+      const kind = opts.fake === undefined ? 'kontak' : opts.fake
+      const fake = kind
+        ? buildFakeQuoted(kind, { botName: process.env.BOT_NAME || 'KANA', thumbnail: cachedThumbnail() })
+        : null
+      const content = { text: txt, contextInfo: forwardedContextInfo() }
+      return sock.sendMessage(chat, content, { quoted: fake ?? raw })
+    }
     const quoted = getQuoted(raw.message)
     const contextInfo = findContextInfo(raw.message)
 

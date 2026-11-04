@@ -20,6 +20,24 @@ bingkai dianggap belum selesai.
 - Suara moe KANA tetap dipertahankan ({mood}, akhiran khas), jangan jadi kaku.
 - Dilarang memakai em dash di semua teks.
 
+## Fake quoted dan pesan diteruskan (pola _allfake)
+
+Mengikuti middleware _allfake.js di Elaina-MD: balasan bot tidak melayang
+polos. Lapisan bersama (src/core/pipeline.js dan src/ui/buttons.js)
+otomatis memasang pada setiap balasan teks dan kartu tombol:
+
+- quoted fake kontak berthumbnail banner bot (keluarga fake lengkap ada
+  di src/ui/fake-thumb.js: kontak, troli, dokumen, toko, grup, gif,
+  lokasi, vn, teks; pilih lewat buildFakeQuoted atau opsi fake pada
+  ctx.reply), dan
+- contextInfo pesan diteruskan (forwardedContextInfo: isForwarded true,
+  forwardingScore 999).
+
+Penanda diteruskan itu WAJIB, bukan hiasan: tanpa itu sebagian klien
+WhatsApp menolak merender pesan kaya (tombol, kartu, game HTML) dan
+hanya menampilkan gelembung "versi WhatsApp tidak mendukung". Game HTML
+sudah memakainya lewat src/ui/htmlgame.js dan tidak boleh diubah.
+
 ## Kartu bergambar
 
 - Keluaran etalase (kartu info yang dipamerkan, contoh: menu, referal,

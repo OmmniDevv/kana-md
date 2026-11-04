@@ -68,21 +68,180 @@ export async function loadMenuThumbnail(bannerPath) {
   return thumbnailCache
 }
 
+// contextInfo pesan diteruskan, pola global.adReply di _allfake.js Elaina:
+// pesan bot yang membawa contextInfo ini tampil sebagai pesan diteruskan
+// dan itulah yang membuat konten kaya (tombol, kartu, game HTML) bisa
+// dirender klien WhatsApp. Tanpa ini sebagian pesan hanya tampil sebagai
+// gelembung "versi WhatsApp tidak mendukung" di klien lama.
+export function forwardedContextInfo(extra = {}) {
+  return { isForwarded: true, forwardingScore: 999, ...extra }
+}
+
+let fakeThumbnailCache
+let fakeThumbnailPromise = null
+
+// Panaskan cache thumbnail fake (banner menu 300x300) sekali di awal.
+// Pemanggil sinkron sesudahnya memakai cachedThumbnail(); selama belum
+// siap, builder berjalan tanpa thumbnail dan tetap sah.
+export function warmFakeThumbnail(bannerPath) {
+  if (!fakeThumbnailPromise) {
+    fakeThumbnailPromise = loadMenuThumbnail(bannerPath)
+      .then((buf) => {
+        fakeThumbnailCache = buf
+        return buf
+      })
+      .catch(() => null)
+  }
+  return fakeThumbnailPromise
+}
+
+export function cachedThumbnail() {
+  return Buffer.isBuffer(fakeThumbnailCache) ? fakeThumbnailCache : null
+}
+
+const fakeKey = () => ({
+  fromMe: false,
+  participant: '0@s.whatsapp.net',
+  remoteJid: 'status@broadcast',
+})
+
 // Fake quoted contactMessage ala menu Cantarella di SC owner.
-export function buildFakeContactQuoted({ botName = 'KANA' } = {}) {
+export function buildFakeContactQuoted({ botName = 'KANA', thumbnail = null } = {}) {
   const name = String(botName || 'KANA')
+  const contactMessage = {
+    displayName: name,
+    vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nitem1.TEL;waid=0:+0\nEND:VCARD`,
+    sendEphemeral: true,
+  }
+  if (Buffer.isBuffer(thumbnail)) contactMessage.jpegThumbnail = thumbnail
   return {
     key: {
       participant: '0@s.whatsapp.net',
       remoteJid: 'status@broadcast',
     },
+    message: { contactMessage },
+  }
+}
+
+// Keluarga fake quoted lain dari _allfake.js Elaina (fdocs, ftoko,
+// fgclink, fgif, fliveLoc, fvn, ftextt), disesuaikan dengan nilai KANA.
+// Semua memakai thumbnail banner bot bila tersedia.
+export function buildFakeDocQuoted({ botName = 'KANA', thumbnail = null } = {}) {
+  const documentMessage = { title: String(botName || 'KANA') }
+  if (Buffer.isBuffer(thumbnail)) documentMessage.jpegThumbnail = thumbnail
+  return { key: fakeKey(), message: { documentMessage } }
+}
+
+export function buildFakeProductQuoted({ botName = 'KANA', botNumber = '', thumbnail = null } = {}) {
+  const name = String(botName || 'KANA')
+  const digits = String(botNumber ?? '').replace(/\D/g, '')
+  const productImage = { mimetype: 'image/jpeg' }
+  if (Buffer.isBuffer(thumbnail)) productImage.jpegThumbnail = thumbnail
+  return {
+    key: fakeKey(),
     message: {
-      contactMessage: {
-        displayName: name,
-        vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nitem1.TEL;waid=0:+0\nEND:VCARD`,
-        sendEphemeral: true,
+      productMessage: {
+        product: {
+          productImage,
+          title: name,
+          description: `${name}, bot WhatsApp moe`,
+          currencyCode: 'IDR',
+          priceAmount1000: 20000000,
+          retailerId: name,
+          productImageCount: 1,
+        },
+        businessOwnerJid: digits ? `${digits}@s.whatsapp.net` : '0@s.whatsapp.net',
       },
     },
+  }
+}
+
+export function buildFakeGroupQuoted({ botName = 'KANA', thumbnail = null } = {}) {
+  const name = String(botName || 'KANA')
+  const groupInviteMessage = {
+    groupJid: '0@g.us',
+    inviteCode: 'KANA',
+    groupName: name,
+    caption: name,
+  }
+  if (Buffer.isBuffer(thumbnail)) groupInviteMessage.jpegThumbnail = thumbnail
+  return { key: fakeKey(), message: { groupInviteMessage } }
+}
+
+export function buildFakeGifQuoted({ botName = 'KANA', thumbnail = null } = {}) {
+  const name = String(botName || 'KANA')
+  const videoMessage = {
+    title: name,
+    h: name,
+    seconds: '999999',
+    gifPlayback: true,
+    caption: name,
+  }
+  if (Buffer.isBuffer(thumbnail)) videoMessage.jpegThumbnail = thumbnail
+  return { key: fakeKey(), message: { videoMessage } }
+}
+
+export function buildFakeLocationQuoted({ botName = 'KANA', thumbnail = null } = {}) {
+  const name = String(botName || 'KANA')
+  const liveLocationMessage = { caption: name, h: name }
+  if (Buffer.isBuffer(thumbnail)) liveLocationMessage.jpegThumbnail = thumbnail
+  return { key: fakeKey(), message: { liveLocationMessage } }
+}
+
+export function buildFakeVoiceQuoted() {
+  return {
+    key: fakeKey(),
+    message: {
+      audioMessage: {
+        mimetype: 'audio/ogg; codecs=opus',
+        seconds: '999999',
+        ptt: true,
+      },
+    },
+  }
+}
+
+export function buildFakeTextQuoted({ botName = 'KANA', thumbnail = null } = {}) {
+  const name = String(botName || 'KANA')
+  const extendedTextMessage = { text: name, title: name }
+  if (Buffer.isBuffer(thumbnail)) extendedTextMessage.jpegThumbnail = thumbnail
+  return { key: fakeKey(), message: { extendedTextMessage } }
+}
+
+// Pemilih fake quoted berdasarkan nama pendek, meniru cara plugin Elaina
+// memilih global.fkontak, global.ftroli, dan kawan kawannya. Nilai null,
+// 'none', atau nama tak dikenal menghasilkan null (tanpa quoted palsu).
+export function buildFakeQuoted(kind, opts = {}) {
+  switch (String(kind || '').toLowerCase()) {
+    case 'kontak':
+    case 'contact':
+      return buildFakeContactQuoted(opts)
+    case 'troli':
+    case 'order':
+      return buildFakeTroliQuoted(opts)
+    case 'dokumen':
+    case 'doc':
+      return buildFakeDocQuoted(opts)
+    case 'toko':
+    case 'product':
+      return buildFakeProductQuoted(opts)
+    case 'grup':
+    case 'group':
+      return buildFakeGroupQuoted(opts)
+    case 'gif':
+      return buildFakeGifQuoted(opts)
+    case 'lokasi':
+    case 'location':
+    case 'loc':
+      return buildFakeLocationQuoted(opts)
+    case 'vn':
+    case 'voice':
+      return buildFakeVoiceQuoted(opts)
+    case 'teks':
+    case 'text':
+      return buildFakeTextQuoted(opts)
+    default:
+      return null
   }
 }
 

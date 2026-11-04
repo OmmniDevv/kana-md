@@ -4,8 +4,10 @@ import jpeg from 'jpeg-js'
 import {
   FAKE_TROLI_TOKEN,
   buildFakeContactQuoted,
+  buildFakeQuoted,
   buildFakeTroliQuoted,
   coverJpeg300,
+  forwardedContextInfo,
   sendQuotedText,
 } from '../src/ui/fake-thumb.js'
 
@@ -91,4 +93,40 @@ test('sendQuotedText: satu panggilan sendMessage dengan contextInfo dan quoted',
   assert.equal(calls.length, 1)
   assert.deepEqual(calls[0].content, { text: 'isi menu', contextInfo })
   assert.equal(calls[0].opts.quoted, quoted)
+})
+
+test('forwardedContextInfo: selalu isForwarded dengan skor, extra menimpa', () => {
+  const ci = forwardedContextInfo()
+  assert.equal(ci.isForwarded, true)
+  assert.ok(ci.forwardingScore >= 1)
+  const custom = forwardedContextInfo({ forwardingScore: 7, mentionedJid: ['1@s.whatsapp.net'] })
+  assert.equal(custom.forwardingScore, 7)
+  assert.deepEqual(custom.mentionedJid, ['1@s.whatsapp.net'])
+})
+
+test('buildFakeQuoted: keluarga fake _allfake terpetakan ke bentuk pesan yang benar', () => {
+  const thumb = patternedJpeg(64, 64)
+  const kontak = buildFakeQuoted('kontak', { botName: 'KANA', thumbnail: thumb })
+  assert.equal(kontak.message.contactMessage.displayName, 'KANA')
+  assert.equal(kontak.message.contactMessage.jpegThumbnail, thumb)
+  const dok = buildFakeQuoted('dokumen', { botName: 'KANA', thumbnail: thumb })
+  assert.equal(dok.message.documentMessage.title, 'KANA')
+  assert.equal(dok.message.documentMessage.jpegThumbnail, thumb)
+  const toko = buildFakeQuoted('toko', { botName: 'KANA', botNumber: '628123', thumbnail: thumb })
+  assert.equal(toko.message.productMessage.product.title, 'KANA')
+  assert.equal(toko.message.productMessage.businessOwnerJid, '628123@s.whatsapp.net')
+  const grup = buildFakeQuoted('grup', { botName: 'KANA' })
+  assert.equal(grup.message.groupInviteMessage.groupName, 'KANA')
+  const gif = buildFakeQuoted('gif', { botName: 'KANA' })
+  assert.equal(gif.message.videoMessage.gifPlayback, true)
+  const lokasi = buildFakeQuoted('lokasi', { botName: 'KANA' })
+  assert.equal(lokasi.message.liveLocationMessage.caption, 'KANA')
+  const vn = buildFakeQuoted('vn', {})
+  assert.equal(vn.message.audioMessage.ptt, true)
+  const teks = buildFakeQuoted('teks', { botName: 'KANA' })
+  assert.equal(teks.message.extendedTextMessage.text, 'KANA')
+  const troli = buildFakeQuoted('troli', { botName: 'KANA', itemCount: 12 })
+  assert.equal(troli.message.orderMessage.itemCount, 12)
+  assert.equal(buildFakeQuoted('none', {}), null)
+  assert.equal(buildFakeQuoted('tidak-ada', {}), null)
 })

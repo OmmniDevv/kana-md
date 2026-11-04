@@ -1,6 +1,7 @@
 import { MB, checkNativeFlowButtons } from '@rexxhayanasi/elaina-baileys'
 import { logger } from '../services/logger.js'
 import { defaultFooterText, footerLine, withButtonEmoji } from '../config/templates.js'
+import { buildFakeContactQuoted, forwardedContextInfo } from './fake-thumb.js'
 
 // Bungkus MB.Button (README v1.4.7). Balasan tombol kembali sebagai perintah
 // biasa lewat pipeline (id tombol = perintah). Gagal kirim tombol: fallback teks.
@@ -19,17 +20,24 @@ export async function sendButtons(sock, jid, { title, body, footer, replies = []
   const decorated = replies.map((r) => ({ ...r, text: withButtonEmoji(r.text, r.id) }))
   const fallback =
     textFallback ?? [title, body, ...decorated.map((r) => `${r.text} (${r.id})`), resolvedFooter].filter(Boolean).join('\n')
-  if (!replies.length) return sock.sendMessage(jid, { text: fallback })
+  // Pola _allfake.js Elaina: kartu tombol dikirim sebagai pesan diteruskan
+  // dengan quoted fake kontak. Penanda diteruskan ini wajib supaya kartu
+  // bisa dirender klien WhatsApp (tanpa itu muncul gelembung "versi
+  // WhatsApp tidak mendukung" di sebagian klien).
+  const fakeQuoted = buildFakeContactQuoted({ botName: process.env.BOT_NAME || 'KANA' })
+  const contextInfo = forwardedContextInfo()
+  if (!replies.length) return sock.sendMessage(jid, { text: fallback, contextInfo }, { quoted: fakeQuoted })
   try {
     const builder = new MB.Button(sock).setTitle(title ?? '').setBody(body ?? '').setFooter(resolvedFooter ?? '')
+    builder.setContextInfo(contextInfo)
     for (const r of decorated.slice(0, 10)) builder.addReply(r.text, r.id)
     if (typeof checkNativeFlowButtons === 'function') {
       const check = checkNativeFlowButtons(builder)
       if (check && check.ok === false) throw new Error('validasi tombol gagal')
     }
-    return await builder.send(jid)
+    return await builder.send(jid, { quoted: fakeQuoted })
   } catch (err) {
     logger.warn({ err: err.message }, 'tombol gagal, fallback ke teks')
-    return sock.sendMessage(jid, { text: fallback })
+    return sock.sendMessage(jid, { text: fallback, contextInfo }, { quoted: fakeQuoted })
   }
 }
