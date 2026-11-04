@@ -71,6 +71,8 @@ audio 16 MB, video 64 MB, gambar 16 MB, dokumen 64 MB.
 
 ## Menu ala Elaina-MD (2026-11-04, permintaan user)
 
+Catatan riwayat: mekanisme pada tabel awal ini sudah digantikan oleh port final dari SC Elaina-MD v6.3.0 milik owner pada seksi port menu di bawah. Formatter registry dan prinsip dinamis tanpa daftar hardcoded tetap dipakai.
+
 | Item | Status |
 |---|---|
 | Menu gaya bot MD klasik: bingkai box-drawing, header nama bot + sapaan moe ke user (pushName), runtime, mode (env BOT_MODE, default public), jumlah plugin dan perintah (termasuk alias), tanggal + jam WIB | Terpasang, dites unit + smoke test loader |
@@ -79,27 +81,32 @@ audio 16 MB, video 64 MB, gambar 16 MB, dokumen 64 MB.
 | Gambar header assets/welcome.png: jadi caption bila menu muat 1024 karakter, selain itu gambar terpisah lalu teks menu; tombol quick reply .ping/.help/.owner dipertahankan dengan fallback teks | Terpasang (smoke test lokal: gambar terkirim, fallback teks jalan) |
 | Help (.help) diselaraskan: detail perintah dan hint dalam bingkai yang sama | Terpasang |
 
-## Menu navigasi tombol (2026-11-04, permintaan user: menu Elaina dulu pakai button)
+## Port menu dari SC Elaina-MD v6.3.0 milik owner (2026-11-04, koreksi final user)
 
-Bagian ini SEBAGIAN DIGANTIKAN oleh koreksi user di bawah pada hari yang sama: menu utama tidak lagi memakai tombol navigasi. Yang tetap berlaku: sub-menu .menu <kategori> bertombol (tombol kembali ".menu" dan tombol kategori lain), dan perbaikan pipeline paramsJson string agar id tombol tertangkap sebagai perintah (test/pipeline-buttons.test.js).
-
-## Menu penuh gaya Elaina (2026-11-04, koreksi user: "jelek menu nya, ga kaya elaina")
+Sumber mekanisme adalah SC Elaina-MD v6.3.0 milik owner sendiri, repo OmmniDevv/Elaina-MD, terutama plugins/main/menu.js, plugins/main/menucat.js, plugins/main/allmenu.js, dan lib/menuHelper.js. Bukan SC publik lain.
 
 | Item | Status |
 |---|---|
-| .menu (tanpa argumen) dan .menu all: SATU pesan teks penuh gaya Elaina klasik berisi SEMUA perintah dari semua kategori dari registry (bingkai box-drawing per kategori, "│ ◦ .nama"), tanpa tombol dan tanpa pesan gambar terpisah | Terpasang, dites unit (test/menu.test.js membuktikan perintah dari beberapa kategori tampil semua) |
-| Banner menu tampil sebagai thumbnail palsu yang menempel pada pesan teks itu (contextInfo.externalAdReply lewat field top-level library, helper src/ui/fake-thumb.js); banner diperkecil ke lebar 320 (374 KB jadi sekitar 23 KB) supaya ringan dan galeri HP tidak kotor | Terpasang, dites unit (test/fake-thumb.test.js) |
-| .menu <kategori>: sub-menu ringkas satu kategori, tetap satu pesan bertombol, tanpa gambar terpisah | Terpasang, dites unit |
+| .menu utama gaya Cantarella: reaksi loading, MB.Button dengan title nama bot, body info moe berisi sapaan, nama, owner, uptime, memori, total perintah, jam dan tanggal WIB, tautan repo, footer, serta gambar banner | Terpasang, dites unit dari payload relayMessage |
+| Tombol menu utama: single_select berisi section dan row per kategori dengan id ".menu <key kategori>", cta_url ke repo GitHub kana-md, cta_copy nama bot, quick reply ".menu all" dan ".ping", serta quick reply ".menu owner" khusus owner | Terpasang, dites unit untuk owner dan non-owner |
+| Quoted menu utama adalah fake contactMessage ala SC owner; contextInfo hanya memakai mentionedJid, isForwarded, dan forwardingScore tanpa info newsletter karangan | Terpasang, dites unit |
+| Fallback menu utama: bila MB.Button gagal, bot mengirim banner sebagai image plus caption, atau teks bila banner tidak ada. Caption selalu memuat daftar perintah ".menu <kategori>" yang terlihat oleh pengirim sebagai jalan keluar lengkap | Terpasang, dites unit dengan relayMessage yang sengaja dibuat gagal |
+| .menu <kategori>: tepat satu pesan teks satu kategori memakai formatter KANA, dengan quoted fake orderMessage troli dan thumbnail banner 300x300 | Terpasang, dites unit |
+| .menu all: tepat satu pesan teks penuh semua kategori yang terlihat oleh pengirim, dengan quoted fake troli yang sama dan contextInfo mentionedJid, forwardingScore 9, isForwarded true | Terpasang, dites unit |
+| Thumbnail troli dibuat dari banner memakai jpeg-js: crop tengah ke area persegi lalu resize nearest neighbor ke 300x300 dan encode JPEG quality 80 | Terpasang, dimensi hasil dibuktikan di tes unit |
 | Menu user belum daftar tidak berubah: gate pipeline tetap menampilkan peringatan + tombol daftar | Terpasang (test/registration-gate.test.js) |
+| Pipeline membuktikan id ".menu download" tertangkap dari single_select, listResponseMessage, quick reply native flow, template button reply, dan buttons response | Terpasang, dites unit (test/pipeline-buttons.test.js) |
 | Perbaikan harness livetest: TEST_CHATS digit mentah dinormalisasi jadi JID penuh sebelum pesan sintetis dibangun (normalizeChatJid), memperbaiki error jidDecode yang menggagalkan semua uji builtin | Terpasang, dites unit (test/livetest.test.js) |
 
-Status tes live menu penuh: ⏳ menunggu tes live bareng user (kode terpasang + tes unit hijau).
+Pelajaran dari lib/menuHelper.js SC owner tetap berlaku: single_select dibuang di banyak klien WhatsApp, sedangkan quick_reply didukung lebih luas dengan batas 10. Karena itu fallback teks menu utama wajib memuat daftar kategori lengkap, dan single_select baru tidak diperkenalkan untuk tombol di luar menu utama.
+
+Status tes live port menu: ⏳ menunggu tes live oleh parent agent bareng user (kode terpasang + tes unit hijau; subagent port tidak menjalankan livetest dan tidak me-restart service).
 
 ## Aset resmi dari user (2026-11-04)
 
 | Item | Status |
 |---|---|
-| assets/menu-banner.jpg (banner KANA MD hijau): thumbnail palsu (externalAdReply) pada pesan teks .menu dan .menu all; bukan pesan gambar terpisah (koreksi user 2026-11-04) | Terpasang |
+| assets/menu-banner.jpg (banner KANA MD hijau): gambar header MB.Button pada .menu utama, sumber thumbnail troli 300x300 pada .menu <kategori> dan .menu all, serta gambar fallback menu utama | Terpasang |
 | thumbnail.png root repo diganti banner KANA MD 1280x720 dari user; README meng-embed thumbnail.png | Terpasang, terverifikasi di GitHub |
 | assets/welcome.jpg: gambar utama kartu welcome grup (caption moe + mention member baru) | Terpasang di plugin welcome Fase 4 |
 | assets/goodbye.jpg: gambar pesan goodbye grup (caption moe + nama member keluar) | Terpasang di plugin welcome Fase 4 |
@@ -109,7 +116,7 @@ Status tes live menu penuh: ⏳ menunggu tes live bareng user (kode terpasang + 
 
 ## Aturan tetap: semua fitur memakai button (keputusan user 2026-11-04)
 
-Setiap keluaran fitur yang punya langkah lanjutan wajib menyertakan tombol MB.Button lewat src/ui/buttons.js (quick_reply maks 10, tidak dicampur jenis lain; id tombol adalah perintah valid berprefix titik), badan pesan tetap memuat versi teks perintahnya, dan kegagalan kirim tombol selalu jatuh ke fallback teks. Label tombol lewat i18n id+en. Rincian per kategori ada di laporan pembangunan dan di plugin masing-masing. Pengecualian resmi (keputusan user 2026-11-04): menu utama .menu adalah teks penuh gaya Elaina tanpa tombol, lihat seksi "Menu penuh gaya Elaina" di atas.
+Setiap keluaran fitur yang punya langkah lanjutan wajib menyertakan tombol MB.Button lewat src/ui/buttons.js (quick_reply maks 10, tidak dicampur jenis lain; id tombol adalah perintah valid berprefix titik), badan pesan tetap memuat versi teks perintahnya, dan kegagalan kirim tombol selalu jatuh ke fallback teks. Label tombol lewat i18n id+en. Rincian per kategori ada di laporan pembangunan dan di plugin masing-masing. Menu utama .menu memakai mekanisme khusus dari SC Elaina-MD v6.3.0 milik owner, lihat seksi port menu di atas; single_select tidak diperkenalkan untuk tombol di luar menu utama.
 
 ## Persona ekspresif (keputusan user 2026-11-04)
 

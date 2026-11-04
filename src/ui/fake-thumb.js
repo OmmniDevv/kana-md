@@ -1,78 +1,132 @@
-// Helper thumbnail palsu (fake thumbnail) ala bot MD klasik: satu pesan teks
-// dengan kartu pratinjau menempel, tanpa mengirim gambar beneran (galeri HP
-// user tetap bersih).
-//
-// Mekanisme terverifikasi di source library @rexxhayanasi/elaina-baileys
-// v1.4.7 (src/Utils/messages.js, generateWAMessageContent): field top-level
-// `externalAdReply` pada konten sendMessage digabung library ke dalam
-// contextInfo.externalAdReply pesan yang dibuat. Field yang dibaca library:
-// title, body, mediaType (1 = gambar), thumbnail (wajib Buffer), url (jadi
-// sourceUrl; kosong diisi library dengan URL donasinya, jadi selalu isi),
-// largeThumbnail (jadi renderLargerThumbnail), mediaUrl, thumbnailUrl.
+// Pembangun pesan kutipan palsu untuk menu KANA, diport dari mekanisme
+// SC Elaina-MD v6.3.0 milik owner:
+// - Menu utama memakai fake contactMessage sebagai quoted.
+// - Menu teks memakai fake orderMessage bergaya troli sebagai quoted.
+// Tidak ada kartu iklan eksternal di helper ini karena WA versi terbaru
+// tidak lagi mendukung mekanisme tersebut dengan konsisten.
 import { readFile } from 'node:fs/promises'
 import jpeg from 'jpeg-js'
 
-export const FAKE_THUMB_TITLE = 'KANA MD'
-const DEFAULT_SOURCE_URL = 'https://github.com/OmmniDevv/kana-md'
+export const FAKE_TROLI_TOKEN = 'ARpfsm5NXcUGrAkaExuw'
+export const MENU_THUMBNAIL_SIZE = 300
 
-// Perkecil JPEG ke lebar maksimum memakai jpeg-js murni (sudah dependensi
-// proyek). Gagal decode: kembalikan buffer asal apa adanya.
-export function shrinkJpeg(buffer, maxWidth = 320, quality = 65) {
+// Ubah JPEG menjadi sampul persegi 300x300 dengan crop tengah. Kegagalan
+// decode tidak fatal: buffer asal dikembalikan apa adanya.
+export function coverJpeg300(buffer, quality = 80) {
+  if (!Buffer.isBuffer(buffer)) return buffer
   try {
     const decoded = jpeg.decode(buffer, { useTArray: true, maxMemoryUsageInMB: 256 })
-    if (!decoded?.width || decoded.width <= maxWidth) return buffer
-    const scale = maxWidth / decoded.width
-    const outW = maxWidth
-    const outH = Math.max(1, Math.round(decoded.height * scale))
-    const src = decoded.data
-    const out = Buffer.alloc(outW * outH * 4)
-    for (let y = 0; y < outH; y += 1) {
-      const sy = Math.min(decoded.height - 1, Math.floor(y / scale))
-      for (let x = 0; x < outW; x += 1) {
-        const sx = Math.min(decoded.width - 1, Math.floor(x / scale))
-        const si = (sy * decoded.width + sx) * 4
-        const di = (y * outW + x) * 4
-        out[di] = src[si]
-        out[di + 1] = src[si + 1]
-        out[di + 2] = src[si + 2]
+    if (!decoded?.width || !decoded?.height) return buffer
+
+    const side = Math.min(decoded.width, decoded.height)
+    const startX = Math.floor((decoded.width - side) / 2)
+    const startY = Math.floor((decoded.height - side) / 2)
+    const out = Buffer.alloc(MENU_THUMBNAIL_SIZE * MENU_THUMBNAIL_SIZE * 4)
+
+    for (let y = 0; y < MENU_THUMBNAIL_SIZE; y += 1) {
+      const sy = Math.min(side - 1, Math.floor(((y + 0.5) * side) / MENU_THUMBNAIL_SIZE))
+      for (let x = 0; x < MENU_THUMBNAIL_SIZE; x += 1) {
+        const sx = Math.min(side - 1, Math.floor(((x + 0.5) * side) / MENU_THUMBNAIL_SIZE))
+        const si = ((startY + sy) * decoded.width + startX + sx) * 4
+        const di = (y * MENU_THUMBNAIL_SIZE + x) * 4
+        out[di] = decoded.data[si]
+        out[di + 1] = decoded.data[si + 1]
+        out[di + 2] = decoded.data[si + 2]
         out[di + 3] = 255
       }
     }
-    const encoded = jpeg.encode({ data: out, width: outW, height: outH }, quality)
+
+    const encoded = jpeg.encode(
+      { data: out, width: MENU_THUMBNAIL_SIZE, height: MENU_THUMBNAIL_SIZE },
+      quality
+    )
     return Buffer.from(encoded.data)
   } catch {
     return buffer
   }
 }
 
-// Bangun konten sendMessage: teks + externalAdReply. Murni, gampang dites.
-export function fakeThumbContent(
-  text,
-  { title = FAKE_THUMB_TITLE, body = '', sourceUrl = DEFAULT_SOURCE_URL, thumbnail = null, largeThumbnail = false } = {}
-) {
-  const externalAdReply = { title, body, mediaType: 1, url: sourceUrl, largeThumbnail }
-  if (Buffer.isBuffer(thumbnail)) externalAdReply.thumbnail = thumbnail
-  return { text, externalAdReply }
-}
-
-// Kirim teks dengan thumbnail palsu dalam SATU pesan. quoted diteruskan
-// apa adanya (boleh undefined).
-export function sendFakeThumbText(sock, jid, text, { quoted, ...thumbOpts } = {}) {
-  const content = fakeThumbContent(text, thumbOpts)
-  return quoted ? sock.sendMessage(jid, content, { quoted }) : sock.sendMessage(jid, content)
-}
-
 let bannerCache = null
+let thumbnailCache = null
 
-// Muat banner menu (assets/menu-banner.jpg) sekali, perkecil, cache.
-// File tidak ada atau rusak: null (menu tetap terkirim tanpa thumbnail).
-export async function loadMenuThumbnail(bannerPath) {
+// Muat banner mentah untuk header MB.Button dan fallback image+caption.
+export async function loadMenuBanner(bannerPath) {
   if (bannerCache) return bannerCache
   try {
-    const raw = await readFile(bannerPath)
-    bannerCache = shrinkJpeg(raw)
+    bannerCache = await readFile(bannerPath)
   } catch {
     bannerCache = null
   }
   return bannerCache
+}
+
+// Muat banner lalu ubah menjadi thumbnail troli 300x300.
+export async function loadMenuThumbnail(bannerPath) {
+  if (thumbnailCache) return thumbnailCache
+  const banner = await loadMenuBanner(bannerPath)
+  thumbnailCache = banner ? coverJpeg300(banner) : null
+  return thumbnailCache
+}
+
+// Fake quoted contactMessage ala menu Cantarella di SC owner.
+export function buildFakeContactQuoted({ botName = 'KANA' } = {}) {
+  const name = String(botName || 'KANA')
+  return {
+    key: {
+      participant: '0@s.whatsapp.net',
+      remoteJid: 'status@broadcast',
+    },
+    message: {
+      contactMessage: {
+        displayName: name,
+        vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nitem1.TEL;waid=0:+0\nEND:VCARD`,
+        sendEphemeral: true,
+      },
+    },
+  }
+}
+
+// Fake quoted orderMessage ala troli di menucat dan allmenu SC owner.
+export function buildFakeTroliQuoted({
+  botName = 'KANA',
+  botNumber = '',
+  itemCount = 0,
+  thumbnail = null,
+  token = FAKE_TROLI_TOKEN,
+} = {}) {
+  const total = Math.max(0, Number(itemCount) || 0)
+  const sellerDigits = String(botNumber ?? '').replace(/\D/g, '')
+  return {
+    key: {
+      fromMe: false,
+      participant: '0@s.whatsapp.net',
+      remoteJid: 'status@broadcast',
+    },
+    message: {
+      orderMessage: {
+        orderId: '1337',
+        thumbnail: Buffer.isBuffer(thumbnail) ? thumbnail : null,
+        itemCount: total,
+        status: 'INQUIRY',
+        surface: 'CATALOG',
+        message: `${botName} - ${total} Commands`,
+        orderTitle: `📋 ${total} Commands`,
+        sellerJid: `${sellerDigits}@s.whatsapp.net`,
+        token,
+        totalAmount1000: 0,
+        totalCurrencyCode: 'IDR',
+        contextInfo: {
+          isForwarded: true,
+          forwardingScore: 9999,
+        },
+      },
+    },
+  }
+}
+
+// Kirim satu pesan teks dengan quoted dan contextInfo yang diberikan.
+export function sendQuotedText(sock, jid, text, { quoted, contextInfo } = {}) {
+  const content = { text }
+  if (contextInfo) content.contextInfo = contextInfo
+  return quoted ? sock.sendMessage(jid, content, { quoted }) : sock.sendMessage(jid, content)
 }

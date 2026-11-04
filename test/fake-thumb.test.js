@@ -1,53 +1,83 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import jpeg from 'jpeg-js'
-import { fakeThumbContent, sendFakeThumbText, shrinkJpeg } from '../src/ui/fake-thumb.js'
+import {
+  FAKE_TROLI_TOKEN,
+  buildFakeContactQuoted,
+  buildFakeTroliQuoted,
+  coverJpeg300,
+  sendQuotedText,
+} from '../src/ui/fake-thumb.js'
 
-function solidJpeg(width, height, quality = 90) {
+function patternedJpeg(width, height, quality = 90) {
   const data = Buffer.alloc(width * height * 4)
-  for (let i = 0; i < data.length; i += 4) {
-    data[i] = 30
-    data[i + 1] = 180
-    data[i + 2] = 90
-    data[i + 3] = 255
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const i = (y * width + x) * 4
+      data[i] = Math.floor((x / Math.max(1, width - 1)) * 255)
+      data[i + 1] = Math.floor((y / Math.max(1, height - 1)) * 255)
+      data[i + 2] = 90
+      data[i + 3] = 255
+    }
   }
   return Buffer.from(jpeg.encode({ data, width, height }, quality).data)
 }
 
-test('fakeThumbContent: teks + externalAdReply lengkap untuk library', () => {
-  const thumb = Buffer.from('jpeg-palsu')
-  const content = fakeThumbContent('isi menu', { body: 'Menu lengkap KANA', thumbnail: thumb })
-  assert.equal(content.text, 'isi menu')
-  assert.equal(content.externalAdReply.title, 'KANA MD')
-  assert.equal(content.externalAdReply.body, 'Menu lengkap KANA')
-  assert.equal(content.externalAdReply.mediaType, 1)
-  assert.equal(content.externalAdReply.thumbnail, thumb)
-  assert.match(content.externalAdReply.url, /github\.com\/OmmniDevv\/kana-md/)
-})
-
-test('fakeThumbContent: tanpa thumbnail tetap membentuk kartu (url selalu terisi)', () => {
-  const content = fakeThumbContent('teks')
-  assert.ok(!('thumbnail' in content.externalAdReply))
-  assert.ok(content.externalAdReply.url.length > 0, 'url terisi supaya library tidak memakai URL donasi bawaan')
-})
-
-test('shrinkJpeg: gambar lebar diperkecil ke lebar maksimum dan tetap JPEG valid', () => {
-  const big = solidJpeg(1280, 720)
-  const small = shrinkJpeg(big, 320, 65)
+test('coverJpeg300: JPEG melebar menjadi sampul persegi 300x300', () => {
+  const small = coverJpeg300(patternedJpeg(640, 320), 80)
   const decoded = jpeg.decode(small, { useTArray: true })
-  assert.equal(decoded.width, 320)
-  assert.equal(decoded.height, 180)
-  assert.ok(small.length < big.length, 'hasil lebih ringan dari sumber')
+  assert.equal(decoded.width, 300)
+  assert.equal(decoded.height, 300)
+  assert.ok(small.length > 0)
 })
 
-test('shrinkJpeg: gambar kecil dan buffer rusak dibiarkan apa adanya', () => {
-  const smallSrc = solidJpeg(200, 100)
-  assert.equal(shrinkJpeg(smallSrc, 320), smallSrc)
+test('coverJpeg300: buffer rusak dan non-buffer dikembalikan apa adanya', () => {
   const rusak = Buffer.from('bukan jpeg')
-  assert.equal(shrinkJpeg(rusak), rusak)
+  assert.equal(coverJpeg300(rusak), rusak)
+  assert.equal(coverJpeg300(null), null)
 })
 
-test('sendFakeThumbText: satu panggilan sendMessage, quoted diteruskan', async () => {
+test('buildFakeContactQuoted: fake contact menu utama ala SC owner', () => {
+  const quoted = buildFakeContactQuoted({ botName: 'KANA' })
+  assert.deepEqual(quoted.key, {
+    participant: '0@s.whatsapp.net',
+    remoteJid: 'status@broadcast',
+  })
+  assert.equal(quoted.message.contactMessage.displayName, 'KANA')
+  assert.match(quoted.message.contactMessage.vcard, /FN:KANA/)
+  assert.equal(quoted.message.contactMessage.sendEphemeral, true)
+  assert.ok(!JSON.stringify(quoted).includes('Newsletter'))
+})
+
+test('buildFakeTroliQuoted: fake orderMessage lengkap dengan thumbnail dan itemCount', () => {
+  const thumbnail = Buffer.from('jpeg-300')
+  const quoted = buildFakeTroliQuoted({
+    botName: 'KANA',
+    botNumber: '6285187605007',
+    itemCount: 312,
+    thumbnail,
+  })
+  assert.deepEqual(quoted.key, {
+    fromMe: false,
+    participant: '0@s.whatsapp.net',
+    remoteJid: 'status@broadcast',
+  })
+  const order = quoted.message.orderMessage
+  assert.equal(order.orderId, '1337')
+  assert.equal(order.thumbnail, thumbnail)
+  assert.equal(order.itemCount, 312)
+  assert.equal(order.status, 'INQUIRY')
+  assert.equal(order.surface, 'CATALOG')
+  assert.equal(order.message, 'KANA - 312 Commands')
+  assert.equal(order.orderTitle, '📋 312 Commands')
+  assert.equal(order.sellerJid, '6285187605007@s.whatsapp.net')
+  assert.equal(order.token, FAKE_TROLI_TOKEN)
+  assert.equal(order.totalAmount1000, 0)
+  assert.equal(order.totalCurrencyCode, 'IDR')
+  assert.deepEqual(order.contextInfo, { isForwarded: true, forwardingScore: 9999 })
+})
+
+test('sendQuotedText: satu panggilan sendMessage dengan contextInfo dan quoted', async () => {
   const calls = []
   const sock = {
     sendMessage: async (jid, content, opts) => {
@@ -55,12 +85,10 @@ test('sendFakeThumbText: satu panggilan sendMessage, quoted diteruskan', async (
       return { ok: true }
     },
   }
-  const thumb = Buffer.from('thumb')
-  const quoted = { key: { id: 'abc' } }
-  await sendFakeThumbText(sock, '6281@s.whatsapp.net', 'halo menu', { quoted, thumbnail: thumb, body: 'kartu' })
+  const quoted = buildFakeTroliQuoted({ botName: 'KANA', itemCount: 3 })
+  const contextInfo = { mentionedJid: ['6281@s.whatsapp.net'], forwardingScore: 9, isForwarded: true }
+  await sendQuotedText(sock, '6281@s.whatsapp.net', 'isi menu', { quoted, contextInfo })
   assert.equal(calls.length, 1)
-  assert.equal(calls[0].jid, '6281@s.whatsapp.net')
-  assert.equal(calls[0].content.text, 'halo menu')
-  assert.equal(calls[0].content.externalAdReply.thumbnail, thumb)
+  assert.deepEqual(calls[0].content, { text: 'isi menu', contextInfo })
   assert.equal(calls[0].opts.quoted, quoted)
 })

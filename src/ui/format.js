@@ -32,9 +32,8 @@ export function sortCategories(keys) {
   })
 }
 
-// "Rabu, 4 November 2026 • 13:52 WIB" (en: nama hari/bulan ikut locale en-GB).
 // Dirakit dari formatToParts supaya pemisah jam selalu titik dua.
-export function formatWibDateTime(date = new Date(), lang = 'id') {
+function wibParts(date, lang) {
   const parts = new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-GB', {
     timeZone: 'Asia/Jakarta',
     weekday: 'long',
@@ -45,10 +44,23 @@ export function formatWibDateTime(date = new Date(), lang = 'id') {
     minute: '2-digit',
     hour12: false,
   }).formatToParts(date)
-  const get = (type) => parts.find((p) => p.type === type)?.value ?? ''
+  return (type) => parts.find((p) => p.type === type)?.value ?? ''
+}
+
+export function formatWibDate(date = new Date(), lang = 'id') {
+  const get = wibParts(date, lang)
+  return `${get('weekday')}, ${get('day')} ${get('month')} ${get('year')}`
+}
+
+export function formatWibClock(date = new Date(), lang = 'id') {
+  const get = wibParts(date, lang)
   const hour = String(Number(get('hour')) % 24).padStart(2, '0')
-  const minute = get('minute').padStart(2, '0')
-  return `${get('weekday')}, ${get('day')} ${get('month')} ${get('year')} • ${hour}:${minute} WIB`
+  return `${hour}:${get('minute')}`
+}
+
+// "Rabu, 4 November 2026 • 13:52 WIB" (en: nama hari/bulan ikut locale en-GB).
+export function formatWibDateTime(date = new Date(), lang = 'id') {
+  return `${formatWibDate(date, lang)} • ${formatWibClock(date, lang)} WIB`
 }
 
 // Sub-menu satu kategori: bingkai yang sama, hanya perintah kategori itu.

@@ -56,6 +56,39 @@ test('pipeline: paramsJson objek (kompatibilitas) tetap tertangkap', async () =>
   assert.deepEqual(captured, [{ command: 'menu', text: '', args: [] }])
 })
 
+test('pipeline: paramsJson single_select tertangkap sebagai perintah .menu download', async () => {
+  const { pipeline, sock, captured } = setup()
+  await pipeline.handle(sock, {
+    ...baseRaw,
+    message: {
+      interactiveResponseMessage: {
+        nativeFlowResponseMessage: { name: 'single_select', paramsJson: '{"id":".menu download"}' },
+      },
+    },
+  })
+  assert.deepEqual(captured, [{ command: 'menu', text: 'download', args: ['download'] }])
+})
+
+test('pipeline: listResponseMessage tertangkap sebagai perintah .menu download', async () => {
+  const { pipeline, sock, captured } = setup()
+  await pipeline.handle(sock, {
+    ...baseRaw,
+    message: {
+      listResponseMessage: { singleSelectReply: { selectedRowId: '.menu download' } },
+    },
+  })
+  assert.deepEqual(captured, [{ command: 'menu', text: 'download', args: ['download'] }])
+})
+
+test('pipeline: templateButtonReplyMessage quick reply tertangkap sebagai perintah', async () => {
+  const { pipeline, sock, captured } = setup()
+  await pipeline.handle(sock, {
+    ...baseRaw,
+    message: { templateButtonReplyMessage: { selectedId: '.menu download' } },
+  })
+  assert.deepEqual(captured, [{ command: 'menu', text: 'download', args: ['download'] }])
+})
+
 test('pipeline: buttonsResponseMessage tetap tertangkap', async () => {
   const { pipeline, sock, captured } = setup()
   await pipeline.handle(sock, {
