@@ -336,6 +336,11 @@ export const COMMAND_EMOJI = {
   cekngantuk: 'fun',
   cekotaku: 'fun',
   cekoverpower: 'fire',
+  apakah: 'random',
+  kapankah: 'clock',
+  bisakah: 'check',
+  benarkah: 'search',
+  akankah: 'random',
 }
 
 // Emoji untuk id tombol atau nama aksi. Id perintah (mis. ".menu user"
