@@ -9,8 +9,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { namaninja: { hint: 'Tulis namanya yaa~ Contoh: .namaninja malik', body: '🥷 Nama ninja buat *{name}* adalah...\n*{result}* {mood}' } },
-  en: { namaninja: { hint: 'Write the name please~ Example: .namaninja malik', body: '🥷 The ninja name for *{name}* is...\n*{result}* {mood}' } },
+  id: { namaninja: { hint: '╭─❏ 🥷 「 *NAMA NINJA* 」\n┊ Tulis namanya yaa~\n┊ Contoh: *.namaninja malik*\n╰━━━━━━━', body: '╭─❏ 🥷 「 *NAMA NINJA* 」\n┊ ɴᴀᴍᴀ ᴀꜱʟɪ: *{name}*\n┊ ɴᴀᴍᴀ ɴɪɴᴊᴀ: *{result}*\n╰━━━━━━━ {mood}' } },
+  en: { namaninja: { hint: '╭─❏ 🥷 「 *NINJA NAME* 」\n┊ Write the name please~\n┊ Example: *.namaninja malik*\n╰━━━━━━━', body: '╭─❏ 🥷 「 *NINJA NAME* 」\n┊ ᴏʀɪɢɪɴᴀʟ ɴᴀᴍᴇ: *{name}*\n┊ ɴɪɴᴊᴀ ɴᴀᴍᴇ: *{result}*\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.namaninja', expect: /nama|name/i }

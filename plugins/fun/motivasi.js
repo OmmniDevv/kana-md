@@ -14,10 +14,9 @@ export const i18n = {
   id: {
     motivasi: {
       title: 'Motivasi dari KANA 💪',
-      body: '{quote}\n\n{mood}',
+      body: '╭─❏ 💪 「 *MOTIVASI DARI KANA* 」\n┊ {quote}\n╰━━━━━━━ {mood}',
       btnAgain: 'Motivasi Lagi',
       btnPantun: 'Pantun',
-      btnMenu: 'Menu Fun',
       quotes: [
         'Langkah kecil yang kamu ulang tiap hari bakal ngalahin lompatan besar yang cuma direncanain.',
         'Nggak harus sempurna hari ini, cukup lebih baik dari kemarin sedikit aja.',
@@ -41,10 +40,9 @@ export const i18n = {
   en: {
     motivasi: {
       title: 'Motivation from KANA 💪',
-      body: '{quote}\n\n{mood}',
+      body: '╭─❏ 💪 「 *MOTIVATION FROM KANA* 」\n┊ {quote}\n╰━━━━━━━ {mood}',
       btnAgain: 'More Motivation',
       btnPantun: 'Pantun',
-      btnMenu: 'Fun Menu',
       quotes: [
         'Small steps repeated daily will beat a giant leap that is only ever planned.',
         'You do not have to be perfect today, just a little better than yesterday.',

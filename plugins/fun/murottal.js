@@ -22,11 +22,11 @@ export const i18n = {
   id: {
     murottal: {
       title: 'Murottal Al-Quran',
-      info: '🎧 MUROTTAL {namaLatin} ({nama})\n\nSurah ke-{nomor} • {jumlahAyat} ayat • Turun di {tempatTurun}\nArtinya: {arti}\n\nSedang memutar ayat {ayat} dari {jumlahAyat}. Qari: Misyari Rasyid Al-Afasi 🎶',
-      usage: 'Pakai: .murottal <nomor surah> [ayat], contoh .murottal 1 1 atau .murottal yasin 1. Ada 114 surah yaa~',
-      notFound: 'Surahnya tidak ketemu nih. Coba pakai nomor 1 sampai 114, contoh .murottal 36 untuk Yasin~',
-      ayatInvalid: 'Surah {nama} cuma punya {jumlahAyat} ayat. Pilih ayat 1 sampai {jumlahAyat} yaa~',
-      failed: 'Mouu, sumber murottal lagi tidak bisa dijangkau ({message}). Coba lagi nanti yaa~',
+      info: '╭─❏ 🎧 「 *MUROTTAL {namaLatin}* 」\n┊ ɴᴀᴍᴀ ᴀʀᴀʙ: *{nama}*\n┊ ꜱᴜʀᴀʜ ᴋᴇ: *{nomor}* • *{jumlahAyat} ayat* • Turun di *{tempatTurun}*\n┊ ᴀʀᴛɪɴʏᴀ: {arti}\n┊\n┊ Sedang memutar ayat *{ayat} dari {jumlahAyat}*.\n┊ ǫᴀʀɪ: *Misyari Rasyid Al-Afasi* 🎶\n╰━━━━━━━',
+      usage: '╭─❏ 🎧 「 *MUROTTAL AL-QURAN* 」\n┊ Pakai: *.murottal <nomor surah> [ayat]*\n┊ Contoh: *.murottal 1 1* atau *.murottal yasin 1*\n┊ Ada *114 surah* yaa~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *SURAH TIDAK KETEMU* 」\n┊ Surahnya tidak ketemu nih.\n┊ Coba pakai nomor *1 sampai 114*, contoh *.murottal 36* untuk Yasin~\n╰━━━━━━━',
+      ayatInvalid: '╭─❏ 🎧 「 *AYAT DI LUAR JANGKAUAN* 」\n┊ Surah *{nama}* cuma punya *{jumlahAyat} ayat*.\n┊ Pilih ayat *1 sampai {jumlahAyat}* yaa~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *SUMBER TIDAK TERJANGKAU* 」\n┊ Mouu, sumber murottal lagi tidak bisa dijangkau ({message}).\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
       prevBtn: '⏮️ Ayat Sebelumnya',
       nextBtn: '⏭️ Ayat Berikutnya',
       listBtn: '📖 Ayat Pilihan',
@@ -35,11 +35,11 @@ export const i18n = {
   en: {
     murottal: {
       title: 'Quran Recitation',
-      info: '🎧 RECITATION {namaLatin} ({nama})\n\nSurah number {nomor} • {jumlahAyat} verses • Revealed in {tempatTurun}\nMeaning: {arti}\n\nNow playing verse {ayat} of {jumlahAyat}. Reciter: Misyari Rasyid Al-Afasi 🎶',
-      usage: 'Use: .murottal <surah number> [verse], for example .murottal 1 1 or .murottal yasin 1. There are 114 surahs~',
-      notFound: 'The surah was not found. Try a number from 1 to 114, for example .murottal 36 for Yasin~',
-      ayatInvalid: 'Surah {nama} only has {jumlahAyat} verses. Pick a verse from 1 to {jumlahAyat}~',
-      failed: 'Mouu, the recitation source is unreachable right now ({message}). Try again later~',
+      info: '╭─❏ 🎧 「 *RECITATION {namaLatin}* 」\n┊ ᴀʀᴀʙɪᴄ ɴᴀᴍᴇ: *{nama}*\n┊ ꜱᴜʀᴀʜ ɴᴜᴍʙᴇʀ: *{nomor}* • *{jumlahAyat} verses* • Revealed in *{tempatTurun}*\n┊ ᴍᴇᴀɴɪɴɢ: {arti}\n┊\n┊ Now playing verse *{ayat} of {jumlahAyat}*.\n┊ ʀᴇᴄɪᴛᴇʀ: *Misyari Rasyid Al-Afasi* 🎶\n╰━━━━━━━',
+      usage: '╭─❏ 🎧 「 *QURAN RECITATION* 」\n┊ Use: *.murottal <surah number> [verse]*\n┊ For example *.murottal 1 1* or *.murottal yasin 1*\n┊ There are *114 surahs*~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *SURAH NOT FOUND* 」\n┊ The surah was not found.\n┊ Try a number from *1 to 114*, for example *.murottal 36* for Yasin~\n╰━━━━━━━',
+      ayatInvalid: '╭─❏ 🎧 「 *VERSE OUT OF RANGE* 」\n┊ Surah *{nama}* only has *{jumlahAyat} verses*.\n┊ Pick a verse from *1 to {jumlahAyat}*~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *SOURCE UNREACHABLE* 」\n┊ Mouu, the recitation source is unreachable right now ({message}).\n┊ Try again later~\n╰━━━━━━━',
       prevBtn: '⏮️ Previous Verse',
       nextBtn: '⏭️ Next Verse',
       listBtn: '📖 Selected Verse',

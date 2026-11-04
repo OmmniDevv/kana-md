@@ -62,17 +62,17 @@ export const i18n = {
   id: {
     niatsholat: {
       title: 'Niat Sholat',
-      body: '🕌 NIAT SHOLAT {label}\n\n{arab}\n\nLatin: {latin}\n\nArtinya: {arti}',
-      list: '🕌 PILIH NIAT SHOLAT\n\n• .niatsholat subuh\n• .niatsholat dzuhur\n• .niatsholat ashar\n• .niatsholat maghrib\n• .niatsholat isya\n• .niatsholat tarawih\n• .niatsholat witir\n\nAtau pencet tombol di bawah yaa~',
-      notFound: 'Pilihan niatnya: subuh, dzuhur, ashar, maghrib, isya, tarawih, witir. Contoh .niatsholat subuh yaa~',
+      body: '╭─❏ 🕌 「 *NIAT SHOLAT {label}* 」\n┊ {arab}\n┊\n┊ ʟᴀᴛɪɴ: {latin}\n┊\n┊ ᴀʀᴛɪɴʏᴀ: {arti}\n╰━━━━━━━',
+      list: '╭─❏ 🕌 「 *PILIH NIAT SHOLAT* 」\n┊ • .niatsholat subuh\n┊ • .niatsholat dzuhur\n┊ • .niatsholat ashar\n┊ • .niatsholat maghrib\n┊ • .niatsholat isya\n┊ • .niatsholat tarawih\n┊ • .niatsholat witir\n╰━━━━━━━\nAtau pencet tombol di bawah yaa~',
+      notFound: '╭─❏ 🕌 「 *NIAT TIDAK KETEMU* 」\n┊ Pilihan niatnya: subuh, dzuhur, ashar, maghrib, isya, tarawih, witir.\n┊ Contoh *.niatsholat subuh* yaa~\n╰━━━━━━━',
     },
   },
   en: {
     niatsholat: {
       title: 'Prayer Intentions',
-      body: '🕌 PRAYER INTENTION {label}\n\n{arab}\n\nLatin: {latin}\n\nMeaning (Indonesian): {arti}',
-      list: '🕌 CHOOSE A PRAYER INTENTION\n\n• .niatsholat subuh\n• .niatsholat dzuhur\n• .niatsholat ashar\n• .niatsholat maghrib\n• .niatsholat isya\n• .niatsholat tarawih\n• .niatsholat witir\n\nOr tap a button below~',
-      notFound: 'Intention choices: subuh, dzuhur, ashar, maghrib, isya, tarawih, witir. Example .niatsholat subuh~',
+      body: '╭─❏ 🕌 「 *PRAYER INTENTION {label}* 」\n┊ {arab}\n┊\n┊ ʟᴀᴛɪɴ: {latin}\n┊\n┊ ᴍᴇᴀɴɪɴɢ (Indonesian): {arti}\n╰━━━━━━━',
+      list: '╭─❏ 🕌 「 *CHOOSE A PRAYER INTENTION* 」\n┊ • .niatsholat subuh\n┊ • .niatsholat dzuhur\n┊ • .niatsholat ashar\n┊ • .niatsholat maghrib\n┊ • .niatsholat isya\n┊ • .niatsholat tarawih\n┊ • .niatsholat witir\n╰━━━━━━━\nOr tap a button below~',
+      notFound: '╭─❏ 🕌 「 *INTENTION NOT FOUND* 」\n┊ Intention choices: subuh, dzuhur, ashar, maghrib, isya, tarawih, witir.\n┊ Example *.niatsholat subuh*~\n╰━━━━━━━',
     },
   },
 }

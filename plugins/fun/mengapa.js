@@ -18,8 +18,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { mengapa: { hint: 'Tanya yang lengkap yaa~ Contoh: .mengapa dia tidak membalas chatku', body: '🌌 {answer} {mood}' } },
-  en: { mengapa: { hint: 'Ask a full question please~ Example: .mengapa did they not reply', body: '🌌 {answer} {mood}' } },
+  id: { mengapa: { hint: '╭─❏ 🌌 「 *MENGAPA* 」\n┊ Tanya yang lengkap yaa~\n┊ Contoh: *.mengapa dia tidak membalas chatku*\n╰━━━━━━━', body: '╭─❏ 🌌 「 *JAWABAN KANA* 」\n┊ {answer}\n╰━━━━━━━ {mood}' } },
+  en: { mengapa: { hint: '╭─❏ 🌌 「 *WHY* 」\n┊ Ask a full question please~\n┊ Example: *.mengapa did they not reply*\n╰━━━━━━━', body: '╭─❏ 🌌 「 *KANA ANSWER* 」\n┊ {answer}\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.mengapa', expect: /tanya|ask/i }

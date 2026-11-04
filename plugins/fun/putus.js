@@ -12,14 +12,14 @@ export const config = {
 export const i18n = {
   id: {
     putus: {
-      single: 'Kamu tidak punya pasangan, jadi tidak ada yang diputus. {mood}',
-      done: '💔 Kamu dan @{partner} resmi putus. Semoga cepat move on yaa~',
+      single: '╭─❏ 💔 「 *PUTUS* 」\n┊ Kamu tidak punya pasangan, jadi tidak ada yang diputus.\n╰━━━━━━━ {mood}',
+      done: '╭─❏ 💔 「 *RESMI PUTUS* 」\n┊ Kamu dan *@{partner}* resmi putus.\n┊ Semoga cepat move on yaa~\n╰━━━━━━━',
     },
   },
   en: {
     putus: {
-      single: 'You have no partner, so there is nothing to break up from. {mood}',
-      done: '💔 You and @{partner} officially broke up. Hope you move on soon~',
+      single: '╭─❏ 💔 「 *BREAK UP* 」\n┊ You have no partner, so there is nothing to break up from.\n╰━━━━━━━ {mood}',
+      done: '╭─❏ 💔 「 *OFFICIALLY BROKE UP* 」\n┊ You and *@{partner}* officially broke up.\n┊ Hope you move on soon~\n╰━━━━━━━',
     },
   },
 }

@@ -14,7 +14,7 @@ export const i18n = {
   id: {
     quotesanime: {
       title: 'Quotes Anime',
-      body: '⚔️ SEMANGAT ALA ANIME UNTUKMU\n\n"{item}"\n\nTegakkan kepalamu, tokoh utama~ {mood}',
+      body: '╭─❏ ⚔️ 「 *SEMANGAT ALA ANIME UNTUKMU* 」\n┊ "{item}"\n┊ Tegakkan kepalamu, tokoh utama~\n╰━━━━━━━ {mood}',
       pool: [
   "Meski jatuh tujuh kali, ceritanya berlanjut saat kamu berdiri untuk kedelapan kalinya.",
   "Bekas lukamu bukan aib, itu bukti kamu selamat dari episode itu.",
@@ -32,13 +32,12 @@ export const i18n = {
   "Lagu pembuka hidupmu sebentar lagi diputar, bersiaplah."
 ],
       btnAgain: 'Lagi Dong',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     quotesanime: {
       title: 'Anime Quotes',
-      body: '⚔️ ANIME SPIRIT FOR YOU\n\n"{item}"\n\nKeep your head high, main character~ {mood}',
+      body: '╭─❏ ⚔️ 「 *ANIME SPIRIT FOR YOU* 」\n┊ "{item}"\n┊ Keep your head high, main character~\n╰━━━━━━━ {mood}',
       pool: [
   "Even if you fall seven times, the story continues when you stand the eighth time.",
   "Your scars are not shame, they are proof you survived the episode.",
@@ -56,7 +55,6 @@ export const i18n = {
   "The opening song of your life is about to play, get ready."
 ],
       btnAgain: 'Another One',
-      btnMenu: 'Fun Menu',
     },
   },
 }

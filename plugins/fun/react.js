@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { react: { hint: 'Balas pesan yang mau direaksikan lalu tulis .react diikuti emojinya yaa~ Contoh: balas pesan lalu .react ❤️', done: '' } },
-  en: { react: { hint: 'Reply to the message then write .react with an emoji please~ Example: reply to a message then .react ❤️', done: '' } },
+  id: { react: { hint: '╭─❏ 🎭 「 *REAKSI* 」\n┊ Balas pesan yang mau direaksikan lalu tulis .react diikuti emojinya yaa~ Contoh: balas pesan lalu .react ❤️\n╰━━━━━━━', done: '' } },
+  en: { react: { hint: '╭─❏ 🎭 「 *REACTION* 」\n┊ Reply to the message then write .react with an emoji please~ Example: reply to a message then .react ❤️\n╰━━━━━━━', done: '' } },
 }
 
 export const test = { input: '.react', expect: /balas|reply/i }

@@ -38,17 +38,15 @@ export const i18n = {
   id: {
     puisi: {
       title: 'Puisi Pendek',
-      body: '📜 PUISI UNTUKMU\n\n{item}\n\nSemoga baris-baris ini menemani harimu yaa~ {mood}',
+      body: '╭─❏ 📜 「 *PUISI UNTUKMU* 」\n┊ {item}\n┊\n┊ Semoga baris-baris ini menemani harimu yaa~\n╰━━━━━━━ {mood}',
       btnAgain: 'Puisi Lain',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     puisi: {
       title: 'Short Poem',
-      body: '📜 A POEM FOR YOU\n\n{item}\n\nMay these lines accompany your day~ {mood}',
+      body: '╭─❏ 📜 「 *A POEM FOR YOU* 」\n┊ {item}\n┊\n┊ May these lines accompany your day~\n╰━━━━━━━ {mood}',
       btnAgain: 'Another Poem',
-      btnMenu: 'Fun Menu',
     },
   },
 }

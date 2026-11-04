@@ -13,24 +13,24 @@ export const config = {
 export const i18n = {
   id: {
     menfess: {
-      hint: 'Formatnya: .menfess <nomor tujuan> | <pesan>. Contoh: .menfess 6281234567890 | Semangat ya ujian besok!',
-      sent: 'Menfess kamu sudah KANA kirim secara anonim. Tenang, namamu tidak ditampilkan~ {mood}',
-      received: '💌 ADA MENFESS BUAT KAMU\n\n"{message}"\n\nDari: seseorang yang merahasiakan namanya.\nMau balas? Kirim menfess balik pakai .menfess yaa~',
-      badNumber: 'Nomor tujuannya tidak valid. Pakai format 628xxxxxxxxxx yaa~',
-      tooLong: 'Pesanmu kepanjangan (maks 500 karakter).',
-      toSelf: 'Tidak bisa menfess ke nomor sendiri lewat bot yaa~',
-      fail: 'Gagal kirim menfessnya: {error}',
+      hint: '╭─❏ 💌 「 *MENFESS* 」\n┊ Formatnya: *.menfess <nomor tujuan> | <pesan>*\n┊ Contoh: *.menfess 6281234567890 | Semangat ya ujian besok!*\n╰━━━━━━━',
+      sent: '╭─❏ 💌 「 *MENFESS TERKIRIM* 」\n┊ Menfess kamu sudah KANA kirim secara anonim.\n┊ Tenang, namamu tidak ditampilkan~\n╰━━━━━━━ {mood}',
+      received: '╭─❏ 💌 「 *ADA MENFESS BUAT KAMU* 」\n┊ "{message}"\n┊\n┊ ᴅᴀʀɪ: seseorang yang merahasiakan namanya.\n┊ Mau balas? Kirim menfess balik pakai *.menfess* yaa~\n╰━━━━━━━',
+      badNumber: '╭─❏ 💌 「 *NOMOR TIDAK VALID* 」\n┊ Nomor tujuannya tidak valid.\n┊ Pakai format *628xxxxxxxxxx* yaa~\n╰━━━━━━━',
+      tooLong: '╭─❏ 💌 「 *PESAN KEPANJANGAN* 」\n┊ Pesanmu kepanjangan (maks *500 karakter*).\n╰━━━━━━━',
+      toSelf: '╭─❏ 💌 「 *MENFESS* 」\n┊ Tidak bisa menfess ke nomor sendiri lewat bot yaa~\n╰━━━━━━━',
+      fail: '╭─❏ 💌 「 *GAGAL KIRIM MENFESS* 」\n┊ Gagal kirim menfessnya: {error}\n╰━━━━━━━',
     },
   },
   en: {
     menfess: {
-      hint: 'Format: .menfess <target number> | <message>. Example: .menfess 6281234567890 | Good luck with the exam!',
-      sent: 'Your menfess has been sent anonymously. Relax, your name is not shown~ {mood}',
-      received: '💌 A MENFESS FOR YOU\n\n"{message}"\n\nFrom: someone keeping their name secret.\nWant to reply? Send a menfess back with .menfess~',
-      badNumber: 'The target number is not valid. Use the 628xxxxxxxxxx format please~',
-      tooLong: 'Your message is too long (max 500 characters).',
-      toSelf: 'You cannot menfess your own number through the bot~',
-      fail: 'Failed to send the menfess: {error}',
+      hint: '╭─❏ 💌 「 *MENFESS* 」\n┊ Format: *.menfess <target number> | <message>*\n┊ Example: *.menfess 6281234567890 | Good luck with the exam!*\n╰━━━━━━━',
+      sent: '╭─❏ 💌 「 *MENFESS SENT* 」\n┊ Your menfess has been sent anonymously.\n┊ Relax, your name is not shown~\n╰━━━━━━━ {mood}',
+      received: '╭─❏ 💌 「 *A MENFESS FOR YOU* 」\n┊ "{message}"\n┊\n┊ ꜰʀᴏᴍ: someone keeping their name secret.\n┊ Want to reply? Send a menfess back with *.menfess*~\n╰━━━━━━━',
+      badNumber: '╭─❏ 💌 「 *INVALID NUMBER* 」\n┊ The target number is not valid.\n┊ Use the *628xxxxxxxxxx* format please~\n╰━━━━━━━',
+      tooLong: '╭─❏ 💌 「 *MESSAGE TOO LONG* 」\n┊ Your message is too long (max *500 characters*).\n╰━━━━━━━',
+      toSelf: '╭─❏ 💌 「 *MENFESS* 」\n┊ You cannot menfess your own number through the bot~\n╰━━━━━━━',
+      fail: '╭─❏ 💌 「 *FAILED TO SEND MENFESS* 」\n┊ Failed to send the menfess: {error}\n╰━━━━━━━',
     },
   },
 }

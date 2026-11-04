@@ -24,27 +24,25 @@ export const i18n = {
   id: {
     rate: {
       title: 'Mesin Rating',
-      ask: 'Mau nilai apa? Tulis begini yaa: .rate masakan ibu {mood}',
-      body: '📊 RATING KANA\n\nTopik: *{topic}*\nNilai: *{percent}%*\n\n{comment} {mood}',
+      ask: '╭─❏ 📊 「 *MESIN RATING* 」\n┊ Mau nilai apa? Tulis begini yaa: .rate masakan ibu\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 📊 「 *RATING KANA* 」\n┊ ᴛᴏᴘɪᴋ: *{topic}*\n┊ ɴɪʟᴀɪ: *{percent}%*\n┊ {comment}\n╰━━━━━━━ {mood}',
       low: ['Versi Kana sih... masih jauh dari kata jadi.', 'Hmm, ini perlu perbaikan besar-besaran.'],
       mid: ['Lumayan, tapi belum bikin Kana terkesan.', 'Setengah jalan, tinggal dipoles sedikit lagi.'],
       high: ['Bagus! Di atas rata-rata dengan percaya diri.', 'Ini sih kualitasnya terasa banget.'],
       max: ['Sempurna menurut mesin rating Kana!', 'Tidak ada notes. Legendaris.'],
       btnAgain: '📊 Nilai yang Ini Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     rate: {
       title: 'Rating Machine',
-      ask: 'What should I rate? Write it like this: .rate mom cooking {mood}',
-      body: '📊 KANA RATING\n\nTopic: *{topic}*\nScore: *{percent}%*\n\n{comment} {mood}',
+      ask: '╭─❏ 📊 「 *RATING MACHINE* 」\n┊ What should I rate? Write it like this: .rate mom cooking\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 📊 「 *KANA RATING* 」\n┊ ᴛᴏᴘɪᴄ: *{topic}*\n┊ ꜱᴄᴏʀᴇ: *{percent}%*\n┊ {comment}\n╰━━━━━━━ {mood}',
       low: ['In Kana version... still far from done.', 'Hmm, this needs major repairs.'],
       mid: ['Decent, but not enough to impress Kana.', 'Halfway there, just needs a little polish.'],
       high: ['Good! Confidently above average.', 'You can really feel the quality here.'],
       max: ['Perfect according to Kana rating machine!', 'No notes. Legendary.'],
       btnAgain: '📊 Rate This Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }

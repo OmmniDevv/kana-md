@@ -39,16 +39,16 @@ export const i18n = {
   id: {
     sifatbisnis: {
       title: 'Sifat Bisnis',
-      hint: 'Tulis namanya yaa~ Contoh: .sifatbisnis Malik',
-      body: '💼 SIFAT BISNIS {name}\n\n{trait}\nSkor rezeki bisnis: {pct}%',
+      hint: '╭─❏ 💼 「 *SIFAT BISNIS* 」\n┊ Tulis namanya yaa~ Contoh: .sifatbisnis Malik\n╰━━━━━━━',
+      body: '╭─❏ 💼 「 *SIFAT BISNIS {name}* 」\n┊ {trait}\n┊ ꜱᴋᴏʀ ʀᴇᴢᴇᴋɪ ʙɪꜱɴɪꜱ: *{pct}%*\n╰━━━━━━━',
       retryBtn: '💼 Cek Lagi (.sifatbisnis {name})',
     },
   },
   en: {
     sifatbisnis: {
       title: 'Business Traits',
-      hint: 'Write the name please~ Example: .sifatbisnis Malik',
-      body: '💼 BUSINESS TRAITS OF {name}\n\n{trait}\nBusiness luck score: {pct}%',
+      hint: '╭─❏ 💼 「 *BUSINESS TRAITS* 」\n┊ Write the name please~ Example: .sifatbisnis Malik\n╰━━━━━━━',
+      body: '╭─❏ 💼 「 *BUSINESS TRAITS OF {name}* 」\n┊ {trait}\n┊ ʙᴜꜱɪɴᴇꜱꜱ ʟᴜᴄᴋ ꜱᴄᴏʀᴇ: *{pct}%*\n╰━━━━━━━',
       retryBtn: '💼 Check Again (.sifatbisnis {name})',
     },
   },

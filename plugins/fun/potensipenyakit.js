@@ -40,16 +40,16 @@ export const i18n = {
   id: {
     potensipenyakit: {
       title: 'Potensi Penyakit',
-      hint: 'Tulis namanya yaa~ Contoh: .potensipenyakit Malik',
-      body: '🩺 POTENSI PENYAKIT {name}\n\n{risk}\n\nCatatan: ini cuma ramalan hiburan, bukan diagnosis medis. Kalau beneran sakit, ke dokter yaa~',
+      hint: '╭─❏ 🩺 「 *POTENSI PENYAKIT* 」\n┊ Tulis namanya yaa~\n┊ Contoh: *.potensipenyakit Malik*\n╰━━━━━━━',
+      body: '╭─❏ 🩺 「 *POTENSI PENYAKIT* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ {risk}\n┊\n┊ ᴄᴀᴛᴀᴛᴀɴ: ini cuma ramalan hiburan, bukan diagnosis medis. Kalau beneran sakit, ke dokter yaa~\n╰━━━━━━━',
       retryBtn: '🩺 Cek Lagi (.potensipenyakit {name})',
     },
   },
   en: {
     potensipenyakit: {
       title: 'Illness Potential',
-      hint: 'Write the name please~ Example: .potensipenyakit Malik',
-      body: '🩺 ILLNESS POTENTIAL OF {name}\n\n{risk}\n\nNote: this is just an entertainment fortune, not a medical diagnosis. If you are really sick, see a doctor~',
+      hint: '╭─❏ 🩺 「 *ILLNESS POTENTIAL* 」\n┊ Write the name please~\n┊ Example: *.potensipenyakit Malik*\n╰━━━━━━━',
+      body: '╭─❏ 🩺 「 *ILLNESS POTENTIAL* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ {risk}\n┊\n┊ ɴᴏᴛᴇ: this is just an entertainment fortune, not a medical diagnosis. If you are really sick, see a doctor~\n╰━━━━━━━',
       retryBtn: '🩺 Check Again (.potensipenyakit {name})',
     },
   },

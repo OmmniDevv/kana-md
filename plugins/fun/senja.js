@@ -14,7 +14,7 @@ export const i18n = {
   id: {
     senja: {
       title: 'Kalimat Senja',
-      body: '🌇 KALIMAT SENJA UNTUKMU\n\n"{item}"\n\nLangit sedang menutup hari dengan lembut~ {mood}',
+      body: '╭─❏ 🌇 「 *KALIMAT SENJA UNTUKMU* 」\n┊ "{item}"\n┊ Langit sedang menutup hari dengan lembut~\n╰━━━━━━━ {mood}',
       pool: [
   "Senja mengajarkan bahwa yang indah tidak harus selamanya untuk bisa berarti.",
   "Langit merona dulu sebelum pamit pada matahari.",
@@ -30,13 +30,12 @@ export const i18n = {
   "Angin senja membawa aroma perjuangan yang sudah selesai."
 ],
       btnAgain: 'Satu Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     senja: {
       title: 'Evening Lines',
-      body: '🌇 EVENING LINES FOR YOU\n\n"{item}"\n\nThe sky is closing the day gently~ {mood}',
+      body: '╭─❏ 🌇 「 *EVENING LINES FOR YOU* 」\n┊ "{item}"\n┊ The sky is closing the day gently~\n╰━━━━━━━ {mood}',
       pool: [
   "Dusk teaches that beautiful things do not need to last forever to be meaningful.",
   "The sky blushes before it says goodbye to the sun.",
@@ -52,7 +51,6 @@ export const i18n = {
   "Evening breeze carries the scent of finished struggles."
 ],
       btnAgain: 'One More',
-      btnMenu: 'Fun Menu',
     },
   },
 }

@@ -11,18 +11,18 @@ export const config = {
 export const i18n = {
   id: {
     siapa: {
-      hint: 'Tanya yang lengkap yaa~ Contoh: .siapa yang paling rajin di grup ini',
-      group: '👉 Menurut KANA, jawabannya adalah @{digits}! {mood}',
-      dm: '👉 Jawabannya... kamu sendiri, siapa lagi~ {mood}',
-      fail: 'Gagal ambil daftar member grup: {error}',
+      hint: '╭─❏ 🎯 「 *SIAPA DIA* 」\n┊ Tanya yang lengkap yaa~ Contoh: .siapa yang paling rajin di grup ini\n╰━━━━━━━',
+      group: '╭─❏ 🎯 「 *SIAPA DIA* 」\n┊ 👉 Menurut KANA, jawabannya adalah @{digits}!\n╰━━━━━━━ {mood}',
+      dm: '╭─❏ 🎯 「 *SIAPA DIA* 」\n┊ 👉 Jawabannya... kamu sendiri, siapa lagi~\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ 🎯 「 *SIAPA DIA* 」\n┊ Gagal ambil daftar member grup: {error}\n╰━━━━━━━',
     },
   },
   en: {
     siapa: {
-      hint: 'Ask a full question please~ Example: .siapa is the most diligent here',
-      group: '👉 According to KANA, the answer is @{digits}! {mood}',
-      dm: '👉 The answer is... yourself, who else~ {mood}',
-      fail: 'Failed to get group members: {error}',
+      hint: '╭─❏ 🎯 「 *WHO IS IT* 」\n┊ Ask a full question please~ Example: .siapa is the most diligent here\n╰━━━━━━━',
+      group: '╭─❏ 🎯 「 *WHO IS IT* 」\n┊ 👉 According to KANA, the answer is @{digits}!\n╰━━━━━━━ {mood}',
+      dm: '╭─❏ 🎯 「 *WHO IS IT* 」\n┊ 👉 The answer is... yourself, who else~\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ 🎯 「 *WHO IS IT* 」\n┊ Failed to get group members: {error}\n╰━━━━━━━',
     },
   },
 }

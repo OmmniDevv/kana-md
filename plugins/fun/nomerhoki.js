@@ -24,23 +24,21 @@ export const i18n = {
   id: {
     nomerhoki: {
       title: 'Nomer Hoki',
-      ask: 'Tulis namamu yaa, boleh sekalian tanggal lahir: .nomerhoki Sinta 17-08-2000 {mood}',
-      body: '🍀 NOMER HOKI {name}\n\nAngka utama: *{main}*\nAngka pendamping: {extra}\nHari baik versimu: *{day}*\nWarna hoki: *{color}*\n\nSimpan baik-baik, semoga harimu seberuntung angka-angkamu~ {mood}',
+      ask: '╭─❏ 🍀 「 *NOMER HOKI* 」\n┊ Tulis namamu yaa, boleh sekalian tanggal lahir~\n┊ Contoh: *.nomerhoki Sinta 17-08-2000*\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 🍀 「 *NOMER HOKI {name}* 」\n┊ ᴀɴɢᴋᴀ ᴜᴛᴀᴍᴀ: *{main}*\n┊ ᴀɴɢᴋᴀ ᴘᴇɴᴅᴀᴍᴘɪɴɢ: *{extra}*\n┊ ʜᴀʀɪ ʙᴀɪᴋ: *{day}*\n┊ ᴡᴀʀɴᴀ ʜᴏᴋɪ: *{color}*\n┊\n┊ Simpan baik-baik, semoga harimu seberuntung angka-angkamu~\n╰━━━━━━━ {mood}',
       days: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
       colors: ['Merah', 'Oranye', 'Kuning', 'Hijau', 'Biru', 'Ungu', 'Fuchsia', 'Emas', 'Perak', 'Putih'],
       btnAgain: '🍀 Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     nomerhoki: {
       title: 'Lucky Numbers',
-      ask: 'Write your name, birth date is welcome too: .nomerhoki Sinta 17-08-2000 {mood}',
-      body: '🍀 LUCKY NUMBERS FOR {name}\n\nMain number: *{main}*\nCompanion numbers: {extra}\nYour lucky day: *{day}*\nLucky color: *{color}*\n\nKeep them well, may your day be as lucky as your numbers~ {mood}',
+      ask: '╭─❏ 🍀 「 *LUCKY NUMBERS* 」\n┊ Write your name, birth date is welcome too~\n┊ Example: *.nomerhoki Sinta 17-08-2000*\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 🍀 「 *LUCKY NUMBERS FOR {name}* 」\n┊ ᴍᴀɪɴ ɴᴜᴍʙᴇʀ: *{main}*\n┊ ᴄᴏᴍᴘᴀɴɪᴏɴ ɴᴜᴍʙᴇʀꜱ: *{extra}*\n┊ ʟᴜᴄᴋʏ ᴅᴀʏ: *{day}*\n┊ ʟᴜᴄᴋʏ ᴄᴏʟᴏʀ: *{color}*\n┊\n┊ Keep them well, may your day be as lucky as your numbers~\n╰━━━━━━━ {mood}',
       days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       colors: ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Fuchsia', 'Gold', 'Silver', 'White'],
       btnAgain: '🍀 Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }

@@ -14,10 +14,9 @@ export const i18n = {
   id: {
     pantun: {
       title: 'Pantun dari KANA 🎋',
-      body: '{pantun}\n\n{mood}',
+      body: '╭─❏ 🎋 「 *PANTUN DARI KANA* 」\n┊ {pantun}\n╰━━━━━━━ {mood}',
       btnAgain: 'Pantun Lagi',
       btnMotivasi: 'Motivasi',
-      btnMenu: 'Menu Fun',
       poems: [
         'Pergi ke pasar beli rambutan\nPulangnya mampir membeli duku\nKalau hari ini terasa beban\nBesok pasti lebih ringan untukmu',
         'Burung merpati terbang ke awan\nHinggap sebentar di pohon randu\nJangan berhenti mengejar impian\nSelangkah lagi dekat padamu',
@@ -37,10 +36,9 @@ export const i18n = {
   en: {
     pantun: {
       title: 'Pantun from KANA 🎋',
-      body: '{pantun}\n\n{mood}',
+      body: '╭─❏ 🎋 「 *PANTUN FROM KANA* 」\n┊ {pantun}\n╰━━━━━━━ {mood}',
       btnAgain: 'More Pantun',
       btnMotivasi: 'Motivation',
-      btnMenu: 'Fun Menu',
       poems: [
         'Morning dew on garden green\nSparrows sing a cheerful tune\nKeep your heart forever keen\nGood things will be coming soon',
         'Rivers flow to meet the sea\nClouds drift softly in the blue\nDream as wide as dreams can be\nThen work hard to make them true',

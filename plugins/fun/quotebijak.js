@@ -14,7 +14,7 @@ export const i18n = {
   id: {
     quotebijak: {
       title: 'Kata Bijak',
-      body: '🌿 KATA BIJAK UNTUKMU\n\n"{item}"\n\nSemoga nempel di hati kamu hari ini yaa~ {mood}',
+      body: '╭─❏ 🌿 「 *KATA BIJAK UNTUKMU* 」\n┊ "{item}"\n┊ Semoga nempel di hati kamu hari ini yaa~\n╰━━━━━━━ {mood}',
       pool: [
   "Langkah lambat tetaplah langkah, asal tidak berbalik arah.",
   "Jangan bandingkan bab pertamamu dengan bab kedua puluh orang lain.",
@@ -34,13 +34,12 @@ export const i18n = {
   "Kebiasaan kecil yang diulang tiap hari mengalahkan motivasi besar yang cepat padam."
 ],
       btnAgain: 'Lagi Dong',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     quotebijak: {
       title: 'Wise Quotes',
-      body: '🌿 A WISE WORD FOR YOU\n\n"{item}"\n\nMay it stick with you today~ {mood}',
+      body: '╭─❏ 🌿 「 *A WISE WORD FOR YOU* 」\n┊ "{item}"\n┊ May it stick with you today~\n╰━━━━━━━ {mood}',
       pool: [
   "A slow step is still a step forward, as long as you do not turn back.",
   "Do not compare your first chapter with someone else chapter twenty.",
@@ -60,7 +59,6 @@ export const i18n = {
   "Small habits repeated daily beat big motivation that fades fast."
 ],
       btnAgain: 'Another One',
-      btnMenu: 'Fun Menu',
     },
   },
 }

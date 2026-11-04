@@ -37,8 +37,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { misteri: { head: '🌙 CERITA MISTERI\n\n' } },
-  en: { misteri: { head: '🌙 MYSTERY STORY\n\n' } },
+  id: { misteri: { head: '╭─❏ 🌙 「 *CERITA MISTERI* 」\n┊ ', foot: '\n╰━━━━━━━' } },
+  en: { misteri: { head: '╭─❏ 🌙 「 *MYSTERY STORY* 」\n┊ ', foot: '\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.misteri', expect: /misteri|mystery/i }
@@ -46,5 +46,5 @@ export const test = { input: '.misteri', expect: /misteri|mystery/i }
 export async function handler(ctx) {
   const pool = STORIES[ctx.lang] ?? STORIES.id
   const story = pool[Math.floor(Math.random() * pool.length)]
-  return ctx.reply(`${ctx.t('misteri.head')}${story}`)
+  return ctx.reply(`${ctx.t('misteri.head')}${story}${ctx.t('misteri.foot')}`)
 }
