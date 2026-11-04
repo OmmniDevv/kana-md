@@ -15,8 +15,8 @@ export const config = {
 export const i18n = {
   id: {
     dungeon: {
-      body: '🏰 HASIL DUNGEON 🏰\nPower kamu: {power}\n\n{lines}\nGelombang dilewati: {cleared}/3\nTotal koin: {coins} 💰\n{verdict}\n{mood}',
-      wave: 'Gelombang {n}: kalahkan {emoji} {name}! +{coins} koin{item}',
+      body: '╭─❏ 🏰 「 *DUNGEON* 」\n┊ 🏰 HASIL DUNGEON 🏰\n┊ Power kamu: {power}\n\n┊ {lines}\n┊ Gelombang dilewati: {cleared}/3\n┊ Total koin: {coins} 💰\n┊ {verdict}\n┊ {mood}\n╰━━━━━━━',
+      wave: '┊ Gelombang {n}: kalahkan {emoji} {name}! +{coins} koin{item}',
       waveItem: ' + {item}',
       failedFirst: 'Mouu, gelombang pertama aja udah berat... naikkan level dan beli alat di .shop dulu yaa 🥺',
       partial: 'Lumayan! Terus latih power kamu biar bisa sapu bersih~',
@@ -28,8 +28,8 @@ export const i18n = {
   },
   en: {
     dungeon: {
-      body: '🏰 DUNGEON RESULT 🏰\nYour power: {power}\n\n{lines}\nWaves cleared: {cleared}/3\nTotal coins: {coins} 💰\n{verdict}\n{mood}',
-      wave: 'Wave {n}: defeated {emoji} {name}! +{coins} coins{item}',
+      body: '╭─❏ 🏰 「 *DUNGEON* 」\n┊ 🏰 DUNGEON RESULT 🏰\n┊ Your power: {power}\n\n┊ {lines}\n┊ Waves cleared: {cleared}/3\n┊ Total coins: {coins} 💰\n┊ {verdict}\n┊ {mood}\n╰━━━━━━━',
+      wave: '┊ Wave {n}: defeated {emoji} {name}! +{coins} coins{item}',
       waveItem: ' + {item}',
       failedFirst: 'Mouu, even the first wave was too hard... level up and buy gear in .shop first 🥺',
       partial: 'Not bad! Keep raising your power to clear them all~',

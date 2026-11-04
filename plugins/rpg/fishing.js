@@ -15,8 +15,8 @@ export const config = {
 export const i18n = {
   id: {
     fishing: {
-      ok: '🎣 Tarikk! Hasil pancingan kamu:\n{items}\nPlus {coins} koin~ 💰\n{mood}',
-      failed: 'Yahh, ikannya kabur semua... umpannya dimakan tok, mouu 🥺',
+      ok: '╭─❏ 🎣 「 *FISHING* 」\n┊ 🎣 Tarikk! Hasil pancingan kamu:\n┊ {items}\n┊ Plus {coins} koin~ 💰\n┊ {mood}\n╰━━━━━━━',
+      failed: '╭─❏ ✨ 「 *FISHING* 」\n┊ Yahh, ikannya kabur semua... umpannya dimakan tok, mouu 🥺\n╰━━━━━━━',
       btnAgain: 'Mancing Lagi',
       btnInventory: 'Tas Aku',
       btnShop: 'Toko',
@@ -24,8 +24,8 @@ export const i18n = {
   },
   en: {
     fishing: {
-      ok: '🎣 Reel it in! Your catch:\n{items}\nPlus {coins} coins~ 💰\n{mood}',
-      failed: 'Aww, all the fish escaped... they only ate the bait, mouu 🥺',
+      ok: '╭─❏ 🎣 「 *FISHING* 」\n┊ 🎣 Reel it in! Your catch:\n┊ {items}\n┊ Plus {coins} coins~ 💰\n┊ {mood}\n╰━━━━━━━',
+      failed: '╭─❏ ✨ 「 *FISHING* 」\n┊ Aww, all the fish escaped... they only ate the bait, mouu 🥺\n╰━━━━━━━',
       btnAgain: 'Fish Again',
       btnInventory: 'My Bag',
       btnShop: 'Shop',
@@ -42,7 +42,7 @@ export async function handler(ctx) {
       const item = ITEM_MAP[id]
       return `${item?.emoji ?? '❔'} ${item ? item.name[ctx.lang] ?? item.name.id : id} x${qty}`
     })
-    .join('\n')
+    .join('\n┊ ')
   const body = res.failed
     ? ctx.t('fishing.failed')
     : ctx.t('fishing.ok', { items, coins: res.coins, mood: ctx.say('senang') })

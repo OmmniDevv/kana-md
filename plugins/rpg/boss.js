@@ -23,18 +23,18 @@ const BOSSES = [
 export const i18n = {
   id: {
     boss: {
-      win: '{emoji} BOSS TUMBANG! Kamu mengalahkan *{boss}* (power {bossPower}) dengan power kamu {power}.\nHadiah: *{coins} koin* + {xp} XP. Energi tersisa {energy}/100. {mood}',
-      lose: '{emoji} *{boss}* (power {bossPower}) masih terlalu kuat buat power kamu {power}. Kamu mundur dengan selamat dan dapat {xp} XP.\nCoba lagi besok sesudah naik level yaa~ {mood}',
-      doneToday: 'Kamu sudah menantang boss hari ini. Boss baru muncul besok, istirahat dulu yaa~ {mood}',
-      tired: 'Energimu tinggal {energy}/100, kurang buat lawan boss (perlu 25). Pulihkan dengan .heal dulu yaa~ {mood}',
+      win: '╭─❏ ✨ 「 *BOSS* 」\n┊ {emoji} BOSS TUMBANG! Kamu mengalahkan *{boss}* (power {bossPower}) dengan power kamu {power}.\n┊ ʜᴀᴅɪᴀʜ: *{coins} koin* + {xp} XP. Energi tersisa {energy}/100. {mood}\n╰━━━━━━━',
+      lose: '╭─❏ ✨ 「 *BOSS* 」\n┊ {emoji} *{boss}* (power {bossPower}) masih terlalu kuat buat power kamu {power}. Kamu mundur dengan selamat dan dapat {xp} XP.\n┊ Coba lagi besok sesudah naik level yaa~ {mood}\n╰━━━━━━━',
+      doneToday: '╭─❏ ✨ 「 *BOSS* 」\n┊ Kamu sudah menantang boss hari ini. Boss baru muncul besok, istirahat dulu yaa~ {mood}\n╰━━━━━━━',
+      tired: '╭─❏ ✨ 「 *BOSS* 」\n┊ Energimu tinggal {energy}/100, kurang buat lawan boss (perlu 25). Pulihkan dengan .heal dulu yaa~ {mood}\n╰━━━━━━━',
     },
   },
   en: {
     boss: {
-      win: '{emoji} BOSS DOWN! You defeated *{boss}* (power {bossPower}) with your power {power}.\nReward: *{coins} coins* + {xp} XP. Energy left {energy}/100. {mood}',
-      lose: '{emoji} *{boss}* (power {bossPower}) is still too strong for your power {power}. You retreated safely and gained {xp} XP.\nTry again tomorrow after leveling up~ {mood}',
-      doneToday: 'You already challenged the boss today. A new boss appears tomorrow, rest first~ {mood}',
-      tired: 'Your energy is {energy}/100, not enough for a boss fight (needs 25). Restore with .heal first~ {mood}',
+      win: '╭─❏ ✨ 「 *BOSS* 」\n┊ {emoji} BOSS DOWN! You defeated *{boss}* (power {bossPower}) with your power {power}.\n┊ ʀᴇᴡᴀʀᴅ: *{coins} coins* + {xp} XP. Energy left {energy}/100. {mood}\n╰━━━━━━━',
+      lose: '╭─❏ ✨ 「 *BOSS* 」\n┊ {emoji} *{boss}* (power {bossPower}) is still too strong for your power {power}. You retreated safely and gained {xp} XP.\n┊ Try again tomorrow after leveling up~ {mood}\n╰━━━━━━━',
+      doneToday: '╭─❏ ✨ 「 *BOSS* 」\n┊ You already challenged the boss today. A new boss appears tomorrow, rest first~ {mood}\n╰━━━━━━━',
+      tired: '╭─❏ ✨ 「 *BOSS* 」\n┊ Your energy is {energy}/100, not enough for a boss fight (needs 25). Restore with .heal first~ {mood}\n╰━━━━━━━',
     },
   },
 }

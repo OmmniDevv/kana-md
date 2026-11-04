@@ -3,7 +3,7 @@ import { duel } from '../../src/rpg/engine.js'
 
 export const config = {
   name: 'duel',
-  alias: [],
+  alias: ['fight', 'bertarung'],
   category: 'rpg',
   description: { id: 'Duel RPG lawan pemain lain, pemenang merebut sampai 100 koin', en: 'RPG duel against another player, winner takes up to 100 coins' },
   usage: '.duel @tag | .duel <nomor>',
@@ -14,26 +14,24 @@ export const config = {
 export const i18n = {
   id: {
     duel: {
-      noTarget: 'Mau duel lawan siapa nih? Tag orangnya atau ketik nomornya, contoh .duel @teman yaa~',
-      self: 'Ehh, masa duel lawan diri sendiri... KANA nggak tega liatnya 🥺',
-      result: '⚔️ HASIL DUEL ⚔️\nKamu (power {powerA}) vs lawan (power {powerB})\n{verdict}\nKoin berpindah: {coins} 💰\n{mood}',
+      noTarget: '╭─❏ ✨ 「 *DUEL* 」\n┊ Mau duel lawan siapa nih? Tag orangnya atau ketik nomornya, contoh .duel @teman yaa~\n╰━━━━━━━',
+      self: '╭─❏ ✨ 「 *DUEL* 」\n┊ Ehh, masa duel lawan diri sendiri... KANA nggak tega liatnya 🥺\n╰━━━━━━━',
+      result: '╭─❏ ⚔️ 「 *DUEL* 」\n┊ ⚔️ HASIL DUEL ⚔️\n┊ Kamu (power {powerA}) vs lawan (power {powerB})\n┊ {verdict}\n┊ Koin berpindah: {coins} 💰\n┊ {mood}\n╰━━━━━━━',
       win: '🎉 Kamu menang! Kerja bagus, jagoan KANA~',
       lose: 'Mouu, kamu kalah kali ini... latih power di .dungeon dulu yaa 🥺',
       btnDungeon: 'Dungeon',
       btnProfile: 'Profil RPG',
-      btnMenu: 'Menu RPG',
     },
   },
   en: {
     duel: {
-      noTarget: 'Who do you want to duel? Tag them or type their number, e.g. .duel @friend~',
+      noTarget: '╭─❏ ✨ 「 *DUEL* 」\n┊ Who do you want to duel? Tag them or type their number, e.g. .duel @friend~\n╰━━━━━━━',
       self: 'Eh, dueling yourself... KANA cannot watch that 🥺',
-      result: '⚔️ DUEL RESULT ⚔️\nYou (power {powerA}) vs opponent (power {powerB})\n{verdict}\nCoins moved: {coins} 💰\n{mood}',
+      result: '╭─❏ ⚔️ 「 *DUEL* 」\n┊ ⚔️ DUEL RESULT ⚔️\n┊ You (power {powerA}) vs opponent (power {powerB})\n┊ {verdict}\n┊ Coins moved: {coins} 💰\n┊ {mood}\n╰━━━━━━━',
       win: '🎉 You won! Great job, my champion~',
       lose: 'Mouu, you lost this time... raise your power in .dungeon first 🥺',
       btnDungeon: 'Dungeon',
       btnProfile: 'RPG Profile',
-      btnMenu: 'RPG Menu',
     },
   },
 }
@@ -44,7 +42,6 @@ export async function handler(ctx) {
   const replies = [
     { text: ctx.t('duel.btnDungeon'), id: '.dungeon' },
     { text: ctx.t('duel.btnProfile'), id: '.rpg' },
-    { text: ctx.t('duel.btnMenu'), id: '.menurpg' },
   ]
   const send = (body) =>
     sendButtons(ctx.sock, ctx.chat, { title: 'KANA RPG', body, footer: ctx.t('menu.footer'), replies, textFallback: body })

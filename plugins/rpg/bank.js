@@ -15,12 +15,12 @@ export const config = {
 export const i18n = {
   id: {
     bank: {
-      status: '🏦 BANK KANA 🏦\nKoin di dompet: {balance} 💰\nSaldo bank: {bank} 🏦\n\nSimpan: .bank simpan <jumlah>\nAmbil: .bank ambil <jumlah>\nKetik all buat semua yaa~',
-      deposited: '🏦 Berhasil simpan {amount} koin!\nDompet: {balance} | Bank: {bank}\n{mood}',
-      withdrawn: '🏦 Berhasil ambil {amount} koin!\nDompet: {balance} | Bank: {bank}\n{mood}',
-      noCoins: 'Mouu, koin di dompet kamu kurang buat simpan segitu 🥺',
-      noBank: 'Mouu, saldo bank kamu kurang buat ambil segitu 🥺',
-      invalid: 'Jumlahnya yang bener dong~ contoh .bank simpan 500 atau .bank simpan all',
+      status: '╭─❏ 🏦 「 *BANK* 」\n┊ 🏦 BANK KANA 🏦\n┊ ᴋᴏɪɴ ᴅɪ ᴅᴏᴍᴘᴇᴛ: {balance} 💰\n┊ ꜱᴀʟᴅᴏ ʙᴀɴᴋ: {bank} 🏦\n\n┊ ꜱɪᴍᴘᴀɴ: .bank simpan <jumlah>\n┊ ᴀᴍʙɪʟ: .bank ambil <jumlah>\n┊ Ketik all buat semua yaa~\n╰━━━━━━━',
+      deposited: '╭─❏ 🏦 「 *BANK* 」\n┊ 🏦 Berhasil simpan {amount} koin!\n┊ ᴅᴏᴍᴘᴇᴛ: {balance} | Bank: {bank}\n┊ {mood}\n╰━━━━━━━',
+      withdrawn: '╭─❏ 🏦 「 *BANK* 」\n┊ 🏦 Berhasil ambil {amount} koin!\n┊ ᴅᴏᴍᴘᴇᴛ: {balance} | Bank: {bank}\n┊ {mood}\n╰━━━━━━━',
+      noCoins: '╭─❏ ✨ 「 *BANK* 」\n┊ Mouu, koin di dompet kamu kurang buat simpan segitu 🥺\n╰━━━━━━━',
+      noBank: '╭─❏ ✨ 「 *BANK* 」\n┊ Mouu, saldo bank kamu kurang buat ambil segitu 🥺\n╰━━━━━━━',
+      invalid: '╭─❏ ✨ 「 *BANK* 」\n┊ Jumlahnya yang bener dong~ contoh .bank simpan 500 atau .bank simpan all\n╰━━━━━━━',
       btnDeposit: 'Simpan 100',
       btnWithdraw: 'Ambil 100',
       btnProfile: 'Profil RPG',
@@ -28,12 +28,12 @@ export const i18n = {
   },
   en: {
     bank: {
-      status: '🏦 KANA BANK 🏦\nCoins in wallet: {balance} 💰\nBank balance: {bank} 🏦\n\nDeposit: .bank simpan <amount>\nWithdraw: .bank ambil <amount>\nType all for everything~',
-      deposited: '🏦 Deposited {amount} coins!\nWallet: {balance} | Bank: {bank}\n{mood}',
-      withdrawn: '🏦 Withdrew {amount} coins!\nWallet: {balance} | Bank: {bank}\n{mood}',
-      noCoins: 'Mouu, your wallet coins are not enough to deposit that much 🥺',
-      noBank: 'Mouu, your bank balance is not enough to withdraw that much 🥺',
-      invalid: 'Give a proper amount please~ e.g. .bank simpan 500 or .bank simpan all',
+      status: '╭─❏ 🏦 「 *BANK* 」\n┊ 🏦 KANA BANK 🏦\n┊ ᴄᴏɪɴꜱ ɪɴ ᴡᴀʟʟᴇᴛ: {balance} 💰\n┊ ʙᴀɴᴋ ʙᴀʟᴀɴᴄᴇ: {bank} 🏦\n\n┊ ᴅᴇᴘᴏꜱɪᴛ: .bank simpan <amount>\n┊ ᴡɪᴛʜᴅʀᴀᴡ: .bank ambil <amount>\n┊ Type all for everything~\n╰━━━━━━━',
+      deposited: '╭─❏ 🏦 「 *BANK* 」\n┊ 🏦 Deposited {amount} coins!\n┊ ᴡᴀʟʟᴇᴛ: {balance} | Bank: {bank}\n┊ {mood}\n╰━━━━━━━',
+      withdrawn: '╭─❏ 🏦 「 *BANK* 」\n┊ 🏦 Withdrew {amount} coins!\n┊ ᴡᴀʟʟᴇᴛ: {balance} | Bank: {bank}\n┊ {mood}\n╰━━━━━━━',
+      noCoins: '╭─❏ ✨ 「 *BANK* 」\n┊ Mouu, your wallet coins are not enough to deposit that much 🥺\n╰━━━━━━━',
+      noBank: '╭─❏ ✨ 「 *BANK* 」\n┊ Mouu, your bank balance is not enough to withdraw that much 🥺\n╰━━━━━━━',
+      invalid: '╭─❏ ✨ 「 *BANK* 」\n┊ Give a proper amount please~ e.g. .bank simpan 500 or .bank simpan all\n╰━━━━━━━',
       btnDeposit: 'Deposit 100',
       btnWithdraw: 'Withdraw 100',
       btnProfile: 'RPG Profile',

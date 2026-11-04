@@ -4,7 +4,7 @@ import { getProfile, updateProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'job',
-  alias: ['pekerjaan'],
+  alias: ['pekerjaan', 'jobkerja', 'lamarkerja'],
   category: 'rpg',
   description: { id: 'Pekerjaan RPG dengan bonus aktivitas, pilih pakai .job pilih <id>', en: 'RPG job with activity bonuses, pick with .job pilih <id>' },
   usage: '.job | .job pilih <id>',
@@ -15,24 +15,22 @@ export const config = {
 export const i18n = {
   id: {
     job: {
-      body: '💼 PEKERJAAN RPG 💼\nJob kamu sekarang: {current}\n\n{list}\n\nPilih: .job pilih <id>',
+      body: '╭─❏ 💼 「 *JOB* 」\n┊ 💼 PEKERJAAN RPG 💼\n┊ Job kamu sekarang: {current}\n\n┊ {list}\n\n┊ Pilih: .job pilih <id>\n╰━━━━━━━',
       currentNone: 'belum ada',
-      line: '{emoji} {name} ({id}): bonus {activity} +{percent}%',
-      picked: '💼 Berhasil! Job kamu sekarang {emoji} {name}~\nBonusnya langsung aktif lho ✨\n{mood}',
-      unknown: 'Ehh? Job {id} nggak ada... cek daftar di .job dulu yaa',
+      line: '┊ {emoji} {name} ({id}): bonus {activity} +{percent}%',
+      picked: '╭─❏ 💼 「 *JOB* 」\n┊ 💼 Berhasil! Job kamu sekarang {emoji} {name}~\n┊ Bonusnya langsung aktif lho ✨\n┊ {mood}\n╰━━━━━━━',
+      unknown: '╭─❏ ✨ 「 *JOB* 」\n┊ Ehh? Job {id} nggak ada... cek daftar di .job dulu yaa\n╰━━━━━━━',
       btnProfile: 'Profil RPG',
-      btnMenu: 'Menu RPG',
     },
   },
   en: {
     job: {
-      body: '💼 RPG JOBS 💼\nYour current job: {current}\n\n{list}\n\nPick: .job pilih <id>',
+      body: '╭─❏ 💼 「 *JOB* 」\n┊ 💼 RPG JOBS 💼\n┊ Your current job: {current}\n\n┊ {list}\n\n┊ Pick: .job pilih <id>\n╰━━━━━━━',
       currentNone: 'none yet',
-      line: '{emoji} {name} ({id}): {activity} bonus +{percent}%',
-      picked: '💼 Done! Your job is now {emoji} {name}~\nThe bonus is active right away ✨\n{mood}',
-      unknown: 'Eh? Job {id} does not exist... check the list in .job first',
+      line: '┊ {emoji} {name} ({id}): {activity} bonus +{percent}%',
+      picked: '╭─❏ 💼 「 *JOB* 」\n┊ 💼 Done! Your job is now {emoji} {name}~\n┊ The bonus is active right away ✨\n┊ {mood}\n╰━━━━━━━',
+      unknown: '╭─❏ ✨ 「 *JOB* 」\n┊ Eh? Job {id} does not exist... check the list in .job first\n╰━━━━━━━',
       btnProfile: 'RPG Profile',
-      btnMenu: 'RPG Menu',
     },
   },
 }
@@ -62,7 +60,6 @@ export async function handler(ctx) {
       footer: ctx.t('menu.footer'),
       replies: [
         { text: ctx.t('job.btnProfile'), id: '.rpg' },
-        { text: ctx.t('job.btnMenu'), id: '.menurpg' },
       ],
       textFallback: body,
     })

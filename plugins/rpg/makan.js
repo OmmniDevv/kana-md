@@ -19,18 +19,18 @@ export const FOODS = {
 export const i18n = {
   id: {
     makan: {
-      hint: 'Tulis makanan dari tasmu yaa~ Yang bisa dimakan: ikan, ikanmas, udang, kepiting, daging, sayur, buah, kue. Contoh: .makan daging',
-      done: '🍽️ Kamu makan {item}, energi pulih jadi {energy}/100. Nyam~ {mood}',
-      none: 'Kamu tidak punya {item} di tas. Cari dulu lewat .fishing, .hunting, atau .farming yaa~ {mood}',
-      notFood: '{item} tidak bisa dimakan. Yang bisa dimakan: ikan, ikanmas, udang, kepiting, daging, sayur, buah, kue.',
+      hint: '╭─❏ ✨ 「 *MAKAN* 」\n┊ Tulis makanan dari tasmu yaa~ Yang bisa dimakan: ikan, ikanmas, udang, kepiting, daging, sayur, buah, kue. Contoh: .makan daging\n╰━━━━━━━',
+      done: '╭─❏ 🍽️ 「 *MAKAN* 」\n┊ 🍽️ Kamu makan {item}, energi pulih jadi {energy}/100. Nyam~ {mood}\n╰━━━━━━━',
+      none: '╭─❏ ✨ 「 *MAKAN* 」\n┊ Kamu tidak punya {item} di tas. Cari dulu lewat .fishing, .hunting, atau .farming yaa~ {mood}\n╰━━━━━━━',
+      notFood: '╭─❏ ✨ 「 *MAKAN* 」\n┊ {item} tidak bisa dimakan. Yang bisa dimakan: ikan, ikanmas, udang, kepiting, daging, sayur, buah, kue.\n╰━━━━━━━',
     },
   },
   en: {
     makan: {
-      hint: 'Write food from your bag please~ Edible: ikan, ikanmas, udang, kepiting, daging, sayur, buah, kue. Example: .makan daging',
-      done: '🍽️ You ate {item}, energy restored to {energy}/100. Yum~ {mood}',
-      none: 'You have no {item} in your bag. Get some via .fishing, .hunting, or .farming first~ {mood}',
-      notFood: '{item} is not edible. Edible ones: ikan, ikanmas, udang, kepiting, daging, sayur, buah, kue.',
+      hint: '╭─❏ ✨ 「 *MAKAN* 」\n┊ Write food from your bag please~ Edible: ikan, ikanmas, udang, kepiting, daging, sayur, buah, kue. Example: .makan daging\n╰━━━━━━━',
+      done: '╭─❏ 🍽️ 「 *MAKAN* 」\n┊ 🍽️ You ate {item}, energy restored to {energy}/100. Yum~ {mood}\n╰━━━━━━━',
+      none: '╭─❏ ✨ 「 *MAKAN* 」\n┊ You have no {item} in your bag. Get some via .fishing, .hunting, or .farming first~ {mood}\n╰━━━━━━━',
+      notFood: '╭─❏ ✨ 「 *MAKAN* 」\n┊ {item} is not edible. Edible ones: ikan, ikanmas, udang, kepiting, daging, sayur, buah, kue.\n╰━━━━━━━',
     },
   },
 }

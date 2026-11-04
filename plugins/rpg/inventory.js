@@ -15,22 +15,20 @@ export const config = {
 export const i18n = {
   id: {
     inventory: {
-      body: '🎒 TAS KAMU 🎒\nKoin: {coins} 💰\n\n{list}\n\nJual item: .buy jual <item> [jumlah]',
-      line: '{emoji} {name} x{qty} (jual {price} koin)',
-      empty: 'Tas kamu masih kosong melompong... ayo .mining atau .fishing dulu~ 🥺',
+      body: '╭─❏ 🎒 「 *INVENTORY* 」\n┊ 🎒 TAS KAMU 🎒\n┊ ᴋᴏɪɴ: {coins} 💰\n\n┊ {list}\n\n┊ Jual item: .buy jual <item> [jumlah]\n╰━━━━━━━',
+      line: '┊ {emoji} {name} x{qty} (jual *{price} koin*)',
+      empty: '╭─❏ ✨ 「 *INVENTORY* 」\n┊ Tas kamu masih kosong melompong... ayo .mining atau .fishing dulu~ 🥺\n╰━━━━━━━',
       btnShop: 'Toko',
       btnCraft: 'Craft',
-      btnMenu: 'Menu RPG',
     },
   },
   en: {
     inventory: {
-      body: '🎒 YOUR BAG 🎒\nCoins: {coins} 💰\n\n{list}\n\nSell items: .buy jual <item> [qty]',
-      line: '{emoji} {name} x{qty} (sells for {price} coins)',
-      empty: 'Your bag is totally empty... go .mining or .fishing first~ 🥺',
+      body: '╭─❏ 🎒 「 *INVENTORY* 」\n┊ 🎒 YOUR BAG 🎒\n┊ ᴄᴏɪɴꜱ: {coins} 💰\n\n┊ {list}\n\n┊ Sell items: .buy jual <item> [qty]\n╰━━━━━━━',
+      line: '┊ {emoji} {name} x{qty} (sells for *{price} coins*)',
+      empty: '╭─❏ ✨ 「 *INVENTORY* 」\n┊ Your bag is totally empty... go .mining or .fishing first~ 🥺\n╰━━━━━━━',
       btnShop: 'Shop',
       btnCraft: 'Craft',
-      btnMenu: 'RPG Menu',
     },
   },
 }
@@ -63,7 +61,6 @@ export async function handler(ctx) {
     replies: [
       { text: ctx.t('inventory.btnShop'), id: '.shop' },
       { text: ctx.t('inventory.btnCraft'), id: '.craft' },
-      { text: ctx.t('inventory.btnMenu'), id: '.menurpg' },
     ],
     textFallback: body,
   })

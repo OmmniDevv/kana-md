@@ -14,20 +14,18 @@ export const config = {
 export const i18n = {
   id: {
     daily: {
-      ok: '🎁 Yeyy, hadiah harian datang! Kamu dapat {coins} koin dan {xp} XP~\nSaldo sekarang: {balance} koin 💰\n{mood}',
-      wait: 'Mouu, hadiah hariannya udah kamu ambil hari ini~ Balik lagi besok yaa 🥺',
+      ok: '╭─❏ 🎁 「 *DAILY* 」\n┊ 🎁 Yeyy, hadiah harian datang! Kamu dapat {coins} koin dan {xp} XP~\n┊ Saldo sekarang: {balance} koin 💰\n┊ {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *DAILY* 」\n┊ Mouu, hadiah hariannya udah kamu ambil hari ini~ Balik lagi besok yaa 🥺\n╰━━━━━━━',
       btnHourly: 'Klaim Per Jam',
       btnWeekly: 'Klaim Mingguan',
-      btnMenu: 'Menu RPG',
     },
   },
   en: {
     daily: {
-      ok: '🎁 Yayy, the daily reward is here! You got {coins} coins and {xp} XP~\nBalance now: {balance} coins 💰\n{mood}',
-      wait: 'Mouu, you already took today daily reward~ Come back tomorrow 🥺',
+      ok: '╭─❏ 🎁 「 *DAILY* 」\n┊ 🎁 Yayy, the daily reward is here! You got {coins} coins and {xp} XP~\n┊ Balance now: {balance} coins 💰\n┊ {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *DAILY* 」\n┊ Mouu, you already took today daily reward~ Come back tomorrow 🥺\n╰━━━━━━━',
       btnHourly: 'Hourly Claim',
       btnWeekly: 'Weekly Claim',
-      btnMenu: 'RPG Menu',
     },
   },
 }
@@ -46,7 +44,6 @@ export async function handler(ctx) {
     replies: [
       { text: ctx.t('daily.btnHourly'), id: '.hourly' },
       { text: ctx.t('daily.btnWeekly'), id: '.weekly' },
-      { text: ctx.t('daily.btnMenu'), id: '.menurpg' },
     ],
     textFallback: body,
   })

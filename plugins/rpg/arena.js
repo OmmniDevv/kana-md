@@ -23,16 +23,16 @@ const FOES = [
 export const i18n = {
   id: {
     arena: {
-      win: '🏟️ ARENA: kamu menang melawan *{foe}* (power {foePower} vs kamu {power})!\nHadiah: *{coins} koin* + {xp} XP. Rekor arena: {wins} menang, {losses} kalah. Energi tersisa {energy}/100 {mood}',
-      lose: '🏟️ ARENA: *{foe}* (power {foePower}) mengalahkan kamu (power {power}) kali ini.\nTetap dapat {xp} XP. Rekor arena: {wins} menang, {losses} kalah. Energi tersisa {energy}/100 {mood}',
-      tired: 'Energimu tinggal {energy}/100, kurang buat arena (perlu 15). Pulihkan dengan .heal atau .istirahat dulu yaa~ {mood}',
+      win: '╭─❏ 🏟️ 「 *ARENA* 」\n┊ kamu menang melawan *{foe}* (power {foePower} vs kamu {power})!\n┊ ʜᴀᴅɪᴀʜ: *{coins} koin* + {xp} XP. Rekor arena: {wins} menang, {losses} kalah. Energi tersisa {energy}/100 {mood}\n╰━━━━━━━',
+      lose: '╭─❏ 🏟️ 「 *ARENA* 」\n┊ *{foe}* (power {foePower}) mengalahkan kamu (power {power}) kali ini.\n┊ Tetap dapat {xp} XP. Rekor arena: {wins} menang, {losses} kalah. Energi tersisa {energy}/100 {mood}\n╰━━━━━━━',
+      tired: '╭─❏ ✨ 「 *ARENA* 」\n┊ Energimu tinggal {energy}/100, kurang buat arena (perlu 15). Pulihkan dengan .heal atau .istirahat dulu yaa~ {mood}\n╰━━━━━━━',
     },
   },
   en: {
     arena: {
-      win: '🏟️ ARENA: you won against *{foe}* (power {foePower} vs yours {power})!\nReward: *{coins} coins* + {xp} XP. Arena record: {wins} wins, {losses} losses. Energy left {energy}/100 {mood}',
-      lose: '🏟️ ARENA: *{foe}* (power {foePower}) defeated you (power {power}) this time.\nYou still gain {xp} XP. Arena record: {wins} wins, {losses} losses. Energy left {energy}/100 {mood}',
-      tired: 'Your energy is {energy}/100, not enough for the arena (needs 15). Restore with .heal or .istirahat first~ {mood}',
+      win: '╭─❏ 🏟️ 「 *ARENA* 」\n┊ you won against *{foe}* (power {foePower} vs yours {power})!\n┊ ʀᴇᴡᴀʀᴅ: *{coins} coins* + {xp} XP. Arena record: {wins} wins, {losses} losses. Energy left {energy}/100 {mood}\n╰━━━━━━━',
+      lose: '╭─❏ 🏟️ 「 *ARENA* 」\n┊ *{foe}* (power {foePower}) defeated you (power {power}) this time.\n┊ You still gain {xp} XP. Arena record: {wins} wins, {losses} losses. Energy left {energy}/100 {mood}\n╰━━━━━━━',
+      tired: '╭─❏ ✨ 「 *ARENA* 」\n┊ Your energy is {energy}/100, not enough for the arena (needs 15). Restore with .heal or .istirahat first~ {mood}\n╰━━━━━━━',
     },
   },
 }

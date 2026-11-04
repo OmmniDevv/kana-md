@@ -14,20 +14,18 @@ export const config = {
 export const i18n = {
   id: {
     hourly: {
-      ok: '⏰ Hadiah per jam cair! Kamu dapat {coins} koin dan {xp} XP~\nSaldo sekarang: {balance} koin 💰\n{mood}',
-      wait: 'Sabar yaa, hadiah per jam belum siap~ Coba lagi dalam {minutes} menit {seconds} detik 🥺',
+      ok: '╭─❏ ⏰ 「 *HOURLY* 」\n┊ ⏰ Hadiah per jam cair! Kamu dapat {coins} koin dan {xp} XP~\n┊ Saldo sekarang: {balance} koin 💰\n┊ {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *HOURLY* 」\n┊ Sabar yaa, hadiah per jam belum siap~ Coba lagi dalam {minutes} menit {seconds} detik 🥺\n╰━━━━━━━',
       btnDaily: 'Klaim Harian',
       btnWeekly: 'Klaim Mingguan',
-      btnMenu: 'Menu RPG',
     },
   },
   en: {
     hourly: {
-      ok: '⏰ Hourly reward claimed! You got {coins} coins and {xp} XP~\nBalance now: {balance} coins 💰\n{mood}',
-      wait: 'Hold on, the hourly reward is not ready yet~ Try again in {minutes} minutes {seconds} seconds 🥺',
+      ok: '╭─❏ ⏰ 「 *HOURLY* 」\n┊ ⏰ Hourly reward claimed! You got {coins} coins and {xp} XP~\n┊ Balance now: {balance} coins 💰\n┊ {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *HOURLY* 」\n┊ Hold on, the hourly reward is not ready yet~ Try again in {minutes} minutes {seconds} seconds 🥺\n╰━━━━━━━',
       btnDaily: 'Daily Claim',
       btnWeekly: 'Weekly Claim',
-      btnMenu: 'RPG Menu',
     },
   },
 }
@@ -47,7 +45,6 @@ export async function handler(ctx) {
     replies: [
       { text: ctx.t('hourly.btnDaily'), id: '.daily' },
       { text: ctx.t('hourly.btnWeekly'), id: '.weekly' },
-      { text: ctx.t('hourly.btnMenu'), id: '.menurpg' },
     ],
     textFallback: body,
   })

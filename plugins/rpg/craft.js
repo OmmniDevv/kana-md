@@ -5,7 +5,7 @@ import { getProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'craft',
-  alias: [],
+  alias: ['crafting'],
   category: 'rpg',
   description: { id: 'Buat item dari bahan dengan resep, misal .craft pedangbesi', en: 'Craft items from materials with recipes, e.g. .craft pedangbesi' },
   usage: '.craft [id resep]',
@@ -16,12 +16,12 @@ export const config = {
 export const i18n = {
   id: {
     craft: {
-      listTitle: '🔨 Mau bikin apa nih? Ini resep yang bisa kamu buat:\n{list}\nKetik .craft <id> buat mulai, atau pencet tombolnya~',
-      listLine: '• {emoji} {name} (.craft {id})',
-      ok: '🔨 Tadaa! {name} berhasil dibuat dan masuk tas kamu~\n{mood}',
-      saved: '✨ Bonus pengrajin! Bahan {item} nggak berkurang lho, hemat!',
-      missing: 'Mouu, bahan buat {name} belum cukup: butuh {needs}. Kamu punya: {have} 🥺',
-      unknown: 'Ehh? Resep {id} nggak KANA kenal... cek .recipes dulu yaa',
+      listTitle: '╭─❏ 🔨 「 *CRAFT* 」\n┊ 🔨 Mau bikin apa nih? Ini resep yang bisa kamu buat:\n┊ {list}\n┊ Ketik .craft <id> buat mulai, atau pencet tombolnya~\n╰━━━━━━━',
+      listLine: '┊ {emoji} {name} (.craft {id})',
+      ok: '╭─❏ 🔨 「 *CRAFT* 」\n┊ 🔨 Tadaa! {name} berhasil dibuat dan masuk tas kamu~\n┊ {mood}\n╰━━━━━━━',
+      saved: '╭─❏ ✨ 「 *CRAFT* 」\n┊ ✨ Bonus pengrajin! Bahan {item} nggak berkurang lho, hemat!\n╰━━━━━━━',
+      missing: '╭─❏ ✨ 「 *CRAFT* 」\n┊ Mouu, bahan buat {name} belum cukup: butuh {needs}. Kamu punya: {have} 🥺\n╰━━━━━━━',
+      unknown: '╭─❏ ✨ 「 *CRAFT* 」\n┊ Ehh? Resep {id} nggak KANA kenal... cek .recipes dulu yaa\n╰━━━━━━━',
       btnRecipes: 'Semua Resep',
       btnInventory: 'Tas Aku',
       btnShop: 'Toko',
@@ -29,12 +29,12 @@ export const i18n = {
   },
   en: {
     craft: {
-      listTitle: '🔨 What do you want to make? Recipes you can craft:\n{list}\nType .craft <id> to start, or tap a button~',
-      listLine: '• {emoji} {name} (.craft {id})',
-      ok: '🔨 Tadaa! {name} was crafted and added to your bag~\n{mood}',
-      saved: '✨ Crafter bonus! The {item} material was not consumed, nice save!',
-      missing: 'Mouu, materials for {name} are not enough: needs {needs}. You have: {have} 🥺',
-      unknown: 'Eh? KANA does not know recipe {id}... check .recipes first',
+      listTitle: '╭─❏ 🔨 「 *CRAFT* 」\n┊ 🔨 What do you want to make? Recipes you can craft:\n┊ {list}\n┊ Type .craft <id> to start, or tap a button~\n╰━━━━━━━',
+      listLine: '┊ {emoji} {name} (.craft {id})',
+      ok: '╭─❏ 🔨 「 *CRAFT* 」\n┊ 🔨 Tadaa! {name} was crafted and added to your bag~\n┊ {mood}\n╰━━━━━━━',
+      saved: '╭─❏ ✨ 「 *CRAFT* 」\n┊ ✨ Crafter bonus! The {item} material was not consumed, nice save!\n╰━━━━━━━',
+      missing: '╭─❏ ✨ 「 *CRAFT* 」\n┊ Mouu, materials for {name} are not enough: needs {needs}. You have: {have} 🥺\n╰━━━━━━━',
+      unknown: '╭─❏ ✨ 「 *CRAFT* 」\n┊ Eh? KANA does not know recipe {id}... check .recipes first\n╰━━━━━━━',
       btnRecipes: 'All Recipes',
       btnInventory: 'My Bag',
       btnShop: 'Shop',

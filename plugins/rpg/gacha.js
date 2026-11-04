@@ -3,7 +3,7 @@ import { getProfile, updateProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'gacha',
-  alias: [],
+  alias: ['pull', 'pullall'],
   category: 'rpg',
   description: { id: 'Putar gacha 100 koin untuk dapat item acak', en: 'Spin the 100 coin gacha for a random item' },
   usage: '.gacha',
@@ -60,8 +60,8 @@ export const i18n = {
   id: {
     gacha: {
       title: 'Gacha KANA 🎁',
-      noBalance: 'Mouu, gacha butuh {cost} koin, saldo kamu cuma {balance} koin (╥﹏╥) Ambil jatah harianmu dulu yaa~',
-      result: 'Putar putar putar... 🎁\nKamu dapat: {emoji} {name}\nRarity: {rarityEmoji} {rarity}\nBiaya {cost} koin, saldo sekarang {balance} koin.\n\n{mood}',
+      noBalance: '╭─❏ ✨ 「 *GACHA* 」\n┊ Mouu, gacha butuh {cost} koin, saldo kamu cuma {balance} koin (╥﹏╥) Ambil jatah harianmu dulu yaa~\n╰━━━━━━━',
+      result: '╭─❏ ✨ 「 *GACHA* 」\n┊ Putar putar putar... 🎁\n┊ Kamu dapat: {emoji} {name}\n┊ Rarity: {rarityEmoji} {rarity}\n┊ Biaya {cost} koin, saldo sekarang {balance} koin.\n\n┊ {mood}\n╰━━━━━━━',
       btnAgain: 'Gacha Lagi',
       btnInventory: 'Inventory',
       btnShop: 'Shop',
@@ -71,8 +71,8 @@ export const i18n = {
   en: {
     gacha: {
       title: 'KANA Gacha 🎁',
-      noBalance: 'Mouu, gacha costs {cost} coins, your balance is only {balance} coins (╥﹏╥) Claim your daily first~',
-      result: 'Spinning spinning... 🎁\nYou got: {emoji} {name}\nRarity: {rarityEmoji} {rarity}\nCost {cost} coins, balance now {balance} coins.\n\n{mood}',
+      noBalance: '╭─❏ ✨ 「 *GACHA* 」\n┊ Mouu, gacha costs {cost} coins, your balance is only {balance} coins (╥﹏╥) Claim your daily first~\n╰━━━━━━━',
+      result: '╭─❏ ✨ 「 *GACHA* 」\n┊ Spinning spinning... 🎁\n┊ You got: {emoji} {name}\n┊ Rarity: {rarityEmoji} {rarity}\n┊ Cost {cost} coins, balance now {balance} coins.\n\n┊ {mood}\n╰━━━━━━━',
       btnAgain: 'Spin Again',
       btnInventory: 'Inventory',
       btnShop: 'Shop',

@@ -15,12 +15,12 @@ export const config = {
 export const i18n = {
   id: {
     buy: {
-      usage: 'Mau beli apa nih? Ketik .buy <item> [jumlah], contoh .buy makananpet 2~\nJual item: .buy jual <item> [jumlah]. Daftar barang ada di .shop yaa ✨',
-      bought: '🛍️ Berhasil beli {name} x{qty} seharga {cost} koin!\nSaldo sekarang: {balance} koin 💰\n{mood}',
-      sold: '💰 {name} x{qty} terjual! Kamu dapat {gain} koin~\nSaldo sekarang: {balance} koin\n{mood}',
-      noCoins: 'Mouu, koin kamu kurang buat beli itu (butuh {cost} koin)... kerja dulu di .mining yaa 🥺',
-      notSold: 'Ehh? Item {id} nggak dijual di toko KANA... cek .shop dulu yaa',
-      noItem: 'Mouu, kamu nggak punya {name} sebanyak itu di tas 🥺',
+      usage: '╭─❏ ✨ 「 *BUY* 」\n┊ Mau beli apa nih? Ketik .buy <item> [jumlah], contoh .buy makananpet 2~\n┊ Jual item: .buy jual <item> [jumlah]. Daftar barang ada di .shop yaa ✨\n╰━━━━━━━',
+      bought: '╭─❏ 🛍️ 「 *BUY* 」\n┊ 🛍️ Berhasil beli {name} x{qty} seharga {cost} koin!\n┊ Saldo sekarang: {balance} koin 💰\n┊ {mood}\n╰━━━━━━━',
+      sold: '╭─❏ 💰 「 *BUY* 」\n┊ 💰 {name} x{qty} terjual! Kamu dapat {gain} koin~\n┊ Saldo sekarang: {balance} koin\n┊ {mood}\n╰━━━━━━━',
+      noCoins: '╭─❏ ✨ 「 *BUY* 」\n┊ Mouu, koin kamu kurang buat beli itu (butuh {cost} koin)... kerja dulu di .mining yaa 🥺\n╰━━━━━━━',
+      notSold: '╭─❏ ✨ 「 *BUY* 」\n┊ Ehh? Item {id} nggak dijual di toko KANA... cek .shop dulu yaa\n╰━━━━━━━',
+      noItem: '╭─❏ ✨ 「 *BUY* 」\n┊ Mouu, kamu nggak punya {name} sebanyak itu di tas 🥺\n╰━━━━━━━',
       unknownItem: 'Ehh? Item {id} nggak KANA kenal...',
       btnShop: 'Toko',
       btnInventory: 'Tas Aku',
@@ -29,12 +29,12 @@ export const i18n = {
   },
   en: {
     buy: {
-      usage: 'What do you want to buy? Type .buy <item> [qty], e.g. .buy makananpet 2~\nSell items: .buy jual <item> [qty]. The item list is in .shop ✨',
-      bought: '🛍️ Bought {name} x{qty} for {cost} coins!\nBalance now: {balance} coins 💰\n{mood}',
-      sold: '💰 Sold {name} x{qty}! You got {gain} coins~\nBalance now: {balance} coins\n{mood}',
-      noCoins: 'Mouu, you do not have enough coins for that (needs {cost} coins)... work a bit in .mining first 🥺',
-      notSold: 'Eh? Item {id} is not sold at KANA shop... check .shop first',
-      noItem: 'Mouu, you do not have that many {name} in your bag 🥺',
+      usage: '╭─❏ ✨ 「 *BUY* 」\n┊ What do you want to buy? Type .buy <item> [qty], e.g. .buy makananpet 2~\n┊ Sell items: .buy jual <item> [qty]. The item list is in .shop ✨\n╰━━━━━━━',
+      bought: '╭─❏ 🛍️ 「 *BUY* 」\n┊ 🛍️ Bought {name} x{qty} for {cost} coins!\n┊ Balance now: {balance} coins 💰\n┊ {mood}\n╰━━━━━━━',
+      sold: '╭─❏ 💰 「 *BUY* 」\n┊ 💰 Sold {name} x{qty}! You got {gain} coins~\n┊ Balance now: {balance} coins\n┊ {mood}\n╰━━━━━━━',
+      noCoins: '╭─❏ ✨ 「 *BUY* 」\n┊ Mouu, you do not have enough coins for that (needs {cost} coins)... work a bit in .mining first 🥺\n╰━━━━━━━',
+      notSold: '╭─❏ ✨ 「 *BUY* 」\n┊ Eh? Item {id} is not sold at KANA shop... check .shop first\n╰━━━━━━━',
+      noItem: '╭─❏ ✨ 「 *BUY* 」\n┊ Mouu, you do not have that many {name} in your bag 🥺\n╰━━━━━━━',
       unknownItem: 'Eh? KANA does not know item {id}...',
       btnShop: 'Shop',
       btnInventory: 'My Bag',

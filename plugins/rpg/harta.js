@@ -16,20 +16,20 @@ export const COST = 100
 export const i18n = {
   id: {
     harta: {
-      jackpot: '🗺️ JACKPOT! Galianmu menemukan peti harta karun berisi *{coins} koin*! Untung bersih {profit} koin {mood}',
-      coins: '🗺️ Kamu menggali dan menemukan kantong koin berisi *{coins} koin*. Lumayan~ {mood}',
-      item: '🗺️ Galianmu menemukan *{item}* yang masih bagus. Masuk tas yaa~ {mood}',
-      empty: '🗺️ Sudah menggali jauh, yang ketemu cuma sepatu tua sebelah. Harta karunnya belum jodoh hari ini {mood}',
-      poor: 'Ekspedisi harta butuh biaya {cost} koin, koinmu baru {coins}. Kumpulkan dulu lewat .kerja atau .daily yaa~ {mood}',
+      jackpot: '╭─❏ 🗺️ 「 *HARTA* 」\n┊ 🗺️ JACKPOT! Galianmu menemukan peti harta karun berisi *{coins} koin*! Untung bersih {profit} koin {mood}\n╰━━━━━━━',
+      coins: '╭─❏ 🗺️ 「 *HARTA* 」\n┊ 🗺️ Kamu menggali dan menemukan kantong koin berisi *{coins} koin*. Lumayan~ {mood}\n╰━━━━━━━',
+      item: '╭─❏ 🗺️ 「 *HARTA* 」\n┊ 🗺️ Galianmu menemukan *{item}* yang masih bagus. Masuk tas yaa~ {mood}\n╰━━━━━━━',
+      empty: '╭─❏ 🗺️ 「 *HARTA* 」\n┊ 🗺️ Sudah menggali jauh, yang ketemu cuma sepatu tua sebelah. Harta karunnya belum jodoh hari ini {mood}\n╰━━━━━━━',
+      poor: '╭─❏ ✨ 「 *HARTA* 」\n┊ Ekspedisi harta butuh biaya {cost} koin, koinmu baru {coins}. Kumpulkan dulu lewat .kerja atau .daily yaa~ {mood}\n╰━━━━━━━',
     },
   },
   en: {
     harta: {
-      jackpot: '🗺️ JACKPOT! Your digging found a treasure chest with *{coins} coins*! Net profit {profit} coins {mood}',
-      coins: '🗺️ You dug and found a coin pouch with *{coins} coins*. Not bad~ {mood}',
-      item: '🗺️ Your digging found a still good *{item}*. Into the bag it goes~ {mood}',
-      empty: '🗺️ You dug deep and only found one old shoe. The treasure is not meant to be today {mood}',
-      poor: 'A treasure expedition costs {cost} coins, you only have {coins}. Earn some first with .kerja or .daily~ {mood}',
+      jackpot: '╭─❏ 🗺️ 「 *HARTA* 」\n┊ 🗺️ JACKPOT! Your digging found a treasure chest with *{coins} coins*! Net profit {profit} coins {mood}\n╰━━━━━━━',
+      coins: '╭─❏ 🗺️ 「 *HARTA* 」\n┊ 🗺️ You dug and found a coin pouch with *{coins} coins*. Not bad~ {mood}\n╰━━━━━━━',
+      item: '╭─❏ 🗺️ 「 *HARTA* 」\n┊ 🗺️ Your digging found a still good *{item}*. Into the bag it goes~ {mood}\n╰━━━━━━━',
+      empty: '╭─❏ 🗺️ 「 *HARTA* 」\n┊ 🗺️ You dug deep and only found one old shoe. The treasure is not meant to be today {mood}\n╰━━━━━━━',
+      poor: '╭─❏ ✨ 「 *HARTA* 」\n┊ A treasure expedition costs {cost} coins, you only have {coins}. Earn some first with .kerja or .daily~ {mood}\n╰━━━━━━━',
     },
   },
 }

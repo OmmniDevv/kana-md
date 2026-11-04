@@ -3,7 +3,7 @@ import { clanWar } from '../../src/rpg/engine.js'
 
 export const config = {
   name: 'clanwar',
-  alias: ['perangclan'],
+  alias: ['perangclan', 'guildwar'],
   category: 'rpg',
   description: { id: 'Perang clan RPG harian: power clan kamu lawan clan lain', en: 'Daily RPG clan war: your clan power against another clan' },
   usage: '.clanwar',
@@ -14,11 +14,11 @@ export const config = {
 export const i18n = {
   id: {
     clanwar: {
-      noClan: 'Ehh, kamu belum punya clan nih... buat atau gabung dulu di .clan yaa 🥺',
-      cooldown: 'Mouu, clan kamu udah perang hari ini~ istirahat dulu, lanjut besok yaa 💤',
-      result: '⚔️ HASIL PERANG CLAN ⚔️\n{name} (power {myPower}) vs {opp} (power {oppPower})\n{verdict}\nHadiah masuk bank clan: {reward} koin 🏦 (bank sekarang {bank})\n{mood}',
+      noClan: '╭─❏ ✨ 「 *CLANWAR* 」\n┊ Ehh, kamu belum punya clan nih... buat atau gabung dulu di .clan yaa 🥺\n╰━━━━━━━',
+      cooldown: '╭─❏ ✨ 「 *CLANWAR* 」\n┊ Mouu, clan kamu udah perang hari ini~ istirahat dulu, lanjut besok yaa 💤\n╰━━━━━━━',
+      result: '╭─❏ ⚔️ 「 *CLANWAR* 」\n┊ ⚔️ HASIL PERANG CLAN ⚔️\n┊ {name} (power {myPower}) vs {opp} (power {oppPower})\n┊ {verdict}\n┊ Hadiah masuk bank clan: {reward} koin 🏦 (bank sekarang {bank})\n┊ {mood}\n╰━━━━━━━',
       win: '🎉 MENANG! Clan kita paling kuat hari ini~',
-      lose: 'Mouu, kalah kali ini... kumpulkan power lagi yaa 🥺',
+      lose: '╭─❏ ✨ 「 *CLANWAR* 」\n┊ Mouu, kalah kali ini... kumpulkan power lagi yaa 🥺\n╰━━━━━━━',
       btnClan: 'Info Clan',
       btnDungeon: 'Dungeon',
       btnProfile: 'Profil RPG',
@@ -26,9 +26,9 @@ export const i18n = {
   },
   en: {
     clanwar: {
-      noClan: 'Eh, you do not have a clan yet... create or join one in .clan first 🥺',
-      cooldown: 'Mouu, your clan already fought today~ rest first, continue tomorrow 💤',
-      result: '⚔️ CLAN WAR RESULT ⚔️\n{name} (power {myPower}) vs {opp} (power {oppPower})\n{verdict}\nReward to clan bank: {reward} coins 🏦 (bank now {bank})\n{mood}',
+      noClan: '╭─❏ ✨ 「 *CLANWAR* 」\n┊ Eh, you do not have a clan yet... create or join one in .clan first 🥺\n╰━━━━━━━',
+      cooldown: '╭─❏ ✨ 「 *CLANWAR* 」\n┊ Mouu, your clan already fought today~ rest first, continue tomorrow 💤\n╰━━━━━━━',
+      result: '╭─❏ ⚔️ 「 *CLANWAR* 」\n┊ ⚔️ CLAN WAR RESULT ⚔️\n┊ {name} (power {myPower}) vs {opp} (power {oppPower})\n┊ {verdict}\n┊ Reward to clan bank: {reward} coins 🏦 (bank now {bank})\n┊ {mood}\n╰━━━━━━━',
       win: '🎉 VICTORY! Our clan is the strongest today~',
       lose: 'Mouu, we lost this time... gather more power 🥺',
       btnClan: 'Clan Info',

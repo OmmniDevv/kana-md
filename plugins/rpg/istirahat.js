@@ -14,14 +14,14 @@ export const config = {
 export const i18n = {
   id: {
     istirahat: {
-      done: '😴 Kamu tidur siang sebentar di bawah pohon. Energi sekarang {energy}/100. {mood}',
-      wait: 'Kamu baru istirahat barusan. Bisa istirahat gratis lagi dalam {minutes} menit, atau pulih penuh lewat .heal yaa~ {mood}',
+      done: '╭─❏ 😴 「 *ISTIRAHAT* 」\n┊ 😴 Kamu tidur siang sebentar di bawah pohon. Energi sekarang {energy}/100. {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *ISTIRAHAT* 」\n┊ Kamu baru istirahat barusan. Bisa istirahat gratis lagi dalam {minutes} menit, atau pulih penuh lewat .heal yaa~ {mood}\n╰━━━━━━━',
     },
   },
   en: {
     istirahat: {
-      done: '😴 You napped under a tree. Energy is now {energy}/100. {mood}',
-      wait: 'You just rested. Free rest is available again in {minutes} minutes, or restore fully with .heal~ {mood}',
+      done: '╭─❏ 😴 「 *ISTIRAHAT* 」\n┊ 😴 You napped under a tree. Energy is now {energy}/100. {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *ISTIRAHAT* 」\n┊ You just rested. Free rest is available again in {minutes} minutes, or restore fully with .heal~ {mood}\n╰━━━━━━━',
     },
   },
 }

@@ -15,34 +15,32 @@ export const config = {
 export const i18n = {
   id: {
     clan: {
-      noClan: 'Kamu belum punya clan nih 🥺\nBuat baru: .clan buat <nama>\nGabung yang ada: .clan gabung <id clan>',
-      info: '🛡️ CLAN {name} 🛡️\nID: {id}\nPemilik: {owner}\nAnggota: {members} orang\nPower total: {power}\nBank clan: {bank} koin 🏦\n\nAjak clan lain perang pakai .clanwar yaa~',
-      created: '🛡️ Clan {name} berhasil dibuat! ID clan: {id}\nAjak teman gabung pakai .clan gabung {id} yaa~\n{mood}',
-      joined: '🛡️ Selamat datang di clan {name}! Sekarang kita satu keluarga~\n{mood}',
-      already: 'Ehh, kamu udah punya clan lho... satu clan aja yaa 💕',
-      taken: 'Mouu, nama clan itu udah dipakai clan lain... coba nama lain yaa 🥺',
-      notFound: 'Clan dengan ID {id} nggak ketemu nih... cek lagi ID nya yaa',
-      invalidName: 'Nama clannya yang bener dong~ contoh .clan buat Naga Moe',
-      needArg: 'Ketik nama atau ID nya juga dong~ contoh .clan buat Naga Moe atau .clan gabung naga-moe',
+      noClan: '╭─❏ ✨ 「 *CLAN* 」\n┊ Kamu belum punya clan nih 🥺\n┊ Buat baru: .clan buat <nama>\n┊ Gabung yang ada: .clan gabung <id clan>\n╰━━━━━━━',
+      info: '╭─❏ 🛡️ 「 *CLAN* 」\n┊ 🛡️ CLAN {name} 🛡️\n┊ ɪᴅ: {id}\n┊ ᴘᴇᴍɪʟɪᴋ: {owner}\n┊ ᴀɴɢɢᴏᴛᴀ: {members} orang\n┊ ᴘᴏᴡᴇʀ ᴛᴏᴛᴀʟ: {power}\n┊ Bank clan: {bank} koin 🏦\n\n┊ Ajak clan lain perang pakai .clanwar yaa~\n╰━━━━━━━',
+      created: '╭─❏ 🛡️ 「 *CLAN* 」\n┊ 🛡️ Clan {name} berhasil dibuat! ID clan: {id}\n┊ Ajak teman gabung pakai .clan gabung {id} yaa~\n┊ {mood}\n╰━━━━━━━',
+      joined: '╭─❏ 🛡️ 「 *CLAN* 」\n┊ 🛡️ Selamat datang di clan {name}! Sekarang kita satu keluarga~\n┊ {mood}\n╰━━━━━━━',
+      already: '╭─❏ ✨ 「 *CLAN* 」\n┊ Ehh, kamu udah punya clan lho... satu clan aja yaa 💕\n╰━━━━━━━',
+      taken: '╭─❏ ✨ 「 *CLAN* 」\n┊ Mouu, nama clan itu udah dipakai clan lain... coba nama lain yaa 🥺\n╰━━━━━━━',
+      notFound: '╭─❏ ✨ 「 *CLAN* 」\n┊ Clan dengan ID {id} nggak ketemu nih... cek lagi ID nya yaa\n╰━━━━━━━',
+      invalidName: '╭─❏ ✨ 「 *CLAN* 」\n┊ Nama clannya yang bener dong~ contoh .clan buat Naga Moe\n╰━━━━━━━',
+      needArg: '╭─❏ ✨ 「 *CLAN* 」\n┊ Ketik nama atau ID nya juga dong~ contoh .clan buat Naga Moe atau .clan gabung naga-moe\n╰━━━━━━━',
       btnWar: 'Perang Clan',
       btnProfile: 'Profil RPG',
-      btnMenu: 'Menu RPG',
     },
   },
   en: {
     clan: {
-      noClan: 'You do not have a clan yet 🥺\nCreate one: .clan buat <name>\nJoin an existing one: .clan gabung <clan id>',
-      info: '🛡️ CLAN {name} 🛡️\nID: {id}\nOwner: {owner}\nMembers: {members} people\nTotal power: {power}\nClan bank: {bank} coins 🏦\n\nChallenge other clans with .clanwar~',
-      created: '🛡️ Clan {name} created! Clan ID: {id}\nInvite friends with .clan gabung {id}~\n{mood}',
-      joined: '🛡️ Welcome to clan {name}! We are one family now~\n{mood}',
-      already: 'Eh, you already have a clan... one clan only please 💕',
-      taken: 'Mouu, that clan name is taken by another clan... try another name 🥺',
-      notFound: 'Clan with ID {id} was not found... check the ID again',
-      invalidName: 'Give a proper clan name please~ e.g. .clan buat Naga Moe',
-      needArg: 'Type the name or ID too~ e.g. .clan buat Naga Moe or .clan gabung naga-moe',
+      noClan: '╭─❏ ✨ 「 *CLAN* 」\n┊ You do not have a clan yet 🥺\n┊ Create one: .clan buat <name>\n┊ Join an existing one: .clan gabung <clan id>\n╰━━━━━━━',
+      info: '╭─❏ 🛡️ 「 *CLAN* 」\n┊ 🛡️ CLAN {name} 🛡️\n┊ ɪᴅ: {id}\n┊ ᴏᴡɴᴇʀ: {owner}\n┊ ᴍᴇᴍʙᴇʀꜱ: {members} people\n┊ Total power: {power}\n┊ Clan bank: {bank} coins 🏦\n\n┊ Challenge other clans with .clanwar~\n╰━━━━━━━',
+      created: '╭─❏ 🛡️ 「 *CLAN* 」\n┊ 🛡️ Clan {name} created! Clan ID: {id}\n┊ Invite friends with .clan gabung {id}~\n┊ {mood}\n╰━━━━━━━',
+      joined: '╭─❏ 🛡️ 「 *CLAN* 」\n┊ 🛡️ Welcome to clan {name}! We are one family now~\n┊ {mood}\n╰━━━━━━━',
+      already: '╭─❏ ✨ 「 *CLAN* 」\n┊ Eh, you already have a clan... one clan only please 💕\n╰━━━━━━━',
+      taken: '╭─❏ ✨ 「 *CLAN* 」\n┊ Mouu, that clan name is taken by another clan... try another name 🥺\n╰━━━━━━━',
+      notFound: '╭─❏ ✨ 「 *CLAN* 」\n┊ Clan with ID {id} was not found... check the ID again\n╰━━━━━━━',
+      invalidName: '╭─❏ ✨ 「 *CLAN* 」\n┊ Give a proper clan name please~ e.g. .clan buat Naga Moe\n╰━━━━━━━',
+      needArg: '╭─❏ ✨ 「 *CLAN* 」\n┊ Type the name or ID too~ e.g. .clan buat Naga Moe or .clan gabung naga-moe\n╰━━━━━━━',
       btnWar: 'Clan War',
       btnProfile: 'RPG Profile',
-      btnMenu: 'RPG Menu',
     },
   },
 }
@@ -53,7 +51,6 @@ export async function handler(ctx) {
   const replies = [
     { text: ctx.t('clan.btnWar'), id: '.clanwar' },
     { text: ctx.t('clan.btnProfile'), id: '.rpg' },
-    { text: ctx.t('clan.btnMenu'), id: '.menurpg' },
   ]
   const send = (body) =>
     sendButtons(ctx.sock, ctx.chat, { title: 'KANA RPG', body, footer: ctx.t('menu.footer'), replies, textFallback: body })

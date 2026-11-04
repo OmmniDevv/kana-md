@@ -3,7 +3,7 @@ import { energyOf, restoreEnergy, MAX_ENERGY } from '../../src/rpg/energy.js'
 
 export const config = {
   name: 'heal',
-  alias: ['pulih'],
+  alias: ['pulih', 'dokter'],
   category: 'rpg',
   description: { id: 'Pulihkan energi RPG sampai penuh dengan bayar koin di penginapan', en: 'Restore RPG energy to full by paying coins at the inn' },
   usage: '.heal',
@@ -14,16 +14,16 @@ export const config = {
 export const i18n = {
   id: {
     heal: {
-      done: '🏨 Kamu beristirahat di penginapan seharga *{cost} koin*. Energi pulih penuh: {energy}/100. {mood}',
-      full: 'Energimu sudah penuh {energy}/100, tidak perlu ke penginapan kok~ {mood}',
-      poor: 'Koinmu {coins}, kurang buat bayar penginapan ({cost} koin). Kerja dulu yuk dengan .kerja~ {mood}',
+      done: '╭─❏ 🏨 「 *HEAL* 」\n┊ 🏨 Kamu beristirahat di penginapan seharga *{cost} koin*. Energi pulih penuh: {energy}/100. {mood}\n╰━━━━━━━',
+      full: '╭─❏ ✨ 「 *HEAL* 」\n┊ Energimu sudah penuh {energy}/100, tidak perlu ke penginapan kok~ {mood}\n╰━━━━━━━',
+      poor: '╭─❏ ✨ 「 *HEAL* 」\n┊ Koinmu {coins}, kurang buat bayar penginapan ({cost} koin). Kerja dulu yuk dengan .kerja~ {mood}\n╰━━━━━━━',
     },
   },
   en: {
     heal: {
-      done: '🏨 You rested at the inn for *{cost} coins*. Energy fully restored: {energy}/100. {mood}',
-      full: 'Your energy is already full at {energy}/100, no need for the inn~ {mood}',
-      poor: 'You have {coins} coins, not enough for the inn ({cost} coins). Work first with .kerja~ {mood}',
+      done: '╭─❏ 🏨 「 *HEAL* 」\n┊ 🏨 You rested at the inn for *{cost} coins*. Energy fully restored: {energy}/100. {mood}\n╰━━━━━━━',
+      full: '╭─❏ ✨ 「 *HEAL* 」\n┊ Your energy is already full at {energy}/100, no need for the inn~ {mood}\n╰━━━━━━━',
+      poor: '╭─❏ ✨ 「 *HEAL* 」\n┊ You have {coins} coins, not enough for the inn ({cost} coins). Work first with .kerja~ {mood}\n╰━━━━━━━',
     },
   },
 }

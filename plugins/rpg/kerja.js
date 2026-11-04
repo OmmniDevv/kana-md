@@ -25,16 +25,16 @@ const JOBS = [
 export const i18n = {
   id: {
     kerja: {
-      done: '💼 Kamu kerja {job} dan dapat *{coins} koin* + {xp} XP.\nEnergi tersisa: {energy}/100 {mood}',
-      tired: 'Energimu tinggal {energy}/100, kurang buat kerja (perlu 15). Pulihkan dulu dengan .heal atau .istirahat yaa~ {mood}',
-      wait: 'Kamu baru saja kerja, istirahat sebentar yaa. Bisa kerja lagi dalam {minutes} menit~ {mood}',
+      done: '╭─❏ 💼 「 *KERJA* 」\n┊ 💼 Kamu kerja {job} dan dapat *{coins} koin* + {xp} XP.\n┊ Energi tersisa: {energy}/100 {mood}\n╰━━━━━━━',
+      tired: '╭─❏ ✨ 「 *KERJA* 」\n┊ Energimu tinggal {energy}/100, kurang buat kerja (perlu 15). Pulihkan dulu dengan .heal atau .istirahat yaa~ {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *KERJA* 」\n┊ Kamu baru saja kerja, istirahat sebentar yaa. Bisa kerja lagi dalam {minutes} menit~ {mood}\n╰━━━━━━━',
     },
   },
   en: {
     kerja: {
-      done: '💼 You worked {job} and earned *{coins} coins* + {xp} XP.\nEnergy left: {energy}/100 {mood}',
-      tired: 'Your energy is {energy}/100, not enough to work (needs 15). Restore it with .heal or .istirahat first~ {mood}',
-      wait: 'You just worked, take a short break. You can work again in {minutes} minutes~ {mood}',
+      done: '╭─❏ 💼 「 *KERJA* 」\n┊ 💼 You worked {job} and earned *{coins} coins* + {xp} XP.\n┊ Energy left: {energy}/100 {mood}\n╰━━━━━━━',
+      tired: '╭─❏ ✨ 「 *KERJA* 」\n┊ Your energy is {energy}/100, not enough to work (needs 15). Restore it with .heal or .istirahat first~ {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *KERJA* 」\n┊ You just worked, take a short break. You can work again in {minutes} minutes~ {mood}\n╰━━━━━━━',
     },
   },
 }
