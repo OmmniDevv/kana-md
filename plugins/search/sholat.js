@@ -4,7 +4,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'sholat',
-  alias: ['jadwalsholat', 'prayer'],
+  alias: ['jadwalsholat', 'prayer', 'salat', 'shalattime'],
   category: 'search',
   description: { id: 'Jadwal sholat per kota, plus pengingat grup', en: 'Prayer schedule per city, plus group reminders' },
   usage: '.sholat <kota> | .sholat ingatkan <kota> | .sholat matikan',

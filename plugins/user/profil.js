@@ -7,7 +7,7 @@ import { getProfile, levelFromXp, limitState, xpForLevel } from '../../src/servi
 
 export const config = {
   name: 'profil',
-  alias: ['me'],
+  alias: ['me', 'cekpoin', 'profile'],
   category: 'user',
   description: { id: 'Lihat kartu profil kamu: level, XP, limit, saldo', en: 'See your profile card: level, XP, limit, balance' },
   usage: '.profil',

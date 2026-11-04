@@ -1,6 +1,6 @@
 export const config = {
   name: 'bmi',
-  alias: ['hitungbmi'],
+  alias: ['hitungbmi', 'cekberat', 'berat'],
   category: 'user',
   description: { id: 'Hitung Indeks Massa Tubuh (BMI) dari berat dan tinggi badan', en: 'Calculate Body Mass Index (BMI) from weight and height' },
   usage: '.bmi <berat kg> <tinggi cm>',

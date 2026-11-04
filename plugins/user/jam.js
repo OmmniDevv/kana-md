@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'jam',
-  alias: ['waktu'],
+  alias: ['waktu', 'waktuglobal', 'worldtime'],
   category: 'user',
   description: { id: 'Lihat jam sekarang di WIB, WITA, WIT, dan UTC', en: 'See the current time in WIB, WITA, WIT, and UTC' },
   usage: '.jam',

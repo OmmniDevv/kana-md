@@ -1,6 +1,6 @@
 export const config = {
   name: 'ocr',
-  alias: ['bacateks', 'imagetotext'],
+  alias: ['bacateks', 'imagetotext', 'totext'],
   category: 'search',
   description: { id: 'Baca teks dari gambar (belum tersedia di rilis ini)', en: 'Read text from an image (not available in this release)' },
   usage: '.ocr (balas gambar)',
