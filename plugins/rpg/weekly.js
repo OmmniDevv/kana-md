@@ -3,7 +3,7 @@ import { claim } from '../../src/rpg/engine.js'
 
 export const config = {
   name: 'weekly',
-  alias: [],
+  alias: ['gajian'],
   category: 'rpg',
   description: { id: 'Klaim hadiah mingguan RPG: 3000 koin dan 100 XP', en: 'Claim the weekly RPG reward: 3000 coins and 100 XP' },
   usage: '.weekly',

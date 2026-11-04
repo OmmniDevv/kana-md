@@ -4,7 +4,7 @@ import { getProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'bank',
-  alias: [],
+  alias: ['atm', 'nabung', 'tarik', 'atmall'],
   category: 'rpg',
   description: { id: 'Bank RPG: simpan dan ambil koin dengan aman', en: 'RPG bank: deposit and withdraw coins safely' },
   usage: '.bank | .bank simpan <jumlah|all> | .bank ambil <jumlah|all>',

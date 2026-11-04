@@ -13,7 +13,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'ai',
-  alias: ['kana', 'chat'],
+  alias: ['kana', 'chat', 'gpt', 'gemini', 'copilot', 'chatbot', 'perplexity', 'elaina', 'aigpt', 'aicopilot', 'aideepseek', 'aitink', 'plx'],
   category: 'ai',
   description: { id: 'Ngobrol dengan AI, ingat konteks percakapan', en: 'Chat with AI, remembers conversation context' },
   usage: '.ai <pesan>',
