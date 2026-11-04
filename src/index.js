@@ -6,6 +6,8 @@ import { createPipeline } from '../src/core/pipeline.js'
 import { startConnection } from '../src/core/connection.js'
 import { startScheduler } from '../src/core/scheduler.js'
 import { startWebLoginWatcher } from './services/web-login-watcher.js'
+import { createSupabaseRest } from './services/supabase-rest.js'
+import { createBridgeStorage, isBridgeEnabled } from './services/web-bridge.js'
 import { createStorage, createAuthState } from '../src/storage/index.js'
 import { say } from './persona/moe.js'
 import { logger } from './services/logger.js'
@@ -33,11 +35,28 @@ if (!botNumber) {
 
 const pipeline = createPipeline({ registry, storage, owners: [ownerNumber], defaultLang })
 const auth = await createAuthState(storage)
+// Jembatan HTTPS data web: bila SUPABASE_REST_URL dan
+// SUPABASE_SERVICE_ROLE_KEY terisi, watcher login web dan flush bot_stats
+// scheduler memakai adapter yang merutekan namespace web ke PostgREST
+// Supabase (storage utama tetap lokal). Bila env kosong, bridgeStorage
+// adalah storage apa adanya dan perilaku lama tidak berubah.
+let bridgeStorage = storage
+if (isBridgeEnabled(process.env)) {
+  bridgeStorage = createBridgeStorage(
+    storage,
+    createSupabaseRest({
+      url: process.env.SUPABASE_REST_URL,
+      key: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    }),
+    { healthFile: join(process.env.LOCAL_DATA_DIR || 'data', 'bridge-health.json') }
+  )
+  logger.info('jembatan HTTPS data web aktif untuk watcher login dan bot_stats')
+}
 // Referensi socket berjalan (diperbarui connection tiap reconnect) untuk scheduler.
 const session = { sock: null }
 startScheduler({
   session,
-  storage,
+  storage: bridgeStorage,
   defaultLang,
   statsSource: () => ({
     startedAt: pipeline.stats.startedAt,
@@ -48,7 +67,7 @@ startScheduler({
 // Watcher login web: mengirim kode verifikasi untuk record pending di
 // namespace web_login_requests (kontrak docs/WEB.md). Berjalan bersama
 // scheduler memakai session socket yang sama.
-startWebLoginWatcher({ session, storage })
+startWebLoginWatcher({ session, storage: bridgeStorage })
 
 await startConnection({
   auth,
