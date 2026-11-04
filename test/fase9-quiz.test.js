@@ -6,13 +6,13 @@ import { say } from '../src/persona/moe.js'
 import { getProfile } from '../src/services/user-service.js'
 import { QUIZ_SETS, WORD_LIST, FLAGS, ELEMENTS, IMAGE_WORDS } from '../src/data/quiz.js'
 import { TRUTHS, DARES, KHODAMS, JOKES } from '../src/data/fun.js'
-import { startQuiz, answerQuiz, giveUp, getSession, normalizeAnswer } from '../src/quiz/engine.js'
+import { startQuiz, answerQuiz, giveUp, getSession, normalizeAnswer, bindQuestionMessage } from '../src/quiz/engine.js'
 import * as family100 from '../plugins/fun/family100.js'
-import * as jawab from '../plugins/fun/jawab.js'
+import * as nyerah from '../plugins/fun/nyerah.js'
 import * as cekjodoh from '../plugins/fun/cekjodoh.js'
 import * as zodiak from '../plugins/fun/zodiak.js'
 
-for (const plugin of [family100, jawab, cekjodoh, zodiak]) {
+for (const plugin of [family100, nyerah, cekjodoh, zodiak]) {
   for (const [lang, msgs] of Object.entries(plugin.i18n)) addMessages(lang, msgs)
 }
 const t = (k, vars) => translate('id', k, vars)
@@ -39,12 +39,13 @@ function fakeSock() {
   }
 }
 
-function ctxFor({ storage, sock, text = '', chat = CHAT }) {
+function ctxFor({ storage, sock, text = '', chat = CHAT, quoted = null, senderDigits = DIGITS }) {
   return {
     sock,
     chat,
-    sender: `${DIGITS}@s.whatsapp.net`,
-    senderDigits: DIGITS,
+    sender: `${senderDigits}@s.whatsapp.net`,
+    senderDigits,
+    quoted,
     pushName: 'Penguji',
     isGroup: true,
     isOwner: false,
@@ -185,26 +186,53 @@ test('engine teks bebas: susunkata, tebakbendera, tebakkimia dengan pencocokan l
   assert.equal(r.correct, true)
 })
 
-test('jawab before: pesan teks biasa diperlakukan sebagai jawaban', async () => {
+test('reply kuis: reply ke pesan pertanyaan dengan jawaban benar tercatat', async () => {
   const storage = memoryStorage()
   const sock = fakeSock()
-  await startQuiz(storage, CHAT, 'tekateki', { lang: 'id', rng: rng0, now: Date.now() })
+  await startQuiz(storage, CHAT, 'tekateki', { lang: 'id', rng: rng0, now: Date.now(), startedBy: DIGITS })
+  await bindQuestionMessage(storage, CHAT, 'QID-1')
   const correctText = QUIZ_SETS.tekateki[0].options[QUIZ_SETS.tekateki[0].answer].id
-  await jawab.before(ctxFor({ storage, sock, text: correctText }))
+  const consumed = await nyerah.before(ctxFor({ storage, sock, text: correctText, quoted: { stanzaId: 'QID-1', sender: '', message: {} } }))
+  assert.equal(consumed, false)
   assert.equal(await getSession(storage, CHAT), null)
   const profile = await getProfile(storage, DIGITS)
   assert.equal(profile.xp, QUIZ_SETS.tekateki[0].points)
   const allText = JSON.stringify([...sock.sent, ...sock.relayed])
-  assert.ok(allText.includes('BENAR'), 'balasan before harus mengumumkan jawaban benar')
+  assert.ok(allText.includes('BENAR'), 'balasan reply harus mengumumkan jawaban benar')
 })
 
-test('jawab before: diam saat tidak ada sesi dan saat pesan berprefix', async () => {
+test('reply kuis: teks biasa tanpa reply tidak dianggap jawaban', async () => {
   const storage = memoryStorage()
   const sock = fakeSock()
-  await jawab.before(ctxFor({ storage, sock, text: 'halo semua' }))
+  await startQuiz(storage, CHAT, 'tekateki', { lang: 'id', rng: rng0, now: Date.now(), startedBy: DIGITS })
+  await bindQuestionMessage(storage, CHAT, 'QID-1')
+  const correctText = QUIZ_SETS.tekateki[0].options[QUIZ_SETS.tekateki[0].answer].id
+  await nyerah.before(ctxFor({ storage, sock, text: correctText }))
   assert.equal(sock.sent.length + sock.relayed.length, 0)
-  await startQuiz(storage, CHAT, 'tekateki', { lang: 'id', rng: rng0, now: Date.now() })
-  await jawab.before(ctxFor({ storage, sock, text: '.menu' }))
+  assert.ok(await getSession(storage, CHAT))
+})
+
+test('reply kuis: reply ke pesan lain dan dari pemain lain diabaikan diam-diam', async () => {
+  const storage = memoryStorage()
+  const sock = fakeSock()
+  await startQuiz(storage, CHAT, 'tekateki', { lang: 'id', rng: rng0, now: Date.now(), startedBy: DIGITS })
+  await bindQuestionMessage(storage, CHAT, 'QID-1')
+  const correctText = QUIZ_SETS.tekateki[0].options[QUIZ_SETS.tekateki[0].answer].id
+  await nyerah.before(ctxFor({ storage, sock, text: correctText, quoted: { stanzaId: 'PESAN-LAIN', sender: '', message: {} } }))
+  assert.equal(sock.sent.length + sock.relayed.length, 0)
+  await nyerah.before(ctxFor({ storage, sock, text: correctText, quoted: { stanzaId: 'QID-1', sender: '', message: {} }, senderDigits: '628999888777' }))
+  assert.equal(sock.sent.length + sock.relayed.length, 0)
+  assert.ok(await getSession(storage, CHAT))
+})
+
+test('reply kuis: diam saat tidak ada sesi dan saat pesan berprefix', async () => {
+  const storage = memoryStorage()
+  const sock = fakeSock()
+  await nyerah.before(ctxFor({ storage, sock, text: 'halo semua', quoted: { stanzaId: 'QID-1', sender: '', message: {} } }))
+  assert.equal(sock.sent.length + sock.relayed.length, 0)
+  await startQuiz(storage, CHAT, 'tekateki', { lang: 'id', rng: rng0, now: Date.now(), startedBy: DIGITS })
+  await bindQuestionMessage(storage, CHAT, 'QID-1')
+  await nyerah.before(ctxFor({ storage, sock, text: '.menu', quoted: { stanzaId: 'QID-1', sender: '', message: {} } }))
   assert.equal(sock.sent.length + sock.relayed.length, 0)
   assert.ok(await getSession(storage, CHAT))
 })
