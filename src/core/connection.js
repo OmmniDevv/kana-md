@@ -99,7 +99,10 @@ export async function startConnection({ auth, botNumber, ownerNumber, botName = 
         if (stopped) return
         attempt += 1
         const backoff = Math.min(30000, 1000 * 2 ** attempt) + Math.floor(Math.random() * 1000)
-        logger.warn({ attempt, backoff }, 'koneksi putus, reconnect')
+        logger.warn(
+          { attempt, backoff, statusCode, err: lastDisconnect?.error?.message },
+          'koneksi putus, reconnect'
+        )
         setTimeout(connect, backoff)
       }
     })
