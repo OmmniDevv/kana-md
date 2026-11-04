@@ -1,5 +1,6 @@
 import { fontSearch, fontDownload } from '../../src/scrapers/font/dafont.js'
 import { sendDocument, MAX_DOCUMENT_BYTES } from '../../src/ui/media.js'
+import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'font',
@@ -23,6 +24,9 @@ export const i18n = {
       header: 'Hasil font buat "{query}":',
       item: '{n}. {title} oleh {author}\nUnduh: .font dl {slug}',
       caption: 'Font {title}, silakan dicek lisensinya dulu sebelum dipakai ya~',
+      btnAgain: 'Cari lagi',
+      btnMenu: 'Menu pencarian',
+      followUp: 'Lanjutan: .font {query} • .menu search',
     },
   },
   en: {
@@ -35,6 +39,9 @@ export const i18n = {
       header: 'Font results for "{query}":',
       item: '{n}. {title} by {author}\nDownload: .font dl {slug}',
       caption: 'Font {title}, please check its license before using it~',
+      btnAgain: 'Search again',
+      btnMenu: 'Search menu',
+      followUp: 'Next: .font {query} • .menu search',
     },
   },
 }
@@ -69,5 +76,16 @@ export async function handler(ctx) {
   search.results.slice(0, 8).forEach((font, i) => {
     lines.push(ctx.t('font.item', { n: i + 1, title: font.title, author: font.author || '-', slug: font.slug }))
   })
-  await ctx.reply(lines.join('\n'))
+  lines.push(ctx.t('font.followUp', { query }))
+  const body = lines.join('\n')
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: 'KANA',
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: [
+      { text: ctx.t('font.btnAgain'), id: `.font ${query}` },
+      { text: ctx.t('font.btnMenu'), id: '.menu search' },
+    ],
+    textFallback: body,
+  })
 }

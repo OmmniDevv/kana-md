@@ -1,4 +1,5 @@
 import { getSongData } from '../../src/scrapers/spotify/metadata.js'
+import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'lirik',
@@ -22,6 +23,10 @@ export const i18n = {
       header: '{title} - {artist}',
       source: 'Sumber lirik: {source}',
       truncated: '\n\n(Dipotong KANA biar nggak kepanjangan~)',
+      btnSpotify: 'Putar via Spotify',
+      btnPlay: 'Putar di YouTube',
+      btnMenu: 'Menu pencarian',
+      followUp: 'Mau dengerin lagunya? .spotify {title} • .play {title} • .menu search',
     },
   },
   en: {
@@ -34,6 +39,10 @@ export const i18n = {
       header: '{title} - {artist}',
       source: 'Lyrics source: {source}',
       truncated: '\n\n(Trimmed by KANA so it does not get too long~)',
+      btnSpotify: 'Play via Spotify',
+      btnPlay: 'Play on YouTube',
+      btnMenu: 'Search menu',
+      followUp: 'Want to hear the song? .spotify {title} • .play {title} • .menu search',
     },
   },
 }
@@ -59,4 +68,17 @@ export async function handler(ctx) {
   await ctx.reply(
     `${ctx.t('lirik.header', { title: data.title, artist: data.artist || '-' })}\n\n${lyrics}\n\n${ctx.t('lirik.source', { source: data.lyricsSource || '-' })}`
   )
+  // Lirik tetap teks biasa (bisa panjang); tombolnya jadi pesan susulan pendek.
+  const body = ctx.t('lirik.followUp', { title: data.title })
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: 'KANA',
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: [
+      { text: ctx.t('lirik.btnSpotify'), id: `.spotify ${data.title}` },
+      { text: ctx.t('lirik.btnPlay'), id: `.play ${data.title}` },
+      { text: ctx.t('lirik.btnMenu'), id: '.menu search' },
+    ],
+    textFallback: body,
+  })
 }

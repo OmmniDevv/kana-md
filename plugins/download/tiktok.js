@@ -1,6 +1,7 @@
 import { tiktokDownload } from '../../src/scrapers/tiktok/tiktok.js'
 import { downloadBuffer } from '../../src/scrapers/runner.js'
 import { sendVideo, sendImage, MAX_VIDEO_BYTES, MAX_IMAGE_BYTES } from '../../src/ui/media.js'
+import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'tiktok',
@@ -21,6 +22,10 @@ export const i18n = {
       failed: 'Mouu, gagal ambil kontennya: {message}. Coba lagi nanti ya~',
       tooBig: 'Aduh, videonya kegedean buat dikirim lewat WhatsApp (di atas 64 MB)~',
       caption: '{title}',
+      btnRetry: 'Unduh ulang',
+      btnMenu: 'Menu unduhan',
+      btnAio: 'Coba .aio',
+      followUp: 'Lanjutan: .tiktok {url} • .menu download',
     },
   },
   en: {
@@ -30,8 +35,26 @@ export const i18n = {
       failed: 'Mouu, failed to fetch the content: {message}. Try again later~',
       tooBig: 'Oops, the video is too big to send over WhatsApp (over 64 MB)~',
       caption: '{title}',
+      btnRetry: 'Download again',
+      btnMenu: 'Download menu',
+      btnAio: 'Try .aio',
+      followUp: 'Next: .tiktok {url} • .menu download',
     },
   },
+}
+
+// Tombol susulan sesudah media terkirim: unduh ulang URL yang sama + menu
+// unduhan. URL tidak tersedia: menu unduhan + .aio saja.
+export function buildTiktokButtons(url, t) {
+  return url
+    ? [
+        { text: t('tiktok.btnRetry'), id: `.tiktok ${url}` },
+        { text: t('tiktok.btnMenu'), id: '.menu download' },
+      ]
+    : [
+        { text: t('tiktok.btnMenu'), id: '.menu download' },
+        { text: t('tiktok.btnAio'), id: '.aio' },
+      ]
 }
 
 export async function handler(ctx) {
@@ -48,12 +71,20 @@ export async function handler(ctx) {
         const media = await downloadBuffer(imageUrl, { maxBytes: MAX_IMAGE_BYTES })
         await sendImage(ctx, media.buffer, { caption: index === 0 ? caption : undefined })
       }
-      return
+    } else {
+      const media = await downloadBuffer(data.video, { maxBytes: MAX_VIDEO_BYTES })
+      await sendVideo(ctx, media.buffer, { caption })
     }
-    const media = await downloadBuffer(data.video, { maxBytes: MAX_VIDEO_BYTES })
-    await sendVideo(ctx, media.buffer, { caption })
   } catch (err) {
     if (err.code === 'TOO_BIG') return ctx.reply(ctx.t('tiktok.tooBig'))
     return ctx.reply(ctx.t('tiktok.failed', { message: err.message }))
   }
+  const body = [caption, ctx.t('tiktok.followUp', { url })].join('\n')
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: 'KANA',
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: buildTiktokButtons(url, ctx.t),
+    textFallback: body,
+  })
 }

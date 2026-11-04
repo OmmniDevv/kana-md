@@ -1,6 +1,7 @@
 import { instagramDownload } from '../../src/scrapers/instagram/instagram.js'
 import { downloadBuffer } from '../../src/scrapers/runner.js'
 import { sendVideo, sendImage, MAX_VIDEO_BYTES, MAX_IMAGE_BYTES } from '../../src/ui/media.js'
+import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'ig',
@@ -21,6 +22,10 @@ export const i18n = {
       failed: 'Mouu, gagal ambil medianya: {message}. Pastikan linknya dari akun publik ya~',
       tooBig: 'Aduh, ada media yang kegedean buat dikirim lewat WhatsApp, jadi KANA lewati ya~',
       caption: '{title}',
+      btnRetry: 'Unduh ulang',
+      btnMenu: 'Menu unduhan',
+      btnAio: 'Coba .aio',
+      followUp: 'Lanjutan: .ig {url} • .menu download',
     },
   },
   en: {
@@ -30,8 +35,26 @@ export const i18n = {
       failed: 'Mouu, failed to fetch the media: {message}. Make sure the link is from a public account~',
       tooBig: 'Oops, some media was too big to send over WhatsApp, so KANA skipped it~',
       caption: '{title}',
+      btnRetry: 'Download again',
+      btnMenu: 'Download menu',
+      btnAio: 'Try .aio',
+      followUp: 'Next: .ig {url} • .menu download',
     },
   },
+}
+
+// Tombol susulan sesudah media terkirim: unduh ulang URL yang sama + menu
+// unduhan. URL tidak tersedia: menu unduhan + .aio saja.
+export function buildIgButtons(url, t) {
+  return url
+    ? [
+        { text: t('ig.btnRetry'), id: `.ig ${url}` },
+        { text: t('ig.btnMenu'), id: '.menu download' },
+      ]
+    : [
+        { text: t('ig.btnMenu'), id: '.menu download' },
+        { text: t('ig.btnAio'), id: '.aio' },
+      ]
 }
 
 export async function handler(ctx) {
@@ -57,4 +80,12 @@ export async function handler(ctx) {
     }
   }
   if (skipped) await ctx.reply(ctx.t('ig.tooBig'))
+  const body = [ctx.t('ig.caption', { title: result.result.title }), ctx.t('ig.followUp', { url })].join('\n')
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: 'KANA',
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: buildIgButtons(url, ctx.t),
+    textFallback: body,
+  })
 }

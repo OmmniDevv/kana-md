@@ -1,6 +1,7 @@
 import { pinterestSearch } from '../../src/scrapers/pinterest/pinterest.js'
 import { downloadBuffer } from '../../src/scrapers/runner.js'
 import { sendImage, MAX_IMAGE_BYTES } from '../../src/ui/media.js'
+import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'pinterest',
@@ -22,6 +23,10 @@ export const i18n = {
       caption: '{title}',
       moreHeader: 'Hasil lain buat "{query}":',
       item: '{n}. {title}\n{url}',
+      btnAgain: 'Cari lagi',
+      btnImages: 'Cari di web',
+      btnMenu: 'Menu unduhan',
+      followUp: 'Lanjutan: .pinterest {query} • .gambar {query} • .menu download',
     },
   },
   en: {
@@ -32,6 +37,10 @@ export const i18n = {
       caption: '{title}',
       moreHeader: 'More results for "{query}":',
       item: '{n}. {title}\n{url}',
+      btnAgain: 'Search again',
+      btnImages: 'Search the web',
+      btnMenu: 'Download menu',
+      followUp: 'Next: .pinterest {query} • .gambar {query} • .menu download',
     },
   },
 }
@@ -54,11 +63,24 @@ export async function handler(ctx) {
   } catch (err) {
     return ctx.reply(ctx.t('pinterest.failed', { message: err.message }))
   }
+  const lines = []
   if (withImage.length > 1) {
-    const lines = [ctx.t('pinterest.moreHeader', { query })]
+    lines.push(ctx.t('pinterest.moreHeader', { query }))
     withImage.slice(1).forEach((pin, i) => {
       lines.push(ctx.t('pinterest.item', { n: i + 2, title: pin.title || '-', url: pin.url }))
     })
-    await ctx.reply(lines.join('\n'))
   }
+  lines.push(ctx.t('pinterest.followUp', { query }))
+  const body = lines.join('\n')
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: 'KANA',
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: [
+      { text: ctx.t('pinterest.btnAgain'), id: `.pinterest ${query}` },
+      { text: ctx.t('pinterest.btnImages'), id: `.gambar ${query}` },
+      { text: ctx.t('pinterest.btnMenu'), id: '.menu download' },
+    ],
+    textFallback: body,
+  })
 }
