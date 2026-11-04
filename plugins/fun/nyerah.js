@@ -1,5 +1,6 @@
 import { giveUp } from '../../src/quiz/engine.js'
 import { handleQuizReply } from '../../src/quiz/respond.js'
+import { dispatchReply } from '../../src/ui/reply-router.js'
 import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
@@ -61,12 +62,15 @@ export const i18n = {
 
 export const test = { input: '.nyerah', expect: /belum ada kuis|no quiz/i }
 
-// Routing jawaban kuis lewat reply (standar reply-first): hook bersama
-// untuk semua kuis, didelegasikan ke src/quiz/respond.js. Mengembalikan
-// false dari handleQuizReply berarti pesan sudah dikonsumsi sebagai
-// jawaban dan pipeline berhenti memprosesnya.
+// Routing reply bersama (standar reply-first): SATU hook untuk semua
+// alur balasan. Urutan: jawaban kuis (src/quiz/respond.js), lalu binding
+// reply generik (src/ui/reply-router.js) untuk game dan alur lain.
+// Mengembalikan false berarti pesan sudah dikonsumsi dan pipeline
+// berhenti memprosesnya.
 export async function before(ctx) {
-  return handleQuizReply(ctx)
+  const quizResult = await handleQuizReply(ctx)
+  if (quizResult === false) return false
+  return dispatchReply(ctx)
 }
 
 export async function handler(ctx) {
