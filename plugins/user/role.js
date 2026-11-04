@@ -23,8 +23,8 @@ export const ROLES = [
 ]
 
 export const i18n = {
-  id: { role: { body: '🎖️ Role kamu: *{role}*\nLevel: {level} (XP {xp})\nRole berikutnya: {next} {mood}' } },
-  en: { role: { body: '🎖️ Your role: *{role}*\nLevel: {level} (XP {xp})\nNext role: {next} {mood}' } },
+  id: { role: { body: '╭─❏ 🎖️ 「 *ROLE KAMU* 」\n┊ ʀᴏʟᴇ: *{role}*\n┊ ʟᴇᴠᴇʟ: *{level}* (XP {xp})\n┊ ʀᴏʟᴇ ʙᴇʀɪᴋᴜᴛɴʏᴀ: *{next}*\n╰━━━━━━━ {mood}' } },
+  en: { role: { body: '╭─❏ 🎖️ 「 *YOUR ROLE* 」\n┊ ʀᴏʟᴇ: *{role}*\n┊ ʟᴇᴠᴇʟ: *{level}* (XP {xp})\n┊ ɴᴇxᴛ ʀᴏʟᴇ: *{next}*\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.role', expect: /role/i }

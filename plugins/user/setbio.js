@@ -13,18 +13,18 @@ export const config = {
 export const i18n = {
   id: {
     setbio: {
-      empty: 'Biomu masih kosong. Pasang dengan: .setbio Suka kopi dan kode {mood}',
-      current: '📝 BIO KAMU\n\n{bio}\n\nGanti dengan .setbio <teks baru> yaa~',
-      saved: '✅ Bio tersimpan!\n\n{bio}\n\nProfilmu makin hidup sekarang~ {mood}',
-      tooLong: 'Bionya kepanjangan, maksimal 120 karakter yaa~ {mood}',
+      empty: '╭─❏ 📝 「 *BIO KAMU* 」\n┊ Biomu masih kosong nih.\n┊ Pasang dengan: *.setbio Suka kopi dan kode*\n╰━━━━━━━ {mood}',
+      current: '╭─❏ 📝 「 *BIO KAMU* 」\n┊ {bio}\n╰━━━━━━━\nGanti dengan *.setbio <teks baru>* yaa~',
+      saved: '╭─❏ ✅ 「 *BIO TERSIMPAN* 」\n┊ {bio}\n╰━━━━━━━\nProfilmu makin hidup sekarang~ {mood}',
+      tooLong: '╭─❏ ⚠️ 「 *BIO KEPANJANGAN* 」\n┊ Bionya kepanjangan, maksimal 120 karakter yaa~\n╰━━━━━━━ {mood}',
     },
   },
   en: {
     setbio: {
-      empty: 'Your bio is still empty. Set it with: .setbio Coffee and code lover {mood}',
-      current: '📝 YOUR BIO\n\n{bio}\n\nChange it with .setbio <new text>~',
-      saved: '✅ Bio saved!\n\n{bio}\n\nYour profile feels more alive now~ {mood}',
-      tooLong: 'That bio is too long, maximum 120 characters~ {mood}',
+      empty: '╭─❏ 📝 「 *YOUR BIO* 」\n┊ Your bio is still empty.\n┊ Set it with: *.setbio Coffee and code lover*\n╰━━━━━━━ {mood}',
+      current: '╭─❏ 📝 「 *YOUR BIO* 」\n┊ {bio}\n╰━━━━━━━\nChange it with *.setbio <new text>*~',
+      saved: '╭─❏ ✅ 「 *BIO SAVED* 」\n┊ {bio}\n╰━━━━━━━\nYour profile feels more alive now~ {mood}',
+      tooLong: '╭─❏ ⚠️ 「 *BIO TOO LONG* 」\n┊ That bio is too long, maximum 120 characters~\n╰━━━━━━━ {mood}',
     },
   },
 }

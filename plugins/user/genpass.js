@@ -15,14 +15,14 @@ export const i18n = {
   id: {
     genpass: {
       title: 'Generator Kata Sandi',
-      body: '🔐 KATA SANDI BARU UNTUKMU\n\n{password}\n\nPanjang {length} karakter. Simpan di tempat aman dan jangan dibagikan ke siapa pun yaa~ {mood}',
+      body: '╭─❏ 🔐 「 *KATA SANDI BARU* 」\n┊ *{password}*\n┊ ᴘᴀɴᴊᴀɴɢ: *{length} karakter*\n╰━━━━━━━\nSimpan di tempat aman dan jangan dibagikan ke siapa pun yaa~ {mood}',
       btnAgain: '🔐 Buat Lagi',
     },
   },
   en: {
     genpass: {
       title: 'Password Generator',
-      body: '🔐 A NEW PASSWORD FOR YOU\n\n{password}\n\n{length} characters long. Store it somewhere safe and never share it with anyone~ {mood}',
+      body: '╭─❏ 🔐 「 *NEW PASSWORD* 」\n┊ *{password}*\n┊ ʟᴇɴɢᴛʜ: *{length} characters*\n╰━━━━━━━\nStore it somewhere safe and never share it with anyone~ {mood}',
       btnAgain: '🔐 Generate Again',
     },
   },

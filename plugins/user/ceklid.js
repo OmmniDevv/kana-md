@@ -10,8 +10,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { ceklid: { body: '🪪 IDENTITAS CHAT\n\nPengirim: {sender}\nChat: {chat}\nTipe: {type}\nID pesan: {id}' } },
-  en: { ceklid: { body: '🪪 CHAT IDENTITY\n\nSender: {sender}\nChat: {chat}\nType: {type}\nMessage ID: {id}' } },
+  id: { ceklid: { body: '╭─❏ 🪪 「 *IDENTITAS CHAT* 」\n┊ ᴘᴇɴɢɪʀɪᴍ: *{sender}*\n┊ ᴄʜᴀᴛ: *{chat}*\n┊ ᴛɪᴘᴇ: *{type}*\n┊ ɪᴅ ᴘᴇꜱᴀɴ: *{id}*\n╰━━━━━━━' } },
+  en: { ceklid: { body: '╭─❏ 🪪 「 *CHAT IDENTITY* 」\n┊ ꜱᴇɴᴅᴇʀ: *{sender}*\n┊ ᴄʜᴀᴛ: *{chat}*\n┊ ᴛʏᴘᴇ: *{type}*\n┊ ᴍᴇꜱꜱᴀɢᴇ ɪᴅ: *{id}*\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.ceklid', expect: /identitas|identity/i }

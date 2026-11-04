@@ -1,5 +1,3 @@
-import { sendButtons } from '../../src/ui/buttons.js'
-
 export const config = {
   name: 'jam',
   alias: ['waktu', 'waktuglobal', 'worldtime'],
@@ -14,15 +12,13 @@ export const i18n = {
   id: {
     jam: {
       title: 'Jam Sekarang 🕰️',
-      body: 'Sekarang jam segini nih~\n🕰️ WIB (Jakarta): {wib}\n🕰️ WITA (Makassar): {wita}\n🕰️ WIT (Jayapura): {wit}\n🌍 UTC: {utc}\n\n{mood}',
-      btnMenu: 'Menu User',
+      body: '╭─❏ 🕰️ 「 *JAM SEKARANG* 」\n┊ Sekarang jam segini nih~\n┊ 🕰️ WIB (Jakarta): *{wib}*\n┊ 🕰️ WITA (Makassar): *{wita}*\n┊ 🕰️ WIT (Jayapura): *{wit}*\n┊ 🌍 UTC: *{utc}*\n╰━━━━━━━\n{mood}',
     },
   },
   en: {
     jam: {
       title: 'Current Time 🕰️',
-      body: 'The time right now~\n🕰️ WIB (Jakarta): {wib}\n🕰️ WITA (Makassar): {wita}\n🕰️ WIT (Jayapura): {wit}\n🌍 UTC: {utc}\n\n{mood}',
-      btnMenu: 'User Menu',
+      body: '╭─❏ 🕰️ 「 *CURRENT TIME* 」\n┊ The time right now~\n┊ 🕰️ WIB (Jakarta): *{wib}*\n┊ 🕰️ WITA (Makassar): *{wita}*\n┊ 🕰️ WIT (Jayapura): *{wit}*\n┊ 🌍 UTC: *{utc}*\n╰━━━━━━━\n{mood}',
     },
   },
 }
@@ -48,11 +44,5 @@ export async function handler(ctx) {
     utc: clockIn('UTC', now),
     mood: ctx.say('senang'),
   })
-  return sendButtons(ctx.sock, ctx.chat, {
-    title: ctx.t('jam.title'),
-    body,
-    footer: ctx.t('menu.footer'),
-    replies: [{ text: ctx.t('jam.btnMenu'), id: '.menu user' }],
-    textFallback: body,
-  })
+  return ctx.reply(body)
 }

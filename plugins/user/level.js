@@ -15,7 +15,7 @@ export const i18n = {
   id: {
     level: {
       detail:
-        'Level kamu sekarang: {level}\nXP total: {xp}\nProgres level ini: {progress}/{needed} XP ({percent}%)\nSisa ke level {nextLevel}: {toNext} XP lagi. Semangat yaa~ {mood}',
+        '╭─❏ 📈 「 *LEVEL KAMU* 」\n┊ ʟᴇᴠᴇʟ: *{level}*\n┊ xᴘ ᴛᴏᴛᴀʟ: *{xp}*\n┊ ᴘʀᴏɢʀᴇꜱ ʟᴇᴠᴇʟ ɪɴɪ: *{progress}/{needed} XP ({percent}%)*\n┊ ꜱɪꜱᴀ ᴋᴇ ʟᴇᴠᴇʟ {nextLevel}: *{toNext} XP lagi*\n╰━━━━━━━\nSemangat yaa~ {mood}',
       btnLeaderboard: 'Leaderboard',
       btnProfile: 'Profil Aku',
     },
@@ -23,7 +23,7 @@ export const i18n = {
   en: {
     level: {
       detail:
-        'Your current level: {level}\nTotal XP: {xp}\nThis level progress: {progress}/{needed} XP ({percent}%)\nLeft to level {nextLevel}: {toNext} more XP. Keep going~ {mood}',
+        '╭─❏ 📈 「 *YOUR LEVEL* 」\n┊ ʟᴇᴠᴇʟ: *{level}*\n┊ ᴛᴏᴛᴀʟ xᴘ: *{xp}*\n┊ ᴛʜɪꜱ ʟᴇᴠᴇʟ ᴘʀᴏɢʀᴇꜱꜱ: *{progress}/{needed} XP ({percent}%)*\n┊ ʟᴇꜰᴛ ᴛᴏ ʟᴇᴠᴇʟ {nextLevel}: *{toNext} more XP*\n╰━━━━━━━\nKeep going~ {mood}',
       btnLeaderboard: 'Leaderboard',
       btnProfile: 'My Profile',
     },

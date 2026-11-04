@@ -15,18 +15,18 @@ export const XP_PER_COIN = 10
 export const i18n = {
   id: {
     tukarxp: {
-      ask: 'Tulis jumlah XP kelipatan 10 yang mau ditukar yaa. Contoh: .tukarxp 100. XP-mu sekarang {xp}. {mood}',
-      invalid: 'Jumlahnya harus kelipatan {rate} dan minimal {rate} yaa~ {mood}',
-      notEnough: 'XP-mu belum cukup. XP-mu sekarang {xp}, yang mau ditukar {amount}. {mood}',
-      done: '✅ Penukaran beres! {amount} XP menjadi {coins} koin.\nXP tersisa: {xp} | Saldo sekarang: {balance} koin {mood}',
+      ask: '╭─❏ 💱 「 *TUKAR XP* 」\n┊ Tulis jumlah XP kelipatan 10 yang mau ditukar yaa.\n┊ Contoh: *.tukarxp 100*\n┊ XP-mu sekarang: *{xp}*\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ ⚠️ 「 *JUMLAH TIDAK VALID* 」\n┊ Jumlahnya harus kelipatan *{rate}* dan minimal *{rate}* yaa~\n╰━━━━━━━ {mood}',
+      notEnough: '╭─❏ 🌸 「 *XP BELUM CUKUP* 」\n┊ XP-mu sekarang *{xp}*, yang mau ditukar *{amount}*.\n╰━━━━━━━ {mood}',
+      done: '╭─❏ ✅ 「 *PENUKARAN BERES* 」\n┊ *{amount} XP* menjadi *{coins} koin*\n┊ xᴘ ᴛᴇʀꜱɪꜱᴀ: *{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} koin*\n╰━━━━━━━ {mood}',
     },
   },
   en: {
     tukarxp: {
-      ask: 'Write the XP amount in multiples of 10 to exchange. Example: .tukarxp 100. Your XP is now {xp}. {mood}',
-      invalid: 'The amount must be a multiple of {rate} and at least {rate}~ {mood}',
-      notEnough: 'Your XP is not enough. Your XP is now {xp}, you tried to exchange {amount}. {mood}',
-      done: '✅ Exchange done! {amount} XP became {coins} coins.\nXP left: {xp} | Balance now: {balance} coins {mood}',
+      ask: '╭─❏ 💱 「 *EXCHANGE XP* 」\n┊ Write the XP amount in multiples of 10 to exchange.\n┊ Example: *.tukarxp 100*\n┊ Your XP now: *{xp}*\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ ⚠️ 「 *INVALID AMOUNT* 」\n┊ The amount must be a multiple of *{rate}* and at least *{rate}*~\n╰━━━━━━━ {mood}',
+      notEnough: '╭─❏ 🌸 「 *NOT ENOUGH XP* 」\n┊ Your XP is now *{xp}*, you tried to exchange *{amount}*.\n╰━━━━━━━ {mood}',
+      done: '╭─❏ ✅ 「 *EXCHANGE DONE* 」\n┊ *{amount} XP* became *{coins} coins*\n┊ xᴘ ʟᴇꜰᴛ: *{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} coins*\n╰━━━━━━━ {mood}',
     },
   },
 }

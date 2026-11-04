@@ -1,5 +1,6 @@
 import { sendButtons } from '../../src/ui/buttons.js'
 import { xpLeaderboard } from '../../src/services/user-service.js'
+import { smallCaps } from '../../src/config/templates.js'
 
 export const config = {
   name: 'leaderboard',
@@ -14,20 +15,18 @@ export const config = {
 export const i18n = {
   id: {
     leaderboard: {
-      header: 'Papan Peringkat XP KANA\n{rows}\n{mood}',
-      empty: 'Mouu, belum ada data XP sama sekali. Jadi yang pertama yuk, pakai perintah KANA biar XP kamu naik~ {mood}',
+      header: '╭─❏ 🏆 「 *PAPAN PERINGKAT XP* 」\n{rows}\n╰━━━━━━━\n{mood}',
+      empty: '╭─❏ 🏆 「 *PAPAN PERINGKAT XP* 」\n┊ Mouu, belum ada data XP sama sekali.\n┊ Jadi yang pertama yuk, pakai perintah KANA biar XP kamu naik~\n╰━━━━━━━ {mood}',
       you: '(kamu)',
       btnProfile: 'Profil Aku',
-      btnMenu: 'Menu User',
     },
   },
   en: {
     leaderboard: {
-      header: 'KANA XP Leaderboard\n{rows}\n{mood}',
-      empty: 'Mouu, there is no XP data yet at all. Be the first, use KANA commands to raise your XP~ {mood}',
+      header: '╭─❏ 🏆 「 *KANA XP LEADERBOARD* 」\n{rows}\n╰━━━━━━━\n{mood}',
+      empty: '╭─❏ 🏆 「 *KANA XP LEADERBOARD* 」\n┊ Mouu, there is no XP data yet at all.\n┊ Be the first, use KANA commands to raise your XP~\n╰━━━━━━━ {mood}',
       you: '(you)',
       btnProfile: 'My Profile',
-      btnMenu: 'User Menu',
     },
   },
 }
@@ -40,10 +39,12 @@ export async function handler(ctx) {
   if (!rows.length) {
     body = ctx.t('leaderboard.empty', { mood: ctx.say('malu') })
   } else {
+    const medals = ['🥇', '🥈', '🥉']
     const lines = rows.map((row, i) => {
       const label = row.name || `****${String(row.digits).slice(-4)}`
       const marker = row.digits === ctx.senderDigits ? ` ${ctx.t('leaderboard.you')}` : ''
-      return `${i + 1}. ${label} : Lv ${row.level} : ${row.xp} XP${marker}`
+      const prefix = medals[i] ?? `${i + 1}.`
+      return `┊ ${prefix} *${label}* : ${smallCaps('level')} *${row.level}* : *${row.xp} XP*${marker}`
     })
     body = ctx.t('leaderboard.header', { rows: lines.join('\n'), mood: ctx.say('senang') })
   }
@@ -51,10 +52,7 @@ export async function handler(ctx) {
     title: 'KANA',
     body,
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('leaderboard.btnProfile'), id: '.profil' },
-      { text: ctx.t('leaderboard.btnMenu'), id: '.menu user' },
-    ],
+    replies: [{ text: ctx.t('leaderboard.btnProfile'), id: '.profil' }],
     textFallback: body,
   })
 }

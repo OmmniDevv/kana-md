@@ -11,9 +11,9 @@ export const config = {
 export const i18n = {
   id: {
     bmi: {
-      ask: 'Tulis berat (kg) dan tinggi (cm) yaa. Contoh: .bmi 60 165 {mood}',
-      invalid: 'Angkanya kurang masuk akal. Berat 20-400 kg dan tinggi 80-250 cm yaa~ {mood}',
-      body: '⚖️ HITUNG BMI\n\nBerat: {weight} kg | Tinggi: {height} cm\nBMI kamu: *{bmi}*\nKategori: *{category}*\nRentang berat sehat untuk tinggimu: {min}-{max} kg\n\nAngka ini perkiraan umum yaa, bukan diagnosis medis. {mood}',
+      ask: '╭─❏ ⚖️ 「 *HITUNG BMI* 」\n┊ Tulis berat (kg) dan tinggi (cm) yaa.\n┊ Contoh: *.bmi 60 165*\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ ⚠️ 「 *ANGKA TIDAK VALID* 」\n┊ Berat 20 sampai 400 kg dan tinggi 80 sampai 250 cm yaa~\n╰━━━━━━━ {mood}',
+      body: '╭─❏ ⚖️ 「 *HITUNG BMI* 」\n┊ ʙᴇʀᴀᴛ: *{weight} kg*\n┊ ᴛɪɴɢɢɪ: *{height} cm*\n┊ ʙᴍɪ ᴋᴀᴍᴜ: *{bmi}*\n┊ ᴋᴀᴛᴇɢᴏʀɪ: *{category}*\n┊ ʀᴇɴᴛᴀɴɢ ꜱᴇʜᴀᴛ: *{min} sampai {max} kg*\n╰━━━━━━━\nAngka ini perkiraan umum yaa, bukan diagnosis medis. {mood}',
       under: 'Kurus (di bawah normal)',
       normal: 'Normal (sehat)',
       over: 'Berlebih (overweight)',
@@ -22,9 +22,9 @@ export const i18n = {
   },
   en: {
     bmi: {
-      ask: 'Write weight (kg) and height (cm). Example: .bmi 60 165 {mood}',
-      invalid: 'Those numbers look off. Weight 20-400 kg and height 80-250 cm please~ {mood}',
-      body: '⚖️ BMI CALCULATOR\n\nWeight: {weight} kg | Height: {height} cm\nYour BMI: *{bmi}*\nCategory: *{category}*\nHealthy weight range for your height: {min}-{max} kg\n\nThis number is a general estimate, not a medical diagnosis. {mood}',
+      ask: '╭─❏ ⚖️ 「 *BMI CALCULATOR* 」\n┊ Write weight (kg) and height (cm).\n┊ Example: *.bmi 60 165*\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ ⚠️ 「 *INVALID NUMBERS* 」\n┊ Weight 20 to 400 kg and height 80 to 250 cm please~\n╰━━━━━━━ {mood}',
+      body: '╭─❏ ⚖️ 「 *BMI CALCULATOR* 」\n┊ ᴡᴇɪɢʜᴛ: *{weight} kg*\n┊ ʜᴇɪɢʜᴛ: *{height} cm*\n┊ ʏᴏᴜʀ ʙᴍɪ: *{bmi}*\n┊ ᴄᴀᴛᴇɢᴏʀʏ: *{category}*\n┊ ʜᴇᴀʟᴛʜʏ ʀᴀɴɢᴇ: *{min} to {max} kg*\n╰━━━━━━━\nThis number is a general estimate, not a medical diagnosis. {mood}',
       under: 'Underweight',
       normal: 'Normal (healthy)',
       over: 'Overweight',

@@ -16,24 +16,24 @@ export const config = {
 export const i18n = {
   id: {
     tempmail: {
-      created: '📧 EMAIL SEMENTARA KAMU\n\nAlamat: {address}\n\nAlamat ini siap menerima email. Cek inbox pakai .tempmail inbox yaa~',
-      exists: '📧 Email sementaramu sudah ada: {address}\n\nCek inbox pakai .tempmail inbox yaa~',
-      needCreate: 'Kamu belum punya email sementara. Buat dulu pakai .tempmail yaa~',
-      empty: '📭 Inbox {address} masih kosong.',
-      inboxHead: '📬 INBOX {address} ({count} pesan)',
-      item: '{n}. Dari: {from}\n   Subjek: {subject}',
-      fail: 'Gagal urus email sementaranya: {error}',
+      created: '╭─❏ 📧 「 *EMAIL SEMENTARA KAMU* 」\n┊ ᴀʟᴀᴍᴀᴛ: *{address}*\n╰━━━━━━━\nAlamat ini siap menerima email. Cek inbox pakai *.tempmail inbox* yaa~',
+      exists: '╭─❏ 📧 「 *EMAIL SEMENTARA KAMU* 」\n┊ ᴀʟᴀᴍᴀᴛ: *{address}*\n╰━━━━━━━\nEmail sementaramu sudah ada. Cek inbox pakai *.tempmail inbox* yaa~',
+      needCreate: '╭─❏ 📧 「 *EMAIL SEMENTARA* 」\n┊ Kamu belum punya email sementara.\n┊ Buat dulu pakai *.tempmail* yaa~\n╰━━━━━━━',
+      empty: '╭─❏ 📭 「 *INBOX KOSONG* 」\n┊ Inbox *{address}* masih kosong.\n╰━━━━━━━',
+      inboxHead: '╭─❏ 📬 「 *INBOX* 」\n┊ ᴀʟᴀᴍᴀᴛ: *{address}*\n┊ ᴊᴜᴍʟᴀʜ: *{count} pesan*',
+      item: '┊ {n}. ᴅᴀʀɪ: *{from}*\n┊ ꜱᴜʙᴊᴇᴋ: {subject}',
+      fail: '╭─❏ ⚠️ 「 *EMAIL GAGAL* 」\n┊ Gagal urus email sementaranya: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     tempmail: {
-      created: '📧 YOUR TEMPORARY EMAIL\n\nAddress: {address}\n\nThis address is ready to receive mail. Check the inbox with .tempmail inbox~',
-      exists: '📧 Your temporary email already exists: {address}\n\nCheck the inbox with .tempmail inbox~',
-      needCreate: 'You do not have a temporary email yet. Create one with .tempmail first~',
-      empty: '📭 Inbox {address} is still empty.',
-      inboxHead: '📬 INBOX {address} ({count} messages)',
-      item: '{n}. From: {from}\n   Subject: {subject}',
-      fail: 'Failed to handle the temporary email: {error}',
+      created: '╭─❏ 📧 「 *YOUR TEMPORARY EMAIL* 」\n┊ ᴀᴅᴅʀᴇꜱꜱ: *{address}*\n╰━━━━━━━\nThis address is ready to receive mail. Check the inbox with *.tempmail inbox*~',
+      exists: '╭─❏ 📧 「 *YOUR TEMPORARY EMAIL* 」\n┊ ᴀᴅᴅʀᴇꜱꜱ: *{address}*\n╰━━━━━━━\nYour temporary email already exists. Check the inbox with *.tempmail inbox*~',
+      needCreate: '╭─❏ 📧 「 *TEMPORARY EMAIL* 」\n┊ You do not have a temporary email yet.\n┊ Create one with *.tempmail* first~\n╰━━━━━━━',
+      empty: '╭─❏ 📭 「 *EMPTY INBOX* 」\n┊ Inbox *{address}* is still empty.\n╰━━━━━━━',
+      inboxHead: '╭─❏ 📬 「 *INBOX* 」\n┊ ᴀᴅᴅʀᴇꜱꜱ: *{address}*\n┊ ᴄᴏᴜɴᴛ: *{count} messages*',
+      item: '┊ {n}. ꜰʀᴏᴍ: *{from}*\n┊ ꜱᴜʙᴊᴇᴄᴛ: {subject}',
+      fail: '╭─❏ ⚠️ 「 *EMAIL FAILED* 」\n┊ Failed to handle the temporary email: *{error}*\n╰━━━━━━━',
     },
   },
 }
@@ -73,7 +73,7 @@ export async function handler(ctx) {
         from: msg.from?.address ?? '-',
         subject: (msg.subject || '-').slice(0, 70),
       }))
-      return ctx.reply(`${ctx.t('tempmail.inboxHead', { address: saved.address, count: messages.length })}\n\n${lines.join('\n\n')}`)
+      return ctx.reply(`${ctx.t('tempmail.inboxHead', { address: saved.address, count: messages.length })}\n${lines.join('\n')}\n╰━━━━━━━`)
     }
     if (saved) return ctx.reply(ctx.t('tempmail.exists', { address: saved.address }))
     const domains = await api('/domains')

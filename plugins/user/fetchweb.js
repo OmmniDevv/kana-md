@@ -16,16 +16,16 @@ export const config = {
 export const i18n = {
   id: {
     fetchweb: {
-      hint: 'Tulis URL-nya yaa~ Contoh: .fetchweb https://example.com',
-      caption: 'Isi dari {url}',
-      fail: 'Gagal ambil halamannya: {error}',
+      hint: '╭─❏ 🌐 「 *AMBIL WEB* 」\n┊ Tulis URL-nya yaa~\n┊ Contoh: *.fetchweb https://example.com*\n╰━━━━━━━',
+      caption: '╭─❏ 🌐 「 *ISI WEB* 」\n┊ {url}',
+      fail: '╭─❏ ⚠️ 「 *GAGAL AMBIL WEB* 」\n┊ Gagal ambil halamannya: *{error}*\n╰━━━━━━━',
     },
   },
   en: {
     fetchweb: {
-      hint: 'Write the URL please~ Example: .fetchweb https://example.com',
-      caption: 'Content of {url}',
-      fail: 'Failed to fetch the page: {error}',
+      hint: '╭─❏ 🌐 「 *FETCH WEB* 」\n┊ Write the URL please~\n┊ Example: *.fetchweb https://example.com*\n╰━━━━━━━',
+      caption: '╭─❏ 🌐 「 *WEB CONTENT* 」\n┊ {url}',
+      fail: '╭─❏ ⚠️ 「 *FETCH FAILED* 」\n┊ Failed to fetch the page: *{error}*\n╰━━━━━━━',
     },
   },
 }

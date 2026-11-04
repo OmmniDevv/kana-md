@@ -11,14 +11,14 @@ export const config = {
 export const i18n = {
   id: {
     readmore: {
-      ask: 'Pisahkan teks awal dan lanjutannya dengan tanda | yaa. Contoh: .readmore Pengumuman | Isi lengkapnya di sini {mood}',
-      done: 'Nih, salin teks di bawah ini yaa~',
+      ask: '╭─❏ 📖 「 *BACA SELENGKAPNYA* 」\n┊ Pisahkan teks awal dan lanjutannya dengan tanda | yaa.\n┊ Contoh: *.readmore Pengumuman | Isi lengkapnya di sini*\n╰━━━━━━━ {mood}',
+      done: '╭─❏ 📖 「 *BACA SELENGKAPNYA* 」\n┊ Nih, salin teks di bawah ini yaa~\n╰━━━━━━━',
     },
   },
   en: {
     readmore: {
-      ask: 'Separate the intro and the rest with a | sign. Example: .readmore Announcement | The full content is here {mood}',
-      done: 'Here, copy the text below~',
+      ask: '╭─❏ 📖 「 *READ MORE* 」\n┊ Separate the intro and the rest with a | sign.\n┊ Example: *.readmore Announcement | The full content is here*\n╰━━━━━━━ {mood}',
+      done: '╭─❏ 📖 「 *READ MORE* 」\n┊ Here, copy the text below~\n╰━━━━━━━',
     },
   },
 }

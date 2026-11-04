@@ -11,18 +11,18 @@ export const config = {
 export const i18n = {
   id: {
     umur: {
-      ask: 'Tulis tanggal lahirmu yaa, formatnya DD-MM-YYYY. Contoh: .umur 17-08-2008 {mood}',
-      invalid: 'Tanggalnya tidak valid. Pakai format DD-MM-YYYY dan pastikan tanggalnya beneran ada yaa~ {mood}',
-      future: 'Tanggal lahirnya masih di masa depan, belum bisa dihitung umurnya~ {mood}',
-      body: '🎂 HITUNG UMUR\n\nTanggal lahir: {birth}\nUmur: *{years} tahun, {months} bulan, {days} hari*\nTotal hari hidup: {totalDays} hari\nUlang tahun berikutnya: {nextIn} hari lagi ({nextDate}) {mood}',
+      ask: '╭─❏ 🎂 「 *HITUNG UMUR* 」\n┊ Tulis tanggal lahirmu yaa, formatnya DD-MM-YYYY.\n┊ Contoh: *.umur 17-08-2008*\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ ⚠️ 「 *TANGGAL TIDAK VALID* 」\n┊ Pakai format DD-MM-YYYY dan pastikan tanggalnya beneran ada yaa~\n╰━━━━━━━ {mood}',
+      future: '╭─❏ 🌸 「 *BELUM BISA DIHITUNG* 」\n┊ Tanggal lahirnya masih di masa depan, belum bisa dihitung umurnya~\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 🎂 「 *HITUNG UMUR* 」\n┊ ᴛᴀɴɢɢᴀʟ ʟᴀʜɪʀ: *{birth}*\n┊ ᴜᴍᴜʀ: *{years} tahun, {months} bulan, {days} hari*\n┊ ᴛᴏᴛᴀʟ ʜᴀʀɪ ʜɪᴅᴜᴘ: *{totalDays} hari*\n┊ ᴜʟᴀɴɢ ᴛᴀʜᴜɴ ʙᴇʀɪᴋᴜᴛɴʏᴀ: *{nextIn} hari lagi ({nextDate})*\n╰━━━━━━━ {mood}',
     },
   },
   en: {
     umur: {
-      ask: 'Write your birth date, format DD-MM-YYYY. Example: .umur 17-08-2008 {mood}',
-      invalid: 'That date is not valid. Use DD-MM-YYYY and make sure the date really exists~ {mood}',
-      future: 'That birth date is still in the future, the age cannot be counted yet~ {mood}',
-      body: '🎂 AGE CALCULATOR\n\nBirth date: {birth}\nAge: *{years} years, {months} months, {days} days*\nTotal days alive: {totalDays} days\nNext birthday: in {nextIn} days ({nextDate}) {mood}',
+      ask: '╭─❏ 🎂 「 *AGE CALCULATOR* 」\n┊ Write your birth date, format DD-MM-YYYY.\n┊ Example: *.umur 17-08-2008*\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ ⚠️ 「 *INVALID DATE* 」\n┊ Use DD-MM-YYYY and make sure the date really exists~\n╰━━━━━━━ {mood}',
+      future: '╭─❏ 🌸 「 *CANNOT COUNT YET* 」\n┊ That birth date is still in the future, the age cannot be counted yet~\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 🎂 「 *AGE CALCULATOR* 」\n┊ ʙɪʀᴛʜ ᴅᴀᴛᴇ: *{birth}*\n┊ ᴀɢᴇ: *{years} years, {months} months, {days} days*\n┊ ᴛᴏᴛᴀʟ ᴅᴀʏꜱ ᴀʟɪᴠᴇ: *{totalDays} days*\n┊ ɴᴇxᴛ ʙɪʀᴛʜᴅᴀʏ: *in {nextIn} days ({nextDate})*\n╰━━━━━━━ {mood}',
     },
   },
 }

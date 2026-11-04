@@ -14,14 +14,14 @@ export const i18n = {
   id: {
     birthday: {
       title: 'Ulang Tahun',
-      ask: 'Simpan ultahmu dengan: .birthday set 17-08-2008. Lihat daftar dengan .birthday list yaa~ {mood}',
-      invalid: 'Tanggalnya tidak valid, pakai format DD-MM-YYYY yang beneran ada yaa~ {mood}',
-      saved: '🎂 Ultahmu tersimpan: {date}. Sisa {days} hari lagi menuju ultah berikutnya~ {mood}',
-      mine: '🎂 Ultahmu: {date} (sisa {days} hari lagi) {mood}',
-      notSet: 'Ultahmu belum tersimpan. Simpan dengan .birthday set DD-MM-YYYY yaa~ {mood}',
-      listTitle: '🎂 DAFTAR ULANG TAHUN TERSIMPAN',
-      listEmpty: 'Belum ada ultah yang tersimpan. Jadi yang pertama yuk: .birthday set DD-MM-YYYY {mood}',
-      listLine: '• {name}: {date} (sisa {days} hari)',
+      ask: '╭─❏ 🎂 「 *ULANG TAHUN* 」\n┊ Simpan ultahmu dengan: *.birthday set 17-08-2008*\n┊ Lihat daftar dengan *.birthday list* yaa~\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ ⚠️ 「 *TANGGAL TIDAK VALID* 」\n┊ Pakai format DD-MM-YYYY yang beneran ada yaa~\n╰━━━━━━━ {mood}',
+      saved: '╭─❏ 🎂 「 *ULTAH TERSIMPAN* 」\n┊ ᴜʟᴛᴀʜᴍᴜ: *{date}*\n┊ ꜱɪꜱᴀ: *{days} hari lagi* menuju ultah berikutnya~\n╰━━━━━━━ {mood}',
+      mine: '╭─❏ 🎂 「 *ULTAHMU* 」\n┊ ᴛᴀɴɢɢᴀʟ: *{date}*\n┊ ꜱɪꜱᴀ: *{days} hari lagi*\n╰━━━━━━━ {mood}',
+      notSet: '╭─❏ 🎂 「 *ULANG TAHUN* 」\n┊ Ultahmu belum tersimpan nih.\n┊ Simpan dengan *.birthday set DD-MM-YYYY* yaa~\n╰━━━━━━━ {mood}',
+      listTitle: '╭─❏ 🎂 「 *DAFTAR ULANG TAHUN* 」',
+      listEmpty: '╭─❏ 🎂 「 *DAFTAR ULANG TAHUN* 」\n┊ Belum ada ultah yang tersimpan nih.\n┊ Jadi yang pertama yuk: *.birthday set DD-MM-YYYY*\n╰━━━━━━━ {mood}',
+      listLine: '┊ • {name}: *{date}* (ꜱɪꜱᴀ *{days} ʜᴀʀɪ*)',
       btnSet: '🎂 Simpan Punyaku',
       btnList: '🎂 Lihat Daftar',
     },
@@ -29,14 +29,14 @@ export const i18n = {
   en: {
     birthday: {
       title: 'Birthday',
-      ask: 'Save yours with: .birthday set 17-08-2008. See the list with .birthday list~ {mood}',
-      invalid: 'That date is not valid, use a real DD-MM-YYYY date~ {mood}',
-      saved: '🎂 Your birthday is saved: {date}. {days} days left until the next one~ {mood}',
-      mine: '🎂 Your birthday: {date} ({days} days left) {mood}',
-      notSet: 'Your birthday is not saved yet. Save it with .birthday set DD-MM-YYYY~ {mood}',
-      listTitle: '🎂 SAVED BIRTHDAY LIST',
-      listEmpty: 'No birthdays saved yet. Be the first: .birthday set DD-MM-YYYY {mood}',
-      listLine: '• {name}: {date} ({days} days left)',
+      ask: '╭─❏ 🎂 「 *BIRTHDAY* 」\n┊ Save yours with: *.birthday set 17-08-2008*\n┊ See the list with *.birthday list*~\n╰━━━━━━━ {mood}',
+      invalid: '╭─❏ ⚠️ 「 *INVALID DATE* 」\n┊ Use a real DD-MM-YYYY date~\n╰━━━━━━━ {mood}',
+      saved: '╭─❏ 🎂 「 *BIRTHDAY SAVED* 」\n┊ ʏᴏᴜʀ ʙɪʀᴛʜᴅᴀʏ: *{date}*\n┊ ʟᴇꜰᴛ: *{days} days* until the next one~\n╰━━━━━━━ {mood}',
+      mine: '╭─❏ 🎂 「 *YOUR BIRTHDAY* 」\n┊ ᴅᴀᴛᴇ: *{date}*\n┊ ʟᴇꜰᴛ: *{days} days*\n╰━━━━━━━ {mood}',
+      notSet: '╭─❏ 🎂 「 *BIRTHDAY* 」\n┊ Your birthday is not saved yet.\n┊ Save it with *.birthday set DD-MM-YYYY*~\n╰━━━━━━━ {mood}',
+      listTitle: '╭─❏ 🎂 「 *SAVED BIRTHDAY LIST* 」',
+      listEmpty: '╭─❏ 🎂 「 *SAVED BIRTHDAY LIST* 」\n┊ No birthdays saved yet.\n┊ Be the first: *.birthday set DD-MM-YYYY*\n╰━━━━━━━ {mood}',
+      listLine: '┊ • {name}: *{date}* (*{days} days* ʟᴇꜰᴛ)',
       btnSet: '🎂 Save Mine',
       btnList: '🎂 View List',
     },
@@ -76,7 +76,7 @@ export async function handler(ctx) {
       rows.push({ name: rec.name || digits, date: fmtStored(rec.date), days: daysUntil(d, m, today) })
     }
     rows.sort((a, b) => a.days - b.days)
-    const body = `${ctx.t('birthday.listTitle')}\n\n${rows.map((r) => ctx.t('birthday.listLine', r)).join('\n')}`
+    const body = `${ctx.t('birthday.listTitle')}\n${rows.map((r) => ctx.t('birthday.listLine', r)).join('\n')}\n╰━━━━━━━`
     return ctx.reply(body)
   }
   const setMatch = arg.match(/^set\s+(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/i)

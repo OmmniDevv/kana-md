@@ -14,13 +14,13 @@ export const config = {
 export const i18n = {
   id: {
     limit: {
-      info: 'Limit harian kamu tersisa {left} dari {max}. Limitnya reset besok pagi yaa, jadi pakai dengan bijak~ {mood}',
+      info: '╭─❏ 🎫 「 *LIMIT HARIAN* 」\n┊ ꜱɪꜱᴀ ʟɪᴍɪᴛ: *{left} dari {max}*\n┊ ʀᴇꜱᴇᴛ: *besok pagi*\n╰━━━━━━━\nPakai dengan bijak yaa~ {mood}',
       btnProfile: 'Profil Aku',
     },
   },
   en: {
     limit: {
-      info: 'Your daily limit has {left} of {max} left. It resets tomorrow morning, so use it wisely~ {mood}',
+      info: '╭─❏ 🎫 「 *DAILY LIMIT* 」\n┊ ʟɪᴍɪᴛ ʟᴇꜰᴛ: *{left} of {max}*\n┊ ʀᴇꜱᴇᴛ: *tomorrow morning*\n╰━━━━━━━\nUse it wisely~ {mood}',
       btnProfile: 'My Profile',
     },
   },

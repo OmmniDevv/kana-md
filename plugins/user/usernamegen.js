@@ -18,16 +18,16 @@ export const i18n = {
   id: {
     usernamegen: {
       title: 'Generator Username',
-      ask: 'Kasih kata kuncinya dulu yaa, contoh: .usernamegen kana {mood}',
-      body: '✨ SARAN USERNAME DARI "{keyword}"\n\n{list}\n\nPencet tombol buat variasi lain yaa~ {mood}',
+      ask: '╭─❏ ✨ 「 *GENERATOR USERNAME* 」\n┊ Kasih kata kuncinya dulu yaa, contoh: *.usernamegen kana*\n╰━━━━━━━ {mood}',
+      body: '╭─❏ ✨ 「 *SARAN USERNAME* 」\n┊ ᴋᴀᴛᴀ ᴋᴜɴᴄɪ: *"{keyword}"*\n{list}\n╰━━━━━━━\nPencet tombol buat variasi lain yaa~ {mood}',
       btnAgain: '✨ Buat Lagi',
     },
   },
   en: {
     usernamegen: {
       title: 'Username Generator',
-      ask: 'Give me a keyword first, example: .usernamegen kana {mood}',
-      body: '✨ USERNAME IDEAS FROM "{keyword}"\n\n{list}\n\nTap the button for more variations~ {mood}',
+      ask: '╭─❏ ✨ 「 *USERNAME GENERATOR* 」\n┊ Give me a keyword first, example: *.usernamegen kana*\n╰━━━━━━━ {mood}',
+      body: '╭─❏ ✨ 「 *USERNAME IDEAS* 」\n┊ ᴋᴇʏᴡᴏʀᴅ: *"{keyword}"*\n{list}\n╰━━━━━━━\nTap the button for more variations~ {mood}',
       btnAgain: '✨ Generate Again',
     },
   },
@@ -54,7 +54,7 @@ export function generateUsernames(keyword) {
 export async function handler(ctx) {
   const keyword = (ctx.text || '').trim()
   if (!keyword) return ctx.reply(ctx.t('usernamegen.ask', { mood: ctx.say('mikir') }))
-  const list = generateUsernames(keyword).map((u) => `• ${u}`).join('\n')
+  const list = generateUsernames(keyword).map((u) => `┊ • ${u}`).join('\n')
   const body = ctx.t('usernamegen.body', { keyword, list, mood: ctx.say('senang') })
   return sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('usernamegen.title'),

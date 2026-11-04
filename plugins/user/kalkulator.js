@@ -1,4 +1,3 @@
-import { sendButtons } from '../../src/ui/buttons.js'
 import { evaluateExpression, formatValue } from '../../src/services/calculator.js'
 
 export const config = {
@@ -14,25 +13,23 @@ export const config = {
 export const i18n = {
   id: {
     kalkulator: {
-      usage: 'Tulis ekspresinya yaa, contoh: .kalkulator (12+8)*3. Bisa pakai + - * / % ^ dan kurung~ 🧮',
-      result: '🧮 {expr} = {value}\n\n{mood}',
-      divZero: 'Ehh, ada pembagian dengan nol tuh, itu nggak bisa yaa (╥﹏╥)',
-      invalid: 'Ekspresinya belum bener nih. Pakai angka, + - * / % ^, titik desimal, dan kurung aja yaa~',
-      btnMenu: 'Menu User',
+      usage: '╭─❏ 🧮 「 *KALKULATOR* 」\n┊ Tulis ekspresinya yaa, contoh: *.kalkulator (12+8)*3*\n┊ Bisa pakai + - * / % ^ dan kurung~\n╰━━━━━━━',
+      result: '╭─❏ 🧮 「 *HASIL HITUNG* 」\n┊ {expr} = *{value}*\n╰━━━━━━━\n{mood}',
+      divZero: '╭─❏ ⚠️ 「 *PEMBAGIAN NOL* 」\n┊ Ehh, ada pembagian dengan nol tuh, itu nggak bisa yaa (╥﹏╥)\n╰━━━━━━━',
+      invalid: '╭─❏ ⚠️ 「 *EKSPRESI TIDAK VALID* 」\n┊ Ekspresinya belum bener nih.\n┊ Pakai angka, + - * / % ^, titik desimal, dan kurung aja yaa~\n╰━━━━━━━',
     },
   },
   en: {
     kalkulator: {
-      usage: 'Write the expression, example: .kalkulator (12+8)*3. You can use + - * / % ^ and parentheses~ 🧮',
-      result: '🧮 {expr} = {value}\n\n{mood}',
-      divZero: 'Eh, there is a division by zero there, that is not allowed (╥﹏╥)',
-      invalid: 'The expression is not right yet. Use only numbers, + - * / % ^, decimal points, and parentheses~',
-      btnMenu: 'User Menu',
+      usage: '╭─❏ 🧮 「 *CALCULATOR* 」\n┊ Write the expression, example: *.kalkulator (12+8)*3*\n┊ You can use + - * / % ^ and parentheses~\n╰━━━━━━━',
+      result: '╭─❏ 🧮 「 *HASIL HITUNG* 」\n┊ {expr} = *{value}*\n╰━━━━━━━\n{mood}',
+      divZero: '╭─❏ ⚠️ 「 *DIVISION BY ZERO* 」\n┊ Eh, there is a division by zero there, that is not allowed (╥﹏╥)\n╰━━━━━━━',
+      invalid: '╭─❏ ⚠️ 「 *INVALID EXPRESSION* 」\n┊ The expression is not right yet.\n┊ Use only numbers, + - * / % ^, decimal points, and parentheses~\n╰━━━━━━━',
     },
   },
 }
 
-export const test = { input: '.kalkulator (12+8)*3', expect: /= 60/i }
+export const test = { input: '.kalkulator (12+8)*3', expect: /60/ }
 
 export async function handler(ctx) {
   const expr = ctx.text.trim()
@@ -42,11 +39,5 @@ export async function handler(ctx) {
     return ctx.reply(ctx.t(result.reason === 'div-zero' ? 'kalkulator.divZero' : 'kalkulator.invalid'))
   }
   const body = ctx.t('kalkulator.result', { expr, value: formatValue(result.value), mood: ctx.say('senang') })
-  return sendButtons(ctx.sock, ctx.chat, {
-    title: 'KANA',
-    body,
-    footer: ctx.t('menu.footer'),
-    replies: [{ text: ctx.t('kalkulator.btnMenu'), id: '.menu user' }],
-    textFallback: body,
-  })
+  return ctx.reply(body)
 }

@@ -13,30 +13,28 @@ export const config = {
 export const i18n = {
   id: {
     ingatkan: {
-      usage: 'Pakai gini yaa:\n.ingatkan <menit> <teks pengingat>\n.ingatkan list\n.ingatkan batal <nomor>\nMenitnya 1 sampai 10080 (seminggu)~ ⏰',
-      badMinutes: 'Menitnya harus angka bulat 1 sampai 10080 yaa~',
-      saved: 'Siap! KANA ingatkan "{text}" dalam {minutes} menit, sekitar {time} WIB~ ⏰ (•̀ᴗ•́)و',
-      empty: 'Belum ada pengingat aktif nih~ Pasang pakai .ingatkan <menit> <teks> yaa 🌸',
-      listTitle: '⏰ Pengingat aktif {name}:',
-      listItem: '{n}. {time} WIB : {text}',
-      cancelled: 'Pengingat nomor {n} dibatalkan: "{text}"~',
-      notFound: 'Pengingat nomor {n} nggak ada (╥﹏╥)',
+      usage: '╭─❏ ⏰ 「 *PENGINGAT* 」\n┊ Pakai gini yaa:\n┊ .ingatkan <menit> <teks pengingat>\n┊ .ingatkan list\n┊ .ingatkan batal <nomor>\n┊ Menitnya 1 sampai 10080 (seminggu)~\n╰━━━━━━━',
+      badMinutes: '╭─❏ ⚠️ 「 *MENIT TIDAK VALID* 」\n┊ Menitnya harus angka bulat 1 sampai 10080 yaa~\n╰━━━━━━━',
+      saved: '╭─❏ ⏰ 「 *PENGINGAT TERPASANG* 」\n┊ *"{text}"*\n┊ ᴅᴀʟᴀᴍ: *{minutes} menit*\n┊ ꜱᴇᴋɪᴛᴀʀ: *{time} WIB*~ (•̀ᴗ•́)و\n╰━━━━━━━',
+      empty: '╭─❏ ⏰ 「 *PENGINGAT AKTIF* 」\n┊ Belum ada pengingat aktif nih~\n┊ Pasang pakai *.ingatkan <menit> <teks>* yaa 🌸\n╰━━━━━━━',
+      listTitle: '╭─❏ ⏰ 「 *PENGINGAT AKTIF {name}* 」',
+      listItem: '┊ {n}. *{time} WIB* : {text}',
+      cancelled: '╭─❏ ⏰ 「 *PENGINGAT DIBATALKAN* 」\n┊ Pengingat nomor *{n}* dibatalkan: *"{text}"*~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *PENGINGAT TIDAK ADA* 」\n┊ Pengingat nomor *{n}* nggak ada (╥﹏╥)\n╰━━━━━━━',
       btnList: 'Pengingat Aktif',
-      btnMenu: 'Menu User',
     },
   },
   en: {
     ingatkan: {
-      usage: 'Use it like this:\n.ingatkan <minutes> <reminder text>\n.ingatkan list\n.ingatkan batal <number>\nMinutes from 1 to 10080 (a week)~ ⏰',
-      badMinutes: 'The minutes must be a whole number from 1 to 10080~',
-      saved: 'Got it! KANA will remind you "{text}" in {minutes} minutes, around {time} WIB~ ⏰ (•̀ᴗ•́)و',
-      empty: 'No active reminders yet~ Set one with .ingatkan <minutes> <text> 🌸',
-      listTitle: '⏰ {name} active reminders:',
-      listItem: '{n}. {time} WIB : {text}',
-      cancelled: 'Reminder number {n} cancelled: "{text}"~',
-      notFound: 'Reminder number {n} does not exist (╥﹏╥)',
+      usage: '╭─❏ ⏰ 「 *REMINDER* 」\n┊ Use it like this:\n┊ .ingatkan <minutes> <reminder text>\n┊ .ingatkan list\n┊ .ingatkan batal <number>\n┊ Minutes from 1 to 10080 (a week)~\n╰━━━━━━━',
+      badMinutes: '╭─❏ ⚠️ 「 *INVALID MINUTES* 」\n┊ The minutes must be a whole number from 1 to 10080~\n╰━━━━━━━',
+      saved: '╭─❏ ⏰ 「 *REMINDER SET* 」\n┊ *"{text}"*\n┊ ɪɴ: *{minutes} minutes*\n┊ ᴀʀᴏᴜɴᴅ: *{time} WIB*~ (•̀ᴗ•́)و\n╰━━━━━━━',
+      empty: '╭─❏ ⏰ 「 *ACTIVE REMINDERS* 」\n┊ No active reminders yet~\n┊ Set one with *.ingatkan <minutes> <text>* 🌸\n╰━━━━━━━',
+      listTitle: '╭─❏ ⏰ 「 *{name} ACTIVE REMINDERS* 」',
+      listItem: '┊ {n}. *{time} WIB* : {text}',
+      cancelled: '╭─❏ ⏰ 「 *REMINDER CANCELLED* 」\n┊ Reminder number *{n}* cancelled: *"{text}"*~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *REMINDER NOT FOUND* 」\n┊ Reminder number *{n}* does not exist (╥﹏╥)\n╰━━━━━━━',
       btnList: 'Active Reminders',
-      btnMenu: 'User Menu',
     },
   },
 }
@@ -64,7 +62,6 @@ async function withButtons(ctx, body) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('ingatkan.btnList'), id: '.ingatkan list' },
-      { text: ctx.t('ingatkan.btnMenu'), id: '.menu user' },
     ],
     textFallback: body,
   })
@@ -81,6 +78,7 @@ export async function handler(ctx) {
     const body = [
       ctx.t('ingatkan.listTitle', { name: ctx.pushName || ctx.senderDigits }),
       ...items.map((it, i) => ctx.t('ingatkan.listItem', { n: i + 1, time: formatWib(it.at), text: it.text })),
+      '╰━━━━━━━',
     ].join('\n')
     return withButtons(ctx, body)
   }

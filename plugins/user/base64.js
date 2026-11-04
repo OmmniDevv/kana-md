@@ -11,18 +11,18 @@ export const config = {
 export const i18n = {
   id: {
     base64: {
-      ask: 'Tulis teksnya yaa: .base64 halo dunia, atau .base64 decode <kode> {mood}',
-      encoded: '🔐 BASE64\n\n{result}',
-      decoded: '🔓 HASIL DECODE BASE64\n\n{result}',
-      invalid: 'Kode base64nya tidak valid, coba periksa lagi yaa~ {mood}',
+      ask: '╭─❏ 🔐 「 *BASE64* 」\n┊ Tulis teksnya yaa: *.base64 halo dunia*\n┊ Atau decode pakai: *.base64 decode <kode>*\n╰━━━━━━━ {mood}',
+      encoded: '╭─❏ 🔐 「 *BASE64* 」\n┊ {result}\n╰━━━━━━━',
+      decoded: '╭─❏ 🔓 「 *HASIL DECODE BASE64* 」\n┊ {result}\n╰━━━━━━━',
+      invalid: '╭─❏ 🔍 「 *KODE TIDAK VALID* 」\n┊ Kode base64nya tidak valid, coba periksa lagi yaa~\n╰━━━━━━━ {mood}',
     },
   },
   en: {
     base64: {
-      ask: 'Write the text: .base64 hello world, or .base64 decode <code> {mood}',
-      encoded: '🔐 BASE64\n\n{result}',
-      decoded: '🔓 BASE64 DECODE RESULT\n\n{result}',
-      invalid: 'That base64 code is not valid, please check it again~ {mood}',
+      ask: '╭─❏ 🔐 「 *BASE64* 」\n┊ Write the text: *.base64 hello world*\n┊ Or decode with: *.base64 decode <code>*\n╰━━━━━━━ {mood}',
+      encoded: '╭─❏ 🔐 「 *BASE64* 」\n┊ {result}\n╰━━━━━━━',
+      decoded: '╭─❏ 🔓 「 *BASE64 DECODE RESULT* 」\n┊ {result}\n╰━━━━━━━',
+      invalid: '╭─❏ 🔍 「 *INVALID CODE* 」\n┊ That base64 code is not valid, please check it again~\n╰━━━━━━━ {mood}',
     },
   },
 }

@@ -20,14 +20,14 @@ const FLIP = {
 export const i18n = {
   id: {
     fliptext: {
-      ask: 'Tulis teksnya dulu yaa: .fliptext halo semua {mood}',
-      body: '🙃 TEKS TERBALIK\n\n{result}',
+      ask: '╭─❏ 🙃 「 *TEKS TERBALIK* 」\n┊ Tulis teksnya dulu yaa: *.fliptext halo semua*\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 🙃 「 *TEKS TERBALIK* 」\n┊ {result}\n╰━━━━━━━',
     },
   },
   en: {
     fliptext: {
-      ask: 'Write the text first: .fliptext hello everyone {mood}',
-      body: '🙃 FLIPPED TEXT\n\n{result}',
+      ask: '╭─❏ 🙃 「 *FLIPPED TEXT* 」\n┊ Write the text first: *.fliptext hello everyone*\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 🙃 「 *FLIPPED TEXT* 」\n┊ {result}\n╰━━━━━━━',
     },
   },
 }

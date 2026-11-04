@@ -13,32 +13,30 @@ export const config = {
 export const i18n = {
   id: {
     catatan: {
-      usage: 'Pakai gini yaa:\n.catatan simpan <judul> = <isi>\n.catatan lihat <judul>\n.catatan hapus <judul>\n.catatan list',
-      badTitle: 'Judulnya kepanjangan nih, maksimal 30 karakter yaa~',
-      saved: 'Catatan "{title}" tersimpan~ 📝 (•̀ᴗ•́)و',
-      empty: 'Kamu belum punya catatan nih~ Simpan pakai .catatan simpan <judul> = <isi> yaa 🌸',
-      listTitle: '📝 Catatan {name}:',
-      listItem: '• {title}',
-      show: '📝 {title}\n{text}',
-      notFound: 'Catatan "{title}" nggak ketemu (╥﹏╥) Cek .catatan list dulu yaa~',
-      deleted: 'Catatan "{title}" dihapus~',
+      usage: '╭─❏ 📝 「 *CATATAN* 」\n┊ Pakai gini yaa:\n┊ .catatan simpan <judul> = <isi>\n┊ .catatan lihat <judul>\n┊ .catatan hapus <judul>\n┊ .catatan list\n╰━━━━━━━',
+      badTitle: '╭─❏ ⚠️ 「 *JUDUL KEPANJANGAN* 」\n┊ Judulnya kepanjangan nih, maksimal 30 karakter yaa~\n╰━━━━━━━',
+      saved: '╭─❏ 📝 「 *CATATAN TERSIMPAN* 」\n┊ *"{title}"* tersimpan~ (•̀ᴗ•́)و\n╰━━━━━━━',
+      empty: '╭─❏ 📝 「 *CATATAN KAMU* 」\n┊ Kamu belum punya catatan nih~\n┊ Simpan pakai *.catatan simpan <judul> = <isi>* yaa 🌸\n╰━━━━━━━',
+      listTitle: '╭─❏ 📝 「 *CATATAN {name}* 」',
+      listItem: '┊ • {title}',
+      show: '╭─❏ 📝 「 *{title}* 」\n┊ {text}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *CATATAN TIDAK KETEMU* 」\n┊ *"{title}"* nggak ketemu (╥﹏╥)\n┊ Cek *.catatan list* dulu yaa~\n╰━━━━━━━',
+      deleted: '╭─❏ 🗑️ 「 *CATATAN DIHAPUS* 」\n┊ *"{title}"* dihapus~\n╰━━━━━━━',
       btnList: 'Daftar Catatan',
-      btnMenu: 'Menu User',
     },
   },
   en: {
     catatan: {
-      usage: 'Use it like this:\n.catatan simpan <title> = <content>\n.catatan lihat <title>\n.catatan hapus <title>\n.catatan list',
-      badTitle: 'That title is too long, maximum 30 characters~',
-      saved: 'Note "{title}" saved~ 📝 (•̀ᴗ•́)و',
-      empty: 'You have no notes yet~ Save one with .catatan simpan <title> = <content> 🌸',
-      listTitle: '📝 {name} notes:',
+      usage: '╭─❏ 📝 「 *NOTES* 」\n┊ Use it like this:\n┊ .catatan simpan <title> = <content>\n┊ .catatan lihat <title>\n┊ .catatan hapus <title>\n┊ .catatan list\n╰━━━━━━━',
+      badTitle: '╭─❏ ⚠️ 「 *TITLE TOO LONG* 」\n┊ That title is too long, maximum 30 characters~\n╰━━━━━━━',
+      saved: '╭─❏ 📝 「 *NOTE SAVED* 」\n┊ *"{title}"* saved~ (•̀ᴗ•́)و\n╰━━━━━━━',
+      empty: '╭─❏ 📝 「 *YOUR NOTES* 」\n┊ You have no notes yet~\n┊ Save one with *.catatan simpan <title> = <content>* 🌸\n╰━━━━━━━',
+      listTitle: '╭─❏ 📝 「 *{name} NOTES* 」',
       listItem: '• {title}',
-      show: '📝 {title}\n{text}',
-      notFound: 'Note "{title}" was not found (╥﹏╥) Check .catatan list first~',
-      deleted: 'Note "{title}" deleted~',
+      show: '╭─❏ 📝 「 *{title}* 」\n┊ {text}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *NOTE NOT FOUND* 」\n┊ *"{title}"* was not found (╥﹏╥)\n┊ Check *.catatan list* first~\n╰━━━━━━━',
+      deleted: '╭─❏ 🗑️ 「 *NOTE DELETED* 」\n┊ *"{title}"* deleted~\n╰━━━━━━━',
       btnList: 'Note List',
-      btnMenu: 'User Menu',
     },
   },
 }
@@ -57,7 +55,6 @@ async function withButtons(ctx, body) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('catatan.btnList'), id: '.catatan list' },
-      { text: ctx.t('catatan.btnMenu'), id: '.menu user' },
     ],
     textFallback: body,
   })
@@ -105,6 +102,7 @@ export async function handler(ctx) {
     const body = [
       ctx.t('catatan.listTitle', { name: ctx.pushName || ctx.senderDigits }),
       ...titles.map((title) => ctx.t('catatan.listItem', { title })),
+      '╰━━━━━━━',
     ].join('\n')
     return withButtons(ctx, body)
   }

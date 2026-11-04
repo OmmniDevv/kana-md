@@ -13,33 +13,33 @@ export const config = {
 export const i18n = {
   id: {
     todo: {
-      usage: 'Pakai gini yaa:\n.todo add <tugas>\n.todo list\n.todo done <nomor>\n.todo del <nomor>\n.todo clear',
-      empty: 'Daftar tugasmu masih kosong nih~ Tambah pakai .todo add <tugas> yaa 🌸',
-      added: 'Siap, tugas ditambah: "{text}" (nomor {n})~ (•̀ᴗ•́)و',
-      listTitle: '📝 Daftar tugas {name}:',
-      item: '{n}. {mark} {text}',
+      usage: '╭─❏ 📝 「 *CARA PAKAI TODO* 」\n┊ .todo add <tugas>\n┊ .todo list\n┊ .todo done <nomor>\n┊ .todo del <nomor>\n┊ .todo clear\n╰━━━━━━━',
+      empty: '╭─❏ 📝 「 *DAFTAR TUGAS* 」\n┊ Daftar tugasmu masih kosong nih~\n┊ Tambah pakai *.todo add <tugas>* yaa 🌸\n╰━━━━━━━',
+      added: '╭─❏ ✅ 「 *TUGAS DITAMBAH* 」\n┊ *"{text}"*\n┊ ɴᴏᴍᴏʀ: *{n}*~ (•̀ᴗ•́)و\n╰━━━━━━━',
+      listTitle: '╭─❏ 📝 「 *DAFTAR TUGAS {name}* 」',
+      item: '┊ {n}. {mark} {text}',
       doneMark: '✅',
       openMark: '⬜',
-      done: 'Horee, tugas nomor {n} ditandai selesai: "{text}"~ 🎉',
-      deleted: 'Tugas nomor {n} dihapus: "{text}"~',
-      cleared: 'Semua tugas dibersihkan. Lembaran baru nih~ ✨',
-      notFound: 'Nomor tugas {n} nggak ada di daftarmu (╥﹏╥)',
+      done: '╭─❏ 🎉 「 *TUGAS SELESAI* 」\n┊ Horee, tugas nomor *{n}* ditandai selesai:\n┊ *"{text}"*~\n╰━━━━━━━',
+      deleted: '╭─❏ 🗑️ 「 *TUGAS DIHAPUS* 」\n┊ Tugas nomor *{n}* dihapus:\n┊ *"{text}"*~\n╰━━━━━━━',
+      cleared: '╭─❏ ✨ 「 *DAFTAR DIBERSIHKAN* 」\n┊ Semua tugas dibersihkan. Lembaran baru nih~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *TUGAS TIDAK KETEMU* 」\n┊ Nomor tugas *{n}* nggak ada di daftarmu (╥﹏╥)\n╰━━━━━━━',
       btnList: 'Lihat Daftar',
     },
   },
   en: {
     todo: {
-      usage: 'Use it like this:\n.todo add <task>\n.todo list\n.todo done <number>\n.todo del <number>\n.todo clear',
-      empty: 'Your todo list is still empty~ Add one with .todo add <task> 🌸',
-      added: 'Done, task added: "{text}" (number {n})~ (•̀ᴗ•́)و',
-      listTitle: '📝 {name} todo list:',
-      item: '{n}. {mark} {text}',
+      usage: '╭─❏ 📝 「 *HOW TO USE TODO* 」\n┊ .todo add <task>\n┊ .todo list\n┊ .todo done <number>\n┊ .todo del <number>\n┊ .todo clear\n╰━━━━━━━',
+      empty: '╭─❏ 📝 「 *TODO LIST* 」\n┊ Your todo list is still empty~\n┊ Add one with *.todo add <task>* 🌸\n╰━━━━━━━',
+      added: '╭─❏ ✅ 「 *TASK ADDED* 」\n┊ *"{text}"*\n┊ ɴᴜᴍʙᴇʀ: *{n}*~ (•̀ᴗ•́)و\n╰━━━━━━━',
+      listTitle: '╭─❏ 📝 「 *{name} TODO LIST* 」',
+      item: '┊ {n}. {mark} {text}',
       doneMark: '✅',
       openMark: '⬜',
-      done: 'Hooray, task number {n} marked done: "{text}"~ 🎉',
-      deleted: 'Task number {n} deleted: "{text}"~',
-      cleared: 'All tasks cleared. A fresh sheet~ ✨',
-      notFound: 'Task number {n} is not on your list (╥﹏╥)',
+      done: '╭─❏ 🎉 「 *TASK DONE* 」\n┊ Hooray, task number *{n}* marked done:\n┊ *"{text}"*~\n╰━━━━━━━',
+      deleted: '╭─❏ 🗑️ 「 *TASK DELETED* 」\n┊ Task number *{n}* deleted:\n┊ *"{text}"*~\n╰━━━━━━━',
+      cleared: '╭─❏ ✨ 「 *LIST CLEARED* 」\n┊ All tasks cleared. A fresh sheet~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *TASK NOT FOUND* 」\n┊ Task number *{n}* is not on your list (╥﹏╥)\n╰━━━━━━━',
       btnList: 'View List',
     },
   },
@@ -64,6 +64,7 @@ function listBody(ctx, todos) {
       ctx.t('todo.item', { n: i + 1, mark: item.done ? ctx.t('todo.doneMark') : ctx.t('todo.openMark'), text: item.text })
     )
   })
+  lines.push('╰━━━━━━━')
   return lines.join('\n')
 }
 

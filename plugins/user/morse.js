@@ -20,16 +20,16 @@ const FROM_MORSE = Object.fromEntries(Object.entries(MORSE).map(([k, v]) => [v, 
 export const i18n = {
   id: {
     morse: {
-      ask: 'Tulis teks atau kode morsenya yaa: .morse halo dunia {mood}',
-      encoded: '📡 KODE MORSE\n\n{result}',
-      decoded: '📡 HASIL DECODE MORSE\n\n{result}',
+      ask: '╭─❏ 📡 「 *KODE MORSE* 」\n┊ Tulis teks atau kode morsenya yaa: *.morse halo dunia*\n╰━━━━━━━ {mood}',
+      encoded: '╭─❏ 📡 「 *KODE MORSE* 」\n┊ {result}\n╰━━━━━━━',
+      decoded: '╭─❏ 📡 「 *HASIL DECODE MORSE* 」\n┊ {result}\n╰━━━━━━━',
     },
   },
   en: {
     morse: {
-      ask: 'Write the text or the morse code: .morse hello world {mood}',
-      encoded: '📡 MORSE CODE\n\n{result}',
-      decoded: '📡 MORSE DECODE RESULT\n\n{result}',
+      ask: '╭─❏ 📡 「 *MORSE CODE* 」\n┊ Write the text or the morse code: *.morse hello world*\n╰━━━━━━━ {mood}',
+      encoded: '╭─❏ 📡 「 *MORSE CODE* 」\n┊ {result}\n╰━━━━━━━',
+      decoded: '╭─❏ 📡 「 *MORSE DECODE RESULT* 」\n┊ {result}\n╰━━━━━━━',
     },
   },
 }

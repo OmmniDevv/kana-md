@@ -17,24 +17,22 @@ export const config = {
 export const i18n = {
   id: {
     daftar: {
-      needName: 'Tulis namanya dulu yaa~ Contoh: .daftar Senpai. Atau pencet tombol Daftar Otomatis di bawah, nanti KANA pakai nama WhatsApp kamu (≧▽≦) ✨',
-      success: 'Yayyy, selamat datang, {name}! 🎉 Pendaftaran kamu beres, sekarang kamu resmi jadi member KANA~ {mood}',
-      alreadyTitle: 'Ehh, kamu sudah terdaftar kok~ (≧▽≦)',
-      alreadyBody: '🌸 Nama: {name}\n📅 Terdaftar sejak: {date}\n📱 Nomor: {number}\n\nKetik .menu buat mulai main sama KANA yaa~ ✨',
+      needName: '╭─❏ 🌸 「 *DAFTAR DULU YAA* 」\n┊ Tulis namanya dulu yaa~ Contoh: *.daftar Senpai*\n┊ Atau pencet tombol Daftar Otomatis di bawah, nanti KANA pakai nama WhatsApp kamu (≧▽≦) ✨\n╰━━━━━━━',
+      success: '╭─❏ 🎉 「 *PENDAFTARAN BERES* 」\n┊ Yayyy, selamat datang, *{name}*!\n┊ Sekarang kamu resmi jadi member KANA~\n╰━━━━━━━ {mood}',
+      alreadyTitle: '╭─❏ 🌸 「 *SUDAH TERDAFTAR* 」',
+      alreadyBody: '┊ Ehh, kamu sudah terdaftar kok~ (≧▽≦)\n┊ ɴᴀᴍᴀ: *{name}*\n┊ 📅 ᴛᴇʀᴅᴀꜰᴛᴀʀ ꜱᴇᴊᴀᴋ: *{date}*\n┊ 📱 ɴᴏᴍᴏʀ: *{number}*\n╰━━━━━━━\nKetik .menu buat mulai main sama KANA yaa~ ✨',
       btnAuto: '✨ Daftar Otomatis',
       btnProfile: '👤 Profil Aku',
-      btnMenu: '📋 Menu Utama',
     },
   },
   en: {
     daftar: {
-      needName: 'Write your name first~ Example: .daftar Senpai. Or tap the Auto Register button below and KANA will use your WhatsApp name (≧▽≦) ✨',
-      success: 'Yayyy, welcome, {name}! 🎉 Your registration is done, you are officially a KANA member now~ {mood}',
-      alreadyTitle: 'Eh, you are already registered~ (≧▽≦)',
-      alreadyBody: '🌸 Name: {name}\n📅 Registered since: {date}\n📱 Number: {number}\n\nType .menu to start playing with KANA~ ✨',
+      needName: '╭─❏ 🌸 「 *REGISTER FIRST* 」\n┊ Write your name first~ Example: *.daftar Senpai*\n┊ Or tap the Auto Register button below and KANA will use your WhatsApp name (≧▽≦) ✨\n╰━━━━━━━',
+      success: '╭─❏ 🎉 「 *REGISTRATION DONE* 」\n┊ Yayyy, welcome, *{name}*!\n┊ You are officially a KANA member now~\n╰━━━━━━━ {mood}',
+      alreadyTitle: '╭─❏ 🌸 「 *ALREADY REGISTERED* 」',
+      alreadyBody: '┊ Eh, you are already registered~ (≧▽≦)\n┊ ɴᴀᴍᴇ: *{name}*\n┊ 📅 ʀᴇɢɪꜱᴛᴇʀᴇᴅ ꜱɪɴᴄᴇ: *{date}*\n┊ 📱 ɴᴜᴍʙᴇʀ: *{number}*\n╰━━━━━━━\nType .menu to start playing with KANA~ ✨',
       btnAuto: '✨ Auto Register',
       btnProfile: '👤 My Profile',
-      btnMenu: '📋 Main Menu',
     },
   },
 }
@@ -57,10 +55,7 @@ export async function handler(ctx) {
       title: 'KANA',
       body,
       footer: ctx.t('menu.footer'),
-      replies: [
-        { text: ctx.t('daftar.btnMenu'), id: '.menu' },
-        { text: ctx.t('daftar.btnProfile'), id: '.profil' },
-      ],
+      replies: [{ text: ctx.t('daftar.btnProfile'), id: '.profil' }],
       textFallback: body,
     })
   }
@@ -90,10 +85,7 @@ export async function handler(ctx) {
     title: 'KANA',
     body,
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('daftar.btnMenu'), id: '.menu' },
-      { text: ctx.t('daftar.btnProfile'), id: '.profil' },
-    ],
+    replies: [{ text: ctx.t('daftar.btnProfile'), id: '.profil' }],
     textFallback: body,
   })
 }

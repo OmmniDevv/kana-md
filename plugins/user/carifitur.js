@@ -13,16 +13,16 @@ export const config = {
 export const i18n = {
   id: {
     carifitur: {
-      hint: 'Tulis kata kuncinya dulu yaa, contoh: .carifitur spotify~',
-      noResult: 'Mouu, nggak ada perintah yang cocok sama "{query}". Coba kata lain yaa~ {mood}',
-      header: 'Hasil pencarian "{query}" ({count}):\n{rows}',
+      hint: '╭─❏ 🔍 「 *CARI FITUR* 」\n┊ Tulis kata kuncinya dulu yaa, contoh: *.carifitur spotify*~\n╰━━━━━━━',
+      noResult: '╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, nggak ada perintah yang cocok sama *"{query}"*.\n┊ Coba kata lain yaa~\n╰━━━━━━━ {mood}',
+      header: '╭─❏ 🔍 「 *HASIL PENCARIAN* 」\n┊ ᴋᴀᴛᴀ ᴋᴜɴᴄɪ: *"{query}"* (*{count}* hasil)\n{rows}\n╰━━━━━━━',
     },
   },
   en: {
     carifitur: {
-      hint: 'Write the keyword first, example: .carifitur spotify~',
-      noResult: 'Mouu, no command matches "{query}". Try another word~ {mood}',
-      header: 'Search results for "{query}" ({count}):\n{rows}',
+      hint: '╭─❏ 🔍 「 *SEARCH FEATURES* 」\n┊ Write the keyword first, example: *.carifitur spotify*~\n╰━━━━━━━',
+      noResult: '╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no command matches *"{query}"*.\n┊ Try another word~\n╰━━━━━━━ {mood}',
+      header: '╭─❏ 🔍 「 *SEARCH RESULTS* 」\n┊ ᴋᴇʏᴡᴏʀᴅ: *"{query}"* (*{count}* results)\n{rows}\n╰━━━━━━━',
     },
   },
 }
@@ -52,7 +52,7 @@ export async function handler(ctx) {
   const rows = shown.map((plugin) => {
     const c = plugin.config
     const desc = c.description?.[ctx.lang] ?? c.description?.id ?? ''
-    return `.${c.name} : ${desc}`
+    return `┊ • .${c.name} : ${desc}`
   })
   const body = ctx.t('carifitur.header', { query: ctx.text.trim(), count: shown.length, rows: rows.join('\n') })
   const replies = shown.slice(0, 5).map((plugin) => ({ text: `.${plugin.config.name}`, id: `.${plugin.config.name}` }))

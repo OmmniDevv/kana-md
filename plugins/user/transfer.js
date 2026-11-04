@@ -14,26 +14,24 @@ export const config = {
 export const i18n = {
   id: {
     transfer: {
-      usage: 'Formatnya: .transfer <nomor tujuan> <jumlah>, contoh: .transfer 628123456789 500. Minimal 100 koin yaa~ 💸',
-      badNumber: 'Nomor tujuannya harus 9 sampai 15 digit angka yaa~',
-      self: 'Ehh, nggak bisa transfer ke diri sendiri dong (≧▽≦) Pilih nomor lain yaa~',
-      badAmount: 'Jumlahnya harus angka bulat minimal 100 koin yaa~',
-      noBalance: 'Mouu, saldo kamu kurang. Kamu punya {balance} koin, mau kirim {amount} koin (╥﹏╥)',
-      done: 'Transfer beres! 💸\nKamu kirim {amount} koin ke {number}.\nSaldo kamu sekarang: {senderBalance} koin\nSaldo penerima sekarang: {receiverBalance} koin\n\n{mood}',
+      usage: '╭─❏ 💸 「 *TRANSFER KOIN* 」\n┊ Formatnya: *.transfer <nomor tujuan> <jumlah>*\n┊ Contoh: *.transfer 628123456789 500*\n┊ Minimal *100 koin* yaa~\n╰━━━━━━━',
+      badNumber: '╭─❏ ⚠️ 「 *NOMOR TIDAK VALID* 」\n┊ Nomor tujuannya harus 9 sampai 15 digit angka yaa~\n╰━━━━━━━',
+      self: '╭─❏ 🙈 「 *ITU NOMORMU SENDIRI* 」\n┊ Ehh, nggak bisa transfer ke diri sendiri dong (≧▽≦)\n┊ Pilih nomor lain yaa~\n╰━━━━━━━',
+      badAmount: '╭─❏ ⚠️ 「 *JUMLAH TIDAK VALID* 」\n┊ Jumlahnya harus angka bulat minimal *100 koin* yaa~\n╰━━━━━━━',
+      noBalance: '╭─❏ 🌸 「 *SALDO KURANG* 」\n┊ Mouu, saldo kamu kurang.\n┊ ꜱᴀʟᴅᴏ ᴋᴀᴍᴜ: *{balance} koin*\n┊ ᴍᴀᴜ ᴋɪʀɪᴍ: *{amount} koin* (╥﹏╥)\n╰━━━━━━━',
+      done: '╭─❏ 💸 「 *TRANSFER BERES* 」\n┊ ᴋᴀᴍᴜ ᴋɪʀɪᴍ: *{amount} koin*\n┊ ᴋᴇ: *{number}*\n┊ ꜱᴀʟᴅᴏ ᴋᴀᴍᴜ: *{senderBalance} koin*\n┊ ꜱᴀʟᴅᴏ ᴘᴇɴᴇʀɪᴍᴀ: *{receiverBalance} koin*\n╰━━━━━━━\n{mood}',
       btnProfile: 'Profil Aku',
-      btnMenu: 'Menu User',
     },
   },
   en: {
     transfer: {
-      usage: 'Format: .transfer <destination number> <amount>, example: .transfer 628123456789 500. Minimum 100 coins~ 💸',
-      badNumber: 'The destination number must be 9 to 15 digits~',
-      self: 'Eh, you cannot transfer to yourself (≧▽≦) Pick another number~',
-      badAmount: 'The amount must be a whole number of at least 100 coins~',
-      noBalance: 'Mouu, your balance is not enough. You have {balance} coins and tried to send {amount} coins (╥﹏╥)',
-      done: 'Transfer done! 💸\nYou sent {amount} coins to {number}.\nYour balance now: {senderBalance} coins\nReceiver balance now: {receiverBalance} coins\n\n{mood}',
+      usage: '╭─❏ 💸 「 *TRANSFER COINS* 」\n┊ Format: *.transfer <destination number> <amount>*\n┊ Example: *.transfer 628123456789 500*\n┊ Minimum *100 coins*~\n╰━━━━━━━',
+      badNumber: '╭─❏ ⚠️ 「 *INVALID NUMBER* 」\n┊ The destination number must be 9 to 15 digits~\n╰━━━━━━━',
+      self: '╭─❏ 🙈 「 *THAT IS YOUR OWN NUMBER* 」\n┊ Eh, you cannot transfer to yourself (≧▽≦)\n┊ Pick another number~\n╰━━━━━━━',
+      badAmount: '╭─❏ ⚠️ 「 *INVALID AMOUNT* 」\n┊ The amount must be a whole number of at least *100 coins*~\n╰━━━━━━━',
+      noBalance: '╭─❏ 🌸 「 *NOT ENOUGH BALANCE* 」\n┊ Mouu, your balance is not enough.\n┊ ʏᴏᴜʀ ʙᴀʟᴀɴᴄᴇ: *{balance} coins*\n┊ ᴛʀɪᴇᴅ ᴛᴏ ꜱᴇɴᴅ: *{amount} coins* (╥﹏╥)\n╰━━━━━━━',
+      done: '╭─❏ 💸 「 *TRANSFER DONE* 」\n┊ ʏᴏᴜ ꜱᴇɴᴛ: *{amount} coins*\n┊ ᴛᴏ: *{number}*\n┊ ʏᴏᴜʀ ʙᴀʟᴀɴᴄᴇ: *{senderBalance} coins*\n┊ ʀᴇᴄᴇɪᴠᴇʀ ʙᴀʟᴀɴᴄᴇ: *{receiverBalance} coins*\n╰━━━━━━━\n{mood}',
       btnProfile: 'My Profile',
-      btnMenu: 'User Menu',
     },
   },
 }
@@ -64,10 +62,7 @@ export async function handler(ctx) {
     title: 'KANA',
     body,
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('transfer.btnProfile'), id: '.profil' },
-      { text: ctx.t('transfer.btnMenu'), id: '.menu user' },
-    ],
+    replies: [{ text: ctx.t('transfer.btnProfile'), id: '.profil' }],
     textFallback: body,
   })
 }

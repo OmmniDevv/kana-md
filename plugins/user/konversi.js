@@ -1,5 +1,3 @@
-import { sendButtons } from '../../src/ui/buttons.js'
-
 export const config = {
   name: 'konversi',
   alias: [],
@@ -58,18 +56,16 @@ export const SUPPORTED =
 export const i18n = {
   id: {
     konversi: {
-      usage: 'Formatnya: .konversi <nilai> <dari> <ke>, contoh: .konversi 5 km m~\nSatuan didukung: {units}',
-      unknown: 'Satuan itu belum KANA kenal atau beda jenis nih (╥﹏╥)\nSatuan didukung: {units}',
-      result: '📐 {value} {from} = {converted} {to}\n\n{mood}',
-      btnMenu: 'Menu User',
+      usage: '╭─❏ 📐 「 *KONVERSI SATUAN* 」\n┊ Formatnya: *.konversi <nilai> <dari> <ke>*\n┊ Contoh: *.konversi 5 km m*~\n┊ ꜱᴀᴛᴜᴀɴ ᴅɪᴅᴜᴋᴜɴɢ: {units}\n╰━━━━━━━',
+      unknown: '╭─❏ ⚠️ 「 *SATUAN TIDAK DIKENAL* 」\n┊ Satuan itu belum KANA kenal atau beda jenis nih (╥﹏╥)\n┊ ꜱᴀᴛᴜᴀɴ ᴅɪᴅᴜᴋᴜɴɢ: {units}\n╰━━━━━━━',
+      result: '╭─❏ 📐 「 *HASIL KONVERSI* 」\n┊ *{value} {from}* = *{converted} {to}*\n╰━━━━━━━\n{mood}',
     },
   },
   en: {
     konversi: {
-      usage: 'Format: .konversi <value> <from> <to>, example: .konversi 5 km m~\nSupported units: {units}',
-      unknown: 'KANA does not know that unit yet, or they are different kinds (╥﹏╥)\nSupported units: {units}',
-      result: '📐 {value} {from} = {converted} {to}\n\n{mood}',
-      btnMenu: 'User Menu',
+      usage: '╭─❏ 📐 「 *UNIT CONVERSION* 」\n┊ Format: *.konversi <value> <from> <to>*\n┊ Example: *.konversi 5 km m*~\n┊ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴜɴɪᴛꜱ: {units}\n╰━━━━━━━',
+      unknown: '╭─❏ ⚠️ 「 *UNKNOWN UNIT* 」\n┊ KANA does not know that unit yet, or they are different kinds (╥﹏╥)\n┊ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴜɴɪᴛꜱ: {units}\n╰━━━━━━━',
+      result: '╭─❏ 📐 「 *HASIL KONVERSI* 」\n┊ *{value} {from}* = *{converted} {to}*\n╰━━━━━━━\n{mood}',
     },
   },
 }
@@ -96,11 +92,5 @@ export async function handler(ctx) {
     to: to.toLowerCase(),
     mood: ctx.say('senang'),
   })
-  return sendButtons(ctx.sock, ctx.chat, {
-    title: 'KANA',
-    body,
-    footer: ctx.t('menu.footer'),
-    replies: [{ text: ctx.t('konversi.btnMenu'), id: '.menu user' }],
-    textFallback: body,
-  })
+  return ctx.reply(body)
 }

@@ -11,16 +11,16 @@ export const config = {
 export const i18n = {
   id: {
     biner: {
-      ask: 'Tulis teks atau binernya yaa: .biner halo {mood}',
-      encoded: '💾 BINER\n\n{result}',
-      decoded: '💾 HASIL DECODE BINER\n\n{result}',
+      ask: '╭─❏ 💾 「 *BINER* 」\n┊ Tulis teks atau binernya yaa: *.biner halo*\n╰━━━━━━━ {mood}',
+      encoded: '╭─❏ 💾 「 *BINER* 」\n┊ {result}\n╰━━━━━━━',
+      decoded: '╭─❏ 💾 「 *HASIL DECODE BINER* 」\n┊ {result}\n╰━━━━━━━',
     },
   },
   en: {
     biner: {
-      ask: 'Write the text or the binary: .biner hello {mood}',
-      encoded: '💾 BINARY\n\n{result}',
-      decoded: '💾 BINARY DECODE RESULT\n\n{result}',
+      ask: '╭─❏ 💾 「 *BINARY* 」\n┊ Write the text or the binary: *.biner hello*\n╰━━━━━━━ {mood}',
+      encoded: '╭─❏ 💾 「 *BINARY* 」\n┊ {result}\n╰━━━━━━━',
+      decoded: '╭─❏ 💾 「 *BINARY DECODE RESULT* 」\n┊ {result}\n╰━━━━━━━',
     },
   },
 }

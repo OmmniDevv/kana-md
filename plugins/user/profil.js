@@ -18,13 +18,12 @@ export const config = {
 export const i18n = {
   id: {
     profil: {
-      card: '╭───「 PROFIL 」───\n│ ◦ Nama : {name}\n│ ◦ Nomor : {number}\n│ ◦ Level : {level}\n│ ◦ XP : {xp} (progres level ini {progress}/{needed}, {percent}%)\n│ ◦ Sisa ke level berikut : {toNext} XP\n│ ◦ Limit hari ini : {limit} tersisa\n│ ◦ Saldo : {balance}\n│ ◦ Status : {status}\n╰━━━━━━━\n{mood}',
+      card: '╭─❏ 👤 「 *PROFIL* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ɴᴏᴍᴏʀ: *{number}*\n┊ ʟᴇᴠᴇʟ: *{level}*\n┊ xᴘ: *{xp}* (ᴘʀᴏɢʀᴇꜱ ʟᴇᴠᴇʟ ɪɴɪ {progress}/{needed}, {percent}%)\n┊ ꜱɪꜱᴀ ᴋᴇ ʟᴇᴠᴇʟ ʙᴇʀɪᴋᴜᴛ: *{toNext} XP*\n┊ ʟɪᴍɪᴛ ʜᴀʀɪ ɪɴɪ: *{limit} tersisa*\n┊ ꜱᴀʟᴅᴏ: *{balance}*\n┊ ꜱᴛᴀᴛᴜꜱ: {status}\n╰━━━━━━━\n{mood}',
       registered: 'Terdaftar sejak {date}',
       unregistered: 'Belum daftar, ketik .daftar <nama> yaa',
       btnLevel: 'Level Aku',
       btnLimit: 'Limit Aku',
       btnLeaderboard: 'Leaderboard',
-      btnMenu: 'Menu User',
       caption: '{name} • Level {level}\nSaldo: {balance} • Limit tersisa: {limit}\n{mood}',
       cardLevel: 'LEVEL',
       cardXp: 'XP',
@@ -40,13 +39,12 @@ export const i18n = {
   },
   en: {
     profil: {
-      card: '╭───「 PROFILE 」───\n│ ◦ Name : {name}\n│ ◦ Number : {number}\n│ ◦ Level : {level}\n│ ◦ XP : {xp} (this level progress {progress}/{needed}, {percent}%)\n│ ◦ Left to next level : {toNext} XP\n│ ◦ Limit today : {limit} left\n│ ◦ Balance : {balance}\n│ ◦ Status : {status}\n╰━━━━━━━\n{mood}',
+      card: '╭─❏ 👤 「 *PROFILE* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ɴᴜᴍʙᴇʀ: *{number}*\n┊ ʟᴇᴠᴇʟ: *{level}*\n┊ xᴘ: *{xp}* (ᴛʜɪꜱ ʟᴇᴠᴇʟ ᴘʀᴏɢʀᴇꜱꜱ {progress}/{needed}, {percent}%)\n┊ ʟᴇꜰᴛ ᴛᴏ ɴᴇxᴛ ʟᴇᴠᴇʟ: *{toNext} XP*\n┊ ʟɪᴍɪᴛ ᴛᴏᴅᴀʏ: *{limit} left*\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance}*\n┊ ꜱᴛᴀᴛᴜꜱ: {status}\n╰━━━━━━━\n{mood}',
       registered: 'Registered since {date}',
       unregistered: 'Not registered yet, type .daftar <name>',
       btnLevel: 'My Level',
       btnLimit: 'My Limit',
       btnLeaderboard: 'Leaderboard',
-      btnMenu: 'User Menu',
       caption: '{name} • Level {level}\nBalance: {balance} • Limit left: {limit}\n{mood}',
       cardLevel: 'LEVEL',
       cardXp: 'XP',
@@ -135,7 +133,6 @@ export async function handler(ctx) {
     { text: ctx.t('profil.btnLevel'), id: '.level' },
     { text: ctx.t('profil.btnLimit'), id: '.limit' },
     { text: ctx.t('profil.btnLeaderboard'), id: '.leaderboard' },
-    { text: ctx.t('profil.btnMenu'), id: '.menu user' },
   ]
   const sendTextCard = () =>
     sendButtons(ctx.sock, ctx.chat, {
