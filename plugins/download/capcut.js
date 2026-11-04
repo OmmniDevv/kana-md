@@ -5,7 +5,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'capcut',
-  alias: ['ccdl'],
+  alias: ['ccdl', 'capcutdl'],
   category: 'download',
   description: { id: 'Unduh video template CapCut tanpa watermark dari link template', en: 'Download a CapCut template video without watermark from a template link' },
   usage: '.capcut <link capcut>',
@@ -17,21 +17,21 @@ export const config = {
 export const i18n = {
   id: {
     capcut: {
-      needUrl: 'Kirim link template CapCut-nya dulu yaa, contoh: .capcut https://www.capcut.com/template-detail/...~',
-      working: 'Sebentar, KANA ambilin video templatenya dulu... {mood}',
-      failed: 'Mouu, gagal ambil videonya: {message}. Coba lagi nanti ya~',
-      tooBig: 'Aduh, videonya kegedean buat dikirim lewat WhatsApp (di atas 64 MB)~',
-      caption: '🎬 {title}',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINK CAPCUT* 」\n┊ ᴄᴏɴᴛᴏʜ: *.capcut https://www.capcut.com/template-detail/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA ambilin video template CapCut-nya dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL VIDEO* 」\n┊ Mouu, gagal ambil videonya: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *VIDEO KEGEDEAN* 」\n┊ Aduh, videonya kegedean buat dikirim lewat WhatsApp (di atas *64 MB*)~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *CAPCUT* 」\n┊ ᴊᴜᴅᴜʟ: *{title}*\n╰━━━━━━━',
       btnRetry: 'Unduh ulang',
     },
   },
   en: {
     capcut: {
-      needUrl: 'Send the CapCut template link first, example: .capcut https://www.capcut.com/template-detail/...~',
-      working: 'One sec, KANA is fetching the template video... {mood}',
-      failed: 'Mouu, failed to fetch the video: {message}. Try again later~',
-      tooBig: 'Oops, the video is too big to send over WhatsApp (over 64 MB)~',
-      caption: '🎬 {title}',
+      needUrl: '╭─❏ 🔗 「 *SEND THE CAPCUT LINK* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.capcut https://www.capcut.com/template-detail/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is fetching the CapCut template video... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH VIDEO* 」\n┊ Mouu, failed to fetch the video: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *VIDEO TOO BIG* 」\n┊ Oops, the video is too big to send over WhatsApp (over *64 MB*)~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *CAPCUT* 」\n┊ ᴛɪᴛʟᴇ: *{title}*\n╰━━━━━━━',
       btnRetry: 'Download again',
     },
   },
@@ -47,13 +47,14 @@ export async function handler(ctx) {
     const { title, videoUrl } = await capcutDownload(url)
     const media = await downloadBuffer(videoUrl, { maxBytes: MAX_VIDEO_BYTES })
     if (media.buffer.length > MAX_VIDEO_BYTES) return ctx.reply(ctx.t('capcut.tooBig'))
-    await sendVideo(ctx, media.buffer, { caption: ctx.t('capcut.caption', { title }) })
+    const caption = ctx.t('capcut.caption', { title })
+    await sendVideo(ctx, media.buffer, { caption })
     return sendButtons(ctx.sock, ctx.chat, {
       title: 'KANA',
-      body: title,
+      body: caption,
       footer: ctx.t('menu.footer'),
       replies: [{ text: ctx.t('capcut.btnRetry'), id: `.capcut ${url}` }],
-      textFallback: '',
+      textFallback: caption,
     })
   } catch (err) {
     return ctx.reply(ctx.t('capcut.failed', { message: err.message }))

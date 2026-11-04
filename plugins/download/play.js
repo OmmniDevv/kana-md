@@ -4,7 +4,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'play',
-  alias: [],
+  alias: ['putar', 'playaudio', 'music'],
   category: 'download',
   description: { id: 'Putar lagu dari YouTube, audio dikirim langsung', en: 'Play a song from YouTube, audio sent directly' },
   usage: '.play <judul lagu>',
@@ -16,30 +16,28 @@ export const config = {
 export const i18n = {
   id: {
     play: {
-      needQuery: 'Ketik judul lagunya dulu yaa, contoh: .play Dewa 19 Kangen~',
-      searching: 'Sebentar, KANA cariin di YouTube dulu... {mood}',
-      notFound: 'Mouu, lagunya nggak ketemu di YouTube. Coba kata kunci lain ya~',
-      failed: 'Mouu, gagal ambil audionya: {message}. Coba lagi nanti ya~',
-      tooBig: 'Aduh, audionya kegedean buat dikirim lewat WhatsApp (di atas 16 MB). Coba lagu yang lebih pendek ya~',
-      caption: '{title} ({duration})',
+      needQuery: '╭─❏ 🎵 「 *KETIK JUDUL LAGUNYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.play Dewa 19 Kangen*\n╰━━━━━━━',
+      searching: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA cariin lagunya di YouTube dulu... {mood}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *LAGU TIDAK KETEMU* 」\n┊ Mouu, lagunya nggak ketemu di YouTube. Coba kata kunci lain ya~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL AUDIO* 」\n┊ Mouu, gagal ambil audionya: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *AUDIO KEGEDEAN* 」\n┊ Aduh, audionya kegedean buat dikirim lewat WhatsApp (di atas *16 MB*).\n┊ Coba lagu yang lebih pendek ya~\n╰━━━━━━━',
+      caption: '╭─❏ 🎵 「 *LAGU DIPUTAR* 」\n┊ ᴊᴜᴅᴜʟ: *{title}*\n┊ ᴅᴜʀᴀꜱɪ: *{duration}*\n╰━━━━━━━',
       btnYts: 'Cari di YouTube',
       btnVideo: 'Unduh videonya',
-      btnMenu: 'Menu unduhan',
-      followUp: 'Lanjutan: .yts {title} • .ytmp4 {url} • .menu download',
+      followUp: 'ʟᴀɴᴊᴜᴛᴀɴ: *.yts {title}* • *.ytmp4 {url}*',
     },
   },
   en: {
     play: {
-      needQuery: 'Type the song title first, example: .play Bohemian Rhapsody~',
-      searching: 'One sec, KANA is searching YouTube... {mood}',
-      notFound: 'Mouu, the song was not found on YouTube. Try other keywords~',
-      failed: 'Mouu, failed to fetch the audio: {message}. Try again later~',
-      tooBig: 'Oops, the audio is too big to send over WhatsApp (over 16 MB). Try a shorter song~',
-      caption: '{title} ({duration})',
+      needQuery: '╭─❏ 🎵 「 *TYPE THE SONG TITLE* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.play Bohemian Rhapsody*\n╰━━━━━━━',
+      searching: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is searching YouTube for the song... {mood}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *SONG NOT FOUND* 」\n┊ Mouu, the song was not found on YouTube. Try other keywords~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH AUDIO* 」\n┊ Mouu, failed to fetch the audio: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *AUDIO TOO BIG* 」\n┊ Oops, the audio is too big to send over WhatsApp (over *16 MB*).\n┊ Try a shorter song~\n╰━━━━━━━',
+      caption: '╭─❏ 🎵 「 *NOW PLAYING* 」\n┊ ᴛɪᴛʟᴇ: *{title}*\n┊ ᴅᴜʀᴀᴛɪᴏɴ: *{duration}*\n╰━━━━━━━',
       btnYts: 'Search on YouTube',
       btnVideo: 'Download the video',
-      btnMenu: 'Download menu',
-      followUp: 'Next: .yts {title} • .ytmp4 {url} • .menu download',
+      followUp: 'ɴᴇxᴛ: *.yts {title}* • *.ytmp4 {url}*',
     },
   },
 }
@@ -50,13 +48,12 @@ export function extractYouTubeUrl(text) {
   return match ? match[0] : null
 }
 
-// Tombol susulan sesudah audio terkirim: cari ulang judulnya, unduh videonya,
-// atau kembali ke menu unduhan.
+// Tombol susulan sesudah audio terkirim: cari ulang judulnya di YouTube
+// atau unduh videonya.
 export function buildPlayButtons({ title, url }, t) {
   const replies = []
   if (title) replies.push({ text: t('play.btnYts'), id: `.yts ${title}` })
   if (url) replies.push({ text: t('play.btnVideo'), id: `.ytmp4 ${url}` })
-  replies.push({ text: t('play.btnMenu'), id: '.menu download' })
   return replies
 }
 
@@ -92,11 +89,13 @@ export async function handler(ctx) {
     ctx.t('play.caption', { title, duration: result.info?.durationText || result.selected?.durationText || '-' }),
     ctx.t('play.followUp', { title, url: url || '-' }),
   ].join('\n')
+  const replies = buildPlayButtons({ title, url }, ctx.t)
+  if (!replies.length) return ctx.reply(body)
   return sendButtons(ctx.sock, ctx.chat, {
     title: 'KANA',
     body,
     footer: ctx.t('menu.footer'),
-    replies: buildPlayButtons({ title, url }, ctx.t),
+    replies,
     textFallback: body,
   })
 }

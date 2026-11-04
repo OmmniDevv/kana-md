@@ -15,18 +15,18 @@ export const config = {
 export const i18n = {
   id: {
     soundcloud: {
-      needUrl: 'Kirim link trek SoundCloud-nya dulu yaa, contoh: .soundcloud https://soundcloud.com/artist/track~',
-      working: 'Sebentar, KANA ambilin audionya dulu... {mood}',
-      failed: 'Mouu, gagal ambil audionya: {message}. Coba lagi nanti ya~',
-      caption: '🎵 {title} — {author}',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINK SOUNDCLOUD* 」\n┊ ᴄᴏɴᴛᴏʜ: *.soundcloud https://soundcloud.com/artist/track*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA ambilin audionya dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL AUDIO* 」\n┊ Mouu, gagal ambil audionya: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      caption: '╭─❏ 🎵 「 *SOUNDCLOUD* 」\n┊ ᴊᴜᴅᴜʟ: *{title}*\n┊ ᴀʀᴛɪꜱ: *{author}*\n╰━━━━━━━',
     },
   },
   en: {
     soundcloud: {
-      needUrl: 'Send the SoundCloud track link first, example: .soundcloud https://soundcloud.com/artist/track~',
-      working: 'One sec, KANA is fetching the audio... {mood}',
-      failed: 'Mouu, failed to fetch the audio: {message}. Try again later~',
-      caption: '🎵 {title} — {author}',
+      needUrl: '╭─❏ 🔗 「 *SEND THE SOUNDCLOUD LINK* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.soundcloud https://soundcloud.com/artist/track*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is fetching the audio... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH AUDIO* 」\n┊ Mouu, failed to fetch the audio: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      caption: '╭─❏ 🎵 「 *SOUNDCLOUD* 」\n┊ ᴛɪᴛʟᴇ: *{title}*\n┊ ᴀʀᴛɪꜱᴛ: *{author}*\n╰━━━━━━━',
     },
   },
 }

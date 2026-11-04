@@ -17,30 +17,28 @@ export const config = {
 export const i18n = {
   id: {
     pinterest: {
-      needQuery: 'Ketik kata kuncinya dulu yaa, contoh: .pinterest anime wallpaper~',
-      notFound: 'Mouu, nggak ada gambar buat kata kunci itu. Coba kata lain ya~',
-      failed: 'Mouu, pencarian Pinterest gagal: {message}. Sumbernya kadang ngambek, coba lagi nanti ya~',
-      caption: '{title}',
-      moreHeader: 'Hasil lain buat "{query}":',
-      item: '{n}. {title}\n{url}',
+      needQuery: '╭─❏ 🔍 「 *KETIK KATA KUNCINYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.pinterest anime wallpaper*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *GAMBAR TIDAK KETEMU* 」\n┊ Mouu, nggak ada gambar buat kata kunci itu. Coba kata lain ya~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian Pinterest gagal: *{message}*\n┊ Sumbernya kadang ngambek, coba lagi nanti ya~\n╰━━━━━━━',
+      caption: '╭─❏ 📌 「 *PINTEREST* 」\n┊ *{title}*\n╰━━━━━━━',
+      moreHeader: '╭─❏ 📌 「 *HASIL PINTEREST* 」\n┊ ᴋᴀᴛᴀ ᴋᴜɴᴄɪ: *{query}*',
+      item: '┊ {n}. *{title}*\n┊ {url}',
       btnAgain: 'Cari lagi',
       btnImages: 'Cari di web',
-      btnMenu: 'Menu unduhan',
-      followUp: 'Lanjutan: .pinterest {query} • .gambar {query} • .menu download',
+      followUp: 'ᴄᴀʀɪ ʟᴀɢɪ: *.pinterest {query}* • *.gambar {query}*',
     },
   },
   en: {
     pinterest: {
-      needQuery: 'Type the keywords first, example: .pinterest anime wallpaper~',
-      notFound: 'Mouu, no images for those keywords. Try others~',
-      failed: 'Mouu, Pinterest search failed: {message}. The source acts up sometimes, try again later~',
-      caption: '{title}',
-      moreHeader: 'More results for "{query}":',
-      item: '{n}. {title}\n{url}',
+      needQuery: '╭─❏ 🔍 「 *TYPE THE KEYWORDS* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.pinterest anime wallpaper*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *NO IMAGES FOUND* 」\n┊ Mouu, no images for those keywords. Try others~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *SEARCH FAILED* 」\n┊ Mouu, Pinterest search failed: *{message}*\n┊ The source acts up sometimes, try again later~\n╰━━━━━━━',
+      caption: '╭─❏ 📌 「 *PINTEREST* 」\n┊ *{title}*\n╰━━━━━━━',
+      moreHeader: '╭─❏ 📌 「 *PINTEREST RESULTS* 」\n┊ ᴋᴇʏᴡᴏʀᴅꜱ: *{query}*',
+      item: '┊ {n}. *{title}*\n┊ {url}',
       btnAgain: 'Search again',
       btnImages: 'Search the web',
-      btnMenu: 'Download menu',
-      followUp: 'Next: .pinterest {query} • .gambar {query} • .menu download',
+      followUp: 'ꜱᴇᴀʀᴄʜ ᴀɢᴀɪɴ: *.pinterest {query}* • *.gambar {query}*',
     },
   },
 }
@@ -65,13 +63,13 @@ export async function handler(ctx) {
   } catch (err) {
     return ctx.reply(ctx.t('pinterest.failed', { message: err.message }))
   }
-  const lines = []
+  const lines = [ctx.t('pinterest.moreHeader', { query })]
   if (withImage.length > 1) {
-    lines.push(ctx.t('pinterest.moreHeader', { query }))
     withImage.slice(1).forEach((pin, i) => {
       lines.push(ctx.t('pinterest.item', { n: i + 2, title: pin.title || '-', url: pin.url }))
     })
   }
+  lines.push('╰━━━━━━━')
   lines.push(ctx.t('pinterest.followUp', { query }))
   const body = lines.join('\n')
   return sendButtons(ctx.sock, ctx.chat, {
@@ -81,7 +79,6 @@ export async function handler(ctx) {
     replies: [
       { text: ctx.t('pinterest.btnAgain'), id: `.pinterest ${query}` },
       { text: ctx.t('pinterest.btnImages'), id: `.gambar ${query}` },
-      { text: ctx.t('pinterest.btnMenu'), id: '.menu download' },
     ],
     textFallback: body,
   })

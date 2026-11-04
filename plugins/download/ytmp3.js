@@ -15,16 +15,16 @@ export const config = {
 export const i18n = {
   id: {
     ytmp3: {
-      needUrl: 'Kirim link YouTube-nya dulu yaa, contoh: .ytmp3 https://www.youtube.com/watch?v=...~',
-      working: 'Sebentar, KANA ambilin audionya dulu... {mood}',
-      failed: 'Mouu, gagal ambil audionya: {message}. Coba lagi nanti ya~',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINK YOUTUBE* 」\n┊ ᴄᴏɴᴛᴏʜ: *.ytmp3 https://www.youtube.com/watch?v=...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA ambilin audionya dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL AUDIO* 」\n┊ Mouu, gagal ambil audionya: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
     },
   },
   en: {
     ytmp3: {
-      needUrl: 'Send the YouTube link first, example: .ytmp3 https://www.youtube.com/watch?v=...~',
-      working: 'One sec, KANA is fetching the audio... {mood}',
-      failed: 'Mouu, failed to fetch the audio: {message}. Try again later~',
+      needUrl: '╭─❏ 🔗 「 *SEND THE YOUTUBE LINK* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.ytmp3 https://www.youtube.com/watch?v=...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is fetching the audio... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH AUDIO* 」\n┊ Mouu, failed to fetch the audio: *{message}*\n┊ Try again later~\n╰━━━━━━━',
     },
   },
 }

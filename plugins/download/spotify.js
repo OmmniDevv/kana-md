@@ -6,7 +6,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'spotify',
-  alias: ['spot'],
+  alias: ['spot', 'spotifydl'],
   category: 'download',
   description: { id: 'Cari lagu Spotify dan kirim audionya', en: 'Search Spotify and send the audio' },
   usage: '.spotify <judul lagu>',
@@ -18,36 +18,34 @@ export const config = {
 export const i18n = {
   id: {
     spotify: {
-      needQuery: 'Ketik judul lagunya dulu yaa, contoh: .spotify Hati-Hati di Jalan~',
-      searching: 'Sebentar, KANA cariin lagunya dulu... {mood}',
-      notFound: 'Mouu, lagunya nggak ketemu. Coba judul atau nama artis lain ya~',
-      failed: 'Mouu, gagal ambil audionya: {message}. Sumber gratisnya kadang ngambek, coba lagi nanti ya~',
-      tooBig: 'Aduh, audionya kegedean buat dikirim lewat WhatsApp (di atas 16 MB). Coba lagu lain ya~',
-      caption: '{title} - {artist}',
-      resultsHeader: 'Hasil pencarian Spotify buat "{query}":',
-      resultItem: '{n}. {title} - {artist}\n.spotify {url}',
+      needQuery: '╭─❏ 🎵 「 *KETIK JUDUL LAGUNYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.spotify Hati-Hati di Jalan*\n╰━━━━━━━',
+      searching: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA cariin lagunya dulu... {mood}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *LAGU TIDAK KETEMU* 」\n┊ Mouu, lagunya nggak ketemu. Coba judul atau nama artis lain ya~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL AUDIO* 」\n┊ Mouu, gagal ambil audionya: *{message}*\n┊ Sumber gratisnya kadang ngambek, coba lagi nanti ya~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *AUDIO KEGEDEAN* 」\n┊ Aduh, audionya kegedean buat dikirim lewat WhatsApp (di atas *16 MB*).\n┊ Coba lagu lain ya~\n╰━━━━━━━',
+      caption: '╭─❏ 🎵 「 *SPOTIFY* 」\n┊ *{title} - {artist}*',
+      resultsHeader: '┊\n┊ 🔍 ʜᴀꜱɪʟ ᴘᴇɴᴄᴀʀɪᴀɴ ʙᴜᴀᴛ *"{query}"*:',
+      resultItem: '┊ {n}. *{title} - {artist}*\n┊ .spotify {url}',
       btnTrack: '{n}. {title}',
       btnAgain: 'Cari lagi',
       btnLyrics: 'Lihat lirik',
-      btnMenu: 'Menu unduhan',
-      followUp: 'Lanjutan: .spotify {input} • .lirik {title} • .menu download',
+      followUp: 'ʟᴀɴᴊᴜᴛᴀɴ: *.spotify {input}* • *.lirik {title}*',
     },
   },
   en: {
     spotify: {
-      needQuery: 'Type the song title first, example: .spotify Bohemian Rhapsody~',
-      searching: 'One sec, KANA is looking for the song... {mood}',
-      notFound: 'Mouu, the song was not found. Try another title or artist name~',
-      failed: 'Mouu, failed to fetch the audio: {message}. The free source acts up sometimes, try again later~',
-      tooBig: 'Oops, the audio is too big to send over WhatsApp (over 16 MB). Try another song~',
-      caption: '{title} - {artist}',
-      resultsHeader: 'Spotify search results for "{query}":',
-      resultItem: '{n}. {title} - {artist}\n.spotify {url}',
+      needQuery: '╭─❏ 🎵 「 *TYPE THE SONG TITLE* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.spotify Bohemian Rhapsody*\n╰━━━━━━━',
+      searching: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is looking for the song... {mood}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *SONG NOT FOUND* 」\n┊ Mouu, the song was not found. Try another title or artist name~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH AUDIO* 」\n┊ Mouu, failed to fetch the audio: *{message}*\n┊ The free source acts up sometimes, try again later~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *AUDIO TOO BIG* 」\n┊ Oops, the audio is too big to send over WhatsApp (over *16 MB*).\n┊ Try another song~\n╰━━━━━━━',
+      caption: '╭─❏ 🎵 「 *SPOTIFY* 」\n┊ *{title} - {artist}*',
+      resultsHeader: '┊\n┊ 🔍 ꜱᴇᴀʀᴄʜ ʀᴇꜱᴜʟᴛꜱ ꜰᴏʀ *"{query}"*:',
+      resultItem: '┊ {n}. *{title} - {artist}*\n┊ .spotify {url}',
       btnTrack: '{n}. {title}',
       btnAgain: 'Search again',
       btnLyrics: 'See lyrics',
-      btnMenu: 'Download menu',
-      followUp: 'Next: .spotify {input} • .lirik {title} • .menu download',
+      followUp: 'ɴᴇxᴛ: *.spotify {input}* • *.lirik {title}*',
     },
   },
 }
@@ -74,7 +72,7 @@ export function buildSpotifyResultButtons(results, t) {
 }
 
 // Tombol susulan sesudah unduhan terkirim: hasil pencarian (maks 5) +
-// cari ulang input terakhir + lirik + menu unduhan. Total maks 10.
+// cari ulang input terakhir + lirik lagu ini. Total maks 10.
 export function buildSpotifyDoneButtons({ input, title, results }, t) {
   const replies = buildSpotifyResultButtons(results, t)
   const add = (text, id) => {
@@ -82,7 +80,6 @@ export function buildSpotifyDoneButtons({ input, title, results }, t) {
   }
   if (input) add(t('spotify.btnAgain'), `.spotify ${input}`)
   if (title) add(t('spotify.btnLyrics'), `.lirik ${title}`)
-  add(t('spotify.btnMenu'), '.menu download')
   return replies
 }
 
@@ -142,13 +139,16 @@ export async function handler(ctx) {
       lines.push(ctx.t('spotify.resultItem', { n: i + 1, title: track.title || '-', artist: track.artist || '-', url: track.url }))
     })
   }
+  lines.push('╰━━━━━━━')
   lines.push(ctx.t('spotify.followUp', { input, title }))
   const body = lines.join('\n')
+  const replies = buildSpotifyDoneButtons({ input, title, results: searchResults }, ctx.t)
+  if (!replies.length) return ctx.reply(body)
   return sendButtons(ctx.sock, ctx.chat, {
     title: 'KANA',
     body,
     footer: ctx.t('menu.footer'),
-    replies: buildSpotifyDoneButtons({ input, title, results: searchResults }, ctx.t),
+    replies,
     textFallback: body,
   })
 }

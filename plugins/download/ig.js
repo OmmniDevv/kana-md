@@ -5,7 +5,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'ig',
-  alias: ['igdl', 'instagram'],
+  alias: ['igdl', 'instagram', 'instagramdl'],
   category: 'download',
   description: { id: 'Unduh foto atau video Instagram dari link', en: 'Download an Instagram photo or video from a link' },
   usage: '.ig <link instagram>',
@@ -17,44 +17,34 @@ export const config = {
 export const i18n = {
   id: {
     ig: {
-      needUrl: 'Kirim link Instagram-nya dulu yaa, contoh: .ig https://www.instagram.com/reel/...~',
-      working: 'Sebentar, KANA ambilin medianya dulu... {mood}',
-      failed: 'Mouu, gagal ambil medianya: {message}. Pastikan linknya dari akun publik ya~',
-      tooBig: 'Aduh, ada media yang kegedean buat dikirim lewat WhatsApp, jadi KANA lewati ya~',
-      caption: '{title}',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINK INSTAGRAM* 」\n┊ ᴄᴏɴᴛᴏʜ: *.ig https://www.instagram.com/reel/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA ambilin medianya dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL MEDIA* 」\n┊ Mouu, gagal ambil medianya: *{message}*\n┊ Pastikan linknya dari akun publik ya~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *ADA MEDIA KEGEDEAN* 」\n┊ Aduh, ada media yang kegedean buat dikirim lewat WhatsApp, jadi KANA lewati ya~\n╰━━━━━━━',
+      caption: '╭─❏ 📸 「 *INSTAGRAM* 」\n┊ *{title}*\n╰━━━━━━━',
       btnRetry: 'Unduh ulang',
-      btnMenu: 'Menu unduhan',
       btnAio: 'Coba .aio',
-      followUp: 'Lanjutan: .ig {url} • .menu download',
+      followUp: 'ʟᴀɴᴊᴜᴛᴀɴ: *.ig {url}*',
     },
   },
   en: {
     ig: {
-      needUrl: 'Send the Instagram link first, example: .ig https://www.instagram.com/reel/...~',
-      working: 'One sec, KANA is fetching the media... {mood}',
-      failed: 'Mouu, failed to fetch the media: {message}. Make sure the link is from a public account~',
-      tooBig: 'Oops, some media was too big to send over WhatsApp, so KANA skipped it~',
-      caption: '{title}',
+      needUrl: '╭─❏ 🔗 「 *SEND THE INSTAGRAM LINK* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.ig https://www.instagram.com/reel/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is fetching the media... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH MEDIA* 」\n┊ Mouu, failed to fetch the media: *{message}*\n┊ Make sure the link is from a public account~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *SOME MEDIA TOO BIG* 」\n┊ Oops, some media was too big to send over WhatsApp, so KANA skipped it~\n╰━━━━━━━',
+      caption: '╭─❏ 📸 「 *INSTAGRAM* 」\n┊ *{title}*\n╰━━━━━━━',
       btnRetry: 'Download again',
-      btnMenu: 'Download menu',
       btnAio: 'Try .aio',
-      followUp: 'Next: .ig {url} • .menu download',
+      followUp: 'ɴᴇxᴛ: *.ig {url}*',
     },
   },
 }
 
-// Tombol susulan sesudah media terkirim: unduh ulang URL yang sama + menu
-// unduhan. URL tidak tersedia: menu unduhan + .aio saja.
+// Tombol susulan sesudah media terkirim: unduh ulang URL yang sama.
+// URL tidak tersedia: coba .aio saja.
 export function buildIgButtons(url, t) {
-  return url
-    ? [
-        { text: t('ig.btnRetry'), id: `.ig ${url}` },
-        { text: t('ig.btnMenu'), id: '.menu download' },
-      ]
-    : [
-        { text: t('ig.btnMenu'), id: '.menu download' },
-        { text: t('ig.btnAio'), id: '.aio' },
-      ]
+  return url ? [{ text: t('ig.btnRetry'), id: `.ig ${url}` }] : [{ text: t('ig.btnAio'), id: '.aio' }]
 }
 
 export const test = { input: '.ig https://www.instagram.com/reel/DMXCETGSC5i/', expect: /Instagram|reel/i }

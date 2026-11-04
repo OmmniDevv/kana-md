@@ -4,7 +4,7 @@ import { sendDocument, MAX_DOCUMENT_BYTES } from '../../src/ui/media.js'
 
 export const config = {
   name: 'mediafire',
-  alias: ['mf'],
+  alias: ['mf', 'mediafiredl'],
   category: 'download',
   description: { id: 'Unduh file dari link MediaFire', en: 'Download a file from a MediaFire link' },
   usage: '.mediafire <link mediafire>',
@@ -16,20 +16,20 @@ export const config = {
 export const i18n = {
   id: {
     mediafire: {
-      needUrl: 'Kirim link MediaFire-nya dulu yaa, contoh: .mediafire https://www.mediafire.com/file/...~',
-      working: 'Sebentar, KANA ambilin filenya dari MediaFire dulu... {mood}',
-      failed: 'Mouu, gagal ambil filenya: {message}. Pastikan linknya benar dan filenya masih ada ya~',
-      tooBig: 'Aduh, filenya kegedean buat dikirim lewat WhatsApp (di atas 64 MB)~',
-      caption: '{fileName}',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINK MEDIAFIRE* 」\n┊ ᴄᴏɴᴛᴏʜ: *.mediafire https://www.mediafire.com/file/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA ambilin filenya dari MediaFire dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL FILE* 」\n┊ Mouu, gagal ambil filenya: *{message}*\n┊ Pastikan linknya benar dan filenya masih ada ya~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *FILE KEGEDEAN* 」\n┊ Aduh, filenya kegedean buat dikirim lewat WhatsApp (di atas *64 MB*)~\n╰━━━━━━━',
+      caption: '╭─❏ 📥 「 *MEDIAFIRE* 」\n┊ ɴᴀᴍᴀ ꜰɪʟᴇ: *{fileName}*\n╰━━━━━━━',
     },
   },
   en: {
     mediafire: {
-      needUrl: 'Send the MediaFire link first, example: .mediafire https://www.mediafire.com/file/...~',
-      working: 'One sec, KANA is fetching the file from MediaFire... {mood}',
-      failed: 'Mouu, failed to fetch the file: {message}. Make sure the link is correct and the file still exists~',
-      tooBig: 'Oops, the file is too big to send over WhatsApp (over 64 MB)~',
-      caption: '{fileName}',
+      needUrl: '╭─❏ 🔗 「 *SEND THE MEDIAFIRE LINK* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.mediafire https://www.mediafire.com/file/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is fetching the file from MediaFire... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH FILE* 」\n┊ Mouu, failed to fetch the file: *{message}*\n┊ Make sure the link is correct and the file still exists~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *FILE TOO BIG* 」\n┊ Oops, the file is too big to send over WhatsApp (over *64 MB*)~\n╰━━━━━━━',
+      caption: '╭─❏ 📥 「 *MEDIAFIRE* 」\n┊ ꜰɪʟᴇ ɴᴀᴍᴇ: *{fileName}*\n╰━━━━━━━',
     },
   },
 }

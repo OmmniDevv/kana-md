@@ -16,22 +16,22 @@ export const config = {
 export const i18n = {
   id: {
     gdrive: {
-      needUrl: 'Kirim link Google Drive-nya dulu yaa, contoh: .gdrive https://drive.google.com/file/d/...~',
-      working: 'Sebentar, KANA ambilin filenya dari Drive dulu... {mood}',
-      failed: 'Mouu, gagal ambil filenya: {message}. Pastikan linknya publik ya~',
-      interstitial: 'Mouu, Google menampilkan halaman konfirmasi unduhan (biasanya karena file besar atau perlu pindai virus), jadi KANA nggak bisa mengambilnya langsung. Unduh manual dari link aslinya yaa: {url}',
-      tooBig: 'Aduh, filenya kegedean buat dikirim lewat WhatsApp (di atas 64 MB)~',
-      caption: 'File dari Google Drive',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINK GOOGLE DRIVE* 」\n┊ ᴄᴏɴᴛᴏʜ: *.gdrive https://drive.google.com/file/d/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA ambilin filenya dari Drive dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL FILE* 」\n┊ Mouu, gagal ambil filenya: *{message}*\n┊ Pastikan linknya publik ya~\n╰━━━━━━━',
+      interstitial: '╭─❏ ⚠️ 「 *ADA HALAMAN KONFIRMASI* 」\n┊ Mouu, Google menampilkan halaman konfirmasi unduhan (biasanya karena file besar atau perlu pindai virus), jadi KANA nggak bisa mengambilnya langsung.\n┊ Unduh manual dari link aslinya yaa: *{url}*\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *FILE KEGEDEAN* 」\n┊ Aduh, filenya kegedean buat dikirim lewat WhatsApp (di atas *64 MB*)~\n╰━━━━━━━',
+      caption: '╭─❏ 📁 「 *GOOGLE DRIVE* 」\n┊ ꜱᴜᴍʙᴇʀ: *Google Drive*\n╰━━━━━━━',
     },
   },
   en: {
     gdrive: {
-      needUrl: 'Send the Google Drive link first, example: .gdrive https://drive.google.com/file/d/...~',
-      working: 'One sec, KANA is fetching the file from Drive... {mood}',
-      failed: 'Mouu, failed to fetch the file: {message}. Make sure the link is public~',
-      interstitial: 'Mouu, Google shows a download confirmation page (usually for large files or virus scanning), so KANA cannot fetch it directly. Please download it manually from the original link: {url}',
-      tooBig: 'Oops, the file is too big to send over WhatsApp (over 64 MB)~',
-      caption: 'File from Google Drive',
+      needUrl: '╭─❏ 🔗 「 *SEND THE GOOGLE DRIVE LINK* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.gdrive https://drive.google.com/file/d/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is fetching the file from Drive... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH FILE* 」\n┊ Mouu, failed to fetch the file: *{message}*\n┊ Make sure the link is public~\n╰━━━━━━━',
+      interstitial: '╭─❏ ⚠️ 「 *CONFIRMATION PAGE SHOWN* 」\n┊ Mouu, Google shows a download confirmation page (usually for large files or virus scanning), so KANA cannot fetch it directly.\n┊ Please download it manually from the original link: *{url}*\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *FILE TOO BIG* 」\n┊ Oops, the file is too big to send over WhatsApp (over *64 MB*)~\n╰━━━━━━━',
+      caption: '╭─❏ 📁 「 *GOOGLE DRIVE* 」\n┊ ꜱᴏᴜʀᴄᴇ: *Google Drive*\n╰━━━━━━━',
     },
   },
 }

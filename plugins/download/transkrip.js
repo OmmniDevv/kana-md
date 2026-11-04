@@ -15,18 +15,18 @@ export const config = {
 export const i18n = {
   id: {
     transkrip: {
-      needUrl: 'Kirim link YouTube-nya dulu yaa, contoh: .transkrip https://www.youtube.com/watch?v=...~',
-      working: 'Sebentar, KANA salin transkripnya dulu... {mood}',
-      body: '📝 TRANSKRIP: {title}\nBahasa caption: {lang}\n\n{text}',
-      failed: 'Mouu, gagal ambil transkripnya: {message}~',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINK YOUTUBE* 」\n┊ ᴄᴏɴᴛᴏʜ: *.transkrip https://www.youtube.com/watch?v=...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA salin transkripnya dulu... {mood}\n╰━━━━━━━',
+      body: '╭─❏ 📝 「 *TRANSKRIP* 」\n┊ ᴊᴜᴅᴜʟ: *{title}*\n┊ ʙᴀʜᴀꜱᴀ ᴄᴀᴘᴛɪᴏɴ: *{lang}*\n╰━━━━━━━\n\n{text}',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL TRANSKRIP* 」\n┊ Mouu, gagal ambil transkripnya: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     transkrip: {
-      needUrl: 'Send the YouTube link first, example: .transkrip https://www.youtube.com/watch?v=...~',
-      working: 'One sec, KANA is copying the transcript... {mood}',
-      body: '📝 TRANSCRIPT: {title}\nCaption language: {lang}\n\n{text}',
-      failed: 'Mouu, failed to get the transcript: {message}~',
+      needUrl: '╭─❏ 🔗 「 *SEND THE YOUTUBE LINK* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.transkrip https://www.youtube.com/watch?v=...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is copying the transcript... {mood}\n╰━━━━━━━',
+      body: '╭─❏ 📝 「 *TRANSCRIPT* 」\n┊ ᴛɪᴛʟᴇ: *{title}*\n┊ ᴄᴀᴘᴛɪᴏɴ ʟᴀɴɢᴜᴀɢᴇ: *{lang}*\n╰━━━━━━━\n\n{text}',
+      failed: '╭─❏ 😿 「 *FAILED TO GET TRANSCRIPT* 」\n┊ Mouu, failed to get the transcript: *{message}*~\n╰━━━━━━━',
     },
   },
 }

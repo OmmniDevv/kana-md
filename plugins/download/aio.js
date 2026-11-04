@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'aio',
-  alias: ['allinone', 'dl'],
+  alias: ['allinone', 'dl', 'dla'],
   category: 'download',
   description: { id: 'Deteksi platform dari link lalu arahkan ke pengunduh yang tepat', en: 'Detect the platform of a link and route to the right downloader' },
   usage: '.aio <link>',
@@ -15,12 +15,11 @@ export const config = {
 export const i18n = {
   id: {
     aio: {
-      needUrl: 'Kirim linknya dulu yaa, contoh: .aio https://www.tiktok.com/...~',
-      invalidUrl: 'Mouu, link itu nggak valid atau nggak aman. Pastikan formatnya lengkap yaa~',
-      detected: 'Link ini dari {platform}. KANA nggak unduh langsung dari sini; pakai tombol di bawah atau ketik perintahnya yaa:\n{command} {url}',
-      unsupported: 'Mouu, platform dari link ini belum KANA dukung. Yang bisa: YouTube, Instagram, Facebook, TikTok, Spotify, MediaFire, dan Google Drive~',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINKNYA DULU* 」\n┊ ᴄᴏɴᴛᴏʜ: *.aio https://www.tiktok.com/...*\n╰━━━━━━━',
+      invalidUrl: '╭─❏ ⚠️ 「 *LINK TIDAK VALID* 」\n┊ Mouu, link itu nggak valid atau nggak aman. Pastikan formatnya lengkap yaa~\n╰━━━━━━━',
+      detected: '╭─❏ 🔗 「 *LINK TERDETEKSI* 」\n┊ ᴘʟᴀᴛꜰᴏʀᴍ: *{platform}*\n┊ KANA nggak unduh langsung dari sini; pakai tombol di bawah atau ketik perintahnya yaa:\n┊ *{command} {url}*\n╰━━━━━━━',
+      unsupported: '╭─❏ 🙈 「 *BELUM DIDUKUNG* 」\n┊ Mouu, platform dari link ini belum KANA dukung.\n┊ ʏᴀɴɢ ʙɪꜱᴀ: *YouTube, Instagram, Facebook, TikTok, Spotify, MediaFire, dan Google Drive*~\n╰━━━━━━━',
       btnDownload: 'Unduh sekarang',
-      btnMenu: 'Menu unduhan',
       platforms: {
         youtube: 'YouTube',
         instagram: 'Instagram',
@@ -35,12 +34,11 @@ export const i18n = {
   },
   en: {
     aio: {
-      needUrl: 'Send the link first, example: .aio https://www.tiktok.com/...~',
-      invalidUrl: 'Mouu, that link is not valid or not safe. Make sure the format is complete~',
-      detected: 'This link is from {platform}. KANA does not download directly here; use the button below or type the command:\n{command} {url}',
-      unsupported: 'Mouu, the platform of this link is not supported by KANA yet. Supported: YouTube, Instagram, Facebook, TikTok, Spotify, MediaFire, and Google Drive~',
+      needUrl: '╭─❏ 🔗 「 *SEND THE LINK FIRST* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.aio https://www.tiktok.com/...*\n╰━━━━━━━',
+      invalidUrl: '╭─❏ ⚠️ 「 *INVALID LINK* 」\n┊ Mouu, that link is not valid or not safe. Make sure the format is complete~\n╰━━━━━━━',
+      detected: '╭─❏ 🔗 「 *LINK DETECTED* 」\n┊ ᴘʟᴀᴛꜰᴏʀᴍ: *{platform}*\n┊ KANA does not download directly here; use the button below or type the command:\n┊ *{command} {url}*\n╰━━━━━━━',
+      unsupported: '╭─❏ 🙈 「 *NOT SUPPORTED YET* 」\n┊ Mouu, the platform of this link is not supported by KANA yet.\n┊ ꜱᴜᴘᴘᴏʀᴛᴇᴅ: *YouTube, Instagram, Facebook, TikTok, Spotify, MediaFire, and Google Drive*~\n╰━━━━━━━',
       btnDownload: 'Download now',
-      btnMenu: 'Download menu',
       platforms: {
         youtube: 'YouTube',
         instagram: 'Instagram',
@@ -105,10 +103,7 @@ export async function handler(ctx) {
     title: 'KANA',
     body,
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('aio.btnDownload'), id: `${command} ${url.href}` },
-      { text: ctx.t('aio.btnMenu'), id: '.menu download' },
-    ],
+    replies: [{ text: ctx.t('aio.btnDownload'), id: `${command} ${url.href}` }],
     textFallback: body,
   })
 }

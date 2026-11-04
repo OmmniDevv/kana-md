@@ -16,18 +16,18 @@ export const config = {
 export const i18n = {
   id: {
     tiktokmp3: {
-      needUrl: 'Kirim link TikTok-nya dulu yaa, contoh: .tiktokmp3 https://www.tiktok.com/@user/video/...~',
-      working: 'Sebentar, KANA ambilin musiknya dulu... {mood}',
-      noAudio: 'Video ini tidak menyediakan audio musik yang bisa diunduh. {mood}',
-      failed: 'Mouu, gagal ambil audionya: {message}. Coba lagi nanti ya~',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINK TIKTOK* 」\n┊ ᴄᴏɴᴛᴏʜ: *.tiktokmp3 https://www.tiktok.com/@user/video/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA ambilin musiknya dulu... {mood}\n╰━━━━━━━',
+      noAudio: '╭─❏ 🙈 「 *TIDAK ADA AUDIO* 」\n┊ Video ini tidak menyediakan audio musik yang bisa diunduh. {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL AUDIO* 」\n┊ Mouu, gagal ambil audionya: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
     },
   },
   en: {
     tiktokmp3: {
-      needUrl: 'Send the TikTok link first, example: .tiktokmp3 https://www.tiktok.com/@user/video/...~',
-      working: 'One sec, KANA is fetching the music... {mood}',
-      noAudio: 'This video does not provide downloadable music audio. {mood}',
-      failed: 'Mouu, failed to fetch the audio: {message}. Try again later~',
+      needUrl: '╭─❏ 🔗 「 *SEND THE TIKTOK LINK* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.tiktokmp3 https://www.tiktok.com/@user/video/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is fetching the music... {mood}\n╰━━━━━━━',
+      noAudio: '╭─❏ 🙈 「 *NO AUDIO AVAILABLE* 」\n┊ This video does not provide downloadable music audio. {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH AUDIO* 」\n┊ Mouu, failed to fetch the audio: *{message}*\n┊ Try again later~\n╰━━━━━━━',
     },
   },
 }

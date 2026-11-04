@@ -15,20 +15,20 @@ export const config = {
 export const i18n = {
   id: {
     ytmp4: {
-      needQuery: 'Kirim link YouTube-nya atau judul videonya dulu yaa, contoh: .ytmp4 https://youtu.be/...~',
-      working: 'Sebentar, KANA unduhin videonya dulu... {mood}',
-      failed: 'Mouu, gagal unduh videonya: {message}. Coba lagi nanti ya~',
-      tooBig: 'Aduh, videonya kegedean buat dikirim lewat WhatsApp (di atas 64 MB). Coba video yang lebih pendek ya~',
-      caption: '{title} ({duration})',
+      needQuery: '╭─❏ 🔗 「 *KIRIM LINK ATAU JUDUL* 」\n┊ ᴄᴏɴᴛᴏʜ: *.ytmp4 https://youtu.be/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA unduhin videonya dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL UNDUH VIDEO* 」\n┊ Mouu, gagal unduh videonya: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *VIDEO KEGEDEAN* 」\n┊ Aduh, videonya kegedean buat dikirim lewat WhatsApp (di atas *64 MB*).\n┊ Coba video yang lebih pendek ya~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *YOUTUBE MP4* 」\n┊ ᴊᴜᴅᴜʟ: *{title}*\n┊ ᴅᴜʀᴀꜱɪ: *{duration}*\n╰━━━━━━━',
     },
   },
   en: {
     ytmp4: {
-      needQuery: 'Send the YouTube link or the video title first, example: .ytmp4 https://youtu.be/...~',
-      working: 'One sec, KANA is downloading the video... {mood}',
-      failed: 'Mouu, failed to download the video: {message}. Try again later~',
-      tooBig: 'Oops, the video is too big to send over WhatsApp (over 64 MB). Try a shorter video~',
-      caption: '{title} ({duration})',
+      needQuery: '╭─❏ 🔗 「 *SEND A LINK OR TITLE* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.ytmp4 https://youtu.be/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is downloading the video... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO DOWNLOAD VIDEO* 」\n┊ Mouu, failed to download the video: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *VIDEO TOO BIG* 」\n┊ Oops, the video is too big to send over WhatsApp (over *64 MB*).\n┊ Try a shorter video~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *YOUTUBE MP4* 」\n┊ ᴛɪᴛʟᴇ: *{title}*\n┊ ᴅᴜʀᴀᴛɪᴏɴ: *{duration}*\n╰━━━━━━━',
     },
   },
 }

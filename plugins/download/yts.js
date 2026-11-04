@@ -15,24 +15,22 @@ export const config = {
 export const i18n = {
   id: {
     yts: {
-      needQuery: 'Ketik kata kuncinya dulu yaa, contoh: .yts tutorial gitar akustik~',
-      notFound: 'Mouu, nggak ada hasil buat kata kunci itu. Coba kata lain ya~',
-      failed: 'Mouu, pencarian gagal: {message}. Coba lagi nanti ya~',
-      header: 'Hasil pencarian YouTube buat "{query}":',
-      item: '{n}. {title} ({duration})\n.play {url}',
+      needQuery: '╭─❏ 🔍 「 *KETIK KATA KUNCINYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.yts tutorial gitar akustik*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *TIDAK ADA HASIL* 」\n┊ Mouu, nggak ada hasil buat kata kunci itu. Coba kata lain ya~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian gagal: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      header: '╭─❏ 🔍 「 *HASIL PENCARIAN YOUTUBE* 」\n┊ ᴋᴀᴛᴀ ᴋᴜɴᴄɪ: *{query}*',
+      item: '┊ {n}. *{title}* ({duration})\n┊ .play {url}',
       btnItem: '{n}. {title}',
-      btnMenu: 'Menu unduhan',
     },
   },
   en: {
     yts: {
-      needQuery: 'Type the keywords first, example: .yts acoustic guitar tutorial~',
-      notFound: 'Mouu, no results for those keywords. Try others~',
-      failed: 'Mouu, search failed: {message}. Try again later~',
-      header: 'YouTube search results for "{query}":',
-      item: '{n}. {title} ({duration})\n.play {url}',
+      needQuery: '╭─❏ 🔍 「 *TYPE THE KEYWORDS* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.yts acoustic guitar tutorial*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *NO RESULTS* 」\n┊ Mouu, no results for those keywords. Try others~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *SEARCH FAILED* 」\n┊ Mouu, search failed: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      header: '╭─❏ 🔍 「 *YOUTUBE SEARCH RESULTS* 」\n┊ ᴋᴇʏᴡᴏʀᴅꜱ: *{query}*',
+      item: '┊ {n}. *{title}* ({duration})\n┊ .play {url}',
       btnItem: '{n}. {title}',
-      btnMenu: 'Download menu',
     },
   },
 }
@@ -41,17 +39,15 @@ export const i18n = {
 const MAX_BUTTON_TEXT = 25
 
 // Tombol hasil pencarian: satu quick_reply per hasil (id = perintah .play
-// dengan URL hasil itu) plus tombol menu unduhan selama totalnya di bawah 10.
+// dengan URL hasil itu).
 export function buildYtsButtons(results, t) {
-  const replies = (results || [])
+  return (results || [])
     .filter((video) => video?.url)
     .slice(0, 5)
     .map((video, i) => {
       const text = t('yts.btnItem', { n: i + 1, title: video.title || '-' })
       return { text: text.length > MAX_BUTTON_TEXT ? text.slice(0, MAX_BUTTON_TEXT) : text, id: `.play ${video.url}` }
     })
-  if (replies.length < 10) replies.push({ text: t('yts.btnMenu'), id: '.menu download' })
-  return replies
 }
 
 export const test = { input: '.yts Tulus Sepatu', expect: /Hasil pencarian YouTube/i }
@@ -70,12 +66,15 @@ export async function handler(ctx) {
   search.results.forEach((video, i) => {
     lines.push(ctx.t('yts.item', { n: i + 1, title: video.title || '-', duration: video.durationText || '-', url: video.url || '-' }))
   })
+  lines.push('╰━━━━━━━')
   const body = lines.join('\n')
+  const replies = buildYtsButtons(search.results, ctx.t)
+  if (!replies.length) return ctx.reply(body)
   return sendButtons(ctx.sock, ctx.chat, {
     title: 'KANA',
     body,
     footer: ctx.t('menu.footer'),
-    replies: buildYtsButtons(search.results, ctx.t),
+    replies,
     textFallback: body,
   })
 }

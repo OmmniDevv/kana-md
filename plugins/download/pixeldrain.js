@@ -16,20 +16,20 @@ export const config = {
 export const i18n = {
   id: {
     pixeldrain: {
-      needUrl: 'Kirim link Pixeldrain-nya dulu yaa, contoh: .pixeldrain https://pixeldrain.com/u/xxxxxxxx~',
-      working: 'Sebentar, KANA ambil berkasnya dari Pixeldrain dulu... {mood}',
-      caption: '💾 {name}\nUkuran: {size}',
-      tooBig: 'Berkasnya "{name}" kegedean buat dikirim lewat WA ({size}). Unduh langsung di sini yaa: {url}',
-      failed: 'Mouu, gagal ambil dari Pixeldrain: {message}~',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINK PIXELDRAIN* 」\n┊ ᴄᴏɴᴛᴏʜ: *.pixeldrain https://pixeldrain.com/u/xxxxxxxx*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA ambil berkasnya dari Pixeldrain dulu... {mood}\n╰━━━━━━━',
+      caption: '╭─❏ 💾 「 *PIXELDRAIN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴜᴋᴜʀᴀɴ: *{size}*\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *BERKAS KEGEDEAN* 」\n┊ Berkasnya *{name}* kegedean buat dikirim lewat WA (*{size}*).\n┊ Unduh langsung di sini yaa: *{url}*\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL BERKAS* 」\n┊ Mouu, gagal ambil dari Pixeldrain: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     pixeldrain: {
-      needUrl: 'Send the Pixeldrain link first, example: .pixeldrain https://pixeldrain.com/u/xxxxxxxx~',
-      working: 'One sec, KANA is fetching the file from Pixeldrain... {mood}',
-      caption: '💾 {name}\nSize: {size}',
-      tooBig: 'The file "{name}" is too big to send over WA ({size}). Download it directly here: {url}',
-      failed: 'Mouu, failed to fetch from Pixeldrain: {message}~',
+      needUrl: '╭─❏ 🔗 「 *SEND THE PIXELDRAIN LINK* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.pixeldrain https://pixeldrain.com/u/xxxxxxxx*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is fetching the file from Pixeldrain... {mood}\n╰━━━━━━━',
+      caption: '╭─❏ 💾 「 *PIXELDRAIN* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ꜱɪᴢᴇ: *{size}*\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *FILE TOO BIG* 」\n┊ The file *{name}* is too big to send over WA (*{size}*).\n┊ Download it directly here: *{url}*\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH FILE* 」\n┊ Mouu, failed to fetch from Pixeldrain: *{message}*~\n╰━━━━━━━',
     },
   },
 }

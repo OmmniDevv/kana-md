@@ -5,7 +5,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'fb',
-  alias: ['fbdl', 'facebook'],
+  alias: ['fbdl', 'facebook', 'facebookdl'],
   category: 'download',
   description: { id: 'Unduh video atau reel Facebook dari link', en: 'Download a Facebook video or reel from a link' },
   usage: '.fb <link video facebook>',
@@ -17,44 +17,34 @@ export const config = {
 export const i18n = {
   id: {
     fb: {
-      needUrl: 'Kirim link video Facebook-nya dulu yaa, contoh: .fb https://www.facebook.com/reel/...~',
-      working: 'Sebentar, KANA ambilin videonya dulu... {mood}',
-      failed: 'Mouu, gagal ambil videonya: {message}. Pastikan linknya publik ya~',
-      tooBig: 'Aduh, videonya kegedean buat dikirim lewat WhatsApp (di atas 64 MB)~',
-      caption: 'Video Facebook, kualitas {quality}~',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINK FACEBOOK* 」\n┊ ᴄᴏɴᴛᴏʜ: *.fb https://www.facebook.com/reel/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA ambilin videonya dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL VIDEO* 」\n┊ Mouu, gagal ambil videonya: *{message}*\n┊ Pastikan linknya publik ya~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *VIDEO KEGEDEAN* 」\n┊ Aduh, videonya kegedean buat dikirim lewat WhatsApp (di atas *64 MB*)~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *VIDEO FACEBOOK* 」\n┊ ᴋᴜᴀʟɪᴛᴀꜱ: *{quality}*\n╰━━━━━━━',
       btnRetry: 'Unduh ulang',
-      btnMenu: 'Menu unduhan',
       btnAio: 'Coba .aio',
-      followUp: 'Lanjutan: .fb {url} • .menu download',
+      followUp: 'ʟᴀɴᴊᴜᴛᴀɴ: *.fb {url}*',
     },
   },
   en: {
     fb: {
-      needUrl: 'Send the Facebook video link first, example: .fb https://www.facebook.com/reel/...~',
-      working: 'One sec, KANA is fetching the video... {mood}',
-      failed: 'Mouu, failed to fetch the video: {message}. Make sure the link is public~',
-      tooBig: 'Oops, the video is too big to send over WhatsApp (over 64 MB)~',
-      caption: 'Facebook video, quality {quality}~',
+      needUrl: '╭─❏ 🔗 「 *SEND THE FACEBOOK LINK* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.fb https://www.facebook.com/reel/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is fetching the video... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH VIDEO* 」\n┊ Mouu, failed to fetch the video: *{message}*\n┊ Make sure the link is public~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *VIDEO TOO BIG* 」\n┊ Oops, the video is too big to send over WhatsApp (over *64 MB*)~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *FACEBOOK VIDEO* 」\n┊ ǫᴜᴀʟɪᴛʏ: *{quality}*\n╰━━━━━━━',
       btnRetry: 'Download again',
-      btnMenu: 'Download menu',
       btnAio: 'Try .aio',
-      followUp: 'Next: .fb {url} • .menu download',
+      followUp: 'ɴᴇxᴛ: *.fb {url}*',
     },
   },
 }
 
-// Tombol susulan sesudah media terkirim: unduh ulang URL yang sama + menu
-// unduhan. URL tidak tersedia: menu unduhan + .aio saja.
+// Tombol susulan sesudah media terkirim: unduh ulang URL yang sama.
+// URL tidak tersedia: coba .aio saja.
 export function buildFbButtons(url, t) {
-  return url
-    ? [
-        { text: t('fb.btnRetry'), id: `.fb ${url}` },
-        { text: t('fb.btnMenu'), id: '.menu download' },
-      ]
-    : [
-        { text: t('fb.btnMenu'), id: '.menu download' },
-        { text: t('fb.btnAio'), id: '.aio' },
-      ]
+  return url ? [{ text: t('fb.btnRetry'), id: `.fb ${url}` }] : [{ text: t('fb.btnAio'), id: '.aio' }]
 }
 
 export const test = { input: '.fb https://www.facebook.com/fossbytes/videos/1135171799944065/', expect: /Video Facebook/i }

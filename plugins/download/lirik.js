@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'lirik',
-  alias: ['lyrics', 'lyric'],
+  alias: ['lyrics', 'lyric', 'lyricyt'],
   category: 'download',
   description: { id: 'Lihat lirik lagu dari judul atau link Spotify', en: 'See song lyrics from a title or a Spotify link' },
   usage: '.lirik <judul lagu> atau .lirik <link track spotify>',
@@ -15,34 +15,32 @@ export const config = {
 export const i18n = {
   id: {
     lirik: {
-      needQuery: 'Ketik judul lagunya atau kirim link track Spotify yaa, contoh: .lirik Tulus Sepatu~',
-      searching: 'Sebentar, KANA cariin liriknya dulu... {mood}',
-      notFound: 'Mouu, lagunya nggak ketemu. Coba judul plus nama artisnya ya~',
-      noLyrics: 'Lagunya ketemu ({title} - {artist}), tapi liriknya belum ada di sumber KANA. Coba lagu lain ya~',
-      failed: 'Mouu, gagal ambil lirik: {message}. Coba lagi nanti ya~',
-      header: '{title} - {artist}',
-      source: 'Sumber lirik: {source}',
+      needQuery: '╭─❏ 🎵 「 *KETIK JUDUL LAGUNYA* 」\n┊ Atau kirim link track Spotify yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.lirik Tulus Sepatu*\n╰━━━━━━━',
+      searching: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA cariin liriknya dulu... {mood}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *LAGU TIDAK KETEMU* 」\n┊ Mouu, lagunya nggak ketemu. Coba judul plus nama artisnya ya~\n╰━━━━━━━',
+      noLyrics: '╭─❏ 🙈 「 *LIRIK BELUM ADA* 」\n┊ Lagunya ketemu: *{title} - {artist}*\n┊ Tapi liriknya belum ada di sumber KANA. Coba lagu lain ya~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL LIRIK* 」\n┊ Mouu, gagal ambil lirik: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      header: '╭─❏ 🎵 「 *LIRIK LAGU* 」\n┊ ᴊᴜᴅᴜʟ: *{title}*\n┊ ᴀʀᴛɪꜱ: *{artist}*\n╰━━━━━━━',
+      source: 'ꜱᴜᴍʙᴇʀ ʟɪʀɪᴋ: *{source}*',
       truncated: '\n\n(Dipotong KANA biar nggak kepanjangan~)',
       btnSpotify: 'Putar via Spotify',
       btnPlay: 'Putar di YouTube',
-      btnMenu: 'Menu pencarian',
-      followUp: 'Mau dengerin lagunya? .spotify {title} • .play {title} • .menu search',
+      followUp: 'ᴍᴀᴜ ᴅᴇɴɢᴇʀɪɴ ʟᴀɢᴜɴʏᴀ? *.spotify {title}* • *.play {title}*',
     },
   },
   en: {
     lirik: {
-      needQuery: 'Type the song title or send a Spotify track link, example: .lirik Bohemian Rhapsody~',
-      searching: 'One sec, KANA is looking for the lyrics... {mood}',
-      notFound: 'Mouu, the song was not found. Try the title plus the artist name~',
-      noLyrics: 'Found the song ({title} - {artist}), but no lyrics in KANA sources yet. Try another song~',
-      failed: 'Mouu, failed to fetch lyrics: {message}. Try again later~',
-      header: '{title} - {artist}',
-      source: 'Lyrics source: {source}',
+      needQuery: '╭─❏ 🎵 「 *TYPE THE SONG TITLE* 」\n┊ Or send a Spotify track link~\n┊ ᴇxᴀᴍᴘʟᴇ: *.lirik Bohemian Rhapsody*\n╰━━━━━━━',
+      searching: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is looking for the lyrics... {mood}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *SONG NOT FOUND* 」\n┊ Mouu, the song was not found. Try the title plus the artist name~\n╰━━━━━━━',
+      noLyrics: '╭─❏ 🙈 「 *NO LYRICS YET* 」\n┊ Found the song: *{title} - {artist}*\n┊ But no lyrics in KANA sources yet. Try another song~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH LYRICS* 」\n┊ Mouu, failed to fetch lyrics: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      header: '╭─❏ 🎵 「 *SONG LYRICS* 」\n┊ ᴛɪᴛʟᴇ: *{title}*\n┊ ᴀʀᴛɪꜱᴛ: *{artist}*\n╰━━━━━━━',
+      source: 'ʟʏʀɪᴄꜱ ꜱᴏᴜʀᴄᴇ: *{source}*',
       truncated: '\n\n(Trimmed by KANA so it does not get too long~)',
       btnSpotify: 'Play via Spotify',
       btnPlay: 'Play on YouTube',
-      btnMenu: 'Search menu',
-      followUp: 'Want to hear the song? .spotify {title} • .play {title} • .menu search',
+      followUp: 'ᴡᴀɴᴛ ᴛᴏ ʜᴇᴀʀ ᴛʜᴇ ꜱᴏɴɢ? *.spotify {title}* • *.play {title}*',
     },
   },
 }
@@ -79,7 +77,6 @@ export async function handler(ctx) {
     replies: [
       { text: ctx.t('lirik.btnSpotify'), id: `.spotify ${data.title}` },
       { text: ctx.t('lirik.btnPlay'), id: `.play ${data.title}` },
-      { text: ctx.t('lirik.btnMenu'), id: '.menu search' },
     ],
     textFallback: body,
   })

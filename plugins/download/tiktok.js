@@ -17,44 +17,34 @@ export const config = {
 export const i18n = {
   id: {
     tiktok: {
-      needUrl: 'Kirim link TikTok-nya dulu yaa, contoh: .tiktok https://www.tiktok.com/@user/video/...~',
-      working: 'Sebentar, KANA ambilin kontennya dulu... {mood}',
-      failed: 'Mouu, gagal ambil kontennya: {message}. Coba lagi nanti ya~',
-      tooBig: 'Aduh, videonya kegedean buat dikirim lewat WhatsApp (di atas 64 MB)~',
-      caption: '{title}',
+      needUrl: '╭─❏ 🔗 「 *KIRIM LINK TIKTOK* 」\n┊ ᴄᴏɴᴛᴏʜ: *.tiktok https://www.tiktok.com/@user/video/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA ambilin kontennya dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL KONTEN* 」\n┊ Mouu, gagal ambil kontennya: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *VIDEO KEGEDEAN* 」\n┊ Aduh, videonya kegedean buat dikirim lewat WhatsApp (di atas *64 MB*)~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *TIKTOK* 」\n┊ *{title}*\n╰━━━━━━━',
       btnRetry: 'Unduh ulang',
-      btnMenu: 'Menu unduhan',
       btnAio: 'Coba .aio',
-      followUp: 'Lanjutan: .tiktok {url} • .menu download',
+      followUp: 'ʟᴀɴᴊᴜᴛᴀɴ: *.tiktok {url}*',
     },
   },
   en: {
     tiktok: {
-      needUrl: 'Send the TikTok link first, example: .tiktok https://www.tiktok.com/@user/video/...~',
-      working: 'One sec, KANA is fetching the content... {mood}',
-      failed: 'Mouu, failed to fetch the content: {message}. Try again later~',
-      tooBig: 'Oops, the video is too big to send over WhatsApp (over 64 MB)~',
-      caption: '{title}',
+      needUrl: '╭─❏ 🔗 「 *SEND THE TIKTOK LINK* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.tiktok https://www.tiktok.com/@user/video/...*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is fetching the content... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH CONTENT* 」\n┊ Mouu, failed to fetch the content: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *VIDEO TOO BIG* 」\n┊ Oops, the video is too big to send over WhatsApp (over *64 MB*)~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *TIKTOK* 」\n┊ *{title}*\n╰━━━━━━━',
       btnRetry: 'Download again',
-      btnMenu: 'Download menu',
       btnAio: 'Try .aio',
-      followUp: 'Next: .tiktok {url} • .menu download',
+      followUp: 'ɴᴇxᴛ: *.tiktok {url}*',
     },
   },
 }
 
-// Tombol susulan sesudah media terkirim: unduh ulang URL yang sama + menu
-// unduhan. URL tidak tersedia: menu unduhan + .aio saja.
+// Tombol susulan sesudah media terkirim: unduh ulang URL yang sama.
+// URL tidak tersedia: coba .aio saja.
 export function buildTiktokButtons(url, t) {
-  return url
-    ? [
-        { text: t('tiktok.btnRetry'), id: `.tiktok ${url}` },
-        { text: t('tiktok.btnMenu'), id: '.menu download' },
-      ]
-    : [
-        { text: t('tiktok.btnMenu'), id: '.menu download' },
-        { text: t('tiktok.btnAio'), id: '.aio' },
-      ]
+  return url ? [{ text: t('tiktok.btnRetry'), id: `.tiktok ${url}` }] : [{ text: t('tiktok.btnAio'), id: '.aio' }]
 }
 
 export const test = { input: '.tiktok https://www.tiktok.com/@pojoksatu.id/video/7647074044960984340', expect: /video|TikTok/i }
