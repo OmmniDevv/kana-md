@@ -6,7 +6,9 @@ import {
   collectPluginTests,
   guardMode,
   isLiveTestEnabled,
+  normalizeChatJid,
   parseTestChats,
+  runLiveTest,
 } from '../scripts/livetest.js'
 
 test('guardMode menolak tanpa LIVETEST', () => {
@@ -89,6 +91,35 @@ test('collectPluginTests mendukung registry berbentuk Map dan array', () => {
   assert.equal(collectPluginTests([plugin]).length, 1)
   assert.deepEqual(collectPluginTests(null), [])
   assert.deepEqual(collectPluginTests({ list: () => [] }), [])
+})
+
+test('normalizeChatJid: digit mentah jadi JID penuh, JID dan grup dibiarkan', () => {
+  assert.equal(normalizeChatJid('6285869074622'), '6285869074622@s.whatsapp.net')
+  assert.equal(normalizeChatJid(' 6285869074622 '), '6285869074622@s.whatsapp.net')
+  assert.equal(normalizeChatJid('6285869074622@s.whatsapp.net'), '6285869074622@s.whatsapp.net')
+  assert.equal(normalizeChatJid('120363000@g.us'), '120363000@g.us')
+})
+
+test('runLiveTest: pesan sintetis dari digit mentah membawa remoteJid JID penuh', async () => {
+  const captured = []
+  const pipeline = {
+    handle: async (sock, raw) => {
+      captured.push(raw)
+    },
+  }
+  const outcome = await runLiveTest({
+    sock: {},
+    pipeline,
+    chats: ['6281234567890'],
+    tests: [{ input: '.ping', expect: /pong/i }],
+    sleep: async () => {},
+    random: () => 0,
+  })
+  assert.equal(outcome.status, 'completed')
+  assert.equal(captured.length, 1)
+  assert.equal(captured[0].key.remoteJid, '6281234567890@s.whatsapp.net')
+  assert.equal(outcome.results[0].chat, '6281234567890@s.whatsapp.net')
+  assert.equal(outcome.results[0].status, 'sent')
 })
 
 test('BUILTIN_TESTS berisi perintah inti yang aman, semua diawali titik', () => {

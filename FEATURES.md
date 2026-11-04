@@ -81,22 +81,25 @@ audio 16 MB, video 64 MB, gambar 16 MB, dokumen 64 MB.
 
 ## Menu navigasi tombol (2026-11-04, permintaan user: menu Elaina dulu pakai button)
 
+Bagian ini SEBAGIAN DIGANTIKAN oleh koreksi user di bawah pada hari yang sama: menu utama tidak lagi memakai tombol navigasi. Yang tetap berlaku: sub-menu .menu <kategori> bertombol (tombol kembali ".menu" dan tombol kategori lain), dan perbaikan pipeline paramsJson string agar id tombol tertangkap sebagai perintah (test/pipeline-buttons.test.js).
+
+## Menu penuh gaya Elaina (2026-11-04, koreksi user: "jelek menu nya, ga kaya elaina")
+
 | Item | Status |
 |---|---|
-| .menu (tanpa argumen): gambar header + badan ringkas (header info bot + daftar kategori saja) + tombol quick_reply per kategori, id tombol = perintah ".menu <kategori>", maks 10 tombol; kategori lebih dari 10 jadi 9 + tombol ".menu all" | Terpasang, dites unit (payload relay ditangkap di tes) |
-| .menu <kategori>: sub-menu satu kategori dalam bingkai yang sama + tombol kembali ".menu" dan tombol kategori lain | Terpasang, dites unit |
-| .menu all: teks penuh seperti perilaku lama (fallback dan WhatsApp Web/Desktop); gagal kirim tombol di mode apa pun jatuh ke teks penuh/sub-menu lewat textFallback | Terpasang, dites unit |
-| Perbaikan pipeline: balasan native flow tiba dengan paramsJson berbentuk string JSON; extractText sekarang mem-parse-nya (bentuk objek tetap diterima) supaya id tombol tertangkap sebagai perintah. Tanpa ini tombol menu tidak terproses | Terpasang, dites unit (test/pipeline-buttons.test.js) |
-| Label tombol dan kategori lewat i18n id+en (menu.navHint, backButton, allButton, unknownCategory, subHint, categoriesTitle; label kategori user/group/maker/rpg/fun ditambahkan lebih dulu) | Terpasang, i18n:check hijau |
-| Tes: total suite 38 hijau (dari 30), loader 17 plugin 0 karantina | Terpasang |
+| .menu (tanpa argumen) dan .menu all: SATU pesan teks penuh gaya Elaina klasik berisi SEMUA perintah dari semua kategori dari registry (bingkai box-drawing per kategori, "│ ◦ .nama"), tanpa tombol dan tanpa pesan gambar terpisah | Terpasang, dites unit (test/menu.test.js membuktikan perintah dari beberapa kategori tampil semua) |
+| Banner menu tampil sebagai thumbnail palsu yang menempel pada pesan teks itu (contextInfo.externalAdReply lewat field top-level library, helper src/ui/fake-thumb.js); banner diperkecil ke lebar 320 (374 KB jadi sekitar 23 KB) supaya ringan dan galeri HP tidak kotor | Terpasang, dites unit (test/fake-thumb.test.js) |
+| .menu <kategori>: sub-menu ringkas satu kategori, tetap satu pesan bertombol, tanpa gambar terpisah | Terpasang, dites unit |
+| Menu user belum daftar tidak berubah: gate pipeline tetap menampilkan peringatan + tombol daftar | Terpasang (test/registration-gate.test.js) |
+| Perbaikan harness livetest: TEST_CHATS digit mentah dinormalisasi jadi JID penuh sebelum pesan sintetis dibangun (normalizeChatJid), memperbaiki error jidDecode yang menggagalkan semua uji builtin | Terpasang, dites unit (test/livetest.test.js) |
 
-Status tes live menu tombol: ⏳ menunggu tes live bareng user (kode terpasang + tes unit hijau).
+Status tes live menu penuh: ⏳ menunggu tes live bareng user (kode terpasang + tes unit hijau).
 
 ## Aset resmi dari user (2026-11-04)
 
 | Item | Status |
 |---|---|
-| assets/menu-banner.jpg (banner KANA MD hijau): gambar header .menu utama, .menu all, dan sub-menu kategori (caption ikon + judul kategori), menggantikan welcome.png untuk menu | Terpasang |
+| assets/menu-banner.jpg (banner KANA MD hijau): thumbnail palsu (externalAdReply) pada pesan teks .menu dan .menu all; bukan pesan gambar terpisah (koreksi user 2026-11-04) | Terpasang |
 | thumbnail.png root repo diganti banner KANA MD 1280x720 dari user; README meng-embed thumbnail.png | Terpasang, terverifikasi di GitHub |
 | assets/welcome.jpg: gambar utama kartu welcome grup (caption moe + mention member baru) | Terpasang di plugin welcome Fase 4 |
 | assets/goodbye.jpg: gambar pesan goodbye grup (caption moe + nama member keluar) | Terpasang di plugin welcome Fase 4 |
@@ -106,7 +109,7 @@ Status tes live menu tombol: ⏳ menunggu tes live bareng user (kode terpasang +
 
 ## Aturan tetap: semua fitur memakai button (keputusan user 2026-11-04)
 
-Setiap keluaran fitur yang punya langkah lanjutan wajib menyertakan tombol MB.Button lewat src/ui/buttons.js (quick_reply maks 10, tidak dicampur jenis lain; id tombol adalah perintah valid berprefix titik), badan pesan tetap memuat versi teks perintahnya, dan kegagalan kirim tombol selalu jatuh ke fallback teks. Label tombol lewat i18n id+en. Rincian per kategori ada di laporan pembangunan dan di plugin masing-masing.
+Setiap keluaran fitur yang punya langkah lanjutan wajib menyertakan tombol MB.Button lewat src/ui/buttons.js (quick_reply maks 10, tidak dicampur jenis lain; id tombol adalah perintah valid berprefix titik), badan pesan tetap memuat versi teks perintahnya, dan kegagalan kirim tombol selalu jatuh ke fallback teks. Label tombol lewat i18n id+en. Rincian per kategori ada di laporan pembangunan dan di plugin masing-masing. Pengecualian resmi (keputusan user 2026-11-04): menu utama .menu adalah teks penuh gaya Elaina tanpa tombol, lihat seksi "Menu penuh gaya Elaina" di atas.
 
 ## Persona ekspresif (keputusan user 2026-11-04)
 

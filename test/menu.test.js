@@ -1,8 +1,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { formatMenu, formatMenuCategory, formatMenuHome, formatWibDateTime, sortCategories } from '../src/ui/format.js'
+import { formatMenu, formatMenuCategory, formatWibDateTime, sortCategories } from '../src/ui/format.js'
 import { t as translate } from '../src/i18n/index.js'
-import { buildCategoryButtons, buildSubMenuButtons, handler as menuHandler } from '../plugins/main/menu.js'
+import { buildSubMenuButtons, handler as menuHandler } from '../plugins/main/menu.js'
 
 const labels = {
   greeting: 'Haii Senpai~ KANA dateng nih!',
@@ -14,14 +14,13 @@ const labels = {
   hint: 'Ketik .ping yaa~',
   closing: 'Makasih udah mampir~',
   footer: 'KANA, bot WhatsApp moe',
-  categoriesTitle: 'KATEGORI PERINTAH',
-  navHint: 'Pencet tombol kategorinya yaa~',
   subHint: 'Pencet tombol buat balik yaa~',
 }
 
 const sampleCategories = [
   { key: 'main', icon: '🏠', title: 'MENU UTAMA', commands: ['menu', 'ping'] },
   { key: 'download', icon: '📥', title: 'DOWNLOADER', commands: ['spotify'] },
+  { key: 'owner', icon: '👑', title: 'OWNER', commands: ['owner'] },
 ]
 
 test('formatMenu: header, info, kategori, dan perintah contoh muncul bergaya MD klasik', () => {
@@ -44,29 +43,28 @@ test('formatMenu: header, info, kategori, dan perintah contoh muncul bergaya MD 
   assert.match(out, /╭─❏ 🏠 「 MENU UTAMA 」/)
   assert.match(out, /│ ◦ \.ping/)
   assert.match(out, /│ ◦ \.spotify/)
+  assert.match(out, /│ ◦ \.owner/)
   assert.match(out, /Makasih udah mampir~/)
   assert.match(out, /_KANA, bot WhatsApp moe_/)
 })
 
-test('formatMenuHome: header info bot + daftar kategori saja, tanpa daftar perintah', () => {
-  const out = formatMenuHome({
+test('formatMenu: perintah dari beberapa kategori tampil semua, tidak ada yang disembunyikan', () => {
+  const out = formatMenu({
     botName: 'KANA',
-    runtimeMs: 5 * 60 * 1000,
+    runtimeMs: 60 * 1000,
     mode: 'Publik, semua bisa pakai',
-    pluginCount: 3,
-    commandCount: 5,
+    pluginCount: 4,
+    commandCount: 4,
     dateTime: 'Rabu, 4 November 2026 • 13:52 WIB',
-    categories: sampleCategories.map((c) => ({ ...c, count: c.commands.length })),
+    categories: sampleCategories,
     labels,
   })
-  assert.match(out, /╭───「 KANA 」───/)
-  assert.match(out, /Haii Senpai~/)
-  assert.match(out, /KATEGORI PERINTAH/)
-  assert.match(out, /MENU UTAMA \(2\)/)
-  assert.match(out, /DOWNLOADER \(1\)/)
-  assert.match(out, /Pencet tombol kategorinya/)
-  assert.ok(!out.includes('◦ .ping'), 'perintah tidak ditampilkan di menu utama')
-  assert.ok(!out.includes('◦ .spotify'), 'perintah tidak ditampilkan di menu utama')
+  for (const cmd of ['.menu', '.ping', '.spotify', '.owner']) {
+    assert.ok(out.includes(`│ ◦ ${cmd}`), `perintah ${cmd} tampil di menu penuh`)
+  }
+  for (const title of ['MENU UTAMA', 'DOWNLOADER', 'OWNER']) {
+    assert.ok(out.includes(`「 ${title} 」`), `seksi ${title} tampil di menu penuh`)
+  }
 })
 
 test('formatMenuCategory: hanya perintah kategori itu', () => {
@@ -85,29 +83,12 @@ test('sortCategories: urutan kenal dulu, sisanya alfabetis', () => {
   assert.deepEqual(sortCategories(['owner', 'zzz', 'main', 'download']), ['main', 'download', 'owner', 'zzz'])
 })
 
-test('buildCategoryButtons: id tombol = perintah .menu <kategori>', () => {
-  const buttons = buildCategoryButtons(sampleCategories, { allLabel: '📋 Semua Perintah' })
-  assert.deepEqual(
-    buttons.map((b) => b.id),
-    ['.menu main', '.menu download']
-  )
-  assert.match(buttons[1].text, /DOWNLOADER/)
-})
-
-test('buildCategoryButtons: lebih dari 10 kategori jadi 9 + .menu all', () => {
-  const many = Array.from({ length: 12 }, (_, i) => ({ key: `cat${i}`, icon: '✦', title: `CAT ${i}`, commands: [] }))
-  const buttons = buildCategoryButtons(many, { allLabel: '📋 Semua Perintah' })
-  assert.equal(buttons.length, 10)
-  assert.equal(buttons[8].id, '.menu cat8')
-  assert.equal(buttons[9].id, '.menu all')
-})
-
 test('buildSubMenuButtons: tombol kembali .menu di depan, kategori sendiri disembunyikan', () => {
   const buttons = buildSubMenuButtons(sampleCategories, 'download', { backLabel: '⬅ Menu Utama' })
   assert.equal(buttons[0].id, '.menu')
   assert.deepEqual(
     buttons.map((b) => b.id),
-    ['.menu', '.menu main']
+    ['.menu', '.menu main', '.menu owner']
   )
 })
 
@@ -115,6 +96,7 @@ const fakePlugins = [
   { config: { name: 'ping', category: 'main', alias: [] } },
   { config: { name: 'menu', category: 'main', alias: ['m'] } },
   { config: { name: 'spotify', category: 'download', alias: ['sp'] } },
+  { config: { name: 'joke', category: 'fun', alias: [] } },
   { config: { name: 'owner', category: 'owner', alias: ['status'] } },
 ]
 
@@ -159,22 +141,32 @@ function fakeCtx(sock, { args = [] } = {}) {
   return { ctx, replies }
 }
 
-test('handler menu utama: gambar header terkirim dan tombol kategori ter-relay', async () => {
+test('handler menu utama: SATU pesan teks penuh + thumbnail palsu, tanpa gambar terpisah, tanpa tombol', async () => {
   const { sock, sent, relayed } = fakeSock()
   const { ctx } = fakeCtx(sock)
   await menuHandler(ctx)
-  assert.ok(sent.some((s) => s.content.image), 'ada pesan gambar header')
-  assert.equal(relayed.length, 1, 'satu pesan tombol ter-relay')
-  const payload = JSON.stringify(relayed[0].message)
-  assert.ok(payload.includes('.menu download'), 'ada tombol kategori download')
-  assert.ok(payload.includes('.menu main'), 'ada tombol kategori main')
-  assert.ok(payload.includes('.menu owner'), 'ada tombol kategori owner')
+  assert.equal(sent.length, 1, 'menu utama hanya mengirim satu pesan')
+  assert.equal(relayed.length, 0, 'menu utama tidak memakai tombol')
+  const content = sent[0].content
+  assert.ok(!('image' in content), 'tidak ada pesan gambar terpisah')
+  assert.match(content.text, /Haii Senpai~/)
+  for (const cmd of ['.ping', '.spotify', '.joke', '.owner']) {
+    assert.ok(content.text.includes(`│ ◦ ${cmd}`), `perintah ${cmd} tampil di menu utama`)
+  }
+  const card = content.externalAdReply
+  assert.ok(card, 'payload memuat externalAdReply')
+  assert.equal(card.title, 'KANA MD')
+  assert.equal(card.mediaType, 1)
+  assert.ok(Buffer.isBuffer(card.thumbnail), 'thumbnail berupa Buffer dari banner menu')
+  assert.ok(card.thumbnail.length < 374285, 'thumbnail sudah diperkecil dari banner asli')
+  assert.match(card.url, /github\.com\/OmmniDevv\/kana-md/)
 })
 
-test('handler .menu download: hanya kategori download + tombol kembali', async () => {
-  const { sock, relayed } = fakeSock()
+test('handler .menu download: hanya kategori download + tombol kembali, tanpa gambar terpisah', async () => {
+  const { sock, sent, relayed } = fakeSock()
   const { ctx } = fakeCtx(sock, { args: ['download'] })
   await menuHandler(ctx)
+  assert.ok(!sent.some((s) => s.content.image), 'sub-menu tidak mengirim gambar terpisah')
   assert.equal(relayed.length, 1)
   const payload = JSON.stringify(relayed[0].message)
   assert.ok(payload.includes('◦ .spotify'), 'perintah download tampil')
@@ -183,24 +175,26 @@ test('handler .menu download: hanya kategori download + tombol kembali', async (
   assert.ok(payload.includes('.menu main'), 'ada tombol pindah kategori')
 })
 
-test('handler menu: tombol gagal, fallback teks penuh terkirim', async () => {
+test('handler .menu download: tombol gagal, fallback teks sub-menu terkirim', async () => {
   const { sock, sent } = fakeSock({ withRelay: false })
-  const { ctx } = fakeCtx(sock)
+  const { ctx } = fakeCtx(sock, { args: ['download'] })
   await menuHandler(ctx)
   const texts = sent.map((s) => s.content.caption ?? s.content.text ?? '').join('\n')
-  assert.match(texts, /│ ◦ \.ping/)
   assert.match(texts, /│ ◦ \.spotify/)
-  assert.match(texts, /Haii Senpai~/)
+  assert.ok(!texts.includes('│ ◦ .ping'), 'fallback hanya berisi kategori download')
 })
 
-test('handler .menu all: teks penuh semua kategori', async () => {
-  const { sock, sent } = fakeSock()
+test('handler .menu all: sama seperti .menu, teks penuh satu pesan + thumbnail palsu', async () => {
+  const { sock, sent, relayed } = fakeSock()
   const { ctx } = fakeCtx(sock, { args: ['all'] })
   await menuHandler(ctx)
-  const texts = sent.map((s) => s.content.caption ?? s.content.text ?? '').join('\n')
-  assert.match(texts, /│ ◦ \.ping/)
-  assert.match(texts, /│ ◦ \.spotify/)
-  assert.match(texts, /│ ◦ \.owner/)
+  assert.equal(sent.length, 1)
+  assert.equal(relayed.length, 0)
+  const content = sent[0].content
+  assert.match(content.text, /│ ◦ \.ping/)
+  assert.match(content.text, /│ ◦ \.spotify/)
+  assert.match(content.text, /│ ◦ \.owner/)
+  assert.equal(content.externalAdReply?.title, 'KANA MD')
 })
 
 test('handler .menu <kategori tak dikenal>: balasan jelas berisi daftar kategori', async () => {

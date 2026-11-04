@@ -192,6 +192,17 @@ export async function checkAccountHealth(sock) {
 const realSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 // Runner Mode A. Hanya dipakai saat benar benar live (CLI lolos guard).
+// Normalisasi target chat menjadi JID penuh. TEST_CHATS boleh berisi digit
+// mentah ("6285...") dan pipeline/library butuh JID valid: remoteJid digit
+// mentah membuat jidDecode gagal ("Cannot destructure property 'user'")
+// sehingga handler error sebelum sempat jalan (temuan tes live 2026-11-04).
+// JID grup (@g.us) dan JID user yang sudah lengkap dibiarkan apa adanya.
+export function normalizeChatJid(chat) {
+  const value = String(chat ?? '').trim()
+  if (value.endsWith('@g.us') || value.endsWith('@s.whatsapp.net')) return value
+  return `${value.replace(/\D/g, '')}@s.whatsapp.net`
+}
+
 // sleep dan random bisa diinjeksi agar logika jeda bisa dites tanpa kirim.
 // Hasil tiap uji: { chat, input, expect (string), sentAt, status }.
 // Bila kesehatan akun bermasalah sebelum sebuah chat mulai, runner
@@ -251,12 +262,13 @@ export async function runLiveTest({
       }
 
       counter += 1
-      const isGroup = chat.endsWith('@g.us')
+      const jid = normalizeChatJid(chat)
+      const isGroup = jid.endsWith('@g.us')
       const raw = {
         key: {
-          remoteJid: chat,
+          remoteJid: jid,
           fromMe: false,
-          participant: isGroup ? chat : undefined,
+          participant: isGroup ? jid : undefined,
           id: `LIVETEST-${Date.now()}-${counter}-${Math.floor(random() * 1e9)}`,
         },
         message: { conversation: input },
@@ -265,9 +277,9 @@ export async function runLiveTest({
       const sentAt = new Date().toISOString()
       try {
         await pipeline.handle(sock, raw)
-        results.push({ chat, input, expect: String(expect), sentAt, status: 'sent' })
+        results.push({ chat: jid, input, expect: String(expect), sentAt, status: 'sent' })
       } catch (err) {
-        results.push({ chat, input, expect: String(expect), sentAt, status: 'error', error: err.message })
+        results.push({ chat: jid, input, expect: String(expect), sentAt, status: 'error', error: err.message })
       }
       sentWindow.push(Date.now())
       sentCount += 1
