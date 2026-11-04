@@ -79,6 +79,19 @@ audio 16 MB, video 64 MB, gambar 16 MB, dokumen 64 MB.
 | Gambar header assets/welcome.png: jadi caption bila menu muat 1024 karakter, selain itu gambar terpisah lalu teks menu; tombol quick reply .ping/.help/.owner dipertahankan dengan fallback teks | Terpasang (smoke test lokal: gambar terkirim, fallback teks jalan) |
 | Help (.help) diselaraskan: detail perintah dan hint dalam bingkai yang sama | Terpasang |
 
+## Menu navigasi tombol (2026-11-04, permintaan user: menu Elaina dulu pakai button)
+
+| Item | Status |
+|---|---|
+| .menu (tanpa argumen): gambar header + badan ringkas (header info bot + daftar kategori saja) + tombol quick_reply per kategori, id tombol = perintah ".menu <kategori>", maks 10 tombol; kategori lebih dari 10 jadi 9 + tombol ".menu all" | Terpasang, dites unit (payload relay ditangkap di tes) |
+| .menu <kategori>: sub-menu satu kategori dalam bingkai yang sama + tombol kembali ".menu" dan tombol kategori lain | Terpasang, dites unit |
+| .menu all: teks penuh seperti perilaku lama (fallback dan WhatsApp Web/Desktop); gagal kirim tombol di mode apa pun jatuh ke teks penuh/sub-menu lewat textFallback | Terpasang, dites unit |
+| Perbaikan pipeline: balasan native flow tiba dengan paramsJson berbentuk string JSON; extractText sekarang mem-parse-nya (bentuk objek tetap diterima) supaya id tombol tertangkap sebagai perintah. Tanpa ini tombol menu tidak terproses | Terpasang, dites unit (test/pipeline-buttons.test.js) |
+| Label tombol dan kategori lewat i18n id+en (menu.navHint, backButton, allButton, unknownCategory, subHint, categoriesTitle; label kategori user/group/maker/rpg/fun ditambahkan lebih dulu) | Terpasang, i18n:check hijau |
+| Tes: total suite 38 hijau (dari 30), loader 17 plugin 0 karantina | Terpasang |
+
+Status tes live menu tombol: ⏳ menunggu tes live bareng user (kode terpasang + tes unit hijau).
+
 ## Belum dibangun (sesuai Gate 1)
 - Semua fitur katalog Fase 2 dan seterusnya di luar scraper di atas.
 - Kanal skor WebSocket untuk game, Dockerfile, scheduler.

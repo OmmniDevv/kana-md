@@ -8,14 +8,19 @@ export { formatRuntime }
 
 export const CATEGORY_ICONS = {
   main: '🏠',
+  user: '👤',
   download: '📥',
   search: '🔍',
   ai: '🤖',
   owner: '👑',
   game: '🎮',
+  group: '👥',
+  maker: '🎨',
+  rpg: '⚔️',
+  fun: '🎲',
 }
 
-export const CATEGORY_ORDER = ['main', 'download', 'search', 'ai', 'owner', 'game']
+export const CATEGORY_ORDER = ['main', 'user', 'download', 'search', 'game', 'group', 'maker', 'rpg', 'fun', 'ai', 'owner']
 
 // Urutkan kategori: yang dikenal mengikuti CATEGORY_ORDER, sisanya alfabetis.
 export function sortCategories(keys) {
@@ -44,6 +49,46 @@ export function formatWibDateTime(date = new Date(), lang = 'id') {
   const hour = String(Number(get('hour')) % 24).padStart(2, '0')
   const minute = get('minute').padStart(2, '0')
   return `${get('weekday')}, ${get('day')} ${get('month')} ${get('year')} • ${hour}:${minute} WIB`
+}
+
+// Menu utama ringkas untuk navigasi tombol: header info bot yang sama,
+// lalu daftar kategori saja (tanpa daftar perintah). Perintah dibuka lewat
+// tombol kategori atau .menu <kategori>.
+// categories: [{ title, icon, count }]
+// labels: formatMenu labels + { categoriesTitle, navHint }
+export function formatMenuHome({ botName, runtimeMs, mode, pluginCount, commandCount, dateTime, categories, labels }) {
+  const out = []
+  out.push(`╭───「 ${botName} 」───`)
+  out.push(`│ ${labels.greeting}`)
+  out.push('│')
+  out.push(`│ ◦ ${labels.runtime} : ${formatRuntime(runtimeMs)}`)
+  out.push(`│ ◦ ${labels.mode} : ${mode}`)
+  out.push(`│ ◦ ${labels.plugins} : ${pluginCount} • ${commandCount} ${labels.commands}`)
+  out.push(`│ ◦ ${labels.date} : ${dateTime}`)
+  out.push('╰━━━━━━━')
+  out.push('')
+  out.push(`╭─❏ 🗂 「 ${labels.categoriesTitle} 」`)
+  for (const cat of categories) out.push(`│ ◦ ${cat.icon} ${cat.title} (${cat.count})`)
+  out.push('╰━━━━━━━')
+  out.push('')
+  out.push('╭─❏ 💌 ───')
+  out.push(`│ ${labels.closing}`)
+  out.push(`│ ${labels.navHint}`)
+  out.push('╰━━━━━━━')
+  out.push(`_${labels.footer}_`)
+  return out.join('\n')
+}
+
+// Sub-menu satu kategori: bingkai yang sama, hanya perintah kategori itu.
+// category: { title, icon, commands: ['ping', ...] }; labels: { footer, subHint }
+export function formatMenuCategory({ category, labels }) {
+  const out = []
+  out.push(`╭─❏ ${category.icon} 「 ${category.title} 」`)
+  for (const name of category.commands) out.push(`│ ◦ .${name}`)
+  out.push('╰━━━━━━━')
+  out.push(`│ ${labels.subHint}`)
+  out.push(`_${labels.footer}_`)
+  return out.join('\n')
 }
 
 // categories: [{ title, icon, commands: ['ping', ...] }] (nama tanpa titik).

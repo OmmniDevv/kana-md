@@ -6,6 +6,22 @@ export const PREFIXES = ['.', '!', '/', '#']
 
 const digits = (s) => String(s ?? '').replace(/\D/g, '')
 
+// Balasan tombol native flow (MB.Button quick_reply dkk.) tiba sebagai
+// interactiveResponseMessage dengan paramsJson berbentuk STRING JSON
+// (mis. '{"id":".menu download"}'), bukan objek. Parse dulu supaya id
+// tombol tertangkap sebagai perintah biasa. Bentuk objek tetap diterima
+// untuk kompatibilitas.
+function nativeFlowId(m) {
+  const params = m.interactiveResponseMessage?.nativeFlowResponseMessage?.paramsJson
+  if (!params) return ''
+  if (typeof params === 'object') return params.id || ''
+  try {
+    return JSON.parse(params).id || ''
+  } catch {
+    return ''
+  }
+}
+
 function extractText(message) {
   if (!message) return ''
   const m = message
@@ -14,7 +30,7 @@ function extractText(message) {
     m.extendedTextMessage?.text ||
     m.imageMessage?.caption ||
     m.videoMessage?.caption ||
-    m.interactiveResponseMessage?.nativeFlowResponseMessage?.paramsJson?.id ||
+    nativeFlowId(m) ||
     m.buttonsResponseMessage?.selectedButtonId ||
     m.listResponseMessage?.singleSelectReply?.selectedRowId ||
     m.templateButtonReplyMessage?.selectedId ||
