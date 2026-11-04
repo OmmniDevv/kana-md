@@ -14,14 +14,14 @@ export const config = {
 export const i18n = {
   id: {
     unmute: {
-      done: '🔊 Grup dibuka. Semua member bisa kirim pesan lagi. Gas ngobrol yang sopan yaa~ {mood}',
-      fail: 'Gagal membuka grup: {error}. Pastikan KANA admin grup yaa~',
+      done: '╭─❏ 🔊 「 *GRUP DIBUKA* 」\n┊ Semua member bisa kirim pesan lagi~\n┊ Gas ngobrol yang sopan yaa~\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ ⚠️ 「 *GAGAL MEMBUKA GRUP* 」\n┊ {error}\n┊ Pastikan KANA admin grup yaa~\n╰━━━━━━━',
     },
   },
   en: {
     unmute: {
-      done: '🔊 Group unmuted. All members can send messages again. Keep the chat kind~ {mood}',
-      fail: 'Failed to unmute the group: {error}. Make sure KANA is a group admin~',
+      done: '╭─❏ 🔊 「 *GROUP UNMUTED* 」\n┊ All members can send messages again~\n┊ Keep the chat kind yaa~\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ ⚠️ 「 *FAILED TO UNMUTE GROUP* 」\n┊ {error}\n┊ Make sure KANA is a group admin~\n╰━━━━━━━',
     },
   },
 }

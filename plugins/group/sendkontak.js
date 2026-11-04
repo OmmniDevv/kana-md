@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { sendkontak: { fail: 'Gagal kirim kartu kontak: {error}' } },
-  en: { sendkontak: { fail: 'Failed to send the contact card: {error}' } },
+  id: { sendkontak: { fail: '╭─❏ ⚠️ 「 *GAGAL KIRIM KONTAK* 」\n┊ Gagal kirim kartu kontak: {error}\n╰━━━━━━━' } },
+  en: { sendkontak: { fail: '╭─❏ ⚠️ 「 *FAILED TO SEND CONTACT* 」\n┊ Failed to send the contact card: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.sendkontak', expect: /kontak|contact/i }

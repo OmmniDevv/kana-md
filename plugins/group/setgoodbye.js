@@ -17,10 +17,10 @@ export const i18n = {
   id: {
     setgoodbye: {
       current:
-        'Teks goodbye grup saat ini:\n{text}\n\nUbah dengan .setgoodbye <teks baru>, atau reset ke default dengan tombol di bawah. Placeholder yang bisa dipakai: {user}, {group}, {count}.',
-      saved: 'Siap~ teks goodbye grup udah disimpan. {mood}',
-      resetDone: 'Siap~ teks goodbye dikembalikan ke default:\n{text}\n{mood}',
-      tooLong: 'Ehh, teksnya kepanjangan nih. Maksimal {max} karakter yaa~',
+        '╭─❏ 👋 「 *TEKS GOODBYE GRUP* 」\n┊ {text}\n╰━━━━━━━\nUbah dengan *.setgoodbye <teks baru>*, atau reset ke default dengan tombol di bawah~\nᴘʟᴀᴄᴇʜᴏʟᴅᴇʀ: *{user}*, *{group}*, *{count}*',
+      saved: '╭─❏ ✅ 「 *TEKS GOODBYE DISIMPAN* 」\n┊ Siap~ teks goodbye grup udah disimpan~\n╰━━━━━━━ {mood}',
+      resetDone: '╭─❏ ✅ 「 *TEKS GOODBYE DIRESET* 」\n┊ Siap~ teks goodbye dikembalikan ke default:\n┊ {text}\n╰━━━━━━━ {mood}',
+      tooLong: '╭─❏ ⚠️ 「 *TEKS KEPANJANGAN* 」\n┊ Ehh, teksnya kepanjangan nih~\n┊ Maksimal *{max} karakter* yaa~\n╰━━━━━━━',
       footer: 'Teks goodbye KANA',
       resetBtn: 'Reset',
       checkBtn: 'Cek status welcome',
@@ -30,10 +30,10 @@ export const i18n = {
   en: {
     setgoodbye: {
       current:
-        'Current group goodbye text:\n{text}\n\nChange it with .setgoodbye <new text>, or reset it to the default with the button below. Placeholders you can use: {user}, {group}, {count}.',
-      saved: 'Got it~ the group goodbye text has been saved. {mood}',
-      resetDone: 'Got it~ the goodbye text is back to the default:\n{text}\n{mood}',
-      tooLong: 'Eh, that text is too long. Maximum {max} characters, okayy~',
+        '╭─❏ 👋 「 *GROUP GOODBYE TEXT* 」\n┊ {text}\n╰━━━━━━━\nChange it with *.setgoodbye <new text>*, or reset it to the default with the button below~\nᴘʟᴀᴄᴇʜᴏʟᴅᴇʀꜱ: *{user}*, *{group}*, *{count}*',
+      saved: '╭─❏ ✅ 「 *GOODBYE TEXT SAVED* 」\n┊ Got it~ the group goodbye text has been saved~\n╰━━━━━━━ {mood}',
+      resetDone: '╭─❏ ✅ 「 *GOODBYE TEXT RESET* 」\n┊ Got it~ the goodbye text is back to the default:\n┊ {text}\n╰━━━━━━━ {mood}',
+      tooLong: '╭─❏ ⚠️ 「 *TEXT TOO LONG* 」\n┊ Eh, that text is too long~\n┊ Maximum *{max} characters*, okayy~\n╰━━━━━━━',
       footer: 'KANA goodbye text',
       resetBtn: 'Reset',
       checkBtn: 'Check welcome status',
@@ -50,7 +50,8 @@ export async function handler(ctx) {
   const text = (ctx.text ?? '').trim()
   if (!text) {
     const current = await getGroupText(ctx.storage, ctx.chat, 'goodbye')
-    const body = ctx.t('setgoodbye.current', { text: current })
+    const currentLines = String(current).split('\n').join('\n┊ ')
+    const body = ctx.t('setgoodbye.current', { text: currentLines })
     return sendButtons(ctx.sock, ctx.chat, {
       title: 'KANA',
       body,
@@ -61,7 +62,8 @@ export async function handler(ctx) {
   }
   if (text.toLowerCase() === 'reset') {
     const fallback = await resetGroupText(ctx.storage, ctx.chat, 'goodbye')
-    const body = ctx.t('setgoodbye.resetDone', { text: fallback, mood: ctx.say('senang') })
+    const fallbackLines = String(fallback).split('\n').join('\n┊ ')
+    const body = ctx.t('setgoodbye.resetDone', { text: fallbackLines, mood: ctx.say('senang') })
     return sendButtons(ctx.sock, ctx.chat, {
       title: 'KANA',
       body,

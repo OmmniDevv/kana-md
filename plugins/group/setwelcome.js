@@ -17,10 +17,10 @@ export const i18n = {
   id: {
     setwelcome: {
       current:
-        'Teks welcome grup saat ini:\n{text}\n\nUbah dengan .setwelcome <teks baru>, atau reset ke default dengan tombol di bawah. Placeholder yang bisa dipakai: {user}, {group}, {count}.',
-      saved: 'Siap~ teks welcome grup udah disimpan. {mood}',
-      resetDone: 'Siap~ teks welcome dikembalikan ke default:\n{text}\n{mood}',
-      tooLong: 'Ehh, teksnya kepanjangan nih. Maksimal {max} karakter yaa~',
+        '╭─❏ 👋 「 *TEKS WELCOME GRUP* 」\n┊ {text}\n╰━━━━━━━\nUbah dengan *.setwelcome <teks baru>*, atau reset ke default dengan tombol di bawah~\nᴘʟᴀᴄᴇʜᴏʟᴅᴇʀ: *{user}*, *{group}*, *{count}*',
+      saved: '╭─❏ ✅ 「 *TEKS WELCOME DISIMPAN* 」\n┊ Siap~ teks welcome grup udah disimpan~\n╰━━━━━━━ {mood}',
+      resetDone: '╭─❏ ✅ 「 *TEKS WELCOME DIRESET* 」\n┊ Siap~ teks welcome dikembalikan ke default:\n┊ {text}\n╰━━━━━━━ {mood}',
+      tooLong: '╭─❏ ⚠️ 「 *TEKS KEPANJANGAN* 」\n┊ Ehh, teksnya kepanjangan nih~\n┊ Maksimal *{max} karakter* yaa~\n╰━━━━━━━',
       footer: 'Teks welcome KANA',
       resetBtn: 'Reset',
       checkBtn: 'Cek status welcome',
@@ -30,10 +30,10 @@ export const i18n = {
   en: {
     setwelcome: {
       current:
-        'Current group welcome text:\n{text}\n\nChange it with .setwelcome <new text>, or reset it to the default with the button below. Placeholders you can use: {user}, {group}, {count}.',
-      saved: 'Got it~ the group welcome text has been saved. {mood}',
-      resetDone: 'Got it~ the welcome text is back to the default:\n{text}\n{mood}',
-      tooLong: 'Eh, that text is too long. Maximum {max} characters, okayy~',
+        '╭─❏ 👋 「 *GROUP WELCOME TEXT* 」\n┊ {text}\n╰━━━━━━━\nChange it with *.setwelcome <new text>*, or reset it to the default with the button below~\nᴘʟᴀᴄᴇʜᴏʟᴅᴇʀꜱ: *{user}*, *{group}*, *{count}*',
+      saved: '╭─❏ ✅ 「 *WELCOME TEXT SAVED* 」\n┊ Got it~ the group welcome text has been saved~\n╰━━━━━━━ {mood}',
+      resetDone: '╭─❏ ✅ 「 *WELCOME TEXT RESET* 」\n┊ Got it~ the welcome text is back to the default:\n┊ {text}\n╰━━━━━━━ {mood}',
+      tooLong: '╭─❏ ⚠️ 「 *TEXT TOO LONG* 」\n┊ Eh, that text is too long~\n┊ Maximum *{max} characters*, okayy~\n╰━━━━━━━',
       footer: 'KANA welcome text',
       resetBtn: 'Reset',
       checkBtn: 'Check welcome status',
@@ -50,7 +50,8 @@ export async function handler(ctx) {
   const text = (ctx.text ?? '').trim()
   if (!text) {
     const current = await getGroupText(ctx.storage, ctx.chat, 'welcome')
-    const body = ctx.t('setwelcome.current', { text: current })
+    const currentLines = String(current).split('\n').join('\n┊ ')
+    const body = ctx.t('setwelcome.current', { text: currentLines })
     return sendButtons(ctx.sock, ctx.chat, {
       title: 'KANA',
       body,
@@ -61,7 +62,8 @@ export async function handler(ctx) {
   }
   if (text.toLowerCase() === 'reset') {
     const fallback = await resetGroupText(ctx.storage, ctx.chat, 'welcome')
-    const body = ctx.t('setwelcome.resetDone', { text: fallback, mood: ctx.say('senang') })
+    const fallbackLines = String(fallback).split('\n').join('\n┊ ')
+    const body = ctx.t('setwelcome.resetDone', { text: fallbackLines, mood: ctx.say('senang') })
     return sendButtons(ctx.sock, ctx.chat, {
       title: 'KANA',
       body,

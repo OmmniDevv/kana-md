@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { setname: { usage: 'Tulis nama barunya yaa, contoh .setname Grup Belajar~', ok: 'Siap~ nama grup diganti jadi "{name}". {mood}', fail: 'Gagal ganti nama grup: {error}' } },
-  en: { setname: { usage: 'Write the new name, for example .setname Study Group~', ok: 'Got it~ group name changed to "{name}". {mood}', fail: 'Failed to change group name: {error}' } },
+  id: { setname: { usage: '╭─❏ ✏️ 「 *NAMA BARUNYA MANA?* 」\n┊ Tulis nama grup barunya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.setname Grup Belajar*\n╰━━━━━━━', ok: '╭─❏ ✅ 「 *NAMA GRUP DIGANTI* 」\n┊ Siap~ nama grup diganti jadi *{name}*~\n╰━━━━━━━ {mood}', fail: '╭─❏ ⚠️ 「 *GAGAL GANTI NAMA* 」\n┊ Gagal ganti nama grup: {error}\n╰━━━━━━━' } },
+  en: { setname: { usage: '╭─❏ ✏️ 「 *WHERE IS THE NEW NAME?* 」\n┊ Write the new group name~\n┊ ᴇxᴀᴍᴘʟᴇ: *.setname Study Group*\n╰━━━━━━━', ok: '╭─❏ ✅ 「 *GROUP NAME CHANGED* 」\n┊ Got it~ group name changed to *{name}*~\n╰━━━━━━━ {mood}', fail: '╭─❏ ⚠️ 「 *FAILED TO CHANGE NAME* 」\n┊ Failed to change group name: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.setname', expect: /grup|group/i }

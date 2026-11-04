@@ -12,8 +12,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { tagall: { defaultText: 'Halo halo semuanya, KANA panggil yaa~', header: '{text}\n\nDaftar member ({count}):\n{list}', fail: 'Gagal ambil daftar member grup: {error}' } },
-  en: { tagall: { defaultText: 'Hello everyone, KANA is calling you~', header: '{text}\n\nMember list ({count}):\n{list}', fail: 'Failed to get group members: {error}' } },
+  id: { tagall: { defaultText: 'Halo halo semuanya, KANA panggil yaa~', header: '╭─❏ 📣 「 *PANGGILAN GRUP* 」\n┊ {text}\n┊ ᴅᴀꜰᴛᴀʀ ᴍᴇᴍʙᴇʀ ({count}):\n┊ {list}\n╰━━━━━━━', line: '{index}. *@{digits}*', fail: '╭─❏ ⚠️ 「 *GAGAL TAGALL* 」\n┊ Gagal ambil daftar member grup: {error}\n╰━━━━━━━' } },
+  en: { tagall: { defaultText: 'Hello everyone, KANA is calling you~', header: '╭─❏ 📣 「 *GROUP CALL* 」\n┊ {text}\n┊ ᴍᴇᴍʙᴇʀ ʟɪꜱᴛ ({count}):\n┊ {list}\n╰━━━━━━━', line: '{index}. *@{digits}*', fail: '╭─❏ ⚠️ 「 *TAGALL FAILED* 」\n┊ Failed to get group members: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.tagall', expect: /grup|group/i }
@@ -26,7 +26,7 @@ export async function handler(ctx) {
   const participants = meta?.participants ?? []
   if (!participants.length) return ctx.reply(ctx.t('tagall.fail', { error: 'empty' }))
   const mentions = participants.map((p) => p.id).filter(Boolean)
-  const list = participants.map((p, i) => `${i + 1}. @${digitsOf(p.id)}`).join('\n')
+  const list = participants.map((p, i) => ctx.t('tagall.line', { index: i + 1, digits: digitsOf(p.id) })).join('\n┊ ')
   const text = ctx.text || ctx.t('tagall.defaultText')
   await ctx.sock.sendMessage(ctx.chat, {
     text: ctx.t('tagall.header', { text, count: participants.length, list }),

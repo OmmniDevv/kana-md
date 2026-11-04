@@ -14,18 +14,18 @@ export const config = {
 export const i18n = {
   id: {
     tagadmin: {
-      body: '👑 MEMANGGIL ADMIN GRUP\n\n{message}\n\n{list}',
+      body: '╭─❏ 👑 「 *MEMANGGIL ADMIN GRUP* 」\n┊ {message}\n┊ {list}\n╰━━━━━━━',
       defaultMessage: 'Ada yang butuh bantuan admin nih~',
-      empty: 'Grup ini belum punya admin yang tercatat. {mood}',
-      fail: 'Gagal ambil data grup: {error}',
+      empty: '╭─❏ 👑 「 *MEMANGGIL ADMIN GRUP* 」\n┊ Grup ini belum punya admin yang tercatat~\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ ⚠️ 「 *GAGAL AMBIL DATA* 」\n┊ Gagal ambil data grup: {error}\n╰━━━━━━━',
     },
   },
   en: {
     tagadmin: {
-      body: '👑 CALLING GROUP ADMINS\n\n{message}\n\n{list}',
+      body: '╭─❏ 👑 「 *CALLING GROUP ADMINS* 」\n┊ {message}\n┊ {list}\n╰━━━━━━━',
       defaultMessage: 'Someone needs admin help~',
-      empty: 'This group has no recorded admins yet. {mood}',
-      fail: 'Failed to get group data: {error}',
+      empty: '╭─❏ 👑 「 *CALLING GROUP ADMINS* 」\n┊ This group has no recorded admins yet~\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ ⚠️ 「 *FAILED TO GET DATA* 」\n┊ Failed to get group data: {error}\n╰━━━━━━━',
     },
   },
 }

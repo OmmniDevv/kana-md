@@ -16,18 +16,18 @@ export const config = {
 export const i18n = {
   id: {
     resetwarn: {
-      one: '✅ Warn @{digits} sudah direset ke 0. Kesempatan baru yaa, jangan diulangi~ {mood}',
-      all: '✅ Semua warn di grup ini sudah direset. Mulai dari nol lagi yaa semuanya~ {mood}',
-      notFound: '@{digits} tidak punya warn tercatat di grup ini. {mood}',
-      empty: 'Tidak ada warn tercatat di grup ini kok. {mood}',
+      one: '╭─❏ ✅ 「 *WARN DIRESET* 」\n┊ Warn *@{digits}* sudah direset ke *0*~\n┊ Kesempatan baru yaa, jangan diulangi~\n╰━━━━━━━ {mood}',
+      all: '╭─❏ ✅ 「 *SEMUA WARN DIRESET* 」\n┊ Semua warn di grup ini sudah direset~\n┊ Mulai dari nol lagi yaa semuanya~\n╰━━━━━━━ {mood}',
+      notFound: '╭─❏ 🌸 「 *TIDAK ADA WARN* 」\n┊ *@{digits}* tidak punya warn tercatat di grup ini~\n╰━━━━━━━ {mood}',
+      empty: '╭─❏ 🌸 「 *TIDAK ADA WARN* 」\n┊ Tidak ada warn tercatat di grup ini kok~\n╰━━━━━━━ {mood}',
     },
   },
   en: {
     resetwarn: {
-      one: '✅ Warns of @{digits} reset to 0. A fresh chance, do not repeat it~ {mood}',
-      all: '✅ All warns in this group have been reset. Starting from zero everyone~ {mood}',
-      notFound: '@{digits} has no recorded warns in this group. {mood}',
-      empty: 'No warns recorded in this group. {mood}',
+      one: '╭─❏ ✅ 「 *WARNINGS RESET* 」\n┊ Warns of *@{digits}* reset to *0*~\n┊ A fresh chance, do not repeat it~\n╰━━━━━━━ {mood}',
+      all: '╭─❏ ✅ 「 *ALL WARNINGS RESET* 」\n┊ All warns in this group have been reset~\n┊ Starting from zero everyone~\n╰━━━━━━━ {mood}',
+      notFound: '╭─❏ 🌸 「 *NO WARNINGS* 」\n┊ *@{digits}* has no recorded warns in this group~\n╰━━━━━━━ {mood}',
+      empty: '╭─❏ 🌸 「 *NO WARNINGS* 」\n┊ No warns recorded in this group~\n╰━━━━━━━ {mood}',
     },
   },
 }

@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { setdesc: { usage: 'Tulis deskripsi barunya yaa~', ok: 'Siap~ deskripsi grup udah diganti. {mood}', fail: 'Gagal ganti deskripsi grup: {error}' } },
-  en: { setdesc: { usage: 'Write the new description~', ok: 'Got it~ group description has been changed. {mood}', fail: 'Failed to change group description: {error}' } },
+  id: { setdesc: { usage: '╭─❏ ✏️ 「 *DESKRIPSI BARUNYA MANA?* 」\n┊ Tulis deskripsi grup barunya yaa~\n╰━━━━━━━', ok: '╭─❏ ✅ 「 *DESKRIPSI DIGANTI* 」\n┊ Siap~ deskripsi grup udah diganti~\n╰━━━━━━━ {mood}', fail: '╭─❏ ⚠️ 「 *GAGAL GANTI DESKRIPSI* 」\n┊ Gagal ganti deskripsi grup: {error}\n╰━━━━━━━' } },
+  en: { setdesc: { usage: '╭─❏ ✏️ 「 *WHERE IS THE NEW DESCRIPTION?* 」\n┊ Write the new group description~\n╰━━━━━━━', ok: '╭─❏ ✅ 「 *DESCRIPTION CHANGED* 」\n┊ Got it~ group description has been changed~\n╰━━━━━━━ {mood}', fail: '╭─❏ ⚠️ 「 *FAILED TO CHANGE DESCRIPTION* 」\n┊ Failed to change group description: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.setdesc', expect: /grup|group/i }

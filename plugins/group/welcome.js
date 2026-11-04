@@ -23,24 +23,24 @@ export const config = {
 export const i18n = {
   id: {
     welcome: {
-      changed: 'Siap~ welcome sekarang {state}. {mood}',
+      changed: '╭─❏ 👋 「 *WELCOME GRUP* 」\n┊ Siap~ welcome sekarang *{state}*~\n╰━━━━━━━ {mood}',
       on: 'AKTIF', off: 'mati',
-      usage: 'Pakai: .welcome on atau .welcome off yaa~',
-      hello: 'Halo halo @{digits}~ Selamat datang di {group}! KANA seneng banget kamu gabung. Jangan lupa baca rules grup yaa, semoga betah! {mood}',
-      helloText: 'Halo halo @{digits}~ Selamat datang di {group}! Semoga betah yaa! {mood}',
-      bye: 'Dadahh {name} ({digits})~ Makasih udah pernah main di {group}. Semoga sukses selalu yaa, KANA bakal kangen~ {mood}',
-      byeText: 'Dadahh {digits}~ Makasih udah pernah gabung di {group}. Semoga sukses selalu yaa~ {mood}',
+      usage: '╭─❏ 👋 「 *WELCOME GRUP* 」\n┊ Pakai: *.welcome on* atau *.welcome off* yaa~\n╰━━━━━━━',
+      hello: '╭─❏ 🎉 「 *SELAMAT DATANG* 」\n┊ Halo halo *@{digits}*~\n┊ Selamat datang di *{group}*!\n┊ KANA seneng banget kamu gabung, jangan lupa baca rules grup yaa, semoga betah!\n╰━━━━━━━ {mood}',
+      helloText: '╭─❏ 🎉 「 *SELAMAT DATANG* 」\n┊ Halo halo *@{digits}*~\n┊ Selamat datang di *{group}*, semoga betah yaa!\n╰━━━━━━━ {mood}',
+      bye: '╭─❏ 👋 「 *SAMPAI JUMPA* 」\n┊ Dadahh *{name} ({digits})*~\n┊ Makasih udah pernah main di *{group}*, semoga sukses selalu yaa, KANA bakal kangen~\n╰━━━━━━━ {mood}',
+      byeText: '╭─❏ 👋 「 *SAMPAI JUMPA* 」\n┊ Dadahh *{digits}*~\n┊ Makasih udah pernah gabung di *{group}*, semoga sukses selalu yaa~\n╰━━━━━━━ {mood}',
     },
   },
   en: {
     welcome: {
-      changed: 'Got it~ welcome is now {state}. {mood}',
+      changed: '╭─❏ 👋 「 *GROUP WELCOME* 」\n┊ Got it~ welcome is now *{state}*~\n╰━━━━━━━ {mood}',
       on: 'ON', off: 'off',
-      usage: 'Use: .welcome on or .welcome off~',
-      hello: 'Hello hello @{digits}~ Welcome to {group}! KANA is so happy you joined. Please read the group rules, hope you enjoy it here! {mood}',
-      helloText: 'Hello hello @{digits}~ Welcome to {group}! Hope you enjoy it here! {mood}',
-      bye: 'Bye bye {name} ({digits})~ Thanks for being in {group}. Wishing you success always, KANA will miss you~ {mood}',
-      byeText: 'Bye bye {digits}~ Thanks for joining {group}. Wishing you success always~ {mood}',
+      usage: '╭─❏ 👋 「 *GROUP WELCOME* 」\n┊ Use: *.welcome on* or *.welcome off*~\n╰━━━━━━━',
+      hello: '╭─❏ 🎉 「 *WELCOME* 」\n┊ Hello hello *@{digits}*~\n┊ Welcome to *{group}*!\n┊ KANA is so happy you joined, please read the group rules, hope you enjoy it here!\n╰━━━━━━━ {mood}',
+      helloText: '╭─❏ 🎉 「 *WELCOME* 」\n┊ Hello hello *@{digits}*~\n┊ Welcome to *{group}*, hope you enjoy it here!\n╰━━━━━━━ {mood}',
+      bye: '╭─❏ 👋 「 *SEE YOU AGAIN* 」\n┊ Bye bye *{name} ({digits})*~\n┊ Thanks for being in *{group}*, wishing you success always, KANA will miss you~\n╰━━━━━━━ {mood}',
+      byeText: '╭─❏ 👋 「 *SEE YOU AGAIN* 」\n┊ Bye bye *{digits}*~\n┊ Thanks for joining *{group}*, wishing you success always~\n╰━━━━━━━ {mood}',
     },
   },
 }

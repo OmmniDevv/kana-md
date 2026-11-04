@@ -12,8 +12,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { tagme: { body: '👋 Halo @{digits}, kamu di-tag balik sesuai permintaan~ {mood}' } },
-  en: { tagme: { body: '👋 Hello @{digits}, tagged back as requested~ {mood}' } },
+  id: { tagme: { body: '╭─❏ 👋 「 *TAG BALIK* 」\n┊ Halo *@{digits}*, kamu di-tag balik sesuai permintaan~\n╰━━━━━━━ {mood}' } },
+  en: { tagme: { body: '╭─❏ 👋 「 *TAGGED BACK* 」\n┊ Hello *@{digits}*, tagged back as requested~\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.tagme', expect: /tag/i }

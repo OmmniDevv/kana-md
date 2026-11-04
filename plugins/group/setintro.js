@@ -16,18 +16,18 @@ export const config = {
 export const i18n = {
   id: {
     setintro: {
-      current: 'Template intro grup ini:\n\n{template}\n\nGanti dengan .setintro <template baru>, placeholder: {nama} {nomor} {grup}. Reset dengan .setintro reset yaa~',
-      saved: '✅ Template intro tersimpan. Member bisa coba dengan .intro yaa~ {mood}',
-      reset: '✅ Template intro dikembalikan ke bawaan KANA. {mood}',
-      tooLong: 'Templatenya kepanjangan, maksimal 500 karakter yaa~ {mood}',
+      current: '╭─❏ 🎤 「 *TEMPLATE INTRO GRUP* 」\n┊ {template}\n╰━━━━━━━\nGanti dengan *.setintro <template baru>*, placeholder: *{nama} {nomor} {grup}*\nReset dengan *.setintro reset* yaa~',
+      saved: '╭─❏ ✅ 「 *TEMPLATE INTRO DISIMPAN* 」\n┊ Template intro tersimpan~\n┊ Member bisa coba dengan *.intro* yaa~\n╰━━━━━━━ {mood}',
+      reset: '╭─❏ ✅ 「 *TEMPLATE INTRO DIRESET* 」\n┊ Template intro dikembalikan ke bawaan KANA~\n╰━━━━━━━ {mood}',
+      tooLong: '╭─❏ ⚠️ 「 *TEMPLATE KEPANJANGAN* 」\n┊ Templatenya kepanjangan, maksimal *500* karakter yaa~\n╰━━━━━━━ {mood}',
     },
   },
   en: {
     setintro: {
-      current: 'This group intro template:\n\n{template}\n\nChange it with .setintro <new template>, placeholders: {nama} {nomor} {grup}. Reset with .setintro reset~',
-      saved: '✅ Intro template saved. Members can try it with .intro~ {mood}',
-      reset: '✅ Intro template restored to the KANA default. {mood}',
-      tooLong: 'That template is too long, maximum 500 characters~ {mood}',
+      current: '╭─❏ 🎤 「 *GROUP INTRO TEMPLATE* 」\n┊ {template}\n╰━━━━━━━\nChange it with *.setintro <new template>*, placeholders: *{nama} {nomor} {grup}*\nReset with *.setintro reset*~',
+      saved: '╭─❏ ✅ 「 *INTRO TEMPLATE SAVED* 」\n┊ Intro template saved~\n┊ Members can try it with *.intro*~\n╰━━━━━━━ {mood}',
+      reset: '╭─❏ ✅ 「 *INTRO TEMPLATE RESET* 」\n┊ Intro template restored to the KANA default~\n╰━━━━━━━ {mood}',
+      tooLong: '╭─❏ ⚠️ 「 *TEMPLATE TOO LONG* 」\n┊ That template is too long, maximum *500* characters~\n╰━━━━━━━ {mood}',
     },
   },
 }
@@ -39,7 +39,8 @@ export async function handler(ctx) {
   const settings = await getGroupSettings(ctx.storage, ctx.chat)
   if (!arg) {
     const template = settings.introTemplate || (DEFAULT_INTRO[ctx.lang] ?? DEFAULT_INTRO.id)
-    return ctx.reply(ctx.t('setintro.current', { template }))
+    const templateLines = String(template).split('\n').join('\n┊ ')
+    return ctx.reply(ctx.t('setintro.current', { template: templateLines }))
   }
   if (arg.toLowerCase() === 'reset') {
     await updateGroupSettings(ctx.storage, ctx.chat, { introTemplate: '' })

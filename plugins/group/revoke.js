@@ -12,8 +12,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { revoke: { ok: 'Siap~ link lama udah dicabut. Ini link barunya: {link}', fail: 'Gagal reset link grup: {error}' } },
-  en: { revoke: { ok: 'Got it~ the old link has been revoked. Here is the new link: {link}', fail: 'Failed to reset group link: {error}' } },
+  id: { revoke: { ok: '╭─❏ 🔗 「 *LINK GRUP DIRESET* 」\n┊ Link lama udah dicabut~\n┊ ʟɪɴᴋ ʙᴀʀᴜ: {link}\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *GAGAL RESET LINK* 」\n┊ Gagal reset link grup: {error}\n╰━━━━━━━' } },
+  en: { revoke: { ok: '╭─❏ 🔗 「 *GROUP LINK RESET* 」\n┊ The old link has been revoked~\n┊ ɴᴇᴡ ʟɪɴᴋ: {link}\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *FAILED TO RESET LINK* 」\n┊ Failed to reset group link: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.revoke', expect: /grup|group/i }

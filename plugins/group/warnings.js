@@ -16,24 +16,24 @@ export const config = {
 export const i18n = {
   id: {
     warnings: {
-      empty: 'Belum ada yang punya warn di grup ini. Aman, KANA seneng~ {mood}',
-      list: 'Daftar warn grup:\n{lines}',
-      line: '@{digits}: {count}/{limit} warn',
-      one: '@{digits} punya {count}/{limit} warn.',
-      reset: 'Warn @{digits} udah KANA reset jadi 0 yaa~',
-      resetNoTarget: 'Reset warn siapa? Mention atau tulis nomornya yaa~',
-      resetDenied: 'Reset warn cuma buat admin grup yaa~',
+      empty: '╭─❏ 🌸 「 *DAFTAR WARN GRUP* 」\n┊ Belum ada yang punya warn di grup ini~\n┊ Aman, KANA seneng~\n╰━━━━━━━ {mood}',
+      list: '╭─❏ ⚠️ 「 *DAFTAR WARN GRUP* 」\n┊ {lines}\n╰━━━━━━━',
+      line: '*@{digits}*: *{count}/{limit}* warn',
+      one: '╭─❏ ⚠️ 「 *WARN MEMBER* 」\n┊ *@{digits}* punya *{count}/{limit}* warn~\n╰━━━━━━━',
+      reset: '╭─❏ ✅ 「 *WARN DIRESET* 」\n┊ Warn *@{digits}* udah KANA reset jadi *0* yaa~\n╰━━━━━━━',
+      resetNoTarget: '╭─❏ ❓ 「 *RESET WARN SIAPA?* 」\n┊ Mention member grupnya atau tulis nomornya yaa~\n╰━━━━━━━',
+      resetDenied: '╭─❏ 🔒 「 *KHUSUS ADMIN* 」\n┊ Reset warn cuma buat admin grup yaa~\n╰━━━━━━━',
     },
   },
   en: {
     warnings: {
-      empty: 'Nobody has warnings in this group yet. Peaceful, KANA is happy~ {mood}',
-      list: 'Group warnings list:\n{lines}',
-      line: '@{digits}: {count}/{limit} warns',
-      one: '@{digits} has {count}/{limit} warns.',
-      reset: 'Warnings for @{digits} have been reset to 0~',
-      resetNoTarget: 'Reset whose warnings? Mention them or write their number~',
-      resetDenied: 'Resetting warnings is for group admins only~',
+      empty: '╭─❏ 🌸 「 *GROUP WARNINGS LIST* 」\n┊ Nobody has warnings in this group yet~\n┊ Peaceful, KANA is happy~\n╰━━━━━━━ {mood}',
+      list: '╭─❏ ⚠️ 「 *GROUP WARNINGS LIST* 」\n┊ {lines}\n╰━━━━━━━',
+      line: '*@{digits}*: *{count}/{limit}* warns',
+      one: '╭─❏ ⚠️ 「 *MEMBER WARNINGS* 」\n┊ *@{digits}* has *{count}/{limit}* warns~\n╰━━━━━━━',
+      reset: '╭─❏ ✅ 「 *WARNINGS RESET* 」\n┊ Warnings for *@{digits}* have been reset to *0*~\n╰━━━━━━━',
+      resetNoTarget: '╭─❏ ❓ 「 *RESET WHOSE WARNINGS?* 」\n┊ Mention the group member or write their number~\n╰━━━━━━━',
+      resetDenied: '╭─❏ 🔒 「 *ADMINS ONLY* 」\n┊ Resetting warnings is for group admins only~\n╰━━━━━━━',
     },
   },
 }
@@ -65,7 +65,7 @@ export async function handler(ctx) {
   }
   const entries = Object.entries(settings.warns ?? {}).filter(([, v]) => Number(v) > 0)
   if (!entries.length) return ctx.reply(ctx.t('warnings.empty', { mood: ctx.say('senang') }))
-  const lines = entries.map(([digits, count]) => ctx.t('warnings.line', { digits, count, limit: settings.warnLimit })).join('\n')
+  const lines = entries.map(([digits, count]) => ctx.t('warnings.line', { digits, count, limit: settings.warnLimit })).join('\n┊ ')
   const mentions = entries.map(([digits]) => `${digits}@s.whatsapp.net`)
   await ctx.sock.sendMessage(ctx.chat, { text: ctx.t('warnings.list', { lines }), mentions }, { quoted: ctx.raw })
 }

@@ -12,8 +12,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { setppgrup: { usage: 'Balas sebuah gambar dengan .setppgrup yaa, KANA nggak nemu gambarnya nih~', ok: 'Yayyy, foto profil grup udah diganti. {mood}', fail: 'Gagal ganti foto profil grup: {error}. Pastikan gambarnya jpeg atau png dan ukurannya wajar yaa.' } },
-  en: { setppgrup: { usage: 'Reply to an image with .setppgrup, I could not find the image~', ok: 'Yayyy, group picture has been changed. {mood}', fail: 'Failed to change group picture: {error}. Make sure the image is jpeg or png and reasonably sized.' } },
+  id: { setppgrup: { usage: '╭─❏ 🖼️ 「 *BALAS GAMBARNYA DULU* 」\n┊ Balas sebuah gambar dengan *.setppgrup* yaa~\n┊ KANA nggak nemu gambarnya nih~\n╰━━━━━━━', ok: '╭─❏ 🎉 「 *FOTO GRUP DIGANTI* 」\n┊ Yayyy, foto profil grup udah diganti~\n╰━━━━━━━ {mood}', fail: '╭─❏ ⚠️ 「 *GAGAL GANTI FOTO* 」\n┊ Gagal ganti foto profil grup: {error}\n┊ Pastikan gambarnya jpeg atau png dan ukurannya wajar yaa~\n╰━━━━━━━' } },
+  en: { setppgrup: { usage: '╭─❏ 🖼️ 「 *REPLY TO AN IMAGE FIRST* 」\n┊ Reply to an image with *.setppgrup*~\n┊ I could not find the image~\n╰━━━━━━━', ok: '╭─❏ 🎉 「 *GROUP PICTURE CHANGED* 」\n┊ Yayyy, group picture has been changed~\n╰━━━━━━━ {mood}', fail: '╭─❏ ⚠️ 「 *FAILED TO CHANGE PICTURE* 」\n┊ Failed to change group picture: {error}\n┊ Make sure the image is jpeg or png and reasonably sized~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.setppgrup', expect: /grup|group/i }

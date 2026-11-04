@@ -16,20 +16,20 @@ export const config = {
 export const i18n = {
   id: {
     warn: {
-      noTarget: 'Siapa yang mau di-warn? Mention, balas pesannya, atau tulis nomornya yaa~',
-      warned: '@{digits} dapat warn. Sekarang {count}/{limit} warn. Jaga sikap yaa~',
-      kicked: '@{digits} mencapai batas warn ({limit}) jadi KANA keluarkan dari grup.',
-      kickFailed: '@{digits} mencapai batas warn ({limit}), tapi KANA belum bisa mengeluarkannya karena bot bukan admin.',
-      self: 'Ehh, nggak bisa warn diri sendiri atau bot yaa~',
+      noTarget: '╭─❏ ❓ 「 *SIAPA YANG DI-WARN?* 」\n┊ Mention member grupnya, balas pesannya, atau tulis nomornya yaa~\n╰━━━━━━━',
+      warned: '╭─❏ ⚠️ 「 *WARN DIBERIKAN* 」\n┊ *@{digits}* dapat warn, sekarang *{count}/{limit}* warn~\n┊ Jaga sikap yaa~\n╰━━━━━━━',
+      kicked: '╭─❏ 👋 「 *BATAS WARN TERCAPAI* 」\n┊ *@{digits}* mencapai batas warn *({limit})* jadi KANA keluarkan dari grup~\n╰━━━━━━━',
+      kickFailed: '╭─❏ ⚠️ 「 *BATAS WARN TERCAPAI* 」\n┊ *@{digits}* mencapai batas warn *({limit})*, tapi KANA belum bisa mengeluarkannya karena bot bukan admin grup~\n╰━━━━━━━',
+      self: '╭─❏ 🙈 「 *TIDAK BISA WARN* 」\n┊ Ehh, nggak bisa warn diri sendiri atau bot yaa~\n╰━━━━━━━',
     },
   },
   en: {
     warn: {
-      noTarget: 'Who should be warned? Mention them, reply to their message, or write their number~',
-      warned: '@{digits} has been warned. Now at {count}/{limit} warns. Please behave~',
-      kicked: '@{digits} reached the warn limit ({limit}) so I removed them from the group.',
-      kickFailed: '@{digits} reached the warn limit ({limit}), but I cannot remove them because the bot is not admin.',
-      self: 'Eh, cannot warn yourself or the bot~',
+      noTarget: '╭─❏ ❓ 「 *WHO SHOULD BE WARNED?* 」\n┊ Mention the group member, reply to their message, or write their number~\n╰━━━━━━━',
+      warned: '╭─❏ ⚠️ 「 *WARNING GIVEN* 」\n┊ *@{digits}* has been warned, now at *{count}/{limit}* warns~\n┊ Please behave~\n╰━━━━━━━',
+      kicked: '╭─❏ 👋 「 *WARN LIMIT REACHED* 」\n┊ *@{digits}* reached the warn limit *({limit})* so I removed them from the group~\n╰━━━━━━━',
+      kickFailed: '╭─❏ ⚠️ 「 *WARN LIMIT REACHED* 」\n┊ *@{digits}* reached the warn limit *({limit})*, but I cannot remove them because the bot is not a group admin~\n╰━━━━━━━',
+      self: '╭─❏ 🙈 「 *CANNOT WARN* 」\n┊ Eh, cannot warn yourself or the bot~\n╰━━━━━━━',
     },
   },
 }

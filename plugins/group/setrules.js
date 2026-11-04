@@ -16,17 +16,17 @@ export const config = {
 export const i18n = {
   id: {
     setrules: {
-      usage: 'Tulis rulesnya yaa, contoh .setrules 1. Sopan 2. No spam. Atau .setrules clear buat hapus~',
-      set: 'Siap~ rules grup udah disimpan. {mood}',
-      cleared: 'Siap~ rules grup udah dikosongkan. {mood}',
+      usage: '╭─❏ 📜 「 *RULES GRUPNYA MANA?* 」\n┊ Tulis rules grupnya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.setrules 1. Sopan 2. No spam*\n┊ Atau *.setrules clear* buat hapus~\n╰━━━━━━━',
+      set: '╭─❏ ✅ 「 *RULES DISIMPAN* 」\n┊ Siap~ rules grup udah disimpan~\n╰━━━━━━━ {mood}',
+      cleared: '╭─❏ 🗑️ 「 *RULES DIKOSONGKAN* 」\n┊ Siap~ rules grup udah dikosongkan~\n╰━━━━━━━ {mood}',
       footer: 'Rules grup KANA', viewBtn: 'Lihat rules',
     },
   },
   en: {
     setrules: {
-      usage: 'Write the rules, for example .setrules 1. Be polite 2. No spam. Or .setrules clear to remove them~',
-      set: 'Got it~ group rules have been saved. {mood}',
-      cleared: 'Got it~ group rules have been cleared. {mood}',
+      usage: '╭─❏ 📜 「 *WHERE ARE THE GROUP RULES?* 」\n┊ Write the group rules~\n┊ ᴇxᴀᴍᴘʟᴇ: *.setrules 1. Be polite 2. No spam*\n┊ Or *.setrules clear* to remove them~\n╰━━━━━━━',
+      set: '╭─❏ ✅ 「 *RULES SAVED* 」\n┊ Got it~ group rules have been saved~\n╰━━━━━━━ {mood}',
+      cleared: '╭─❏ 🗑️ 「 *RULES CLEARED* 」\n┊ Got it~ group rules have been cleared~\n╰━━━━━━━ {mood}',
       footer: 'KANA group rules', viewBtn: 'View rules',
     },
   },

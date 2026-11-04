@@ -14,16 +14,16 @@ export const config = {
 export const i18n = {
   id: {
     topchat: {
-      title: '🏆 MEMBER PALING AKTIF\n\n{list}\n\nDihitung dari pesan yang KANA lihat sejak fitur ini aktif yaa~',
-      line: '{rank}. @{digits}: {count} pesan',
-      empty: 'Belum ada pesan yang tercatat di grup ini. Ngobrol dulu yuk~ {mood}',
+      title: '╭─❏ 🏆 「 *MEMBER PALING AKTIF* 」\n┊ {list}\n╰━━━━━━━\nDihitung dari pesan yang KANA lihat sejak fitur aktif yaa~',
+      line: '{rank}. *@{digits}*: *{count} pesan*',
+      empty: '╭─❏ 🏆 「 *MEMBER PALING AKTIF* 」\n┊ Belum ada pesan yang tercatat di grup ini~\n┊ Ngobrol dulu yuk biar aktif~\n╰━━━━━━━ {mood}',
     },
   },
   en: {
     topchat: {
-      title: '🏆 MOST ACTIVE MEMBERS\n\n{list}\n\nCounted from messages KANA saw since this feature is active~',
-      line: '{rank}. @{digits}: {count} messages',
-      empty: 'No messages recorded in this group yet. Start chatting~ {mood}',
+      title: '╭─❏ 🏆 「 *MOST ACTIVE MEMBERS* 」\n┊ {list}\n╰━━━━━━━\nCounted from messages KANA saw since this feature is active~',
+      line: '{rank}. *@{digits}*: *{count} messages*',
+      empty: '╭─❏ 🏆 「 *MOST ACTIVE MEMBERS* 」\n┊ No messages recorded in this group yet~\n┊ Start chatting to get active~\n╰━━━━━━━ {mood}',
     },
   },
 }
@@ -50,6 +50,6 @@ export async function handler(ctx) {
   const rows = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10)
   if (!rows.length) return ctx.reply(ctx.t('topchat.empty', { mood: ctx.say('malu') }))
   const mentions = rows.map(([digits]) => `${digits}@s.whatsapp.net`)
-  const list = rows.map(([digits, count], i) => ctx.t('topchat.line', { rank: i + 1, digits, count })).join('\n')
+  const list = rows.map(([digits, count], i) => ctx.t('topchat.line', { rank: i + 1, digits, count })).join('\n┊ ')
   await ctx.sock.sendMessage(ctx.chat, { text: ctx.t('topchat.title', { list }), mentions }, { quoted: ctx.raw })
 }

@@ -15,15 +15,15 @@ export const config = {
 export const i18n = {
   id: {
     rules: {
-      show: 'Peraturan grup ini:\n{rules}\n\nPatuhi yaa semuanya~ {mood}',
-      empty: 'Grup ini belum punya rules nih. Admin bisa buat dengan .setrules yaa~',
+      show: '╭─❏ 📜 「 *PERATURAN GRUP* 」\n┊ {rules}\n╰━━━━━━━\nPatuhi yaa semuanya~ {mood}',
+      empty: '╭─❏ 📜 「 *PERATURAN GRUP* 」\n┊ Grup ini belum punya rules nih~\n┊ Admin bisa buat dengan *.setrules* yaa~\n╰━━━━━━━',
       footer: 'Rules grup KANA', setBtn: 'Buat rules',
     },
   },
   en: {
     rules: {
-      show: 'Rules of this group:\n{rules}\n\nPlease follow them everyone~ {mood}',
-      empty: 'This group has no rules yet. Admins can create them with .setrules~',
+      show: '╭─❏ 📜 「 *GROUP RULES* 」\n┊ {rules}\n╰━━━━━━━\nPlease follow them everyone~ {mood}',
+      empty: '╭─❏ 📜 「 *GROUP RULES* 」\n┊ This group has no rules yet~\n┊ Admins can create them with *.setrules*~\n╰━━━━━━━',
       footer: 'KANA group rules', setBtn: 'Create rules',
     },
   },
@@ -42,7 +42,8 @@ export async function handler(ctx) {
     })
     return
   }
-  const body = ctx.t('rules.show', { rules: s.rules, mood: ctx.say('senang') })
+  const rulesText = String(s.rules).split('\n').join('\n┊ ')
+  const body = ctx.t('rules.show', { rules: rulesText, mood: ctx.say('senang') })
   await sendButtons(ctx.sock, ctx.chat, {
     title: 'KANA', body, footer: ctx.t('rules.footer'),
     replies: [{ text: ctx.t('rules.setBtn'), id: '.setrules' }],
