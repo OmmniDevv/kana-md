@@ -417,6 +417,13 @@ export const COMMAND_EMOJI = {
   copet: 'rpg',
   penjara: 'rpg',
   menfess: 'chat',
+  pixeldrain: 'download',
+  harilibur: 'calendar',
+  npm: 'search',
+  mcstatus: 'game',
+  barcode: 'image',
+  tempmail: 'chat',
+  fetchweb: 'globe',
   kerangajaib: 'random',
 }
 
