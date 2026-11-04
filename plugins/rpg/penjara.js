@@ -14,22 +14,22 @@ export const config = {
 export const i18n = {
   id: {
     penjara: {
-      free: 'Kamu tidak sedang di penjara. Bebas merdeka~ {mood}',
-      status: '🚔 Kamu lagi di penjara, sisa {minutes} menit. Denda bebas: {fine} koin.\nPilihanmu: .penjara bebas (bayar denda) atau .penjara kabur (peluang 30 persen, gagal tambah 10 menit).',
-      paid: '💸 Denda {fine} koin dibayar. Kamu bebas! Jangan nakal lagi yaa~',
-      poor: 'Koinmu kurang buat denda {fine} koin (saldo {balance}). Tunggu waktu habis atau coba kabur.',
-      escaped: '🏃 BERHASIL KABUR! Kamu bebas dari penjara. Sembunyi yang rapi yaa~',
-      escapeFail: '🚨 Kaburnya gagal! Petugas menambah hukumanmu 10 menit. Sisa {minutes} menit.',
+      free: '╭─❏ ✨ 「 *PENJARA* 」\n┊ Kamu tidak sedang di penjara. Bebas merdeka~ {mood}\n╰━━━━━━━',
+      status: '╭─❏ 🚔 「 *PENJARA* 」\n┊ 🚔 Kamu lagi di penjara, sisa {minutes} menit. Denda bebas: {fine} koin.\n┊ Pilihanmu: .penjara bebas (bayar denda) atau .penjara kabur (peluang 30 persen, gagal tambah 10 menit).\n╰━━━━━━━',
+      paid: '╭─❏ 💸 「 *PENJARA* 」\n┊ 💸 Denda {fine} koin dibayar. Kamu bebas! Jangan nakal lagi yaa~\n╰━━━━━━━',
+      poor: '╭─❏ ✨ 「 *PENJARA* 」\n┊ Koinmu kurang buat denda {fine} koin (saldo {balance}). Tunggu waktu habis atau coba kabur.\n╰━━━━━━━',
+      escaped: '╭─❏ 🏃 「 *PENJARA* 」\n┊ 🏃 BERHASIL KABUR! Kamu bebas dari penjara. Sembunyi yang rapi yaa~\n╰━━━━━━━',
+      escapeFail: '╭─❏ 🚨 「 *PENJARA* 」\n┊ 🚨 Kaburnya gagal! Petugas menambah hukumanmu 10 menit. Sisa {minutes} menit.\n╰━━━━━━━',
     },
   },
   en: {
     penjara: {
-      free: 'You are not in jail. Free as a bird~ {mood}',
-      status: '🚔 You are in jail, {minutes} minutes left. Release fine: {fine} coins.\nChoose with a command: .penjara bebas (pay the fine) or .penjara kabur (30 percent chance, fail adds 10 minutes).',
-      paid: '💸 Paid the {fine} coin fine. You are free! Be good now~',
-      poor: 'Not enough coins for the {fine} coin fine (balance {balance}). Wait it out or try escaping.',
-      escaped: '🏃 ESCAPED! You broke out of jail. Hide well~',
-      escapeFail: '🚨 The escape failed! The guards added 10 minutes. {minutes} minutes left.',
+      free: '╭─❏ ✨ 「 *PENJARA* 」\n┊ You are not in jail. Free as a bird~ {mood}\n╰━━━━━━━',
+      status: '╭─❏ 🚔 「 *PENJARA* 」\n┊ 🚔 You are in jail, {minutes} minutes left. Release fine: {fine} coins.\n┊ Choose with a command: .penjara bebas (pay the fine) or .penjara kabur (30 percent chance, fail adds 10 minutes).\n╰━━━━━━━',
+      paid: '╭─❏ 💸 「 *PENJARA* 」\n┊ 💸 Paid the {fine} coin fine. You are free! Be good now~\n╰━━━━━━━',
+      poor: '╭─❏ ✨ 「 *PENJARA* 」\n┊ Not enough coins for the {fine} coin fine (balance {balance}). Wait it out or try escaping.\n╰━━━━━━━',
+      escaped: '╭─❏ 🏃 「 *PENJARA* 」\n┊ 🏃 ESCAPED! You broke out of jail. Hide well~\n╰━━━━━━━',
+      escapeFail: '╭─❏ 🚨 「 *PENJARA* 」\n┊ 🚨 The escape failed! The guards added 10 minutes. {minutes} minutes left.\n╰━━━━━━━',
     },
   },
 }

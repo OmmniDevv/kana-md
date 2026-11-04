@@ -13,14 +13,14 @@ export const config = {
 export const i18n = {
   id: {
     yearly: {
-      done: '🎆 Hadiah tahunan terklaim: *{coins} koin* + {xp} XP. Terima kasih sudah setia sama KANA~ {mood}',
-      wait: 'Hadiah tahunan tahun ini sudah kamu klaim. Sampai jumpa tahun depan yaa~ {mood}',
+      done: '╭─❏ 🎆 「 *YEARLY* 」\n┊ 🎆 Hadiah tahunan terklaim: *{coins} koin* + {xp} XP. Terima kasih sudah setia sama KANA~ {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *YEARLY* 」\n┊ Hadiah tahunan tahun ini sudah kamu klaim. Sampai jumpa tahun depan yaa~ {mood}\n╰━━━━━━━',
     },
   },
   en: {
     yearly: {
-      done: '🎆 Yearly reward claimed: *{coins} coins* + {xp} XP. Thank you for staying with KANA~ {mood}',
-      wait: 'You already claimed this year reward. See you next year~ {mood}',
+      done: '╭─❏ 🎆 「 *YEARLY* 」\n┊ 🎆 Yearly reward claimed: *{coins} coins* + {xp} XP. Thank you for staying with KANA~ {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *YEARLY* 」\n┊ You already claimed this year reward. See you next year~ {mood}\n╰━━━━━━━',
     },
   },
 }

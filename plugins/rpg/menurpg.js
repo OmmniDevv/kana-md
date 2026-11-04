@@ -18,7 +18,7 @@ export const config = {
 export const i18n = {
   id: {
     menurpg: {
-      body: '⚔️ MENU RPG KANA ⚔️\n\n🎁 Klaim: .daily .hourly .weekly\n⛏️ Kumpul: .mining .fishing .hunting .farming\n🔨 Buat: .craft .recipes\n🛒 Ekonomi: .shop .buy .inventory .bank\n⚔️ Tarung: .duel .dungeon .clanwar\n🐾 Teman: .pet .job .clan\n👤 Profil: .rpg\n\n{mood}',
+      body: '╭─❏ ⚔️ 「 *MENURPG* 」\n┊ ⚔️ MENU RPG KANA ⚔️\n\n┊ 🎁 Klaim: .daily .hourly .weekly\n┊ ⛏️ Kumpul: .mining .fishing .hunting .farming\n┊ 🔨 Buat: .craft .recipes\n┊ 🛒 Ekonomi: .shop .buy .inventory .bank\n┊ ⚔️ Tarung: .duel .dungeon .clanwar\n┊ 🐾 Teman: .pet .job .clan\n┊ 👤 Profil: .rpg\n\n┊ {mood}\n╰━━━━━━━',
       caption: 'Menu RPG KANA ⚔️ pencet tombolnya yaa~',
       hint: 'Mau mulai dari mana nih?',
       btnDaily: 'Klaim Harian',
@@ -31,7 +31,7 @@ export const i18n = {
   },
   en: {
     menurpg: {
-      body: '⚔️ KANA RPG MENU ⚔️\n\n🎁 Claims: .daily .hourly .weekly\n⛏️ Gather: .mining .fishing .hunting .farming\n🔨 Make: .craft .recipes\n🛒 Economy: .shop .buy .inventory .bank\n⚔️ Battle: .duel .dungeon .clanwar\n🐾 Friends: .pet .job .clan\n👤 Profile: .rpg\n\n{mood}',
+      body: '╭─❏ ⚔️ 「 *MENURPG* 」\n┊ ⚔️ KANA RPG MENU ⚔️\n\n┊ 🎁 Claims: .daily .hourly .weekly\n┊ ⛏️ Gather: .mining .fishing .hunting .farming\n┊ 🔨 Make: .craft .recipes\n┊ 🛒 Economy: .shop .buy .inventory .bank\n┊ ⚔️ Battle: .duel .dungeon .clanwar\n┊ 🐾 Friends: .pet .job .clan\n┊ 👤 Profile: .rpg\n\n┊ {mood}\n╰━━━━━━━',
       caption: 'KANA RPG Menu ⚔️ tap a button~',
       hint: 'Where do you want to start?',
       btnDaily: 'Daily Claim',

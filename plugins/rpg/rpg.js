@@ -21,14 +21,13 @@ export const config = {
 export const i18n = {
   id: {
     rpg: {
-      card: '⚔️ PROFIL RPG ⚔️\nNama: {name}\nLevel: {level} (XP {xp})\nPower: {power}\nKoin: {coins}\nSaldo bank: {bank}\nJob: {job}\nPet: {pet}\nClan: {clan}\n{mood}',
+      card: '╭─❏ ⚔️ 「 *RPG* 」\n┊ ⚔️ PROFIL RPG ⚔️\n┊ ɴᴀᴍᴀ: {name}\n┊ ʟᴇᴠᴇʟ: {level} (XP {xp})\n┊ ᴘᴏᴡᴇʀ: {power}\n┊ ᴋᴏɪɴ: {coins}\n┊ ꜱᴀʟᴅᴏ ʙᴀɴᴋ: {bank}\n┊ ᴊᴏʙ: {job}\n┊ ᴘᴇᴛ: {pet}\n┊ ᴄʟᴀɴ: {clan}\n┊ {mood}\n╰━━━━━━━',
       noJob: 'belum ada, pilih di .job yaa',
       noPet: 'belum ada, adopsi di .pet',
       noClan: 'belum ada, buat di .clan',
       petInfo: '{emoji} {name} level {level}',
       caption: 'Profil RPG {name} ⚔️',
       hint: 'Pencet tombolnya buat lanjut petualangan~',
-      btnMenu: 'Menu RPG',
       btnDaily: 'Klaim Harian',
       btnInventory: 'Tas Aku',
       btnShop: 'Toko',
@@ -36,14 +35,13 @@ export const i18n = {
   },
   en: {
     rpg: {
-      card: '⚔️ RPG PROFILE ⚔️\nName: {name}\nLevel: {level} (XP {xp})\nPower: {power}\nCoins: {coins}\nBank balance: {bank}\nJob: {job}\nPet: {pet}\nClan: {clan}\n{mood}',
+      card: '╭─❏ ⚔️ 「 *RPG* 」\n┊ ⚔️ RPG PROFILE ⚔️\n┊ ɴᴀᴍᴇ: {name}\n┊ ʟᴇᴠᴇʟ: {level} (XP {xp})\n┊ ᴘᴏᴡᴇʀ: {power}\n┊ ᴄᴏɪɴꜱ: {coins}\n┊ ʙᴀɴᴋ ʙᴀʟᴀɴᴄᴇ: {bank}\n┊ ᴊᴏʙ: {job}\n┊ ᴘᴇᴛ: {pet}\n┊ ᴄʟᴀɴ: {clan}\n┊ {mood}\n╰━━━━━━━',
       noJob: 'none yet, pick one in .job',
       noPet: 'none yet, adopt in .pet',
       noClan: 'none yet, create in .clan',
       petInfo: '{emoji} {name} level {level}',
       caption: 'RPG profile of {name} ⚔️',
       hint: 'Tap a button to continue the adventure~',
-      btnMenu: 'RPG Menu',
       btnDaily: 'Daily Claim',
       btnInventory: 'My Bag',
       btnShop: 'Shop',
@@ -90,7 +88,6 @@ export async function handler(ctx) {
     body: image ? `${body}\n\n${ctx.t('rpg.hint')}` : body,
     footer: ctx.t('menu.footer'),
     replies: [
-      { text: ctx.t('rpg.btnMenu'), id: '.menurpg' },
       { text: ctx.t('rpg.btnDaily'), id: '.daily' },
       { text: ctx.t('rpg.btnInventory'), id: '.inventory' },
       { text: ctx.t('rpg.btnShop'), id: '.shop' },

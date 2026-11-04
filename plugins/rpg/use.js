@@ -17,18 +17,18 @@ export const CONSUMABLES = { ramuan: { energy: 50 } }
 export const i18n = {
   id: {
     use: {
-      hint: 'Tulis item konsumsinya yaa~ Saat ini yang bisa dipakai: ramuan (+50 energi). Contoh: .use ramuan',
-      done: '🧪 Kamu memakai {item}. Energi sekarang {energy}/100 {mood}',
-      none: 'Kamu tidak punya {item} di tas. Beli dulu di .shop yaa~ {mood}',
-      notUsable: '{item} bukan item konsumsi. Yang bisa dipakai: ramuan.',
+      hint: '╭─❏ ✨ 「 *USE* 」\n┊ Tulis item konsumsinya yaa~ Saat ini yang bisa dipakai: ramuan (+50 energi). Contoh: .use ramuan\n╰━━━━━━━',
+      done: '╭─❏ 🧪 「 *USE* 」\n┊ 🧪 Kamu memakai {item}. Energi sekarang {energy}/100 {mood}\n╰━━━━━━━',
+      none: '╭─❏ ✨ 「 *USE* 」\n┊ Kamu tidak punya {item} di tas. Beli dulu di .shop yaa~ {mood}\n╰━━━━━━━',
+      notUsable: '╭─❏ ✨ 「 *USE* 」\n┊ {item} bukan item konsumsi. Yang bisa dipakai: ramuan.\n╰━━━━━━━',
     },
   },
   en: {
     use: {
-      hint: 'Write the consumable item please~ Currently usable: ramuan (+50 energy). Example: .use ramuan',
-      done: '🧪 You used {item}. Energy is now {energy}/100 {mood}',
-      none: 'You have no {item} in your bag. Buy one at .shop first~ {mood}',
-      notUsable: '{item} is not a consumable. Usable ones: ramuan.',
+      hint: '╭─❏ ✨ 「 *USE* 」\n┊ Write the consumable item please~ Currently usable: ramuan (+50 energy). Example: .use ramuan\n╰━━━━━━━',
+      done: '╭─❏ 🧪 「 *USE* 」\n┊ 🧪 You used {item}. Energy is now {energy}/100 {mood}\n╰━━━━━━━',
+      none: '╭─❏ ✨ 「 *USE* 」\n┊ You have no {item} in your bag. Buy one at .shop first~ {mood}\n╰━━━━━━━',
+      notUsable: '╭─❏ ✨ 「 *USE* 」\n┊ {item} is not a consumable. Usable ones: ramuan.\n╰━━━━━━━',
     },
   },
 }

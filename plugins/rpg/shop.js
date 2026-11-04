@@ -15,8 +15,8 @@ export const config = {
 export const i18n = {
   id: {
     shop: {
-      body: '🛒 TOKO KANA 🛒\nKoin kamu: {coins} 💰\n\n{list}\n\nBeli: .buy <item> [jumlah]\nJual: .buy jual <item> [jumlah] (harga jual ada di .inventory)',
-      line: '{emoji} {name} ({id}): {price} koin',
+      body: '╭─❏ 🛒 「 *SHOP* 」\n┊ 🛒 TOKO KANA 🛒\n┊ Koin kamu: {coins} 💰\n\n┊ {list}\n\n┊ Beli: .buy <item> [jumlah]\n┊ Jual: .buy jual <item> [jumlah] (harga jual ada di .inventory)\n╰━━━━━━━',
+      line: '┊ {emoji} {name} ({id}): *{price} koin*',
       btnInventory: 'Tas Aku',
       btnCraft: 'Craft',
       btnProfile: 'Profil RPG',
@@ -24,8 +24,8 @@ export const i18n = {
   },
   en: {
     shop: {
-      body: '🛒 KANA SHOP 🛒\nYour coins: {coins} 💰\n\n{list}\n\nBuy: .buy <item> [qty]\nSell: .buy jual <item> [qty] (sell prices are in .inventory)',
-      line: '{emoji} {name} ({id}): {price} coins',
+      body: '╭─❏ 🛒 「 *SHOP* 」\n┊ 🛒 KANA SHOP 🛒\n┊ Your coins: {coins} 💰\n\n┊ {list}\n\n┊ Buy: .buy <item> [qty]\n┊ Sell: .buy jual <item> [qty] (sell prices are in .inventory)\n╰━━━━━━━',
+      line: '┊ {emoji} {name} ({id}): *{price} coins*',
       btnInventory: 'My Bag',
       btnCraft: 'Craft',
       btnProfile: 'RPG Profile',

@@ -15,8 +15,8 @@ export const config = {
 export const i18n = {
   id: {
     mining: {
-      ok: '⛏️ Clang clang! Hasil tambang kamu:\n{items}\nPlus {coins} koin~ 💰\n{mood}',
-      failed: 'Mouu, beliungnya mental dan nggak dapet apa apa kali ini... coba lagi yaa 🥺',
+      ok: '╭─❏ ⛏️ 「 *MINING* 」\n┊ ⛏️ Clang clang! Hasil tambang kamu:\n┊ {items}\n┊ Plus {coins} koin~ 💰\n┊ {mood}\n╰━━━━━━━',
+      failed: '╭─❏ ✨ 「 *MINING* 」\n┊ Mouu, beliungnya mental dan nggak dapet apa apa kali ini... coba lagi yaa 🥺\n╰━━━━━━━',
       btnAgain: 'Tambang Lagi',
       btnInventory: 'Tas Aku',
       btnShop: 'Toko',
@@ -24,8 +24,8 @@ export const i18n = {
   },
   en: {
     mining: {
-      ok: '⛏️ Clang clang! Your mining haul:\n{items}\nPlus {coins} coins~ 💰\n{mood}',
-      failed: 'Mouu, the pickaxe bounced off and you got nothing this time... try again 🥺',
+      ok: '╭─❏ ⛏️ 「 *MINING* 」\n┊ ⛏️ Clang clang! Your mining haul:\n┊ {items}\n┊ Plus {coins} coins~ 💰\n┊ {mood}\n╰━━━━━━━',
+      failed: '╭─❏ ✨ 「 *MINING* 」\n┊ Mouu, the pickaxe bounced off and you got nothing this time... try again 🥺\n╰━━━━━━━',
       btnAgain: 'Mine Again',
       btnInventory: 'My Bag',
       btnShop: 'Shop',
@@ -42,7 +42,7 @@ export async function handler(ctx) {
       const item = ITEM_MAP[id]
       return `${item?.emoji ?? '❔'} ${item ? item.name[ctx.lang] ?? item.name.id : id} x${qty}`
     })
-    .join('\n')
+    .join('\n┊ ')
   const body = res.failed
     ? ctx.t('mining.failed')
     : ctx.t('mining.ok', { items, coins: res.coins, mood: ctx.say('senang') })

@@ -16,24 +16,24 @@ export const config = {
 export const i18n = {
   id: {
     petualang: {
-      treasure: '🧭 PETUALANGAN: kamu menemukan peti tua terkubur berisi *{coins} koin*! Energi tersisa {energy}/100 {mood}',
-      item: '🧭 PETUALANGAN: di balik semak kamu menemukan *{item}*. Masuk tas yaa~ Energi tersisa {energy}/100 {mood}',
-      fightWin: '🧭 PETUALANGAN: monster menghadang, tapi power kamu {power} menang! Dapat *{coins} koin* + {xp} XP. Energi tersisa {energy}/100 {mood}',
-      fightLose: '🧭 PETUALANGAN: monster terlalu kuat (power kamu {power}), kamu kabur dan menjatuhkan *{coins} koin*. Energi tersisa {energy}/100 {mood}',
-      spring: '🧭 PETUALANGAN: kamu menemukan mata air jernih dan beristirahat. Energi pulih jadi {energy}/100 {mood}',
-      quiet: '🧭 PETUALANGAN: perjalanan tenang melewati padang bunga, tidak ada kejadian istimewa. Dapat {xp} XP pengalaman jalan. Energi tersisa {energy}/100 {mood}',
-      tired: 'Energimu tinggal {energy}/100, kurang buat bertualang (perlu 20). Pulihkan dengan .heal atau .istirahat dulu yaa~ {mood}',
+      treasure: '╭─❏ 🧭 「 *PETUALANGAN* 」\n┊ kamu menemukan peti tua terkubur berisi *{coins} koin*! Energi tersisa {energy}/100 {mood}\n╰━━━━━━━',
+      item: '╭─❏ 🧭 「 *PETUALANGAN* 」\n┊ di balik semak kamu menemukan *{item}*. Masuk tas yaa~ Energi tersisa {energy}/100 {mood}\n╰━━━━━━━',
+      fightWin: '╭─❏ 🧭 「 *PETUALANGAN* 」\n┊ monster menghadang, tapi power kamu {power} menang! Dapat *{coins} koin* + {xp} XP. Energi tersisa {energy}/100 {mood}\n╰━━━━━━━',
+      fightLose: '╭─❏ 🧭 「 *PETUALANGAN* 」\n┊ monster terlalu kuat (power kamu {power}), kamu kabur dan menjatuhkan *{coins} koin*. Energi tersisa {energy}/100 {mood}\n╰━━━━━━━',
+      spring: '╭─❏ 🧭 「 *PETUALANGAN* 」\n┊ kamu menemukan mata air jernih dan beristirahat. Energi pulih jadi {energy}/100 {mood}\n╰━━━━━━━',
+      quiet: '╭─❏ 🧭 「 *PETUALANGAN* 」\n┊ perjalanan tenang melewati padang bunga, tidak ada kejadian istimewa. Dapat {xp} XP pengalaman jalan. Energi tersisa {energy}/100 {mood}\n╰━━━━━━━',
+      tired: '╭─❏ ✨ 「 *PETUALANG* 」\n┊ Energimu tinggal {energy}/100, kurang buat bertualang (perlu 20). Pulihkan dengan .heal atau .istirahat dulu yaa~ {mood}\n╰━━━━━━━',
     },
   },
   en: {
     petualang: {
-      treasure: '🧭 ADVENTURE: you found a buried old chest with *{coins} coins*! Energy left {energy}/100 {mood}',
-      item: '🧭 ADVENTURE: behind the bushes you found *{item}*. Into the bag it goes~ Energy left {energy}/100 {mood}',
-      fightWin: '🧭 ADVENTURE: a monster blocked the path, but your power {power} won! Got *{coins} coins* + {xp} XP. Energy left {energy}/100 {mood}',
-      fightLose: '🧭 ADVENTURE: the monster is too strong (your power {power}), you fled and dropped *{coins} coins*. Energy left {energy}/100 {mood}',
-      spring: '🧭 ADVENTURE: you found a clear spring and rested. Energy restored to {energy}/100 {mood}',
-      quiet: '🧭 ADVENTURE: a calm walk through the flower fields, nothing special happened. Gained {xp} XP of travel experience. Energy left {energy}/100 {mood}',
-      tired: 'Your energy is {energy}/100, not enough to adventure (needs 20). Restore with .heal or .istirahat first~ {mood}',
+      treasure: '╭─❏ 🧭 「 *ADVENTURE* 」\n┊ you found a buried old chest with *{coins} coins*! Energy left {energy}/100 {mood}\n╰━━━━━━━',
+      item: '╭─❏ 🧭 「 *ADVENTURE* 」\n┊ behind the bushes you found *{item}*. Into the bag it goes~ Energy left {energy}/100 {mood}\n╰━━━━━━━',
+      fightWin: '╭─❏ 🧭 「 *ADVENTURE* 」\n┊ a monster blocked the path, but your power {power} won! Got *{coins} coins* + {xp} XP. Energy left {energy}/100 {mood}\n╰━━━━━━━',
+      fightLose: '╭─❏ 🧭 「 *ADVENTURE* 」\n┊ the monster is too strong (your power {power}), you fled and dropped *{coins} coins*. Energy left {energy}/100 {mood}\n╰━━━━━━━',
+      spring: '╭─❏ 🧭 「 *ADVENTURE* 」\n┊ you found a clear spring and rested. Energy restored to {energy}/100 {mood}\n╰━━━━━━━',
+      quiet: '╭─❏ 🧭 「 *ADVENTURE* 」\n┊ a calm walk through the flower fields, nothing special happened. Gained {xp} XP of travel experience. Energy left {energy}/100 {mood}\n╰━━━━━━━',
+      tired: '╭─❏ ✨ 「 *PETUALANG* 」\n┊ Your energy is {energy}/100, not enough to adventure (needs 20). Restore with .heal or .istirahat first~ {mood}\n╰━━━━━━━',
     },
   },
 }

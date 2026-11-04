@@ -26,18 +26,18 @@ const QUESTS = [
 export const i18n = {
   id: {
     misi: {
-      win: '📜 MISI SELESAI: {quest}\nHadiah: *{coins} koin* + {xp} XP.\nMisi hari ini: {done}/3 · Energi tersisa {energy}/100 {mood}',
-      lose: '📜 MISI GAGAL: {quest}\nLawan terlalu kuat buat power kamu ({power}). Tetap dapat {xp} XP pengalaman.\nMisi hari ini: {done}/3 · Energi tersisa {energy}/100 {mood}',
-      doneAll: 'Tiga misi hari ini sudah kamu ambil semua. Papan misi diperbarui besok yaa~ Cek .rpg buat statusmu. {mood}',
-      tired: 'Energimu tinggal {energy}/100, kurang buat misi (perlu 10). Pulihkan dengan .heal atau .istirahat dulu yaa~ {mood}',
+      win: '╭─❏ 📜 「 *MISI SELESAI* 」\n┊ {quest}\n┊ ʜᴀᴅɪᴀʜ: *{coins} koin* + {xp} XP.\n┊ Misi hari ini: {done}/3 · Energi tersisa {energy}/100 {mood}\n╰━━━━━━━',
+      lose: '╭─❏ 📜 「 *MISI GAGAL* 」\n┊ {quest}\n┊ Lawan terlalu kuat buat power kamu ({power}). Tetap dapat {xp} XP pengalaman.\n┊ Misi hari ini: {done}/3 · Energi tersisa {energy}/100 {mood}\n╰━━━━━━━',
+      doneAll: '╭─❏ ✨ 「 *MISI* 」\n┊ Tiga misi hari ini sudah kamu ambil semua. Papan misi diperbarui besok yaa~ Cek .rpg buat statusmu. {mood}\n╰━━━━━━━',
+      tired: '╭─❏ ✨ 「 *MISI* 」\n┊ Energimu tinggal {energy}/100, kurang buat misi (perlu 10). Pulihkan dengan .heal atau .istirahat dulu yaa~ {mood}\n╰━━━━━━━',
     },
   },
   en: {
     misi: {
-      win: '📜 QUEST DONE: {quest}\nReward: *{coins} coins* + {xp} XP.\nQuests today: {done}/3 · Energy left {energy}/100 {mood}',
-      lose: '📜 QUEST FAILED: {quest}\nThe foe is too strong for your power ({power}). You still gain {xp} XP of experience.\nQuests today: {done}/3 · Energy left {energy}/100 {mood}',
-      doneAll: 'You already took all three quests today. The quest board refreshes tomorrow~ Check .rpg for your status. {mood}',
-      tired: 'Your energy is {energy}/100, not enough for a quest (needs 10). Restore with .heal or .istirahat first~ {mood}',
+      win: '╭─❏ 📜 「 *QUEST DONE* 」\n┊ {quest}\n┊ ʀᴇᴡᴀʀᴅ: *{coins} coins* + {xp} XP.\n┊ Quests today: {done}/3 · Energy left {energy}/100 {mood}\n╰━━━━━━━',
+      lose: '╭─❏ 📜 「 *QUEST FAILED* 」\n┊ {quest}\n┊ The foe is too strong for your power ({power}). You still gain {xp} XP of experience.\n┊ Quests today: {done}/3 · Energy left {energy}/100 {mood}\n╰━━━━━━━',
+      doneAll: '╭─❏ ✨ 「 *MISI* 」\n┊ You already took all three quests today. The quest board refreshes tomorrow~ Check .rpg for your status. {mood}\n╰━━━━━━━',
+      tired: '╭─❏ ✨ 「 *MISI* 」\n┊ Your energy is {energy}/100, not enough for a quest (needs 10). Restore with .heal or .istirahat first~ {mood}\n╰━━━━━━━',
     },
   },
 }

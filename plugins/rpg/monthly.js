@@ -13,14 +13,14 @@ export const config = {
 export const i18n = {
   id: {
     monthly: {
-      done: '📅 Hadiah bulanan terklaim: *{coins} koin* + {xp} XP. Sampai jumpa bulan depan yaa~ {mood}',
-      wait: 'Hadiah bulanan bulan ini sudah kamu klaim. Tunggu bulan depan yaa~ {mood}',
+      done: '╭─❏ 📅 「 *MONTHLY* 」\n┊ 📅 Hadiah bulanan terklaim: *{coins} koin* + {xp} XP. Sampai jumpa bulan depan yaa~ {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *MONTHLY* 」\n┊ Hadiah bulanan bulan ini sudah kamu klaim. Tunggu bulan depan yaa~ {mood}\n╰━━━━━━━',
     },
   },
   en: {
     monthly: {
-      done: '📅 Monthly reward claimed: *{coins} coins* + {xp} XP. See you next month~ {mood}',
-      wait: 'You already claimed this month reward. Wait for next month~ {mood}',
+      done: '╭─❏ 📅 「 *MONTHLY* 」\n┊ 📅 Monthly reward claimed: *{coins} coins* + {xp} XP. See you next month~ {mood}\n╰━━━━━━━',
+      wait: '╭─❏ ✨ 「 *MONTHLY* 」\n┊ You already claimed this month reward. Wait for next month~ {mood}\n╰━━━━━━━',
     },
   },
 }

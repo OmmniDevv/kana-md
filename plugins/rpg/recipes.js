@@ -14,8 +14,8 @@ export const config = {
 export const i18n = {
   id: {
     recipes: {
-      body: '📖 BUKU RESEP KANA 📖\n\n{list}\n\nKetik .craft <id> buat bikin yaa~',
-      line: '{emoji} {name} (.craft {id})\n   Bahan: {needs}\n   Hasil: {gives}',
+      body: '╭─❏ 📖 「 *RECIPES* 」\n┊ 📖 BUKU RESEP KANA 📖\n\n┊ {list}\n\n┊ Ketik .craft <id> buat bikin yaa~\n╰━━━━━━━',
+      line: '┊ {emoji} {name} (.craft {id})\n┊ ʙᴀʜᴀɴ: {needs}\n┊ ʜᴀꜱɪʟ: {gives}',
       btnCraft: 'Mulai Craft',
       btnInventory: 'Tas Aku',
       btnShop: 'Toko',
@@ -23,8 +23,8 @@ export const i18n = {
   },
   en: {
     recipes: {
-      body: '📖 KANA RECIPE BOOK 📖\n\n{list}\n\nType .craft <id> to make one~',
-      line: '{emoji} {name} (.craft {id})\n   Needs: {needs}\n   Gives: {gives}',
+      body: '╭─❏ 📖 「 *RECIPES* 」\n┊ 📖 KANA RECIPE BOOK 📖\n\n┊ {list}\n\n┊ Type .craft <id> to make one~\n╰━━━━━━━',
+      line: '┊ {emoji} {name} (.craft {id})\n┊ ɴᴇᴇᴅꜱ: {needs}\n┊ ɢɪᴠᴇꜱ: {gives}',
       btnCraft: 'Start Crafting',
       btnInventory: 'My Bag',
       btnShop: 'Shop',

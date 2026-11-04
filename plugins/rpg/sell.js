@@ -14,16 +14,16 @@ export const config = {
 export const i18n = {
   id: {
     sell: {
-      hint: 'Tulis id itemnya yaa~ Contoh: .sell besi 2. Lihat tasmu dengan .inventory',
-      done: '💰 Terjual {qty}x {item} seharga *{coins} koin*. Saldo sekarang {balance} koin {mood}',
-      fail: 'Gagal menjual: {error}. Pastikan id item dan jumlahnya benar yaa~',
+      hint: '╭─❏ ✨ 「 *SELL* 」\n┊ Tulis id itemnya yaa~ Contoh: .sell besi 2. Lihat tasmu dengan .inventory\n╰━━━━━━━',
+      done: '╭─❏ 💰 「 *SELL* 」\n┊ 💰 Terjual {qty}x {item} seharga *{coins} koin*. Saldo sekarang {balance} koin {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ✨ 「 *SELL* 」\n┊ Gagal menjual: {error}. Pastikan id item dan jumlahnya benar yaa~\n╰━━━━━━━',
     },
   },
   en: {
     sell: {
-      hint: 'Write the item id please~ Example: .sell besi 2. See your bag with .inventory',
-      done: '💰 Sold {qty}x {item} for *{coins} coins*. Balance now {balance} coins {mood}',
-      fail: 'Failed to sell: {error}. Make sure the item id and quantity are right~',
+      hint: '╭─❏ ✨ 「 *SELL* 」\n┊ Write the item id please~ Example: .sell besi 2. See your bag with .inventory\n╰━━━━━━━',
+      done: '╭─❏ 💰 「 *SELL* 」\n┊ 💰 Sold {qty}x {item} for *{coins} coins*. Balance now {balance} coins {mood}\n╰━━━━━━━',
+      fail: '╭─❏ ✨ 「 *SELL* 」\n┊ Failed to sell: {error}. Make sure the item id and quantity are right~\n╰━━━━━━━',
     },
   },
 }
