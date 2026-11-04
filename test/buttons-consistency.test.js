@@ -68,12 +68,13 @@ const spotifyTracks = [
   { type: 'track', title: 'Song B', artist: 'Artist B', url: 'https://open.spotify.com/track/222bbb' },
 ]
 
-test('buildYtsButtons: id per hasil = .play <url>, ditutup .menu download', () => {
+test('buildYtsButtons: id per hasil = .play <url>, tanpa tombol menu generik', () => {
   const buttons = buildYtsButtons(ytResults, tId)
   assert.deepEqual(
     buttons.map((b) => b.id),
-    ['.play https://www.youtube.com/watch?v=aaa111', '.play https://www.youtube.com/watch?v=bbb222', '.menu download']
+    ['.play https://www.youtube.com/watch?v=aaa111', '.play https://www.youtube.com/watch?v=bbb222']
   )
+  assert.ok(!buttons.some((b) => b.id.startsWith('.menu')), 'tidak ada tombol menu generik (aturan owner 17:19)')
   assert.ok(buttons.length <= 10)
   for (const b of buttons) assert.ok(b.text.length > 0 && b.text.length <= 25)
 })
@@ -92,7 +93,7 @@ test('yts: hasil pencarian terkirim sebagai tombol quick_reply dengan id yang be
   const ids = collectButtonIds(relayed[0].message)
   assert.ok(ids.includes('.play https://www.youtube.com/watch?v=aaa111'), 'id hasil pertama benar')
   assert.ok(ids.includes('.play https://www.youtube.com/watch?v=bbb222'), 'id hasil kedua benar')
-  assert.ok(ids.includes('.menu download'), 'ada tombol menu download')
+  assert.ok(!ids.some((id) => id.startsWith('.menu')), 'tanpa tombol menu generik')
 })
 
 test('yts: relayMessage absen, fallback teks tetap terkirim dan tidak gagal', async () => {
@@ -117,13 +118,13 @@ test('buildSpotifyResultButtons: id per hasil = .spotify <url track>', () => {
   )
 })
 
-test('buildSpotifyDoneButtons: hasil + cari ulang + lirik + menu, total maks 10', () => {
+test('buildSpotifyDoneButtons: hasil + cari ulang + lirik, tanpa menu generik, total maks 10', () => {
   const buttons = buildSpotifyDoneButtons({ input: 'song a', title: 'Song A', results: spotifyTracks }, tId)
   const ids = buttons.map((b) => b.id)
   assert.ok(ids.includes('.spotify https://open.spotify.com/track/111aaa'))
   assert.ok(ids.includes('.spotify song a'), 'ada tombol cari ulang dengan query terakhir')
   assert.ok(ids.includes('.lirik Song A'), 'ada tombol lirik judul lagu')
-  assert.ok(ids.includes('.menu download'))
+  assert.ok(!ids.some((id) => id.startsWith('.menu')), 'tidak ada tombol menu generik (aturan owner 17:19)')
   assert.ok(buttons.length <= 10)
 })
 
@@ -142,7 +143,7 @@ test('spotify: hasil pencarian terkirim sebagai tombol quick_reply dengan id yan
   assert.ok(ids.includes('.spotify https://open.spotify.com/track/111aaa'), 'id track pertama benar')
   assert.ok(ids.includes('.spotify https://open.spotify.com/track/222bbb'), 'id track kedua benar')
   assert.ok(ids.includes('.lirik Song A'))
-  assert.ok(ids.includes('.menu download'))
+  assert.ok(!ids.some((id) => id.startsWith('.menu')), 'tanpa tombol menu generik')
 })
 
 test('spotify: relayMessage absen, fallback teks tetap terkirim dan tidak gagal', async () => {
@@ -170,11 +171,11 @@ test('extractYouTubeUrl play: kenali watch dan youtu.be, tolak judul', () => {
   assert.equal(extractYouTubeUrl('Dewa 19 Kangen'), null)
 })
 
-test('buildPlayButtons: .yts judul, .ytmp4 url, .menu download', () => {
+test('buildPlayButtons: .yts judul, .ytmp4 url, tanpa tombol menu generik', () => {
   const buttons = buildPlayButtons({ title: 'Kangen', url: 'https://youtu.be/abc123' }, tId)
   assert.deepEqual(
     buttons.map((b) => b.id),
-    ['.yts Kangen', '.ytmp4 https://youtu.be/abc123', '.menu download']
+    ['.yts Kangen', '.ytmp4 https://youtu.be/abc123']
   )
 })
 
@@ -192,7 +193,8 @@ test('handler yts query kosong: minta kata kunci, tanpa tombol dan tanpa jaringa
   }
   await ytsHandler(ctx)
   assert.equal(replies.length, 1)
-  assert.match(replies[0], /kata kuncinya dulu/)
+  assert.match(replies[0], /KETIK KATA KUNCINYA/)
+  assert.ok(replies[0].includes('╭─❏'), 'pesan dibingkai gaya rumah')
   assert.equal(relayed.length, 0)
 })
 
@@ -209,7 +211,8 @@ test('handler spotify query kosong: minta judul, tanpa tombol dan tanpa jaringan
   }
   await spotifyHandler(ctx)
   assert.equal(replies.length, 1)
-  assert.match(replies[0], /judul lagunya dulu/)
+  assert.match(replies[0], /KETIK JUDUL LAGUNYA/)
+  assert.ok(replies[0].includes('╭─❏'), 'pesan dibingkai gaya rumah')
   assert.equal(relayed.length, 0)
 })
 

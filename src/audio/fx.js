@@ -75,8 +75,9 @@ export function fxHandler(fxName, texts) {
     if (!buffer?.length) return ctx.reply(ctx.t(`${fxName}.needAudio`))
     if (buffer.length > MAX_VIDEO_BYTES) return ctx.reply(ctx.t(`${fxName}.tooBig`))
     try {
+      await ctx.reply(ctx.t(`${fxName}.processing`))
       const out = await applyFx(buffer, fxName)
-      return sendAudio(ctx, out, { title: texts?.title ?? fxName })
+      return sendAudio(ctx, out, { title: texts?.title ?? fxName, caption: ctx.t(`${fxName}.done`) })
     } catch (err) {
       return ctx.reply(ctx.t(`${fxName}.failed`, { message: err.message }))
     }
