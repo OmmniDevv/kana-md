@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Hello</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #17102B; color: #fff; font-family: sans-serif; }
+  #wrap { height: 360px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+  canvas { background: #241845; border-radius: 16px; }
+  button { background: #8B5CF6; color: #fff; border: 0; border-radius: 999px; padding: 10px 22px; font-size: 16px; }
+  #score { color: #D8CCFF; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div>KANA Hello Game</div>
+  <canvas id="game" width="300" height="180"></canvas>
+  <div id="score">Skor: 0</div>
+  <button id="tap">Tap KANA</button>
+</div>
+<script>
+  var score = 0;
+  var canvas = document.getElementById('game');
+  var ctx = canvas.getContext('2d');
+  var x = 30;
+  function draw() {
+    ctx.clearRect(0, 0, 300, 180);
+    ctx.fillStyle = '#D946EF';
+    ctx.beginPath();
+    ctx.arc(x, 90, 24, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = '16px sans-serif';
+    ctx.fillText('KANA', x - 20, 95);
+  }
+  var raf = null;
+  function loop() {
+    x = x >= 270 ? 30 : x + 2;
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { if (raf) cancelAnimationFrame(raf); raf = null; }
+    else if (!raf) loop();
+  });
+  document.getElementById('tap').addEventListener('click', function () {
+    score += 1;
+    document.getElementById('score').textContent = 'Skor: ' + score;
+  });
+  draw();
+  loop();
+</script>
+</body>
+</html>
