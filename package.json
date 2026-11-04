@@ -1,6 +1,9 @@
 {
   "dependencies": {
+    "@distube/ytdl-core": "5.2.0",
     "@rexxhayanasi/elaina-baileys": "1.4.7",
+    "axios": "1.21.0",
+    "cheerio": "1.2.0",
     "pg": "^8.13.1",
     "pino": "^9.5.0"
   },

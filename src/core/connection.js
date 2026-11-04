@@ -1,18 +1,20 @@
 import makeWASocket, { DisconnectReason } from '@rexxhayanasi/elaina-baileys'
 import pino from 'pino'
 import { logger } from '../services/logger.js'
+import { startAutoBio } from '../services/auto-bio.js'
 
 // Koneksi mengikuti README library v1.4.7:
 // - pairing code hanya bila state.creds.registered belum true
 // - 409 pairing: cancelPairingCode() lalu minta ulang sekali
 // - rate-overlimit: berhenti, jangan loop
 // - reconnect: exponential backoff + jitter; loggedOut: clearAuth() dan berhenti
-export async function startConnection({ auth, botNumber, ownerNumber, botName = 'KANA', onMessage, onOpen }) {
+export async function startConnection({ auth, botNumber, ownerNumber, botName = 'KANA', onMessage, onOpen, autoBio = false }) {
   const { state, saveCreds, clearAuth } = auth
   let attempt = 0
   let stopped = false
   let sock = null
   let pairingRequested = false
+  let bio = null
 
   async function connect() {
     if (stopped) return
@@ -37,7 +39,10 @@ export async function startConnection({ auth, botNumber, ownerNumber, botName = 
     sock.ev.on('connection.update', async ({ connection, lastDisconnect }) => {
       if (connection === 'connecting' && !state.creds.registered && !pairingRequested && botNumber) {
         pairingRequested = true
-        // Jeda singkat supaya socket siap sebelum meminta kode.
+        // Jeda 6 detik supaya socket benar-benar siap sebelum meminta kode.
+        // Jeda 3 detik terbukti gagal live 2026-11-04 (error Connection
+        // Closed, sisa sesinya membuat run berikutnya kena loggedOut);
+        // 6 detik terbukti berhasil dengan kode kustom KANAMOE1.
         setTimeout(async () => {
           try {
             const code = await sock.requestPairingCode(botNumber, 'KANAMOE1')
@@ -56,11 +61,15 @@ export async function startConnection({ auth, botNumber, ownerNumber, botName = 
               logger.error({ err: err.message, data: err.data }, 'pairing gagal, berhenti tanpa loop')
             }
           }
-        }, 3000)
+        }, 6000)
       }
       if (connection === 'open') {
         attempt = 0
         logger.info('KANA tersambung ke WhatsApp')
+        if (autoBio) {
+          bio?.stop()
+          bio = startAutoBio(sock, { botName })
+        }
         if (ownerNumber && onOpen) {
           try {
             await onOpen(sock)
@@ -70,6 +79,7 @@ export async function startConnection({ auth, botNumber, ownerNumber, botName = 
         }
       }
       if (connection === 'close') {
+        bio?.stop()
         const statusCode = lastDisconnect?.error?.output?.statusCode
         if (statusCode === DisconnectReason.loggedOut) {
           stopped = true
@@ -89,6 +99,13 @@ export async function startConnection({ auth, botNumber, ownerNumber, botName = 
 
   const shutdown = async () => {
     stopped = true
+    // Best-effort: bio OFF dulu (timeout pendek di dalam setOff), baru tutup socket.
+    if (bio) {
+      try {
+        await bio.setOff()
+      } catch {}
+      bio = null
+    }
     try {
       sock?.end?.(undefined)
     } catch {}

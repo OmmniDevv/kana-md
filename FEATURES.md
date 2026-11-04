@@ -26,6 +26,49 @@
 | Tes unit dan kontrak (node:test) | 5 tes, hijau |
 | Spike S1 sampai S7 | Belum jalan, semua butuh pairing dan HP user |
 
+## Scraper dan plugin downloader/search/AI (2026-11-04, atas kiriman user)
+
+Status di bagian ini: kode terpasang + tes unit hijau + smoke test loader.
+Tes live di bot tetap menunggu pairing (Gate 1). Tes jaringan langsung dari
+VM pada 2026-11-04: Pinterest search berhasil (3 hasil), Spotify search
+berhasil (hasil pertama "Sepatu"), metadata iTunes fallback berhasil
+("Sepatu", Tulus). Sisanya belum diuji jaringan satu per satu.
+
+| Modul / plugin | Sumber | Status |
+|---|---|---|
+| src/scrapers/runner.js (SSRF guard, retry, circuit breaker, downloadBuffer, withTempDir) | Kerangka spesifikasi 4.8 | Terpasang, dites unit |
+| src/scrapers/spotify/spotify.js, plugin .spotify | Kode kiriman user (spotmp3 + spotidown) | Terpasang, search lolos tes jaringan |
+| src/scrapers/spotify/metadata.js, plugin .lirik, fallback metadata .spotify | Yui Agents (Spotify Embed + iTunes + lirik lyrics.ovh/lrclib) | Terpasang, iTunes lolos tes jaringan |
+| src/scrapers/youtube/youtube.js, plugin .play dan .yts | Kode kiriman user (@distube/ytdl-core), diubah ke file temp | Terpasang |
+| src/scrapers/pinterest/pinterest.js, plugin .pinterest | Kode kiriman user | Terpasang, lolos tes jaringan |
+| src/scrapers/facebook/facebook.js, plugin .fb | Kode kiriman user (snapsave.app) | Terpasang |
+| src/scrapers/instagram/instagram.js, plugin .ig | Kode kiriman user (snapsave.app) | Terpasang |
+| src/scrapers/tiktok/tiktok.js, plugin .tiktok | Kode kiriman user (tiklydown) + fallback tikwm dari snippet Jerexd, https://dpaste.org/YNLWj/raw | Terpasang |
+| src/scrapers/komik/komikcast.js, plugin .komik | Adaptasi snippet Jerexd, https://paste.c-net.org/PresumeCaddy | Terpasang |
+| src/scrapers/font/dafont.js, plugin .font | Adaptasi snippet Jerexd, https://paste.c-net.org/SworeSmashed | Terpasang |
+| src/scrapers/ai/rudder.js, plugin .ai | Snippet rudder.chat oleh hazeloffc (t.me/hazeloffc) | Terpasang, opt-in: aktif hanya bila RUDDER_USER_ID, RUDDER_COOKIE_C0, RUDDER_COOKIE_C1, RUDDER_TH_WHO diisi di .env |
+
+| src/services/auto-bio.js | Fitur dari user: bio profil otomatis | Terpasang, dites unit; tes live menunggu bot connect |
+
+Detail auto bio: saat connection open, bio profil bot diisi status ON plus
+runtime dari template (BIO_ON_TEMPLATE, placeholder {bot}, {runtime},
+{since}), diperbarui tiap 5 menit, dan diubah ke OFF (BIO_OFF_TEMPLATE)
+pada shutdown rapi. Default template moe bawaan kode bila env kosong.
+Toggle AUTO_BIO (default true). API sock.updateProfileStatus terkonfirmasi
+di README dan kode library v1.4.7. Kegagalan update bio tidak fatal.
+
+Perbaikan bug base dari pairing live 2026-11-04: (1) src/index.js sekarang
+memuat .env lewat src/load-env.js (process.loadEnvFile bawaan Node,
+diimpor pertama); (2) jeda requestPairingCode diubah 3000 ms menjadi
+6000 ms (terbukti berhasil live dengan kode KANAMOE1), dan jalur loggedOut
+tetap memanggil clearAuth() agar sisa sesi tidak terdaftar yang korup
+dibersihkan dengan aman.
+
+Triage lengkap semua link paste ada di docs/SNIPPETS.md. Catatan jujur:
+scraper gratis akan rusak berkala; runner dibuat agar kegagalannya rapi
+(error jelas ke pengguna) dan perbaikannya murah. Batas kirim media:
+audio 16 MB, video 64 MB, gambar 16 MB, dokumen 64 MB.
+
 ## Belum dibangun (sesuai Gate 1)
-- Semua fitur katalog Fase 2 dan seterusnya.
-- Kanal skor WebSocket untuk game, Dockerfile, scheduler, scraper.
+- Semua fitur katalog Fase 2 dan seterusnya di luar scraper di atas.
+- Kanal skor WebSocket untuk game, Dockerfile, scheduler.

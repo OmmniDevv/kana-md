@@ -1,3 +1,4 @@
+import './load-env.js'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { loadPlugins } from '../src/core/plugin-loader.js'
@@ -36,6 +37,7 @@ await startConnection({
   botNumber,
   ownerNumber,
   botName,
+  autoBio: (process.env.AUTO_BIO ?? 'true').toLowerCase() !== 'false',
   onMessage: pipeline.handle,
   onOpen: async (sock) => {
     if (!ownerNumber) return
