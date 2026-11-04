@@ -58,7 +58,7 @@ export async function handler(ctx) {
     sendButtons(ctx.sock, ctx.chat, {
       title: ctx.t('topgame.title'),
       body,
-      footer: ctx.t('topgame.footer'),
+      footer: ctx.t('menu.footer'),
       replies,
       textFallback: body,
     })

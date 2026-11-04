@@ -2,6 +2,8 @@ import { readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { getGroupSettings, updateGroupSettings } from '../../src/services/group-service.js'
+import { getGroupText } from '../../src/services/group-settings.js'
+import { renderTemplate } from '../../src/config/templates.js'
 import { digitsOf } from '../../src/services/guard-rules.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -43,6 +45,8 @@ export const i18n = {
   },
 }
 
+export const test = { input: '.welcome on', expect: /welcome/i }
+
 export async function handler(ctx) {
   const arg = (ctx.args[0] || '').toLowerCase()
   if (!['on', 'off'].includes(arg)) return ctx.reply(ctx.t('welcome.usage'))
@@ -56,21 +60,34 @@ export async function onParticipantsUpdate(ctx) {
   if (ctx.action === 'add' && !settings.welcome) return
   if (ctx.action === 'remove' && !settings.goodbye) return
   let groupName = ctx.chat
+  let meta = null
   try {
-    const meta = await ctx.getGroupMetadata()
+    meta = await ctx.getGroupMetadata()
     if (meta?.subject) groupName = meta.subject
   } catch {}
+  const count = Array.isArray(meta?.participants) ? meta.participants.length : 0
+  const isAdd = ctx.action === 'add'
+  const kind = isAdd ? 'welcome' : 'goodbye'
+  const template = await getGroupText(ctx.storage, ctx.chat, kind)
   for (const participant of ctx.participants ?? []) {
     const jid = typeof participant === 'string' ? participant : participant?.id || String(participant)
     const digits = digitsOf(jid)
-    const isAdd = ctx.action === 'add'
+    const rendered = renderTemplate(template, {
+      user: isAdd ? `@${digits}` : digits,
+      group: groupName,
+      count,
+    })
+    const caption =
+      rendered.trim() ||
+      ctx.t(isAdd ? 'welcome.hello' : 'welcome.bye', {
+        digits, group: groupName, name: digits, mood: ctx.say(isAdd ? 'senang' : 'pamit'),
+      })
+    const textFallback =
+      rendered.trim() ||
+      ctx.t(isAdd ? 'welcome.helloText' : 'welcome.byeText', {
+        digits, group: groupName, mood: ctx.say(isAdd ? 'senang' : 'pamit'),
+      })
     const file = isAdd ? 'welcome.jpg' : 'goodbye.jpg'
-    const caption = ctx.t(isAdd ? 'welcome.hello' : 'welcome.bye', {
-      digits, group: groupName, name: digits, mood: ctx.say(isAdd ? 'senang' : 'pamit'),
-    })
-    const textFallback = ctx.t(isAdd ? 'welcome.helloText' : 'welcome.byeText', {
-      digits, group: groupName, mood: ctx.say(isAdd ? 'senang' : 'pamit'),
-    })
     let image = null
     try { image = await readFile(join(here, '../../assets', file)) } catch { image = null }
     try {

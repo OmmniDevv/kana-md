@@ -168,3 +168,39 @@ Status umum: kode terpasang + tes unit hijau (total suite 241 tes, i18n:check hi
 - Skor game hanya tercatat bila owner mengisi SCORE_WS_PORT dan SCORE_WS_HOST yang bisa dijangkau HP; tanpa itu game tetap bisa dimainkan tanpa papan skor online.
 - Pairing jadibot nyata dan semua fitur gelombang ini belum diuji live (aturan proyek: tidak pairing dan tidak mengirim pesan WhatsApp tanpa instruksi owner di chat utama). Harness Mode A siap untuk sesi tes tersebut.
 - Bot live di /tmp/kana-pair masih menjalankan kode sebelum gelombang fitur ini; restart dengan kode baru menunggu giliran owner di chat utama.
+
+## Ekspansi 700 perintah (2026-11-04, perintah user, sedang berjalan)
+
+Target: minimal 700 perintah terdaftar (unik + alias) dan minimal 420 perintah unik, semua fitur memakai button, semua plugin dites live satu per satu. Alur kerja wajib dari user (15:44 WIB): setiap selesai 1 plugin langsung tes live di WhatsApp saat itu juga lewat harness Mode A difilter per plugin (TEST_FILTER), error diperbaiki di tempat sebelum lanjut plugin berikutnya; pengaman kesehatan akun tetap berlaku penuh dan tes berhenti total bila akun capped/warned/timelock. Hasil tes live per plugin dicatat di tabel hasil tes live di bawah.
+
+### Batch Fondasi Ekspansi (2026-11-04)
+
+| Item | Status |
+|---|---|
+| Template teks satu tempat: src/config/templates.js (kunci i18n template baku, footerLine/withFooter, default welcome/goodbye dengan placeholder {user} {group} {count}, renderTemplate, smallCaps); locale inti tambah blok template simetris id/en | Terpasang, dites unit (test/templates-settings.test.js) |
+| Footer abu ala Elaina jadi pola baku: src/ui/buttons.js memakai footer bawaan dari template pusat bila pemanggil tidak memberi footer; footer eksplisit pemanggil lama tidak ditimpa | Terpasang, dites unit |
+| Settings teks grup persisten: src/services/group-settings.js (namespace kv group_settings), welcome/goodbye grup membaca teks efektif dari settings dengan fallback default template pusat; plugin welcome di-retrofit | Terpasang, dites unit |
+| Perintah admin grup baru: .setwelcome dan .setgoodbye (tanpa argumen menampilkan teks efektif, argumen teks menyimpan maks 500 karakter, argumen reset mengembalikan default) | Terpasang, dites unit; total plugin kini 176 |
+| Game HTML wajib diteruskan: src/ui/htmlgame.js meneruskan forwarded: true + forwardingScore: 999 secara eksplisit ke MB.sendHtmlApp pada kedua jalur kirim; terbukti dari payload relay untuk semua 12 game di folder games/ plus jalur .hello (contextInfo isForwarded true, forwardingScore 999, forwardedAiBotMessageInfo ada) | Terpasang, dites unit (test/game-forwarded.test.js, 14 tes) |
+| Footer .games dan .topgame diseragamkan ke kunci template pusat (menu.footer) | Terpasang |
+| externalAdReply: grep di src/, plugins/, scripts/, test/ bersih, 0 temuan | Terverifikasi 2026-11-04 |
+| Harness livetest: dukungan TEST_FILTER (regex nama plugin/input), TEST_OFFSET, TEST_LIMIT untuk tes per plugin atau per irisan; hasil uji kini mencatat nama plugin | Terpasang, dites unit (test/livetest.test.js, 15 tes) |
+| Dependensi @napi-rs/canvas 1.1.0 (pin exact) untuk kartu profil canvas | Terpasang, terverifikasi jalan di VM (render PNG) |
+
+### Aset gambar generate (assets/gen/, hasil fitur generate gambar, diperiksa visual satu per satu)
+
+| Aset | Pemakaian | Hasil periksa visual |
+|---|---|---|
+| profile-bg.png | Latar kartu profil canvas | Lolos: maskot chibi rambut hijau + headphone telinga kucing di meja holografik, sisi kiri gelap bersih untuk overlay teks, tanpa teks/watermark |
+| rpg-battle.png | Seni header RPG | Lolos: ksatria chibi melawan slime bayangan, hutan gelap aksen hijau, tanpa teks/watermark |
+| games-art.png | Seni menu game | Lolos (versi regenerasi): maskot rambut hijau + headphone telinga kucing yang sama, ruang arcade hijau hitam, tanpa teks/watermark. Versi pertama rambut pink dibuang karena tidak konsisten dengan maskot |
+
+Catatan: games-art.png belum dipasang ke keluaran .games karena helper sendButtons belum punya slot gambar header; aset tersimpan dan siap dipakai saat helper mendukung gambar.
+
+### Hasil tes live per plugin (Mode A, difilter per plugin)
+
+Status awal: belum ada plugin yang dites live pada gelombang ekspansi ini. Tabel ini diisi satu baris per plugin selama sapuan dan selama batch baru berjalan: nama plugin, perintah uji, status (terkirim/error), dan catatan perbaikan bila ada. Ingat: status terkirim dari harness bukan vonis lulus visual; penilaian akhir tetap di HP owner.
+
+| Plugin | Uji | Status live | Catatan |
+|---|---|---|---|
+| (menunggu sapuan) | | | |

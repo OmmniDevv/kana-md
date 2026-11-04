@@ -4,11 +4,14 @@ import {
   BUILTIN_TESTS,
   assertChatAllowed,
   collectPluginTests,
+  compileTestFilter,
+  filterTests,
   guardMode,
   isLiveTestEnabled,
   normalizeChatJid,
   parseTestChats,
   runLiveTest,
+  sliceTests,
 } from '../scripts/livetest.js'
 
 test('guardMode menolak tanpa LIVETEST', () => {
@@ -120,6 +123,44 @@ test('runLiveTest: pesan sintetis dari digit mentah membawa remoteJid JID penuh'
   assert.equal(captured[0].key.remoteJid, '6281234567890@s.whatsapp.net')
   assert.equal(outcome.results[0].chat, '6281234567890@s.whatsapp.net')
   assert.equal(outcome.results[0].status, 'sent')
+})
+
+test('compileTestFilter: kosong berarti null, regex valid terkompilasi, invalid melempar', () => {
+  assert.equal(compileTestFilter({}), null)
+  assert.equal(compileTestFilter({ TEST_FILTER: '  ' }), null)
+  const re = compileTestFilter({ TEST_FILTER: '^profil$' })
+  assert.ok(re instanceof RegExp)
+  assert.ok(re.test('profil'))
+  assert.ok(re.test('PROFIL'))
+  assert.throws(() => compileTestFilter({ TEST_FILTER: '([' }), /bukan regex valid/)
+})
+
+test('filterTests menyaring berdasar nama plugin atau input', () => {
+  const tests = [
+    { input: '.ping', expect: /pong/, plugin: 'ping' },
+    { input: '.profil', expect: /.+/, plugin: 'profil' },
+    { input: '.profile', expect: /.+/, plugin: 'profil' },
+    { input: '.menu', expect: /.+/ },
+  ]
+  assert.equal(filterTests(tests, {}).length, 4)
+  assert.deepEqual(
+    filterTests(tests, { TEST_FILTER: '^profil$' }).map((t) => t.input),
+    ['.profil', '.profile']
+  )
+  assert.deepEqual(
+    filterTests(tests, { TEST_FILTER: 'menu' }).map((t) => t.input),
+    ['.menu']
+  )
+  assert.deepEqual(filterTests(tests, { TEST_FILTER: 'tidakada' }), [])
+})
+
+test('sliceTests menghormati TEST_OFFSET dan TEST_LIMIT dengan fallback aman', () => {
+  const tests = [{ input: '.a' }, { input: '.b' }, { input: '.c' }, { input: '.d' }]
+  assert.equal(sliceTests(tests, {}).length, 4)
+  assert.deepEqual(sliceTests(tests, { TEST_OFFSET: '1', TEST_LIMIT: '2' }).map((t) => t.input), ['.b', '.c'])
+  assert.deepEqual(sliceTests(tests, { TEST_OFFSET: '3' }).map((t) => t.input), ['.d'])
+  assert.deepEqual(sliceTests(tests, { TEST_OFFSET: '-2', TEST_LIMIT: 'abc' }).length, 4)
+  assert.deepEqual(sliceTests(tests, { TEST_LIMIT: '0' }), [])
 })
 
 test('BUILTIN_TESTS berisi perintah inti yang aman, semua diawali titik', () => {

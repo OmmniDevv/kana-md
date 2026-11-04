@@ -1,4 +1,10 @@
 export default {
+  template: {
+    footer: 'KANA, moe WhatsApp bot',
+    greeting: 'Haii {name}~ KANA is here, ready to keep you company!',
+    error: 'Mouu, something went wrong. Please try again in a bit~',
+    caption: 'Made by KANA with all my heart~',
+  },
   common: {
     error: 'Mouu, something went wrong. Please try again in a bit~',
     cooldown: 'Hold on, wait {seconds} more seconds~',

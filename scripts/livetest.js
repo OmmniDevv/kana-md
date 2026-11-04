@@ -5,6 +5,13 @@
 // dengan TEST_CHATS terisi di .env (daftar JID/digit chat uji, pisah koma).
 // package.json tidak diubah; perintah di atas adalah cara menjalankannya.
 //
+// Pilihan irisan uji (env proses, bukan .env):
+// - TEST_FILTER: regex (tidak peka huruf) atas nama plugin atau input uji.
+//   Dipakai untuk mengetes SATU plugin saja per giliran, mis.
+//   TEST_FILTER='^profil$' hanya menjalankan uji milik plugin profil.
+// - TEST_OFFSET dan TEST_LIMIT: memilih irisan berurutan dari daftar uji
+//   gabungan (builtin dulu, lalu uji plugin sesuai urutan registry).
+//
 // Apa itu Mode A:
 // - Harness menyuntikkan pesan masuk SINTETIS langsung ke pipeline lewat
 //   pipeline.handle(sock, raw), bukan lewat event WhatsApp sungguhan.
@@ -128,6 +135,46 @@ export function collectPluginTests(registry) {
     tests.push({ input: t.input, expect: t.expect, plugin: plugin?.config?.name ?? null })
   }
   return tests
+}
+
+// Kompilasi TEST_FILTER menjadi RegExp. Kosong berarti tanpa filter.
+// Regex tidak valid melempar error jelas supaya sesi tes tidak jalan
+// dengan irisan yang salah secara diam diam.
+export function compileTestFilter(env = process.env) {
+  const raw = typeof env?.TEST_FILTER === 'string' ? env.TEST_FILTER.trim() : ''
+  if (!raw) return null
+  try {
+    return new RegExp(raw, 'i')
+  } catch {
+    throw new Error(`TEST_FILTER bukan regex valid: ${raw}`)
+  }
+}
+
+// Saring daftar uji dengan TEST_FILTER: entri lolos bila nama plugin
+// ATAU input ujinya cocok dengan regex. Tanpa filter, daftar utuh.
+export function filterTests(tests, env = process.env) {
+  const list = Array.isArray(tests) ? tests : []
+  const pattern = compileTestFilter(env)
+  if (!pattern) return list
+  return list.filter((entry) => {
+    const plugin = typeof entry?.plugin === 'string' ? entry.plugin : ''
+    const input = typeof entry?.input === 'string' ? entry.input : ''
+    return pattern.test(plugin) || pattern.test(input)
+  })
+}
+
+// Iris daftar uji dengan TEST_OFFSET (default 0) dan TEST_LIMIT
+// (default semua). Nilai tidak valid jatuh ke default yang aman.
+export function sliceTests(tests, env = process.env) {
+  const list = Array.isArray(tests) ? tests : []
+  const total = list.length
+  const offsetParsed = Number.parseInt(env?.TEST_OFFSET ?? '0', 10)
+  const offset = Number.isNaN(offsetParsed) || offsetParsed < 0 ? 0 : offsetParsed
+  const limitRaw = env?.TEST_LIMIT
+  if (limitRaw == null || limitRaw === '') return list.slice(offset)
+  const limitParsed = Number.parseInt(limitRaw, 10)
+  const limit = Number.isNaN(limitParsed) || limitParsed < 0 ? total : limitParsed
+  return list.slice(offset, offset + limit)
 }
 
 // Ringkasan dari penanda yang benar benar bisa diamati harness Mode A:
@@ -277,9 +324,9 @@ export async function runLiveTest({
       const sentAt = new Date().toISOString()
       try {
         await pipeline.handle(sock, raw)
-        results.push({ chat: jid, input, expect: String(expect), sentAt, status: 'sent' })
+        results.push({ chat: jid, input, expect: String(expect), plugin: entry?.plugin ?? null, sentAt, status: 'sent' })
       } catch (err) {
-        results.push({ chat: jid, input, expect: String(expect), sentAt, status: 'error', error: err.message })
+        results.push({ chat: jid, input, expect: String(expect), plugin: entry?.plugin ?? null, sentAt, status: 'error', error: err.message })
       }
       sentWindow.push(Date.now())
       sentCount += 1
@@ -342,9 +389,14 @@ export async function main(env = process.env) {
   const registry = await loadPlugins(join(root, 'plugins'))
   const pipeline = createPipeline({ registry, storage, owners: [ownerNumber], defaultLang })
   const auth = await createAuthState(storage, env)
-  const tests = [...BUILTIN_TESTS, ...collectPluginTests(registry)]
+  const allTests = [...BUILTIN_TESTS, ...collectPluginTests(registry)]
+  const tests = sliceTests(filterTests(allTests, env), env)
 
-  console.log(`Tes live Mode A: 1 chat (${chat}), ${tests.length} uji. Menunggu koneksi terbuka...`)
+  console.log(
+    `Tes live Mode A: 1 chat (${chat}), ${tests.length} dari ${allTests.length} uji` +
+      (env.TEST_FILTER ? ` (TEST_FILTER=${env.TEST_FILTER})` : '') +
+      '. Menunggu koneksi terbuka...'
+  )
 
   let done = false
   const timeout = setTimeout(() => {

@@ -34,6 +34,10 @@ export const i18n = {
   },
 }
 
+// Header gambar tidak dipaksakan di sini: pola loadMenuBanner + setImage
+// khusus konstruksi MB.Button langsung di menu utama, sedangkan daftar ini
+// memakai sendButtons bersama yang tidak punya slot gambar. Tombol dan
+// footer menu.footer dipertahankan apa adanya.
 export async function handler(ctx) {
   const games = await listGames()
   if (!games.length) {
@@ -47,7 +51,7 @@ export async function handler(ctx) {
   return sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('games.title'),
     body,
-    footer: ctx.t('games.footer'),
+    footer: ctx.t('menu.footer'),
     replies,
     textFallback: body,
   })
