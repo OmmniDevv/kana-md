@@ -164,7 +164,7 @@ Status umum: kode terpasang + tes unit hijau (total suite 241 tes, i18n:check hi
 
 - OCR (.ocr): plugin menjawab jujur belum tersedia; tesseract.js dinilai terlalu berat dan data latihnya butuh unduhan runtime.
 - Remove background (.removebg): belum ada cara lokal gratis yang nyata tanpa model atau key; plugin menjawab jujur.
-- SoundCloud, Threads, CapCut (.soundcloud .threads .capcut): belum ada sumber publik gratis yang terverifikasi; plugin menjawab jujur, tidak mengarang endpoint.
+- SoundCloud, CapCut: SELESAI 2026-11-04 malam, scraper asli terverifikasi lokal (lihat bagian Ekspansi paritas). Threads: DINONAKTIFKAN 2026-11-04 malam (halaman shell login di semua UA, berkas di disabled-plugins/threads.js).
 - Vision (.vision): struktur siap, menunggu owner mengisi VISION_API_URL (endpoint kompatibel gaya OpenAI dengan image_url); tanpa itu plugin menjawab belum terkonfigurasi.
 - Skor game hanya tercatat bila owner mengisi SCORE_WS_PORT dan SCORE_WS_HOST yang bisa dijangkau HP; tanpa itu game tetap bisa dimainkan tanpa papan skor online.
 - Pairing jadibot nyata dan semua fitur gelombang ini belum diuji live (aturan proyek: tidak pairing dan tidak mengirim pesan WhatsApp tanpa instruksi owner di chat utama). Harness Mode A siap untuk sesi tes tersebut.
@@ -259,3 +259,27 @@ Registry sesudah batch ini: 261 plugin unik / 483 perintah terdaftar, 0 karantin
 - Retrofit standar baru ke plugin lama: seluruh kuis dijawab lewat reply (perintah .jawab dihapus), tombol menu generik dicabut dari pesan hasil fun, emoji back diganti 🏠, wiki menjadi satu pesan fake image.
 
 Status tes live batch A: yang tercantum di subbab jendela di atas LIVE LOLOS. Sisanya (tools user, user baru, game reply selain hangman parsial, kuis baru cerdascermat/kuisumum/riddle/kataacak, fun lokal selain yang di jendela) menunggu jendela tes berikutnya; hangman sudah terbukti sebagian lewat skenario reply live (mulai + reply huruf + stop), belum dihitung LIVE LOLOS penuh per plugin.
+
+## Ekspansi paritas Elaina (2026-11-04 malam, koreksi target user 18:01 WIB)
+
+Target diganti user: bukan angka 700/420, melainkan paritas fitur Elaina-MD penuh. Audit final di docs/DECISIONS.md bagian "Lampiran paritas": 846 nama fitur Elaina semuanya berstatus akhir (525 terdaftar persis di registry KANA, 114 fallback terpetakan, 76 dilarang, 112 dikecualikan beralasan probe, 19 artefak ekstraksi). Registry saat ini: 417 plugin unik, 1024 perintah termasuk alias, 0 karantina, npm test 339 hijau.
+
+### Selesai sesi ini (terverifikasi lokal, menunggu jendela tes live #3)
+
+- Guard grup +6 aturan (antidocument, antisticker, antiflood, antitagsw, antivirtex, antihidetag) dan plugin grup baru: mute, unmute, listadmin, tagadmin, getpp, del (reply-first), grupstats, topchat, slowmode, intro, setintro.
+- Plugin owner baru: join, leave, block, unblock, setppbot, setnamebot, listgrup, cleartmp, restart, getplugin.
+- RPG: energi + kerja, heal, istirahat, misi, boss, arena, petualang, harta, sell, makan, use, monthly, yearly, simulator cafe (.cafe subperintah), kriminal dan penjara: maling, merampok, copet, penjara (bebas bayar denda / kabur).
+- Kartu canvas baru (src/ui/cards.js): levelcard, rpgcard, buatquote, wanted, movieposter, tarot, ytcomment, fakediscord (semua template orisinal KANA; ytcomment dan fakediscord berlabel MEME).
+- Audio fx kini 16 plugin (8 lama + blown, earrape, fat, robot, slow, fast, smooth, squirrel), semua filter terverifikasi ffmpeg lokal.
+- Maker: pixelate, logoglow, logogold, logoneon, logometal, togif, getexif, resize, imgstyle (anime/manga/watercolor/vintage/abu/cermin), nulis, barcode, ytcomment, fakediscord.
+- Anime (nekos.best SFW; waifu.pics mati dan dibajak situs judi): waifu, neko, husbu, kitsune, ppcouple, 14 GIF reaksi (hug, pat, slap, dance, cry, blush, smug, poke, wink, smile, wave, happy, cuddle, kiss), animeimgsearch (trace.moe).
+- Search/info: berita (RSS), ghuser, githubsearch, githubtrend, cekip, dnslookup, robloxstalk, applemusic, playstore (scrape hasil + blob data, pasangan judul-paket terverifikasi), alquran, ayatkursi, harilibur (Nager.Date + tabel lunar SKB 2026), npm, mcstatus.
+- Download: capcut dan soundcloud STUB DIGANTI scraper asli (capcut: meta template, video 1,47 MB terunduh lokal; soundcloud: resolve API, MP3 4,04 MB terunduh lokal, trek DRM FairPlay ditolak jujur), transkrip YouTube (caption via data pemutar ytdl-core, lirik asli terverifikasi), tiktokmp3, ytmp3, pixeldrain (API resmi, info + range 206 terverifikasi).
+- Threads DINONAKTIFKAN: halaman threads.net dan threads.com membalas shell login di semua UA; berkas dipindah ke disabled-plugins/threads.js.
+- Fun/user/main: totalfitur, script, runtime, role, advice, alay, gombal, fml, namaninja, cektinggi, sisaumur, bagaimana, dimana, mengapa, berapa, siapa, coinflip, resetwarn, tagme, sendkontak, menfess (anomin via bot), nembak/jadian/putus (reply-first penuh), suitpvp (reply dua tahap), kecocokannama, sifatbisnis, potensipenyakit, misteri, sipaling, cat, dog, islamquotes, aiueo, hidetext, react, ceklid, tempmail (mail.tm), fetchweb, report.
+- Kuis topik baru (dataset lokal, mekanisme reply bersama): tebakheroml, tebakkartun, tebakjkt, tebakwarna, siapakahaku.
+- Game HTML catur lengkap di katalog (games/chess; mesin legal-move terverifikasi: 20 langkah pembuka dan skakmat Fool's Mate terdeteksi).
+- Gelombang alias 1+2: sekitar 220 nama Elaina dipetakan ke plugin kanonis KANA (termasuk 57 nama di gelombang 2 sesi ini).
+- Aturan user sore diterapkan: kuis full reply (.jawab dihapus), reply-router bersama, wiki fake image, tombol hasil tanpa menu generik, emoji back tanpa panah.
+
+Status tes live: jendela 1 dan 2 (69 plugin) LIVE LOLOS tercatat di tabel atas dan summary scratch; pola reply terverifikasi 10/10 skenario. Sisa plugin sesi ini menunggu JENDELA TES LIVE #3 (prosedur kunci v3) sebelum berstatus LIVE LOLOS; yang tidak bisa diuji di DM owner (fitur khusus grup, aksi owner destruktif) akan dicatat apa adanya.
