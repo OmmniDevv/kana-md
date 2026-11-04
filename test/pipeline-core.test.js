@@ -4,6 +4,14 @@ import { createPipeline } from '../src/core/pipeline.js'
 import { memoryStorage } from './user-service.test.js'
 
 function setup({ plugins = [], befores = [], storage = memoryStorage(), sockExtra = {} } = {}) {
+  // Sejak gate daftar wajib (2026-11-04), user uji 628123 dianggap sudah
+  // terdaftar supaya tes gates lain (limit, admin, XP) tetap terisolasi.
+  const origGet = storage.get.bind(storage)
+  storage.get = async (ns, key) => {
+    const value = await origGet(ns, key)
+    if (ns === 'users' && key === '628123') return { registered: true, ...(value ?? {}) }
+    return value
+  }
   const byName = new Map(plugins.map((p) => [p.config.name, p]))
   const registry = {
     resolve: (c) => byName.get(c),

@@ -13,7 +13,13 @@ function setup() {
     },
   }
   const registry = { resolve: (c) => (c === 'menu' ? plugin : undefined), list: () => [plugin], quarantined: [] }
-  const storage = { get: async () => undefined, set: async () => {}, delete: async () => {} }
+  // Sejak gate daftar wajib (2026-11-04), user uji harus terdaftar agar
+  // perintahnya lolos pipeline.
+  const storage = {
+    get: async (ns, key) => (ns === 'users' && key === '628123' ? { registered: true } : undefined),
+    set: async () => {},
+    delete: async () => {},
+  }
   const pipeline = createPipeline({ registry, storage, owners: [], defaultLang: 'id' })
   const sock = { sendMessage: async () => ({}) }
   return { pipeline, sock, captured }

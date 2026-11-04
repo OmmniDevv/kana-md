@@ -3,6 +3,7 @@ import pino from 'pino'
 import { t as translate } from '../i18n/index.js'
 import { say } from '../persona/moe.js'
 import { logger } from '../services/logger.js'
+import { sendButtons } from '../ui/buttons.js'
 import * as users from '../services/user-service.js'
 
 export const PREFIXES = ['.', '!', '/', '#']
@@ -183,11 +184,12 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
     const [rawCommand, ...args] = body.split(/\s+/)
 
     // Mode self: hanya owner yang dilayani, diam untuk pengguna lain.
+    let userProfile = null
     if (!isOwner) {
       const settings = await storage.get('settings', 'bot')
       if (settings?.mode === 'self') return
-      const profile = await users.getProfile(storage, primaryDigits)
-      if (profile.banned) return
+      userProfile = await users.getProfile(storage, primaryDigits)
+      if (userProfile.banned) return
     }
 
     const plugin = registry.resolve(rawCommand)
@@ -200,6 +202,35 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
     if (cfg.isOwner && !isOwner) return reply(t('common.ownerOnly'))
     if (cfg.isGroup && !isGroup) return reply(t('common.groupOnly'))
     if (cfg.isPrivate && isGroup) return reply(t('common.privateOnly'))
+
+    // Gate daftar wajib (keputusan user 2026-11-04): pengguna yang belum
+    // terdaftar hanya boleh memakai .daftar dan .help daftar. Perintah lain,
+    // termasuk .menu, ditolak dengan peringatan moe + tombol daftar. Owner
+    // selalu lolos. Profil dibaca sekali dari blok mode/ban di atas.
+    if (!isOwner && cfg.name !== 'daftar') {
+      const helpDaftar = cfg.name === 'help' && (args[0] || '').toLowerCase() === 'daftar'
+      if (!helpDaftar) {
+        const profile = userProfile ?? (await users.getProfile(storage, primaryDigits))
+        if (!profile.registered) {
+          const body = t('common.notRegistered')
+          try {
+            await sendButtons(sock, chat, {
+              title: 'KANA',
+              body,
+              footer: t('menu.footer'),
+              replies: [
+                { text: t('common.registerAutoBtn'), id: '.daftar auto' },
+                { text: t('common.registerHowBtn'), id: '.help daftar' },
+              ],
+              textFallback: body,
+            })
+          } catch {
+            await reply(body)
+          }
+          return
+        }
+      }
+    }
 
     // Bendera admin dihitung sekali untuk grup (metadata tercache 60 detik),
     // dipakai gates dan diteruskan ke ctx.

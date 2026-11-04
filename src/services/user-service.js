@@ -32,6 +32,8 @@ export function defaultProfile() {
     xp: 0,
     balance: 0,
     banned: false,
+    registered: false,
+    regName: '',
     registeredAt: null,
     lastSeen: null,
     name: '',

@@ -55,7 +55,15 @@ export function startScheduler({ session, storage, defaultLang = 'id', statsSour
       const stats = statsSource()
       let totalUsers = prev?.totalUsers ?? 0
       try {
-        totalUsers = (await storage.keys('users')).filter((k) => /^\d+$/.test(k)).length
+        // Statistik web: hanya user TERDAFTAR yang dihitung sebagai member
+        // (keputusan user 2026-11-04 soal sistem daftar wajib).
+        const keys = (await storage.keys('users')).filter((k) => /^\d+$/.test(k))
+        let count = 0
+        for (const key of keys) {
+          const profile = await storage.get('users', key)
+          if (profile?.registered) count += 1
+        }
+        totalUsers = count
       } catch {}
       await storage.set('kv', 'bot_stats', {
         startedAt: prev?.startedAt ?? stats.startedAt,
@@ -94,11 +102,43 @@ export function startScheduler({ session, storage, defaultLang = 'id', statsSour
     return times
   }
 
+  // Pengingat pribadi dari perintah .ingatkan: namespace 'reminders',
+  // key = digit user, value = array { at (epoch ms), text, chat }.
+  async function deliverReminders(sock) {
+    let keys = []
+    try {
+      keys = await storage.keys('reminders')
+    } catch {
+      return
+    }
+    for (const digits of keys) {
+      try {
+        const items = await storage.get('reminders', digits)
+        if (!Array.isArray(items) || !items.length) continue
+        const nowMs = Date.now()
+        const due = items.filter((it) => it && Number(it.at) <= nowMs)
+        if (!due.length) continue
+        const lang = (await storage.get('users', `${digits}:lang`)) || defaultLang
+        for (const item of due) {
+          await sock.sendMessage(item.chat, {
+            text: translate(lang, 'sched.reminder', { text: item.text }),
+          })
+        }
+        const rest = items.filter((it) => it && Number(it.at) > nowMs)
+        if (rest.length) await storage.set('reminders', digits, rest)
+        else await storage.delete('reminders', digits)
+      } catch (err) {
+        logger.warn({ err: err.message, digits }, 'scheduler: pengingat gagal')
+      }
+    }
+  }
+
   async function tick() {
     if (stopped) return
     await flushBotStats()
     const sock = session?.sock
     if (!sock?.user) return
+    await deliverReminders(sock)
     const now = wibParts()
     let jids = []
     try {

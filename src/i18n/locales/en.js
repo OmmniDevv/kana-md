@@ -10,10 +10,14 @@ export default {
     adminOnly: 'Eh, this command is for group admins only~',
     botNotAdmin: 'KANA needs to be a group admin first to do this. Please make KANA an admin~',
     limitOut: 'Your daily limit is used up ({limit} per day). It resets tomorrow, hang on~',
+    notRegistered: 'Eh, you are not a KANA member yet~ (╥﹏╥)\nPlease register first, it is super easy: type .daftar <your name>, or tap the Auto Register button below. After that, every KANA feature opens up for you~ ✨',
+    registerAutoBtn: '✨ Auto Register',
+    registerHowBtn: '📖 How to Register',
   },
   sched: {
     prayer: 'It is time for {prayer} prayer ({time} WIB). Let us pray first~',
     religiDaily: 'Today reminder:\n{text}\n({source})',
+    reminder: '⏰ A reminder from yourself: {text}\nDo not forget it, okayy~ (•̀ᴗ•́)و',
   },
   menu: {
     title: 'KANA Menu',

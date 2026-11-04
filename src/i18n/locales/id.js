@@ -10,10 +10,14 @@ export default {
     adminOnly: 'Ehh, perintah ini khusus admin grup ya~',
     botNotAdmin: 'KANA harus jadi admin grup dulu biar bisa ngelakuin ini. Jadiin KANA admin yaa~',
     limitOut: 'Limit harian kamu habis nih (batas {limit} per hari). Besok reset lagi, sabar yaa~',
+    notRegistered: 'Ehh, kamu belum daftar jadi member KANA nih~ (╥﹏╥)\nDaftar dulu yaa, gampang banget kok: ketik .daftar <nama kamu>, atau pencet tombol Daftar Otomatis di bawah ini. Habis daftar, semua fitur KANA kebuka buat kamu~ ✨',
+    registerAutoBtn: '✨ Daftar Otomatis',
+    registerHowBtn: '📖 Cara Daftar',
   },
   sched: {
     prayer: 'Waktunya sholat {prayer} ({time} WIB). Yuk, sholat dulu~',
     religiDaily: 'Pengingat hari ini:\n{text}\n({source})',
+    reminder: '⏰ Pengingat dari kamu sendiri nih: {text}\nJangan lupa yaa~ (•̀ᴗ•́)و',
   },
   menu: {
     title: 'Menu KANA',
