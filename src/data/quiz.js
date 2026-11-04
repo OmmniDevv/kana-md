@@ -165,7 +165,43 @@ export const QUIZ_SETS = {
       { text: { id: 'Bisa kumpul keluarga', en: 'Family time' }, points: 16 }, { text: { id: 'Waktunya gajian bagi sebagian orang', en: 'Payday for some' }, points: 12 },
       { text: { id: 'Malamnya bisa santai', en: 'A relaxing night' }, points: 9 }, { text: { id: 'Rencana jalan-jalan', en: 'Weekend trip plans' }, points: 7 } ] },
   ],
+  cerdascermat: [
+    mc('Ibu kota provinsi Jawa Barat adalah?', 'The capital of West Java province is?', [['Bandung', 'Bandung'], ['Bogor', 'Bogor'], ['Bekasi', 'Bekasi'], ['Cirebon', 'Cirebon']], 0),
+    mc('Planet terbesar di tata surya adalah?', 'The largest planet in the solar system is?', [['Jupiter', 'Jupiter'], ['Saturnus', 'Saturn'], ['Bumi', 'Earth'], ['Neptunus', 'Neptune']], 0),
+    mc('Bunyi merambat paling cepat melalui?', 'Sound travels fastest through?', [['Zat padat', 'Solids'], ['Udara', 'Air'], ['Air', 'Water'], ['Ruang hampa', 'Vacuum']], 0),
+    mc('Hasil dari 15 x 4 adalah?', 'The result of 15 x 4 is?', [['60', '60'], ['54', '54'], ['64', '64'], ['45', '45']], 0),
+    mc('Proklamasi kemerdekaan Indonesia dibacakan pada tahun?', 'The Indonesian proclamation of independence was read in?', [['1945', '1945'], ['1942', '1942'], ['1950', '1950'], ['1938', '1938']], 0),
+    mc('Organ tubuh yang memompa darah adalah?', 'The organ that pumps blood is?', [['Jantung', 'Heart'], ['Paru-paru', 'Lungs'], ['Hati', 'Liver'], ['Ginjal', 'Kidney']], 0),
+    mc('Bahasa resmi negara Brasil adalah?', 'The official language of Brazil is?', [['Portugis', 'Portuguese'], ['Spanyol', 'Spanish'], ['Italia', 'Italian'], ['Prancis', 'French']], 0),
+    mc('Gunung tertinggi di dunia adalah?', 'The highest mountain in the world is?', [['Everest', 'Everest'], ['K2', 'K2'], ['Kilimanjaro', 'Kilimanjaro'], ['Fuji', 'Fuji']], 0),
+    mc('Rumus kimia air adalah?', 'The chemical formula of water is?', [['H2O', 'H2O'], ['CO2', 'CO2'], ['O2', 'O2'], ['NaCl', 'NaCl']], 0),
+    mc('Penemu bola lampu pijar yang terkenal adalah?', 'The famous inventor of the incandescent light bulb is?', [['Thomas Alva Edison', 'Thomas Alva Edison'], ['Alexander Graham Bell', 'Alexander Graham Bell'], ['Nikola Tesla', 'Nikola Tesla'], ['Isaac Newton', 'Isaac Newton']], 0),
+    mc('Samudra terluas di dunia adalah?', 'The largest ocean in the world is?', [['Pasifik', 'Pacific'], ['Atlantik', 'Atlantic'], ['Hindia', 'Indian'], ['Arktik', 'Arctic']], 0),
+    mc('Satuan gaya dalam SI adalah?', 'The SI unit of force is?', [['Newton', 'Newton'], ['Joule', 'Joule'], ['Watt', 'Watt'], ['Pascal', 'Pascal']], 0),
+  ],
+  kuisumum: [
+    mc('Warna campuran biru dan kuning menghasilkan warna?', 'Mixing blue and yellow gives which color?', [['Hijau', 'Green'], ['Ungu', 'Purple'], ['Oranye', 'Orange'], ['Cokelat', 'Brown']], 0),
+    mc('Hewan tercepat di darat adalah?', 'The fastest land animal is?', [['Cheetah', 'Cheetah'], ['Kuda', 'Horse'], ['Singa', 'Lion'], ['Rusa', 'Deer']], 0),
+    mc('Jumlah provinsi di Indonesia saat ini (2024) adalah?', 'The number of provinces in Indonesia today (2024) is?', [['38', '38'], ['34', '34'], ['33', '33'], ['37', '37']], 0),
+    mc('Alat musik tradisional Jawa Barat yang terbuat dari bambu adalah?', 'The West Javanese traditional instrument made of bamboo is?', [['Angklung', 'Angklung'], ['Gamelan', 'Gamelan'], ['Kolintang', 'Kolintang'], ['Sasando', 'Sasando']], 0),
+    mc('Buah yang dijuluki raja buah di Indonesia adalah?', 'The fruit nicknamed the king of fruits in Indonesia is?', [['Durian', 'Durian'], ['Manggis', 'Mangosteen'], ['Rambutan', 'Rambutan'], ['Salak', 'Snake fruit']], 0),
+    mc('Sungai terpanjang di dunia adalah?', 'The longest river in the world is?', [['Nil', 'Nile'], ['Amazon', 'Amazon'], ['Yangtze', 'Yangtze'], ['Kapuas', 'Kapuas']], 0),
+    mc('Lambang sila keempat Pancasila adalah?', 'The symbol of the fourth Pancasila principle is?', [['Kepala banteng', 'Bull head'], ['Pohon beringin', 'Banyan tree'], ['Rantai emas', 'Golden chain'], ['Bintang', 'Star']], 0),
+    mc('Tubuh manusia dewasa punya berapa tulang?', 'How many bones does an adult human body have?', [['206', '206'], ['186', '186'], ['226', '226'], ['250', '250']], 0),
+    mc('Makanan khas Yogyakarta yang manis adalah?', 'The sweet traditional food of Yogyakarta is?', [['Gudeg', 'Gudeg'], ['Bakpia saja', 'Bakpia only'], ['Rawon', 'Rawon'], ['Pempek', 'Pempek']], 0),
+    mc('Kartu dalam satu set remi standar berjumlah?', 'A standard deck of playing cards has how many cards?', [['52', '52'], ['48', '48'], ['54', '54'], ['60', '60']], 0),
+    mc('Pulau terbesar di Indonesia adalah?', 'The largest island in Indonesia is?', [['Kalimantan', 'Kalimantan'], ['Sumatra', 'Sumatra'], ['Papua', 'Papua'], ['Sulawesi', 'Sulawesi']], 0),
+    mc('Minuman yang berasal dari biji yang disangrai dan digiling adalah?', 'The drink made from roasted ground beans is?', [['Kopi', 'Coffee'], ['Teh', 'Tea'], ['Susu', 'Milk'], ['Jus', 'Juice']], 0),
+  ],
 }
+
+export const KATA_ACAK = [
+  'komputer', 'perpustakaan', 'restoran', 'universitas', 'sepakbola', 'televisi', 'smartphone', 'kalender',
+  'petualangan', 'kebudayaan', 'lingkungan', 'pemerintah', 'pendidikan', 'kesehatan', 'transportasi', 'komunikasi',
+  'fotografi', 'astronomi', 'teknologi', 'demokrasi', 'ekosistem', 'laboratorium', 'kewirausahaan', 'perjalanan',
+  'masyarakat', 'kebahagiaan', 'persahabatan', 'keberanian', 'kesabaran', 'kreativitas', 'peternakan', 'perkebunan',
+  'perikanan', 'kehutanan', 'pariwisata', 'perdagangan', 'perindustrian', 'kesempatan', 'pengalaman', 'pengetahuan',
+]
 
 export const WORD_LIST = [
   'kucing', 'buku', 'meja', 'kursi', 'pintu', 'jendela', 'sepeda', 'motor', 'mobil', 'rumah',
@@ -497,6 +533,22 @@ export const TEXT_SETS = {
     { q: { id: 'Drama 2024 ini tentang pasangan konglomerat Baek Hyun-woo dan Hong Hae-in yang pernikahannya di ujung tanduk. Judulnya apa?', en: 'This 2024 drama is about conglomerate couple Baek Hyun-woo and Hong Hae-in whose marriage is on the rocks. What is the title?' }, a: { id: 'Queen of Tears', en: 'Queen of Tears' } },
     { q: { id: 'Drama 2016 ini tentang detektif yang bisa berkomunikasi lewat radio dengan detektif dari masa lalu. Judulnya apa?', en: 'This 2016 drama is about a detective who can communicate via radio with a detective from the past. What is the title?' }, a: { id: 'Signal', en: 'Signal' } },
   ],
+  riddle: [
+    { q: { id: 'Aku punya kota tapi tidak punya rumah, punya hutan tapi tidak punya pohon, punya sungai tapi tidak punya air. Apakah aku?', en: 'I have cities but no houses, forests but no trees, rivers without water. What am I?' }, a: { id: 'Peta', en: 'A map' }, accept: ['peta', 'map'] },
+    { q: { id: 'Semakin banyak diambil, semakin besar aku. Apakah aku?', en: 'The more you take away, the bigger I get. What am I?' }, a: { id: 'Lubang', en: 'A hole' }, accept: ['lubang', 'hole'] },
+    { q: { id: 'Aku selalu datang tapi tidak pernah tiba. Apakah aku?', en: 'I always come but never arrive. What am I?' }, a: { id: 'Hari esok', en: 'Tomorrow' }, accept: ['besok', 'hari esok', 'tomorrow'] },
+    { q: { id: 'Apa yang punya leher tapi tidak punya kepala?', en: 'What has a neck but no head?' }, a: { id: 'Botol', en: 'A bottle' }, accept: ['botol', 'bottle'] },
+    { q: { id: 'Apa yang bisa berlari tapi tidak pernah berjalan, punya mulut tapi tidak pernah bicara?', en: 'What can run but never walks, has a mouth but never talks?' }, a: { id: 'Sungai', en: 'A river' }, accept: ['sungai', 'river'] },
+    { q: { id: 'Aku ringan seperti bulu, tapi orang terkuat pun tidak bisa menahanku lama. Apakah aku?', en: 'I am as light as a feather, yet the strongest person cannot hold me for long. What am I?' }, a: { id: 'Napas', en: 'Breath' }, accept: ['napas', 'nafas', 'breath'] },
+    { q: { id: 'Apa yang naik tapi tidak pernah turun?', en: 'What goes up but never comes down?' }, a: { id: 'Umur', en: 'Age' }, accept: ['umur', 'usia', 'age'] },
+    { q: { id: 'Aku punya banyak kunci tapi tidak bisa membuka satu pintu pun. Apakah aku?', en: 'I have many keys but cannot open a single door. What am I?' }, a: { id: 'Piano', en: 'A piano' }, accept: ['piano'] },
+    { q: { id: 'Apa yang ada di tengah-tengah air?', en: 'What is in the middle of the water (in Indonesian: a-i-r)?' }, a: { id: 'Huruf i', en: 'The letter i' }, accept: ['huruf i', 'i', 'letter i'] },
+    { q: { id: 'Semakin banyak aku, semakin sedikit kamu melihat. Apakah aku?', en: 'The more of me there is, the less you see. What am I?' }, a: { id: 'Kegelapan', en: 'Darkness' }, accept: ['kegelapan', 'gelap', 'darkness'] },
+    { q: { id: 'Apa yang punya satu mata tapi tidak bisa melihat?', en: 'What has one eye but cannot see?' }, a: { id: 'Jarum', en: 'A needle' }, accept: ['jarum', 'needle'] },
+    { q: { id: 'Aku bisa dipecahkan tanpa disentuh dan tanpa bersuara. Apakah aku?', en: 'I can be broken without being touched or making a sound. What am I?' }, a: { id: 'Janji', en: 'A promise' }, accept: ['janji', 'promise'] },
+    { q: { id: 'Apa yang selalu di depanmu tapi tidak pernah bisa kamu lihat?', en: 'What is always in front of you but can never be seen?' }, a: { id: 'Masa depan', en: 'The future' }, accept: ['masa depan', 'future'] },
+    { q: { id: 'Aku dimiliki semua orang, tapi orang lain lebih sering memakai aku daripada pemiliknya. Apakah aku?', en: 'Everyone owns me, but others use me more than the owner does. What am I?' }, a: { id: 'Nama', en: 'A name' }, accept: ['nama', 'name'] },
+  ],
 }
 
-export default { QUIZ_SETS, WORD_LIST, FLAGS, ELEMENTS, IMAGE_WORDS, TEXT_SETS }
+export default { QUIZ_SETS, WORD_LIST, FLAGS, ELEMENTS, IMAGE_WORDS, TEXT_SETS, KATA_ACAK }

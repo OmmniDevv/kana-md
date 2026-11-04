@@ -6,10 +6,10 @@
 // sendiri saat jawaban benar final, supaya plugin kuis tetap tipis.
 // Dataset diambil dari storage namespace 'quiz' key 'items' bila seed pernah
 // dijalankan dan bentuknya cocok; selain itu fallback ke src/data/quiz.js.
-import { QUIZ_SETS, WORD_LIST, FLAGS, ELEMENTS, IMAGE_WORDS, TEXT_SETS } from '../data/quiz.js'
+import { QUIZ_SETS, WORD_LIST, FLAGS, ELEMENTS, IMAGE_WORDS, TEXT_SETS, KATA_ACAK } from '../data/quiz.js'
 import { addXp } from '../services/user-service.js'
 
-export const MC_TYPES = ['caklontong', 'asahotak', 'tekateki']
+export const MC_TYPES = ['caklontong', 'asahotak', 'tekateki', 'cerdascermat', 'kuisumum']
 export const TEXT_POINTS = 10
 export const TTL_MS = { default: 120000, family100: 300000 }
 
@@ -64,8 +64,11 @@ async function loadData(storage) {
             caklontong: Array.isArray(seeded.caklontong) ? seeded.caklontong : QUIZ_SETS.caklontong,
             asahotak: Array.isArray(seeded.asahotak) ? seeded.asahotak : QUIZ_SETS.asahotak,
             tekateki: Array.isArray(seeded.tekateki) ? seeded.tekateki : QUIZ_SETS.tekateki,
+            cerdascermat: QUIZ_SETS.cerdascermat,
+            kuisumum: QUIZ_SETS.kuisumum,
           },
           wordList: Array.isArray(seeded.wordList) ? seeded.wordList : WORD_LIST,
+          kataAcak: KATA_ACAK,
           flags: Array.isArray(seeded.flags) ? seeded.flags : FLAGS,
           elements: Array.isArray(seeded.elements) ? seeded.elements : ELEMENTS,
           imageWords: Array.isArray(seeded.imageWords) ? seeded.imageWords : IMAGE_WORDS,
@@ -74,7 +77,7 @@ async function loadData(storage) {
       }
     }
   } catch {}
-  return { sets: QUIZ_SETS, wordList: WORD_LIST, flags: FLAGS, elements: ELEMENTS, imageWords: IMAGE_WORDS, textSets: TEXT_SETS }
+  return { sets: QUIZ_SETS, wordList: WORD_LIST, kataAcak: KATA_ACAK, flags: FLAGS, elements: ELEMENTS, imageWords: IMAGE_WORDS, textSets: TEXT_SETS }
 }
 
 export async function getSession(storage, chat, now = Date.now()) {
@@ -134,6 +137,15 @@ export async function startQuiz(storage, chat, type, { lang = 'id', rng = Math.r
       answerText: String(word),
       accepted: [normalizeAnswer(word)],
       points: TEXT_POINTS,
+    }
+  } else if (type === 'kataacak') {
+    const word = pick(data.kataAcak ?? KATA_ACAK, rng)
+    session = {
+      ...base,
+      question: scrambleWord(String(word), rng).toUpperCase(),
+      answerText: String(word),
+      accepted: [normalizeAnswer(word)],
+      points: TEXT_POINTS + 5,
     }
   } else if (type === 'tebakbendera') {
     const flag = pick(data.flags, rng)
