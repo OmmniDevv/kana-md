@@ -8,7 +8,7 @@ import { startAutoBio } from '../services/auto-bio.js'
 // - 409 pairing: cancelPairingCode() lalu minta ulang sekali
 // - rate-overlimit: berhenti, jangan loop
 // - reconnect: exponential backoff + jitter; loggedOut: clearAuth() dan berhenti
-export async function startConnection({ auth, botNumber, ownerNumber, botName = 'KANA', onMessage, onOpen, autoBio = false }) {
+export async function startConnection({ auth, botNumber, ownerNumber, botName = 'KANA', onMessage, onOpen, onParticipants, session, autoBio = false }) {
   const { state, saveCreds, clearAuth } = auth
   let attempt = 0
   let stopped = false
@@ -25,7 +25,16 @@ export async function startConnection({ auth, botNumber, ownerNumber, botName = 
       syncFullHistory: false,
       pairingCodeTimeoutMs: 180000,
     })
+    if (session) session.sock = sock
     sock.ev.on('creds.update', saveCreds)
+    sock.ev.on('group-participants.update', async (event) => {
+      if (!onParticipants) return
+      try {
+        await onParticipants(sock, event)
+      } catch (err) {
+        logger.error({ err: err.message }, 'participants handler error')
+      }
+    })
     sock.ev.on('messages.upsert', async ({ messages, type }) => {
       if (type !== 'notify') return
       for (const m of messages) {

@@ -44,7 +44,17 @@ export async function loadPlugins(dir) {
       quarantined.push({ file, reason: `nama bentrok: ${name}` })
       continue
     }
-    const plugin = { config: { cooldown: 3, ...config, name }, handler, file }
+    const plugin = {
+      config: { cooldown: 3, ...config, name },
+      handler,
+      file,
+      // Hook opsional: before(ctx) jalan untuk SEMUA pesan (termasuk tanpa
+      // prefix); kembalikan false untuk menghentikan pemrosesan pesan.
+      before: typeof mod.before === 'function' ? mod.before : null,
+      // Hook opsional: onParticipantsUpdate(ctx) untuk event grup
+      // (add/remove/promote/demote) dari connection.
+      onParticipantsUpdate: typeof mod.onParticipantsUpdate === 'function' ? mod.onParticipantsUpdate : null,
+    }
     plugins.set(name, plugin)
     for (const alias of config.alias ?? []) {
       const a = alias.toLowerCase()
@@ -59,10 +69,16 @@ export async function loadPlugins(dir) {
     }
   }
 
+  const all = [...plugins.values()]
   return {
     plugins,
     aliases,
     quarantined,
+    // Middleware terurut prioritas (config.priority, default 50, kecil dulu).
+    befores: all
+      .filter((p) => p.before)
+      .sort((a, b) => (a.config.priority ?? 50) - (b.config.priority ?? 50)),
+    participantHandlers: all.filter((p) => p.onParticipantsUpdate),
     resolve(command) {
       const c = command.toLowerCase()
       return plugins.get(c) ?? plugins.get(aliases.get(c))

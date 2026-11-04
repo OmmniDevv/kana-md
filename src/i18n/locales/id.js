@@ -7,6 +7,13 @@ export default {
     privateOnly: 'Perintah ini cuma bisa dipakai di chat pribadi ya~',
     unknownCommand: 'Hmm, aku nggak kenal perintah "{command}". Coba .menu buat lihat daftar perintah ya~',
     notFound: 'Perintah "{command}" nggak ketemu. Coba .help buat lihat semuanya~',
+    adminOnly: 'Ehh, perintah ini khusus admin grup ya~',
+    botNotAdmin: 'KANA harus jadi admin grup dulu biar bisa ngelakuin ini. Jadiin KANA admin yaa~',
+    limitOut: 'Limit harian kamu habis nih (batas {limit} per hari). Besok reset lagi, sabar yaa~',
+  },
+  sched: {
+    prayer: 'Waktunya sholat {prayer} ({time} WIB). Yuk, sholat dulu~',
+    religiDaily: 'Pengingat hari ini:\n{text}\n({source})',
   },
   menu: {
     title: 'Menu KANA',

@@ -45,6 +45,10 @@ export function createLocalStorage(baseDir = '.dev-data') {
       delete data[key]
       await persist(ns)
     },
+    async keys(ns) {
+      const data = await load(ns)
+      return Object.keys(data)
+    },
     async close() {},
   }
 }

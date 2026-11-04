@@ -7,6 +7,13 @@ export default {
     privateOnly: 'This command only works in private chat~',
     unknownCommand: 'Hmm, I do not know "{command}". Try .menu to see the command list~',
     notFound: 'Command "{command}" was not found. Try .help to see them all~',
+    adminOnly: 'Eh, this command is for group admins only~',
+    botNotAdmin: 'KANA needs to be a group admin first to do this. Please make KANA an admin~',
+    limitOut: 'Your daily limit is used up ({limit} per day). It resets tomorrow, hang on~',
+  },
+  sched: {
+    prayer: 'It is time for {prayer} prayer ({time} WIB). Let us pray first~',
+    religiDaily: 'Today reminder:\n{text}\n({source})',
   },
   menu: {
     title: 'KANA Menu',

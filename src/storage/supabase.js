@@ -37,6 +37,13 @@ export function createSupabaseStorage(connectionString) {
     async delete(ns, key) {
       await pool.query('delete from bot.kv where ns = $1 and key = $2', [ns, key])
     },
+    async keys(ns) {
+      const { rows } = await pool.query(
+        'select key from bot.kv where ns = $1 and (expires_at is null or expires_at > now())',
+        [ns]
+      )
+      return rows.map((r) => r.key)
+    },
     async close() {
       await pool.end()
     },
