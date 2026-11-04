@@ -1,4 +1,5 @@
-import { getSession, startQuiz } from '../../src/quiz/engine.js'
+import { answerQuiz, bindQuestionMessage, getSession, startQuiz } from '../../src/quiz/engine.js'
+import { reportResult } from '../../src/quiz/respond.js'
 import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
@@ -6,7 +7,7 @@ export const config = {
   alias: ['lontong'],
   category: 'fun',
   description: { id: 'Kuis Cak Lontong: tebak-tebakan logika absurd pilihan ganda', en: 'Cak Lontong quiz: absurd logic multiple choice riddles' },
-  usage: '.caklontong lalu pilih jawaban lewat tombol atau .jawab <A-D>',
+  usage: '.caklontong lalu pilih jawaban lewat tombol atau balas pesan ini dengan hurufnya',
   example: '.caklontong',
   cooldown: 5,
 }
@@ -15,7 +16,7 @@ export const i18n = {
   id: {
     caklontong: {
       title: 'Kuis Cak Lontong',
-      intro: '🤭 KUIS CAK LONTONG\n\n{question}\n\n{options}\n\nPoin: {points} | Waktu: {seconds} detik. Pencet tombol jawabannya atau balas dengan hurufnya yaa~ {mood}',
+      intro: '🤭 KUIS CAK LONTONG\n\n{question}\n\n{options}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan huruf jawabannya, atau pencet tombolnya yaa~ {mood}',
       already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
       footer: 'Kuis KANA',
@@ -24,7 +25,7 @@ export const i18n = {
   en: {
     caklontong: {
       title: 'Cak Lontong Quiz',
-      intro: '🤭 CAK LONTONG QUIZ\n\n{question}\n\n{options}\n\nPoints: {points} | Time: {seconds} seconds. Tap an answer button or reply with its letter~ {mood}',
+      intro: '🤭 CAK LONTONG QUIZ\n\n{question}\n\n{options}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the answer letter, or tap an answer button~ {mood}',
       already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
       footer: 'KANA Quiz',
@@ -38,6 +39,11 @@ export const test = { input: '.caklontong', expect: /cak lontong|kuis/i }
 
 export async function handler(ctx) {
   const existing = await getSession(ctx.storage, ctx.chat)
+  const letterArg = (ctx.text || '').trim().toUpperCase()
+  if (existing && existing.type === 'caklontong' && /^[A-D]$/.test(letterArg)) {
+    const result = await answerQuiz(ctx.storage, ctx.chat, ctx.senderDigits, letterArg)
+    return reportResult(ctx, result)
+  }
   if (existing) {
     const body = ctx.t('caklontong.already', { type: existing.type })
     return sendButtons(ctx.sock, ctx.chat, {
@@ -61,11 +67,13 @@ export async function handler(ctx) {
     seconds: 120,
     mood: ctx.say('senang'),
   })
-  return sendButtons(ctx.sock, ctx.chat, {
+  const sentQuestion = await sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('caklontong.title'),
     body,
     footer: ctx.t('caklontong.footer'),
-    replies: options.map((opt, i) => ({ text: `${LETTERS[i]}. ${opt}`.slice(0, 60), id: `.jawab ${LETTERS[i]}` })),
+    replies: options.map((opt, i) => ({ text: `${LETTERS[i]}. ${opt}`.slice(0, 60), id: `.caklontong ${LETTERS[i]}` })),
     textFallback: body,
   })
+  await bindQuestionMessage(ctx.storage, ctx.chat, sentQuestion?.key?.id)
+  return sentQuestion
 }

@@ -1,4 +1,5 @@
-import { getSession, startQuiz } from '../../src/quiz/engine.js'
+import { answerQuiz, bindQuestionMessage, getSession, startQuiz } from '../../src/quiz/engine.js'
+import { reportResult } from '../../src/quiz/respond.js'
 import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
@@ -6,7 +7,7 @@ export const config = {
   alias: ['teka'],
   category: 'fun',
   description: { id: 'Kuis Teka-Teki: pengetahuan umum pilihan ganda', en: 'Trivia quiz: general knowledge multiple choice' },
-  usage: '.tekateki lalu pilih jawaban lewat tombol atau .jawab <A-D>',
+  usage: '.tekateki lalu pilih jawaban lewat tombol atau balas pesan ini dengan hurufnya',
   example: '.tekateki',
   cooldown: 5,
 }
@@ -15,7 +16,7 @@ export const i18n = {
   id: {
     tekateki: {
       title: 'Kuis Teka-Teki',
-      intro: '❓ KUIS TEKA-TEKI\n\n{question}\n\n{options}\n\nPoin: {points} | Waktu: {seconds} detik. Pencet tombol jawabannya atau balas dengan hurufnya yaa~ {mood}',
+      intro: '❓ KUIS TEKA-TEKI\n\n{question}\n\n{options}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan huruf jawabannya, atau pencet tombolnya yaa~ {mood}',
       already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
       footer: 'Kuis KANA',
@@ -24,7 +25,7 @@ export const i18n = {
   en: {
     tekateki: {
       title: 'Trivia Quiz',
-      intro: '❓ TRIVIA QUIZ\n\n{question}\n\n{options}\n\nPoints: {points} | Time: {seconds} seconds. Tap an answer button or reply with its letter~ {mood}',
+      intro: '❓ TRIVIA QUIZ\n\n{question}\n\n{options}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the answer letter, or tap an answer button~ {mood}',
       already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
       footer: 'KANA Quiz',
@@ -38,6 +39,11 @@ export const test = { input: '.tekateki', expect: /teka-teki|kuis/i }
 
 export async function handler(ctx) {
   const existing = await getSession(ctx.storage, ctx.chat)
+  const letterArg = (ctx.text || '').trim().toUpperCase()
+  if (existing && existing.type === 'tekateki' && /^[A-D]$/.test(letterArg)) {
+    const result = await answerQuiz(ctx.storage, ctx.chat, ctx.senderDigits, letterArg)
+    return reportResult(ctx, result)
+  }
   if (existing) {
     const body = ctx.t('tekateki.already', { type: existing.type })
     return sendButtons(ctx.sock, ctx.chat, {
@@ -61,11 +67,13 @@ export async function handler(ctx) {
     seconds: 120,
     mood: ctx.say('senang'),
   })
-  return sendButtons(ctx.sock, ctx.chat, {
+  const sentQuestion = await sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('tekateki.title'),
     body,
     footer: ctx.t('tekateki.footer'),
-    replies: options.map((opt, i) => ({ text: `${LETTERS[i]}. ${opt}`.slice(0, 60), id: `.jawab ${LETTERS[i]}` })),
+    replies: options.map((opt, i) => ({ text: `${LETTERS[i]}. ${opt}`.slice(0, 60), id: `.tekateki ${LETTERS[i]}` })),
     textFallback: body,
   })
+  await bindQuestionMessage(ctx.storage, ctx.chat, sentQuestion?.key?.id)
+  return sentQuestion
 }
