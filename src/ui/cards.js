@@ -280,3 +280,73 @@ export async function tarotCardImage({ name, numeral, meaning, emoji }) {
   c.textAlign = 'left'
   return canvas.toBuffer('image/png')
 }
+
+// Kartu komentar YouTube versi meme orisinal KANA (bukan tiruan UI asli;
+// selalu ada label MEME di kartunya supaya jelas ini lelucon).
+export async function ytCommentCard({ name, handle, text, likes }) {
+  const { canvas, c } = base(880, 360, '#0f0f12', '#1c1c22')
+  c.fillStyle = '#27272f'
+  roundRect(c, 30, 30, 820, 300, 22)
+  c.fill()
+  c.fillStyle = '#ef4444'
+  c.beginPath()
+  c.arc(88, 92, 34, 0, Math.PI * 2)
+  c.fill()
+  c.fillStyle = '#ffffff'
+  c.font = font('700', 40)
+  c.textAlign = 'center'
+  c.fillText((name || 'K').slice(0, 1).toUpperCase(), 88, 106)
+  c.textAlign = 'left'
+  c.fillStyle = '#ffffff'
+  c.font = font('700', 30)
+  c.fillText(String(name).slice(0, 30), 140, 86)
+  c.fillStyle = '#9ca3af'
+  c.font = font('400', 24)
+  c.fillText(`@${String(handle).slice(0, 28)} • meme card`, 140, 120)
+  c.fillStyle = '#f3f4f6'
+  c.font = font('400', 30)
+  const lines = wrap(c, String(text), 660).slice(0, 4)
+  lines.forEach((line, i) => c.fillText(line, 140, 168 + i * 40))
+  c.fillStyle = '#f472b6'
+  c.font = font('700', 26)
+  c.fillText(`❤ ${likes}`, 140, 322)
+  c.fillStyle = 'rgba(255,255,255,0.5)'
+  c.font = font('700', 22)
+  c.textAlign = 'right'
+  c.fillText('MEME', 820, 322)
+  c.textAlign = 'left'
+  return canvas.toBuffer('image/png')
+}
+
+// Kartu pesan Discord versi meme orisinal KANA (label MEME selalu ada).
+export async function fakeDiscordCard({ name, text, time }) {
+  const { canvas, c } = base(880, 340, '#1e1f26', '#2b2d38')
+  c.fillStyle = '#31333f'
+  roundRect(c, 30, 30, 820, 280, 22)
+  c.fill()
+  c.fillStyle = '#5865F2'
+  c.beginPath()
+  c.arc(88, 90, 34, 0, Math.PI * 2)
+  c.fill()
+  c.fillStyle = '#ffffff'
+  c.font = font('700', 40)
+  c.textAlign = 'center'
+  c.fillText((name || 'K').slice(0, 1).toUpperCase(), 88, 104)
+  c.textAlign = 'left'
+  c.fillStyle = '#ffffff'
+  c.font = font('700', 30)
+  c.fillText(String(name).slice(0, 30), 140, 84)
+  c.fillStyle = '#9ca3af'
+  c.font = font('400', 23)
+  c.fillText(String(time), 146 + c.measureText(String(name).slice(0, 30)).width + 60, 84)
+  c.fillStyle = '#e5e7eb'
+  c.font = font('400', 29)
+  const lines = wrap(c, String(text), 660).slice(0, 4)
+  lines.forEach((line, i) => c.fillText(line, 140, 132 + i * 40))
+  c.fillStyle = 'rgba(255,255,255,0.5)'
+  c.font = font('700', 22)
+  c.textAlign = 'right'
+  c.fillText('MEME', 820, 292)
+  c.textAlign = 'left'
+  return canvas.toBuffer('image/png')
+}

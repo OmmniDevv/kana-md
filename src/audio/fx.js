@@ -19,6 +19,13 @@ export const FX_FILTERS = {
   chipmunk: 'asetrate=44100*1.4,aresample=44100,atempo=1.15',
   deep: 'asetrate=44100*0.75,aresample=44100,atempo=1.1',
   audio8d: 'apulsator=hz=0.125',
+  blown: 'acrusher=level_in=1:level_out=1:bits=8:mix=0.6:mode=log,volume=0.8',
+  earrape: 'volume=10dB,bass=g=8',
+  fat: 'atempo=0.85,bass=g=10,treble=g=-4',
+  robot: 'asetrate=44100*0.9,aresample=44100,chorus=0.5:0.9:50:0.4:0.25:2',
+  slow: 'atempo=0.65',
+  smooth: 'lowpass=f=3800,aecho=0.7:0.8:40:0.25,volume=0.95',
+  squirrel: 'asetrate=44100*1.65,aresample=44100,atempo=1.2',
 }
 
 function messageHasAv(message) {
