@@ -134,7 +134,7 @@ test('guard before: antilink menghapus pesan link member biasa dan memberi warn'
   assert.deepEqual(deletes[0].content.delete, ctx.raw.key)
   const settings = await getGroupSettings(storage, CHAT)
   assert.equal(settings.warns['628111111111'], 1)
-  assert.ok(sock.sent.some((m) => String(m.content.text || '').includes('warn 1/3')))
+  assert.ok(sock.sent.some((m) => String(m.content.text || '').includes('warn *1/3*')))
 })
 
 test('guard before: pesan admin tidak disentuh walau berisi link', async () => {

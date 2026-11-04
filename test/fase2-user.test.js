@@ -118,10 +118,10 @@ test('profil: kartu berisi data dari storage contoh', async () => {
   const text = allText(sent)
   assert.match(text, /Senpai/)
   assert.match(text, /6281234567890/)
-  assert.match(text, /Level : 2/)
-  assert.match(text, /XP : 120/)
-  assert.match(text, /Limit hari ini : 7/)
-  assert.match(text, /Saldo : 500/)
+  assert.match(text, /ʟᴇᴠᴇʟ: \*2\*/)
+  assert.match(text, /xᴘ: \*120\*/)
+  assert.match(text, /ʟɪᴍɪᴛ ʜᴀʀɪ ɪɴɪ: \*7 tersisa\*/)
+  assert.match(text, /ꜱᴀʟᴅᴏ: \*500\*/)
   assert.match(text, /Terdaftar sejak 2026-11-01/)
 })
 
@@ -136,7 +136,7 @@ test('profil: tombol terkirim lewat relay dengan id perintah lengkap', async () 
   assert.ok(payload.includes('.level'), 'ada tombol .level')
   assert.ok(payload.includes('.limit'), 'ada tombol .limit')
   assert.ok(payload.includes('.leaderboard'), 'ada tombol .leaderboard')
-  assert.ok(payload.includes('.menu user'), 'ada tombol .menu user')
+  assert.ok(!payload.includes('.menu'), 'tanpa tombol menu generik')
 })
 
 test('profil: relayMessage absen, fallback teks tetap terkirim', async () => {
@@ -147,7 +147,7 @@ test('profil: relayMessage absen, fallback teks tetap terkirim', async () => {
   await profilHandler(ctx)
   assert.ok(sent.length >= 1, 'ada pesan fallback terkirim')
   assert.match(allText(sent), /Senpai/)
-  assert.match(allText(sent), /Level : 2/)
+  assert.match(allText(sent), /ʟᴇᴠᴇʟ: \*2\*/)
 })
 
 test('level: detail level dan sisa XP dari storage', async () => {
@@ -157,9 +157,9 @@ test('level: detail level dan sisa XP dari storage', async () => {
   const { ctx } = fakeCtx(sock, storage)
   await levelHandler(ctx)
   const text = allText(sent)
-  assert.match(text, /Level kamu sekarang: 2/)
-  assert.match(text, /XP total: 120/)
-  assert.match(text, /Sisa ke level 3: 80 XP/)
+  assert.match(text, /ʟᴇᴠᴇʟ: \*2\*/)
+  assert.match(text, /xᴘ ᴛᴏᴛᴀʟ: \*120\*/)
+  assert.match(text, /ꜱɪꜱᴀ ᴋᴇ ʟᴇᴠᴇʟ 3: \*80 XP lagi\*/)
 })
 
 test('limit: sisa limit hari ini dari storage', async () => {
@@ -168,7 +168,7 @@ test('limit: sisa limit hari ini dari storage', async () => {
   const { sock, sent } = fakeSock({ withRelay: false })
   const { ctx } = fakeCtx(sock, storage)
   await limitHandler(ctx)
-  assert.match(allText(sent), /tersisa 7 dari 30/)
+  assert.match(allText(sent), /ꜱɪꜱᴀ ʟɪᴍɪᴛ: \*7 dari 30\*/)
 })
 
 test('leaderboard: urutan XP dan penanda pemanggil dari storage', async () => {
@@ -183,7 +183,7 @@ test('leaderboard: urutan XP dan penanda pemanggil dari storage', async () => {
   const masterIdx = text.indexOf('Master')
   const senpaiIdx = text.indexOf('Senpai')
   assert.ok(masterIdx >= 0 && senpaiIdx > masterIdx, 'Master (500 XP) di atas Senpai (120 XP)')
-  assert.match(text, /Senpai : Lv 2 : 120 XP \(kamu\)/)
+  assert.match(text, /Senpai\* : ʟᴇᴠᴇʟ \*2\* : \*120 XP\* \(kamu\)/)
 })
 
 test('leaderboard: storage kosong membalas pesan moe', async () => {

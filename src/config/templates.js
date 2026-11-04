@@ -58,9 +58,9 @@ export function withFooter(t, body) {
 // untuk jumlah member. Default ini dipakai bila grup belum mengatur teks
 // sendiri lewat settings persisten (lihat src/services/group-settings.js).
 export const DEFAULT_WELCOME =
-  'Halo halo {user}~ Selamat datang di {group}! Sekarang ada {count} member di sini. Jangan lupa baca rules grup yaa, semoga betah!'
+  '╭─❏ 🎉 「 *SELAMAT DATANG* 」\n┊ Halo halo *{user}*~\n┊ Selamat datang di *{group}*!\n┊ Sekarang ada *{count} member* di sini.\n┊ Jangan lupa baca rules grup yaa, semoga betah!\n╰━━━━━━━'
 export const DEFAULT_GOODBYE =
-  'Dadahh {user}~ Makasih udah pernah gabung di {group}. Sekarang sisa {count} member nih. Semoga sukses selalu yaa!'
+  '╭─❏ 👋 「 *SAMPAI JUMPA* 」\n┊ Dadahh *{user}*~\n┊ Makasih udah pernah gabung di *{group}*.\n┊ Sekarang sisa *{count} member* nih.\n┊ Semoga sukses selalu yaa!\n╰━━━━━━━'
 
 export const USER_TEXT_DEFAULTS = {
   welcome: DEFAULT_WELCOME,

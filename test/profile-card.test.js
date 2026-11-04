@@ -200,7 +200,7 @@ test('handler profil: payload MB.Button berisi gambar, caption ringkas, dan tomb
   assert.match(interactive.body.text, /Saldo: 500/)
   assert.match(interactive.body.text, /Limit tersisa: 7/)
   assert.equal(interactive.footer.text, 'KANA, bot WhatsApp moe')
-  assert.deepEqual(quickReplyIds(interactive), ['.level', '.limit', '.leaderboard', '.menu user'])
+  assert.deepEqual(quickReplyIds(interactive), ['.level', '.limit', '.leaderboard'])
 })
 
 test('handler profil: builder gagal jatuh ke fallback gambar plus kartu teks lama', async () => {
@@ -221,8 +221,8 @@ test('handler profil: builder gagal jatuh ke fallback gambar plus kartu teks lam
   assert.deepEqual([...imageMessage.content.image.subarray(0, 8)], PNG_MAGIC, 'gambar fallback adalah PNG kartu')
   assert.match(imageMessage.content.caption, /Senpai/)
   const allText = sent.map((item) => item.content.caption ?? item.content.text ?? '').join('\n')
-  assert.match(allText, /Level : 2/)
-  assert.match(allText, /XP : 120/)
-  assert.match(allText, /Saldo : 500/)
+  assert.match(allText, /ʟᴇᴠᴇʟ: \*2\*/)
+  assert.match(allText, /xᴘ: \*120\*/)
+  assert.match(allText, /ꜱᴀʟᴅᴏ: \*500\*/)
   assert.match(allText, /Terdaftar sejak 2026-11-01/)
 })

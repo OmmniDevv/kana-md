@@ -231,26 +231,31 @@ function baseCtx(sock, extra = {}) {
   }
 }
 
-test('handler ping: pong terkirim dengan tombol .menu, .help, .profil', async () => {
+test('handler ping: pong berbingkai tanpa tombol menu generik', async () => {
   const { sock, relayed } = fakeSock()
-  await pingHandler(baseCtx(sock))
-  assert.equal(relayed.length, 1)
-  const ids = collectButtonIds(relayed[0].message)
-  assert.deepEqual(ids, ['.menu', '.help', '.profil'])
+  const replies = []
+  await pingHandler(baseCtx(sock, { reply: async (txt) => replies.push(txt) }))
+  assert.equal(relayed.length, 0, 'ping tidak lagi mengirim pesan tombol')
+  assert.equal(replies.length, 1)
+  assert.match(replies[0], /PONG/)
+  assert.match(replies[0], /ʟᴀᴛᴇɴꜱɪ: \*\d+ ms\*/)
 })
 
-test('handler ping tanpa relay: fallback teks pong tetap terkirim', async () => {
+test('handler ping tanpa relay: teks pong berbingkai tetap terkirim lewat reply', async () => {
   const { sock, sent } = fakeSock({ withRelay: false })
-  await pingHandler(baseCtx(sock))
-  const texts = sent.map((s) => s.content.text ?? '').join('\n')
-  assert.match(texts, /Pong~/)
+  const replies = []
+  await pingHandler(baseCtx(sock, { reply: async (txt) => replies.push(txt) }))
+  assert.equal(sent.length, 0, 'ping tidak memakai sendMessage sama sekali')
+  assert.match(replies.join('\n'), /Pong~/)
 })
 
-test('handler lang sesudah ganti bahasa: tombol .menu dan .help terkirim', async () => {
+test('handler lang sesudah ganti bahasa: teks berbingkai tanpa tombol menu generik', async () => {
   const { sock, relayed } = fakeSock()
   const stored = []
+  const replies = []
   const ctx = baseCtx(sock, {
     args: ['en'],
+    reply: async (txt) => replies.push(txt),
     storage: {
       set: async (ns, key, value) => stored.push([ns, key, value]),
       get: async () => undefined,
@@ -258,7 +263,6 @@ test('handler lang sesudah ganti bahasa: tombol .menu dan .help terkirim', async
   })
   await langHandler(ctx)
   assert.deepEqual(stored, [['users', '628123:lang', 'en']])
-  assert.equal(relayed.length, 1)
-  const ids = collectButtonIds(relayed[0].message)
-  assert.deepEqual(ids, ['.menu', '.help'])
+  assert.equal(relayed.length, 0, 'hasil ganti bahasa tidak lagi membawa tombol .menu atau .help')
+  assert.match(replies.join('\n'), /BAHASA DIGANTI/)
 })
