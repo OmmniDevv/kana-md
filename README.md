@@ -288,6 +288,7 @@ This library uses an unofficial WhatsApp API, so the bot number can be restricte
 - **Yui Agents** for the Spotify embed metadata and lyrics snippet (sources: Spotify Embed, iTunes Search API, [lyrics.ovh](https://lyrics.ovh), [lrclib](https://lrclib.net)).
 - **Jerexd** for the tikwm TikTok fallback, Komikcast, and DaFont scraper snippets.
 - **hazeloffc** ([t.me/hazeloffc](https://t.me/hazeloffc)) for the rudder.chat AI chat snippet.
+- **MichelleBot** for [brat-canvas](https://github.com/MichelleBot/brat-canvas), the brat style image generator behind the .brat sticker.
 - **The project owner** for their own scraper code: Spotify search and download, YouTube audio, Pinterest, Facebook and Instagram via SnapSave, and TikTok via tiklydown.
 - Public services the scrapers talk to: [spotmp3.net](https://spotmp3.net), [spotidown.app](https://spotidown.app), [snapsave.app](https://snapsave.app), tiklydown, [tikwm.com](https://tikwm.com), [Jikan](https://jikan.moe) (MyAnimeList data), [Open-Meteo](https://open-meteo.com), [BMKG](https://data.bmkg.go.id) open data, and the myQuran prayer API. Full triage notes in [docs/SNIPPETS.md](docs/SNIPPETS.md).
 
@@ -582,6 +583,7 @@ Library ini memakai API WhatsApp tidak resmi, jadi ada risiko nomor diblokir ata
 - **Yui Agents** untuk snippet metadata Spotify embed dan lirik (sumber: Spotify Embed, iTunes Search API, [lyrics.ovh](https://lyrics.ovh), [lrclib](https://lrclib.net)).
 - **Jerexd** untuk snippet fallback TikTok tikwm, Komikcast, dan DaFont.
 - **hazeloffc** ([t.me/hazeloffc](https://t.me/hazeloffc)) untuk snippet chat AI rudder.chat.
+- **MichelleBot** untuk [brat-canvas](https://github.com/MichelleBot/brat-canvas), generator gambar gaya brat di balik stiker .brat.
 - **Owner proyek** untuk kode scraper kirimannya sendiri: pencarian dan unduhan Spotify, audio YouTube, Pinterest, Facebook dan Instagram via SnapSave, dan TikTok via tiklydown.
 - Layanan publik yang dipakai scraper: [spotmp3.net](https://spotmp3.net), [spotidown.app](https://spotidown.app), [snapsave.app](https://snapsave.app), tiklydown, [tikwm.com](https://tikwm.com), [Jikan](https://jikan.moe) (data MyAnimeList), [Open-Meteo](https://open-meteo.com), data terbuka [BMKG](https://data.bmkg.go.id), dan API sholat myQuran. Catatan triage lengkap di [docs/SNIPPETS.md](docs/SNIPPETS.md).
 
