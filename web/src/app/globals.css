@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #ffffff;
+  --bg-soft: #f8f6fd;
+  --panel: #ffffff;
+  --panel2: #f3effc;
+  --line: #e7e0f5;
+  --ink: #221c35;
+  --muted: #6e6584;
+  --danger: #d92642;
+  --warn: #b45309;
+  --warn-bg: #fef3c7;
+  --code-bg: #17102b;
+  --code-ink: #e9e4ff;
+  --shimmer-a: #f1edfa;
+  --shimmer-b: #e2d9f7;
+}
+
+.dark {
+  --bg: #130e21;
+  --bg-soft: #171029;
+  --panel: #1c1533;
+  --panel2: #251b44;
+  --line: #342a58;
+  --ink: #f4f1ff;
+  --muted: #aba1c7;
+  --danger: #ff6b7e;
+  --warn: #ffd23d;
+  --warn-bg: rgba(255, 210, 61, 0.12);
+  --code-bg: #0b0716;
+  --code-ink: #e9e4ff;
+  --shimmer-a: #1c1533;
+  --shimmer-b: #2a1e4e;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bgsoft: var(--bg-soft);
+  --color-panel: var(--panel);
+  --color-panel2: var(--panel2);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-danger: var(--danger);
+  --color-warn: var(--warn);
+  --color-warnbg: var(--warn-bg);
+  --color-codebg: var(--code-bg);
+  --color-codeink: var(--code-ink);
+  --color-violet: #8b5cf6;
+  --color-fuchsia: #d946ef;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: #8b5cf6;
+  color: #ffffff;
+}
+
+.text-gradient {
+  background: linear-gradient(92deg, #8b5cf6 10%, #d946ef 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bg-gradient-brand {
+  background: linear-gradient(92deg, #8b5cf6, #d946ef);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.82); }
+  70% { transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+
+@keyframes checkPop {
+  0% { opacity: 0; transform: scale(0.4); }
+  70% { transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slowPan {
+  0% { transform: scale(1.08) translateX(0); }
+  100% { transform: scale(1.08) translateX(-14px); }
+}
+
+.animate-fadeUp { animation: fadeUp 0.6s ease both; }
+.animate-popIn { animation: popIn 0.45s ease both; }
+.animate-floaty { animation: floaty 5s ease-in-out infinite; }
+.animate-glow { animation: glowPulse 4s ease-in-out infinite; }
+.animate-shake { animation: shake 0.45s ease; }
+.animate-checkPop { animation: checkPop 0.5s ease both; }
+.hero-pan { animation: slowPan 18s ease-in-out infinite alternate; }
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, var(--shimmer-a) 25%, var(--shimmer-b) 50%, var(--shimmer-a) 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+.card-hover {
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+.card-hover:hover {
+  transform: translateY(-5px);
+  border-color: #8b5cf6;
+  box-shadow: 0 18px 42px -18px rgba(139, 92, 246, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fadeUp, .animate-popIn, .animate-floaty, .animate-glow, .animate-shake, .animate-checkPop, .hero-pan, .skeleton-shimmer {
+    animation: none !important;
+  }
+  html { scroll-behavior: auto; }
+  .card-hover { transition: none; }
+  .card-hover:hover { transform: none; }
+}
