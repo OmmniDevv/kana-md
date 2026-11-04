@@ -93,6 +93,8 @@ export function buildFakeTroliQuoted({
   itemCount = 0,
   thumbnail = null,
   token = FAKE_TROLI_TOKEN,
+  message: messageOverride,
+  orderTitle: orderTitleOverride,
 } = {}) {
   const total = Math.max(0, Number(itemCount) || 0)
   const sellerDigits = String(botNumber ?? '').replace(/\D/g, '')
@@ -109,8 +111,8 @@ export function buildFakeTroliQuoted({
         itemCount: total,
         status: 'INQUIRY',
         surface: 'CATALOG',
-        message: `${botName} - ${total} Commands`,
-        orderTitle: `📋 ${total} Commands`,
+        message: messageOverride ?? `${botName} - ${total} Commands`,
+        orderTitle: orderTitleOverride ?? `📋 ${total} Commands`,
         sellerJid: `${sellerDigits}@s.whatsapp.net`,
         token,
         totalAmount1000: 0,
