@@ -3,7 +3,7 @@ import { RECIPES, ITEM_MAP } from '../../src/rpg/data.js'
 
 export const config = {
   name: 'recipes',
-  alias: [],
+  alias: ['masak', 'cook'],
   category: 'rpg',
   description: { id: 'Daftar lengkap resep craft dan bahannya', en: 'Full list of crafting recipes and their materials' },
   usage: '.recipes',

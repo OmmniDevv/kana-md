@@ -4,7 +4,7 @@ import { ITEM_MAP } from '../../src/rpg/data.js'
 
 export const config = {
   name: 'mining',
-  alias: ['tambang'],
+  alias: ['tambang', 'nambang'],
   category: 'rpg',
   description: { id: 'Menambang batu, besi, emas, sampai berlian', en: 'Mine stone, iron, gold, up to diamonds' },
   usage: '.mining',

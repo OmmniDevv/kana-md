@@ -4,7 +4,7 @@ import { consumeEnergy } from '../../src/rpg/energy.js'
 
 export const config = {
   name: 'misi',
-  alias: ['quest', 'misiharian'],
+  alias: ['quest', 'misiharian', 'dailymisi'],
   category: 'rpg',
   description: { id: 'Misi harian RPG: 3 misi per hari, peluang sukses dari power kamu', en: 'Daily RPG quests: 3 quests per day, success chance from your power' },
   usage: '.misi',

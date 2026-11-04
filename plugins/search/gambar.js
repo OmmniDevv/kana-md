@@ -5,7 +5,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'gambar',
-  alias: ['image', 'img'],
+  alias: ['image', 'img', 'googleimg', 'gimage'],
   category: 'search',
   description: { id: 'Cari gambar di Bing dan kirim hasil pertama', en: 'Search images on Bing and send the first result' },
   usage: '.gambar <kata kunci>',

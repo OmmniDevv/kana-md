@@ -5,7 +5,7 @@ import { ITEM_MAP } from '../../src/rpg/data.js'
 
 export const config = {
   name: 'petualang',
-  alias: ['adventure', 'jelajah'],
+  alias: ['adventure', 'jelajah', 'berpetualang'],
   category: 'rpg',
   description: { id: 'Bertualang RPG: kejadian acak, harta, monster, dan mata air pemulih', en: 'RPG adventure: random events, treasure, monsters, and a healing spring' },
   usage: '.petualang',

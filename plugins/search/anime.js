@@ -5,7 +5,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'anime',
-  alias: [],
+  alias: ['animeinfo'],
   category: 'search',
   description: { id: 'Cari info anime atau manga (awali manga: untuk manga)', en: 'Search anime or manga info (prefix manga: for manga)' },
   usage: '.anime <judul> atau .anime manga: <judul>',

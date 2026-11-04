@@ -3,7 +3,7 @@ import { consumeEnergy } from '../../src/rpg/energy.js'
 
 export const config = {
   name: 'kerja',
-  alias: ['work'],
+  alias: ['work', 'ojek', 'ngojek', 'taxi', 'mulung'],
   category: 'rpg',
   description: { id: 'Kerja sambilan RPG: dapat koin dan XP, makan 15 energi', en: 'RPG side job: earn coins and XP, costs 15 energy' },
   usage: '.kerja',

@@ -10,7 +10,7 @@ const here = dirname(fileURLToPath(import.meta.url))
 
 export const config = {
   name: 'rpg',
-  alias: [],
+  alias: ['bal', 'balance', 'wallet', 'money'],
   category: 'rpg',
   description: { id: 'Lihat profil RPG kamu: level, koin, bank, job, pet, clan', en: 'See your RPG profile: level, coins, bank, job, pet, clan' },
   usage: '.rpg',

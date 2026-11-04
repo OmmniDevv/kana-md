@@ -2,7 +2,7 @@ import { searchKbbi } from '../../src/scrapers/search/kbbi.js'
 
 export const config = {
   name: 'kbbi',
-  alias: [],
+  alias: ['kamus'],
   category: 'search',
   description: { id: 'Cari arti kata di KBBI', en: 'Look up a word definition in KBBI' },
   usage: '.kbbi <kata>',

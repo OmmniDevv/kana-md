@@ -5,7 +5,7 @@ import { getProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'pet',
-  alias: [],
+  alias: ['petshop', 'feed', 'kandang'],
   category: 'rpg',
   description: { id: 'Peliharaan RPG: adopsi, kasih makan, dan naikkan levelnya', en: 'RPG pet: adopt, feed, and level it up' },
   usage: '.pet | .pet adopsi <kucing|anjing|burung|naga> | .pet makan',
