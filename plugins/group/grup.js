@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'grup',
-  alias: ['group'],
+  alias: ['group', 'infogrup'],
   category: 'group',
   description: { id: 'Buka, tutup, atau lihat info grup', en: 'Open, close, or show group info' },
   usage: '.grup <open|close|info>',

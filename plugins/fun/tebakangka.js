@@ -4,7 +4,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'tebakangka',
-  alias: ['guessnumber'],
+  alias: ['guessnumber', 'angka'],
   category: 'fun',
   description: { id: 'Tebak angka 1-100 dalam 10 kesempatan dengan membalas papan permainan', en: 'Guess the number 1-100 within 10 tries by replying to the game board' },
   usage: '.tebakangka lalu balas papan permainan dengan angka tebakanmu',

@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'truth',
-  alias: [],
+  alias: ['truth2'],
   category: 'fun',
   description: { id: 'Ambil pertanyaan truth acak untuk permainan truth or dare', en: 'Draw a random truth question for truth or dare' },
   usage: '.truth',

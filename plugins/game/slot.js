@@ -3,7 +3,7 @@ import { getProfile, updateProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'slot',
-  alias: [],
+  alias: ['casino', 'jackpot'],
   category: 'game',
   description: { id: 'Main mesin slot pakai saldo koin kamu', en: 'Play the slot machine with your coin balance' },
   usage: '.slot <bet>',

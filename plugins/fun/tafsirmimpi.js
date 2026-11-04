@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'tafsirmimpi',
-  alias: ['mimpi', 'artimimpi'],
+  alias: ['mimpi', 'artimimpi', 'primbon', 'tafsir'],
   category: 'fun',
   description: { id: 'Tafsir arti mimpi menurut primbon populer (hiburan)', en: 'Dream meanings from popular old lore (for fun)' },
   usage: '.tafsirmimpi <kata kunci mimpi>',

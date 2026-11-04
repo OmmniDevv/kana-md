@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'weton',
-  alias: [],
+  alias: ['wetonjawa'],
   category: 'fun',
   description: { id: 'Hitung weton (hari dan pasaran Jawa) dari tanggal lahir', en: 'Find the weton (day and Javanese pasaran) of a birth date' },
   usage: '.weton <DD-MM-YYYY>',
