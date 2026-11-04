@@ -2,7 +2,7 @@ import { getRates, convertAmount } from '../../src/scrapers/search/kurs.js'
 
 export const config = {
   name: 'kurs',
-  alias: ['rate', 'currency'],
+  alias: ['currency'],
   category: 'search',
   description: { id: 'Konversi kurs mata uang, tanpa arg untuk ringkasan ke IDR', en: 'Currency conversion, no args for an IDR summary' },
   usage: '.kurs <jumlah> <DARI> <KE>',

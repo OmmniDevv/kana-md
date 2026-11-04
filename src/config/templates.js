@@ -84,7 +84,7 @@ export function renderTemplate(tpl, vars = {}) {
 // emoji itu, misalnya pada ⚔️, tetap dianggap satu emoji).
 export const BUTTON_EMOJI = {
   menu: '📋',
-  back: '↩️',
+  back: '🏠',
   download: '📥',
   search: '🔍',
   profile: '👤',
@@ -204,7 +204,6 @@ export const COMMAND_EMOJI = {
   slot: 'game',
   daduvs: 'game',
   suit: 'game',
-  jawab: 'quiz',
   nyerah: 'cross',
   tekateki: 'quiz',
   family100: 'quiz',
@@ -347,6 +346,22 @@ export const COMMAND_EMOJI = {
   niatsholat: 'book',
   doaharian: 'book',
   murottal: 'mic',
+  puisi: 'book',
+  gennama: 'random',
+  suratcinta: 'heart',
+  gachakarakter: 'gift',
+  rate: 'star',
+  cekperfoma: 'fire',
+  cekpacar: 'heart',
+  soulmatch: 'heart',
+  tafsirmimpi: 'book',
+  nomerhoki: 'random',
+  quotebijak: 'book',
+  quotesanime: 'star',
+  senja: 'image',
+  bacot: 'fire',
+  faktaunik: 'search',
+  kerangajaib: 'random',
 }
 
 // Emoji untuk id tombol atau nama aksi. Id perintah (mis. ".menu user"
