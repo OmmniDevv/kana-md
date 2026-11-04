@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'dbstats',
-  alias: [],
+  alias: ['statserver'],
   category: 'owner',
   description: { id: 'Statistik storage per namespace', en: 'Storage statistics per namespace' },
   usage: '.dbstats',

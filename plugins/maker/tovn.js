@@ -10,7 +10,7 @@ const execFileP = promisify(execFile)
 
 export const config = {
   name: 'tovn',
-  alias: ['toptt'],
+  alias: ['toptt', 'ptv', 'videobulet'],
   category: 'maker',
   description: { id: 'Ubah audio atau video yang dikutip jadi voice note', en: 'Turn a quoted audio or video into a voice note' },
   usage: '.tovn (kutip audio/video)',

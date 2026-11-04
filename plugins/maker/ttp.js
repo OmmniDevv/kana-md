@@ -5,7 +5,7 @@ import { sendSticker } from './sticker.js'
 
 export const config = {
   name: 'ttp',
-  alias: [],
+  alias: ['ttp2', 'ttpv2'],
   category: 'maker',
   description: { id: 'Bikin stiker teks besar putih di latar warna aksen', en: 'Make a big white text sticker on an accent background' },
   usage: '.ttp <teks>',

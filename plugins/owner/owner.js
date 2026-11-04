@@ -1,6 +1,6 @@
 export const config = {
   name: 'owner',
-  alias: ['status'],
+  alias: ['status', 'creator'],
   category: 'owner',
   description: { id: 'Status bot (khusus owner)', en: 'Bot status (owner only)' },
   usage: '.owner',

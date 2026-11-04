@@ -1,6 +1,6 @@
 export const config = {
   name: 'leave',
-  alias: ['keluargrup'],
+  alias: ['keluargrup', 'leavegc'],
   category: 'owner',
   description: { id: 'Bot keluar dari grup ini atau JID grup yang disebut (owner)', en: 'Bot leaves this group or the mentioned group JID (owner)' },
   usage: '.leave [jid grup]',

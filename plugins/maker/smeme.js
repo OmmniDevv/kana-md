@@ -13,7 +13,7 @@ const FONT_BOLD = process.env.FONT_BOLD_PATH || '/usr/share/fonts/truetype/dejav
 
 export const config = {
   name: 'smeme',
-  alias: [],
+  alias: ['memesticker'],
   category: 'maker',
   description: { id: 'Tambah teks atas bawah ke gambar yang dikutip, hasilnya stiker meme', en: 'Add top and bottom text to a quoted image, result is a meme sticker' },
   usage: '.smeme <atas> | <bawah> (kutip gambar)',

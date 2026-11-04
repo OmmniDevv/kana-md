@@ -1,6 +1,6 @@
 export const config = {
   name: 'setppbot',
-  alias: ['gantipp'],
+  alias: ['gantipp', 'setpp'],
   category: 'owner',
   description: { id: 'Ganti foto profil bot dari gambar yang dibalas (owner)', en: 'Change the bot profile picture from the replied image (owner)' },
   usage: 'Balas gambar dengan .setppbot',

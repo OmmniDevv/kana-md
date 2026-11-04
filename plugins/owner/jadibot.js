@@ -8,7 +8,7 @@ import {
 
 export const config = {
   name: 'jadibot',
-  alias: ['jadibotstart'],
+  alias: ['jadibotstart', 'jadibotqr'],
   category: 'owner',
   description: { id: 'Mulai sesi jadibot di nomor lain (khusus owner)', en: 'Start a jadibot session on another number (owner only)' },
   usage: '.jadibot <nama> <nomor>',

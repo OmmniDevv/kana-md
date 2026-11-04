@@ -3,7 +3,7 @@ import { sleep } from '../../src/scrapers/runner.js'
 
 export const config = {
   name: 'broadcast',
-  alias: ['bc'],
+  alias: ['bc', 'bcgc', 'broadcastgroup', 'bcgcb', 'bcchats', 'broadcastchats', 'bchere'],
   category: 'owner',
   description: { id: 'Kirim siaran ke grup dan chat yang opt-in', en: 'Send a broadcast to opted-in groups and chats' },
   usage: '.broadcast <teks>',
