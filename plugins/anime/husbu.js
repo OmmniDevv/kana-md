@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { husbando: { caption: 'Dari: {source} ✨', captionPlain: 'Nih gambarnya~ ✨', fail: 'Gagal ambil gambar: {error}' } },
-  en: { husbando: { caption: 'From: {source} ✨', captionPlain: 'Here is the image~ ✨', fail: 'Failed to fetch the image: {error}' } },
+  id: { husbando: { caption: '╭─❏ 🌟 「 *HUSBANDO* 」\n┊ ᴅᴀʀɪ: *{source}* ✨\n╰━━━━━━━', captionPlain: '╭─❏ 🌟 「 *HUSBANDO* 」\n┊ Nih gambarnya~ ✨\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GAMBAR* 」\n┊ Mouu, gagal ambil gambar: *{error}*~\n╰━━━━━━━' } },
+  en: { husbando: { caption: '╭─❏ 🌟 「 *HUSBANDO* 」\n┊ ꜰʀᴏᴍ: *{source}* ✨\n╰━━━━━━━', captionPlain: '╭─❏ 🌟 「 *HUSBANDO* 」\n┊ Here is the image~ ✨\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH IMAGE* 」\n┊ Mouu, failed to fetch the image: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.husbu', expect: /gambar|image|✨/i }

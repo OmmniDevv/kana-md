@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { wink: { captionTarget: '@{from} mengedip @{to}~', captionSelf: 'Nih GIF reaksinya~', fail: 'Gagal ambil GIF: {error}' } },
-  en: { wink: { captionTarget: '@{from} winks at @{to}~', captionSelf: 'Here is the reaction GIF~', fail: 'Failed to fetch the GIF: {error}' } },
+  id: { wink: { captionTarget: '╭─❏ 😉 「 *KEDIPAN* 」\n┊ *@{from}* mengedip ke *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 😉 「 *KEDIPAN* 」\n┊ Nih GIF reaksinya~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GIF* 」\n┊ Mouu, gagal ambil GIF: *{error}*~\n╰━━━━━━━' } },
+  en: { wink: { captionTarget: '╭─❏ 😉 「 *WINK* 」\n┊ *@{from}* winks at *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 😉 「 *WINK* 」\n┊ Here is the reaction GIF~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH GIF* 」\n┊ Mouu, failed to fetch the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.wink', expect: /gif|reaksi|reaction/i }

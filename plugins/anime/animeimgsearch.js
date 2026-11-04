@@ -14,18 +14,18 @@ export const config = {
 export const i18n = {
   id: {
     animeimgsearch: {
-      need: 'Balas gambar adegan animenya yaa~ {mood}',
-      body: '🔍 HASIL PENCARIAN ANIME\n\nKemiripan: {similarity}%\nEpisode: {episode}\nWaktu adegan: {time}\nAniList: {url}',
-      notFound: 'Gambarnya tidak dikenali sebagai adegan anime. {mood}',
-      fail: 'Gagal cari animenya: {error}',
+      need: '╭─❏ 🔍 「 *CARI ANIME DARI GAMBAR* 」\n┊ Balas gambar adegan animenya yaa~ {mood}\n╰━━━━━━━',
+      body: '╭─❏ 🔍 「 *HASIL PENCARIAN ANIME* 」\n┊ ᴋᴇᴍɪʀɪᴘᴀɴ: *{similarity}%*\n┊ ᴇᴘɪꜱᴏᴅᴇ: *{episode}*\n┊ ᴡᴀᴋᴛᴜ ᴀᴅᴇɢᴀɴ: *{time}*\n┊ ᴀɴɪʟɪꜱᴛ: {url}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *ANIME TIDAK DIKENALI* 」\n┊ Gambarnya tidak dikenali sebagai adegan anime. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, gagal cari animenya: *{error}*~\n╰━━━━━━━',
     },
   },
   en: {
     animeimgsearch: {
-      need: 'Reply to the anime scene image please~ {mood}',
-      body: '🔍 ANIME SEARCH RESULT\n\nSimilarity: {similarity}%\nEpisode: {episode}\nScene time: {time}\nAniList: {url}',
-      notFound: 'The image was not recognized as an anime scene. {mood}',
-      fail: 'Failed to search the anime: {error}',
+      need: '╭─❏ 🔍 「 *ANIME SEARCH BY IMAGE* 」\n┊ Reply to the anime scene image please~ {mood}\n╰━━━━━━━',
+      body: '╭─❏ 🔍 「 *ANIME SEARCH RESULT* 」\n┊ ꜱɪᴍɪʟᴀʀɪᴛʏ: *{similarity}%*\n┊ ᴇᴘɪꜱᴏᴅᴇ: *{episode}*\n┊ ꜱᴄᴇɴᴇ ᴛɪᴍᴇ: *{time}*\n┊ ᴀɴɪʟɪꜱᴛ: {url}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *ANIME NOT RECOGNIZED* 」\n┊ The image was not recognized as an anime scene. {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, failed to search the anime: *{error}*~\n╰━━━━━━━',
     },
   },
 }

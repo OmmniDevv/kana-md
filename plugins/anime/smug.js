@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { smug: { captionTarget: '@{from} tersenyum sombong @{to}~', captionSelf: 'Nih GIF reaksinya~', fail: 'Gagal ambil GIF: {error}' } },
-  en: { smug: { captionTarget: '@{from} smirks @{to}~', captionSelf: 'Here is the reaction GIF~', fail: 'Failed to fetch the GIF: {error}' } },
+  id: { smug: { captionTarget: '╭─❏ 😏 「 *SENYUM SOMBONG* 」\n┊ *@{from}* tersenyum sombong ke *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 😏 「 *SENYUM SOMBONG* 」\n┊ Nih GIF reaksinya~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GIF* 」\n┊ Mouu, gagal ambil GIF: *{error}*~\n╰━━━━━━━' } },
+  en: { smug: { captionTarget: '╭─❏ 😏 「 *SMUG* 」\n┊ *@{from}* smirks at *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 😏 「 *SMUG* 」\n┊ Here is the reaction GIF~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH GIF* 」\n┊ Mouu, failed to fetch the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.smug', expect: /gif|reaksi|reaction/i }

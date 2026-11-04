@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { dance: { captionTarget: '@{from} menari bareng @{to}~', captionSelf: 'Nih GIF reaksinya~', fail: 'Gagal ambil GIF: {error}' } },
-  en: { dance: { captionTarget: '@{from} dances with @{to}~', captionSelf: 'Here is the reaction GIF~', fail: 'Failed to fetch the GIF: {error}' } },
+  id: { dance: { captionTarget: '╭─❏ 💃 「 *MENARI* 」\n┊ *@{from}* menari bareng *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 💃 「 *MENARI* 」\n┊ Nih GIF reaksinya~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GIF* 」\n┊ Mouu, gagal ambil GIF: *{error}*~\n╰━━━━━━━' } },
+  en: { dance: { captionTarget: '╭─❏ 💃 「 *DANCING* 」\n┊ *@{from}* dances with *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 💃 「 *DANCING* 」\n┊ Here is the reaction GIF~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH GIF* 」\n┊ Mouu, failed to fetch the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.dance', expect: /gif|reaksi|reaction/i }

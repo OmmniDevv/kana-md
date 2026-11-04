@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { happy: { captionTarget: '@{from} senang bareng @{to}~', captionSelf: 'Nih GIF reaksinya~', fail: 'Gagal ambil GIF: {error}' } },
-  en: { happy: { captionTarget: '@{from} is happy with @{to}~', captionSelf: 'Here is the reaction GIF~', fail: 'Failed to fetch the GIF: {error}' } },
+  id: { happy: { captionTarget: '╭─❏ 😄 「 *SENANG* 」\n┊ *@{from}* senang bareng *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 😄 「 *SENANG* 」\n┊ Nih GIF reaksinya~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GIF* 」\n┊ Mouu, gagal ambil GIF: *{error}*~\n╰━━━━━━━' } },
+  en: { happy: { captionTarget: '╭─❏ 😄 「 *HAPPY* 」\n┊ *@{from}* is happy with *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 😄 「 *HAPPY* 」\n┊ Here is the reaction GIF~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH GIF* 」\n┊ Mouu, failed to fetch the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.happy', expect: /gif|reaksi|reaction/i }

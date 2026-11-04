@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { smile: { captionTarget: '@{from} tersenyum ke @{to}~', captionSelf: 'Nih GIF reaksinya~', fail: 'Gagal ambil GIF: {error}' } },
-  en: { smile: { captionTarget: '@{from} smiles at @{to}~', captionSelf: 'Here is the reaction GIF~', fail: 'Failed to fetch the GIF: {error}' } },
+  id: { smile: { captionTarget: '╭─❏ 🙂 「 *SENYUMAN* 」\n┊ *@{from}* tersenyum ke *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 🙂 「 *SENYUMAN* 」\n┊ Nih GIF reaksinya~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GIF* 」\n┊ Mouu, gagal ambil GIF: *{error}*~\n╰━━━━━━━' } },
+  en: { smile: { captionTarget: '╭─❏ 🙂 「 *SMILE* 」\n┊ *@{from}* smiles at *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 🙂 「 *SMILE* 」\n┊ Here is the reaction GIF~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH GIF* 」\n┊ Mouu, failed to fetch the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.smile', expect: /gif|reaksi|reaction/i }

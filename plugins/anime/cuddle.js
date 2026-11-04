@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { cuddle: { captionTarget: '@{from} berpelukan dengan @{to}~', captionSelf: 'Nih GIF reaksinya~', fail: 'Gagal ambil GIF: {error}' } },
-  en: { cuddle: { captionTarget: '@{from} cuddles @{to}~', captionSelf: 'Here is the reaction GIF~', fail: 'Failed to fetch the GIF: {error}' } },
+  id: { cuddle: { captionTarget: '╭─❏ 🫂 「 *BERPELUKAN* 」\n┊ *@{from}* berpelukan dengan *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 🫂 「 *BERPELUKAN* 」\n┊ Nih GIF reaksinya~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GIF* 」\n┊ Mouu, gagal ambil GIF: *{error}*~\n╰━━━━━━━' } },
+  en: { cuddle: { captionTarget: '╭─❏ 🫂 「 *CUDDLE* 」\n┊ *@{from}* cuddles *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 🫂 「 *CUDDLE* 」\n┊ Here is the reaction GIF~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH GIF* 」\n┊ Mouu, failed to fetch the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.cuddle', expect: /gif|reaksi|reaction/i }

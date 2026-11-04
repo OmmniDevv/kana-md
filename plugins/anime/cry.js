@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { cry: { captionTarget: '@{from} menangis @{to}~', captionSelf: 'Nih GIF reaksinya~', fail: 'Gagal ambil GIF: {error}' } },
-  en: { cry: { captionTarget: '@{from} cries @{to}~', captionSelf: 'Here is the reaction GIF~', fail: 'Failed to fetch the GIF: {error}' } },
+  id: { cry: { captionTarget: '╭─❏ 😭 「 *MENANGIS* 」\n┊ *@{from}* menangis *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 😭 「 *MENANGIS* 」\n┊ Nih GIF reaksinya~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GIF* 」\n┊ Mouu, gagal ambil GIF: *{error}*~\n╰━━━━━━━' } },
+  en: { cry: { captionTarget: '╭─❏ 😭 「 *CRYING* 」\n┊ *@{from}* cries *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 😭 「 *CRYING* 」\n┊ Here is the reaction GIF~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH GIF* 」\n┊ Mouu, failed to fetch the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.cry', expect: /gif|reaksi|reaction/i }

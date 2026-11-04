@@ -15,8 +15,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { ppcouple: { first: 'PP couple buat ceweknya~ 💕', second: 'Dan ini buat cowoknya~ 💕', fail: 'Gagal ambil PP couple: {error}' } },
-  en: { ppcouple: { first: 'Couple PP for her~ 💕', second: 'And this one for him~ 💕', fail: 'Failed to fetch the couple PP: {error}' } },
+  id: { ppcouple: { first: '╭─❏ 💕 「 *PP COUPLE* 」\n┊ PP couple buat ceweknya~ 💕\n╰━━━━━━━', second: '╭─❏ 💕 「 *PP COUPLE* 」\n┊ Dan ini buat cowoknya~ 💕\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL PP COUPLE* 」\n┊ Mouu, gagal ambil PP couple: *{error}*~\n╰━━━━━━━' } },
+  en: { ppcouple: { first: '╭─❏ 💕 「 *COUPLE PP* 」\n┊ Couple PP for her~ 💕\n╰━━━━━━━', second: '╭─❏ 💕 「 *COUPLE PP* 」\n┊ And this one for him~ 💕\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH COUPLE PP* 」\n┊ Mouu, failed to fetch the couple PP: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.ppcouple', expect: /couple/i }

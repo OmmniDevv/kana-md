@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { wave: { captionTarget: '@{from} melambai ke @{to}~', captionSelf: 'Nih GIF reaksinya~', fail: 'Gagal ambil GIF: {error}' } },
-  en: { wave: { captionTarget: '@{from} waves at @{to}~', captionSelf: 'Here is the reaction GIF~', fail: 'Failed to fetch the GIF: {error}' } },
+  id: { wave: { captionTarget: '╭─❏ 👋 「 *LAMBAIAN* 」\n┊ *@{from}* melambai ke *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 👋 「 *LAMBAIAN* 」\n┊ Nih GIF reaksinya~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GIF* 」\n┊ Mouu, gagal ambil GIF: *{error}*~\n╰━━━━━━━' } },
+  en: { wave: { captionTarget: '╭─❏ 👋 「 *WAVE* 」\n┊ *@{from}* waves at *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 👋 「 *WAVE* 」\n┊ Here is the reaction GIF~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH GIF* 」\n┊ Mouu, failed to fetch the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.wave', expect: /gif|reaksi|reaction/i }

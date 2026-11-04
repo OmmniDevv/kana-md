@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { poke: { captionTarget: '@{from} mencolek @{to}~', captionSelf: 'Nih GIF reaksinya~', fail: 'Gagal ambil GIF: {error}' } },
-  en: { poke: { captionTarget: '@{from} pokes @{to}~', captionSelf: 'Here is the reaction GIF~', fail: 'Failed to fetch the GIF: {error}' } },
+  id: { poke: { captionTarget: '╭─❏ 👉 「 *COLEKAN* 」\n┊ *@{from}* mencolek *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 👉 「 *COLEKAN* 」\n┊ Nih GIF reaksinya~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GIF* 」\n┊ Mouu, gagal ambil GIF: *{error}*~\n╰━━━━━━━' } },
+  en: { poke: { captionTarget: '╭─❏ 👉 「 *POKE* 」\n┊ *@{from}* pokes *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 👉 「 *POKE* 」\n┊ Here is the reaction GIF~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH GIF* 」\n┊ Mouu, failed to fetch the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.poke', expect: /gif|reaksi|reaction/i }

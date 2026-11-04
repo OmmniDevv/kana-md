@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { kiss: { captionTarget: '@{from} memberi ciuman ke @{to}~', captionSelf: 'Nih GIF reaksinya~', fail: 'Gagal ambil GIF: {error}' } },
-  en: { kiss: { captionTarget: '@{from} kisses @{to}~', captionSelf: 'Here is the reaction GIF~', fail: 'Failed to fetch the GIF: {error}' } },
+  id: { kiss: { captionTarget: '╭─❏ 💋 「 *CIUMAN* 」\n┊ *@{from}* memberi ciuman ke *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 💋 「 *CIUMAN* 」\n┊ Nih GIF reaksinya~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GIF* 」\n┊ Mouu, gagal ambil GIF: *{error}*~\n╰━━━━━━━' } },
+  en: { kiss: { captionTarget: '╭─❏ 💋 「 *KISS* 」\n┊ *@{from}* kisses *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 💋 「 *KISS* 」\n┊ Here is the reaction GIF~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH GIF* 」\n┊ Mouu, failed to fetch the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.kiss', expect: /gif|reaksi|reaction/i }

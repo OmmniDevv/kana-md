@@ -11,8 +11,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { slap: { captionTarget: '@{from} menampar @{to}~', captionSelf: 'Nih GIF reaksinya~', fail: 'Gagal ambil GIF: {error}' } },
-  en: { slap: { captionTarget: '@{from} slaps @{to}~', captionSelf: 'Here is the reaction GIF~', fail: 'Failed to fetch the GIF: {error}' } },
+  id: { slap: { captionTarget: '╭─❏ 💥 「 *TAMPARAN* 」\n┊ *@{from}* menampar *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 💥 「 *TAMPARAN* 」\n┊ Nih GIF reaksinya~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *GAGAL AMBIL GIF* 」\n┊ Mouu, gagal ambil GIF: *{error}*~\n╰━━━━━━━' } },
+  en: { slap: { captionTarget: '╭─❏ 💥 「 *SLAP* 」\n┊ *@{from}* slaps *@{to}*~\n╰━━━━━━━', captionSelf: '╭─❏ 💥 「 *SLAP* 」\n┊ Here is the reaction GIF~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *FAILED TO FETCH GIF* 」\n┊ Mouu, failed to fetch the GIF: *{error}*~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.slap', expect: /gif|reaksi|reaction/i }
