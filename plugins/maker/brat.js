@@ -5,7 +5,7 @@ import { sendSticker } from './sticker.js'
 
 export const config = {
   name: 'brat',
-  alias: [],
+  alias: ['brat2', 'bratv', 'bratgreen'],
   category: 'maker',
   description: { id: 'Bikin stiker teks gaya brat (putih, hitam, kiri bawah)', en: 'Make a brat style text sticker (white, black, bottom left)' },
   usage: '.brat <teks>',

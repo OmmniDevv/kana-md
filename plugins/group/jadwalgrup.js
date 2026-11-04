@@ -6,7 +6,7 @@ export { isValidTime }
 
 export const config = {
   name: 'jadwalgrup',
-  alias: [],
+  alias: ['bukajam', 'tutupjam'],
   category: 'group',
   description: { id: 'Atur jadwal buka tutup grup otomatis', en: 'Set automatic group open and close schedule' },
   usage: '.jadwalgrup <HH:mm buka> <HH:mm tutup> atau .jadwalgrup off',

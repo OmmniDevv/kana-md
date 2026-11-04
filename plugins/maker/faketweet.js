@@ -3,7 +3,7 @@ import { sendImage } from '../../src/ui/media.js'
 
 export const config = {
   name: 'faketweet',
-  alias: [],
+  alias: ['tweet'],
   category: 'maker',
   description: { id: 'Bikin kartu unggahan X parodi (berlabel PARODI jelas)', en: 'Make a parody X post card (clearly labelled PARODY)' },
   usage: '.faketweet <nama>|<isi>',

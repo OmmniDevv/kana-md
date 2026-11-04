@@ -4,7 +4,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'guard',
-  alias: ['proteksi'],
+  alias: ['proteksi', 'security', 'groupsecurity'],
   category: 'group',
   description: { id: 'Lihat status proteksi grup', en: 'Show group protection status' },
   usage: '.guard',

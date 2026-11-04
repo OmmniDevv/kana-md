@@ -3,7 +3,7 @@ import { sendImage } from '../../src/ui/media.js'
 
 export const config = {
   name: 'buatquote',
-  alias: ['quoteimg', 'kartuquote'],
+  alias: ['quoteimg', 'kartuquote', 'qc', 'quotesticker', 'quotesimage'],
   category: 'maker',
   description: { id: 'Buat kartu gambar kutipan: teks, opsional penulis sesudah tanda |', en: 'Make a quote image card: text, optional author after a | sign' },
   usage: '.buatquote <teks> | <penulis>',

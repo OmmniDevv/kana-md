@@ -10,7 +10,7 @@ const execFileP = promisify(execFile)
 
 export const config = {
   name: 'pixelate',
-  alias: ['piksel'],
+  alias: ['piksel', 'topixel'],
   category: 'maker',
   description: { id: 'Buat gambar yang dikutip jadi pixelated (sensor kotak kotak)', en: 'Pixelate the quoted image (blocky censor style)' },
   usage: '.pixelate [level 4-40] (kutip gambar)',
