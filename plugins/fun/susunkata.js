@@ -1,4 +1,4 @@
-import { getSession, startQuiz } from '../../src/quiz/engine.js'
+import { getSession, startQuiz, bindQuestionMessage } from '../../src/quiz/engine.js'
 import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
@@ -6,7 +6,7 @@ export const config = {
   alias: ['susun'],
   category: 'fun',
   description: { id: 'Kuis Susun Kata: susun huruf acak menjadi kata yang benar', en: 'Word scramble quiz: unscramble the letters into the right word' },
-  usage: '.susunkata lalu jawab kata yang benar lewat chat atau .jawab <kata>',
+  usage: '.susunkata lalu balas pesan pertanyaannya dengan kata yang benar',
   example: '.susunkata',
   cooldown: 5,
 }
@@ -15,7 +15,7 @@ export const i18n = {
   id: {
     susunkata: {
       title: 'Kuis Susun Kata',
-      intro: '🔤 KUIS SUSUN KATA\n\nSusun huruf ini jadi kata yang benar:\n\n{letters}\n\nPoin: {points} | Waktu: {seconds} detik. Balas dengan katanya langsung atau .jawab <kata> yaa~ {mood}',
+      intro: '🔤 KUIS SUSUN KATA\n\nSusun huruf ini jadi kata yang benar:\n\n{letters}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan katanya langsung yaa~ {mood}',
       already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
       menuBtn: '🎲 Menu Fun',
@@ -25,7 +25,7 @@ export const i18n = {
   en: {
     susunkata: {
       title: 'Word Scramble Quiz',
-      intro: '🔤 WORD SCRAMBLE QUIZ\n\nUnscramble these letters into the right word:\n\n{letters}\n\nPoints: {points} | Time: {seconds} seconds. Reply with the word directly or .jawab <word>~ {mood}',
+      intro: '🔤 WORD SCRAMBLE QUIZ\n\nUnscramble these letters into the right word:\n\n{letters}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the word directly~ {mood}',
       already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
       menuBtn: '🎲 Fun Menu',
@@ -46,7 +46,6 @@ export async function handler(ctx) {
       footer: ctx.t('susunkata.footer'),
       replies: [
         { text: ctx.t('susunkata.giveUpBtn'), id: '.nyerah' },
-        { text: ctx.t('susunkata.menuBtn'), id: '.menu fun' },
       ],
       textFallback: body,
     })
@@ -61,14 +60,15 @@ export async function handler(ctx) {
     seconds: 120,
     mood: ctx.say('senang'),
   })
-  return sendButtons(ctx.sock, ctx.chat, {
+  const sentQuestion = await sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('susunkata.title'),
     body,
     footer: ctx.t('susunkata.footer'),
     replies: [
       { text: ctx.t('susunkata.giveUpBtn'), id: '.nyerah' },
-      { text: ctx.t('susunkata.menuBtn'), id: '.menu fun' },
     ],
     textFallback: body,
   })
+  await bindQuestionMessage(ctx.storage, ctx.chat, sentQuestion?.key?.id)
+  return sentQuestion
 }

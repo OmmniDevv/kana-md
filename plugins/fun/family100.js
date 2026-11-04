@@ -1,4 +1,4 @@
-import { getSession, startQuiz } from '../../src/quiz/engine.js'
+import { getSession, startQuiz, bindQuestionMessage } from '../../src/quiz/engine.js'
 import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
@@ -6,7 +6,7 @@ export const config = {
   alias: ['family', 'f100'],
   category: 'fun',
   description: { id: 'Kuis Family 100: tebak jawaban paling populer, poin per jawaban', en: 'Family 100 quiz: guess the most popular answers, points per answer' },
-  usage: '.family100 lalu jawab dengan teks atau .jawab <jawaban>',
+  usage: '.family100 lalu balas pesan pertanyaannya dengan jawabanmu',
   example: '.family100',
   cooldown: 5,
 }
@@ -15,7 +15,7 @@ export const i18n = {
   id: {
     family100: {
       title: 'Kuis Family 100',
-      intro: '🎉 KUIS FAMILY 100\n\n{question}\n\nAda {count} jawaban populer, total {points} poin. Jawab satu-satu lewat chat biasa atau .jawab <jawaban>. Waktunya {seconds} detik, menyerah pakai .nyerah yaa~ {mood}',
+      intro: '🎉 KUIS FAMILY 100\n\n{question}\n\nAda {count} jawaban populer, total {points} poin. Balas (reply) pesan ini dengan jawabanmu satu-satu. Waktunya {seconds} detik, menyerah pakai .nyerah yaa~ {mood}',
       already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
       menuBtn: '🎲 Menu Fun',
@@ -25,7 +25,7 @@ export const i18n = {
   en: {
     family100: {
       title: 'Family 100 Quiz',
-      intro: '🎉 FAMILY 100 QUIZ\n\n{question}\n\nThere are {count} popular answers worth {points} points in total. Answer one by one via plain chat or .jawab <answer>. You have {seconds} seconds, give up with .nyerah~ {mood}',
+      intro: '🎉 FAMILY 100 QUIZ\n\n{question}\n\nThere are {count} popular answers worth {points} points in total. Reply to this message with your answers one by one. You have {seconds} seconds, give up with .nyerah~ {mood}',
       already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
       menuBtn: '🎲 Fun Menu',
@@ -46,7 +46,6 @@ export async function handler(ctx) {
       footer: ctx.t('family100.footer'),
       replies: [
         { text: ctx.t('family100.giveUpBtn'), id: '.nyerah' },
-        { text: ctx.t('family100.menuBtn'), id: '.menu fun' },
       ],
       textFallback: body,
     })
@@ -62,14 +61,15 @@ export async function handler(ctx) {
     seconds: 300,
     mood: ctx.say('senang'),
   })
-  return sendButtons(ctx.sock, ctx.chat, {
+  const sentQuestion = await sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('family100.title'),
     body,
     footer: ctx.t('family100.footer'),
     replies: [
       { text: ctx.t('family100.giveUpBtn'), id: '.nyerah' },
-      { text: ctx.t('family100.menuBtn'), id: '.menu fun' },
     ],
     textFallback: body,
   })
+  await bindQuestionMessage(ctx.storage, ctx.chat, sentQuestion?.key?.id)
+  return sentQuestion
 }
