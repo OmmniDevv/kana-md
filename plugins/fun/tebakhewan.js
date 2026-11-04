@@ -15,20 +15,18 @@ export const i18n = {
   id: {
     tebakhewan: {
       title: 'Kuis Tebak Hewan',
-      intro: '🐾 KUIS TEBAK HEWAN\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan nama hewannya yaa~ {mood}',
-      already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
+      intro: '╭─❏ 🐾 「 *KUIS TEBAK HEWAN* 」\n┊ {clue}\n┊ ᴘᴏɪɴ: *{points}* | ᴡᴀᴋᴛᴜ: *{seconds} ᴅᴇᴛɪᴋ*\n┊ Balas (reply) pesan ini dengan nama hewannya yaa~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *KUIS BELUM SELESAI* 」\n┊ Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
-      menuBtn: '🎲 Menu Fun',
       footer: 'Kuis KANA',
     },
   },
   en: {
     tebakhewan: {
       title: 'Animal Quiz',
-      intro: '🐾 ANIMAL QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the animal name~ {mood}',
-      already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
+      intro: '╭─❏ 🐾 「 *ANIMAL QUIZ* 」\n┊ {clue}\n┊ ᴘᴏɪɴᴛꜱ: *{points}* | ᴛɪᴍᴇ: *{seconds} ꜱᴇᴄᴏɴᴅꜱ*\n┊ Reply to this message with the animal name~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *QUIZ STILL RUNNING* 」\n┊ Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
-      menuBtn: '🎲 Fun Menu',
       footer: 'KANA Quiz',
     },
   },

@@ -14,8 +14,8 @@ export const config = {
 export const i18n = {
   id: {
     sisaumur: {
-      hint: 'Tulis umurmu yaa~ Contoh: .sisaumur 17',
-      body: '⏳ CEK SISA UMUR (BERCANDA)\n\nUmur sekarang: {age} tahun\nPrakiraan sisa: *{left} tahun lagi* (total {total} tahun)\n{comment}\n\nIni cuma bercanda yaa, yang tahu umur asli cuma Tuhan. Jaga kesehatan biar panjang umur beneran~ {mood}',
+      hint: '╭─❏ ⏳ 「 *SISA UMUR* 」\n┊ Tulis umurmu yaa~ Contoh: .sisaumur 17\n╰━━━━━━━',
+      body: '╭─❏ ⏳ 「 *CEK SISA UMUR (BERCANDA)* 」\n┊ ᴜᴍᴜʀ ꜱᴇᴋᴀʀᴀɴɢ: *{age} tahun*\n┊ ᴘʀᴀᴋɪʀᴀᴀɴ ꜱɪꜱᴀ: *{left} tahun lagi* (total {total} tahun)\n┊ {comment}\n┊ Ini cuma bercanda yaa, yang tahu umur asli cuma Tuhan. Jaga kesehatan biar panjang umur beneran~\n╰━━━━━━━ {mood}',
       young: 'Masih panjang banget perjalanannya, pakai buat hal baik yaa~',
       mid: 'Pas di masa emas, jangan disia-siakan~',
       wise: 'Sudah kaya pengalaman, sehat selalu yaa~',
@@ -24,8 +24,8 @@ export const i18n = {
   },
   en: {
     sisaumur: {
-      hint: 'Write your age please~ Example: .sisaumur 17',
-      body: '⏳ REMAINING LIFESPAN CHECK (JOKE)\n\nCurrent age: {age}\nEstimated left: *{left} more years* (total {total})\n{comment}\n\nThis is only a joke, only God knows the real lifespan. Stay healthy for a truly long life~ {mood}',
+      hint: '╭─❏ ⏳ 「 *REMAINING LIFESPAN* 」\n┊ Write your age please~ Example: .sisaumur 17\n╰━━━━━━━',
+      body: '╭─❏ ⏳ 「 *REMAINING LIFESPAN CHECK (JOKE)* 」\n┊ ᴄᴜʀʀᴇɴᴛ ᴀɢᴇ: *{age}*\n┊ ᴇꜱᴛɪᴍᴀᴛᴇᴅ ʟᴇꜰᴛ: *{left} more years* (total {total})\n┊ {comment}\n┊ This is only a joke, only God knows the real lifespan. Stay healthy for a truly long life~\n╰━━━━━━━ {mood}',
       young: 'The journey is still very long, use it for good things~',
       mid: 'Right in the golden years, do not waste them~',
       wise: 'Rich in experience, stay healthy always~',

@@ -41,8 +41,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { sipaling: { body: '🏆 @{who} adalah... {title}!' } },
-  en: { sipaling: { body: '🏆 @{who} is... {title}!' } },
+  id: { sipaling: { body: '╭─❏ 🏆 「 *SI PALING* 」\n┊ 🏆 @{who} adalah... {title}!\n╰━━━━━━━' } },
+  en: { sipaling: { body: '╭─❏ 🏆 「 *THE MOST* 」\n┊ 🏆 @{who} is... {title}!\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.sipaling', expect: /paling|most/i }

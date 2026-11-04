@@ -15,20 +15,18 @@ export const i18n = {
   id: {
     tebakbendera: {
       title: 'Kuis Tebak Bendera',
-      intro: '🏳️ KUIS TEBAK BENDERA\n\nBendera negara apa ini?\n\n{flag}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan nama negaranya yaa~ {mood}',
-      already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
+      intro: '╭─❏ 🏳️ 「 *KUIS TEBAK BENDERA* 」\n┊ Bendera negara apa ini?\n┊ {flag}\n┊ ᴘᴏɪɴ: *{points}* | ᴡᴀᴋᴛᴜ: *{seconds} ᴅᴇᴛɪᴋ*\n┊ Balas (reply) pesan ini dengan nama negaranya yaa~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *KUIS BELUM SELESAI* 」\n┊ Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
-      menuBtn: '🎲 Menu Fun',
       footer: 'Kuis KANA',
     },
   },
   en: {
     tebakbendera: {
       title: 'Flag Quiz',
-      intro: '🏳️ FLAG QUIZ\n\nWhich country has this flag?\n\n{flag}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the country name~ {mood}',
-      already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
+      intro: '╭─❏ 🏳️ 「 *FLAG QUIZ* 」\n┊ Which country has this flag?\n┊ {flag}\n┊ ᴘᴏɪɴᴛꜱ: *{points}* | ᴛɪᴍᴇ: *{seconds} ꜱᴇᴄᴏɴᴅꜱ*\n┊ Reply to this message with the country name~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *QUIZ STILL RUNNING* 」\n┊ Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
-      menuBtn: '🎲 Fun Menu',
       footer: 'KANA Quiz',
     },
   },

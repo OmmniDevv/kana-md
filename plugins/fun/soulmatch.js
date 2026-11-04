@@ -24,27 +24,25 @@ export const i18n = {
   id: {
     soulmatch: {
       title: 'Soulmatch',
-      ask: 'Tulis dua nama dipisah tanda &, contohnya: .soulmatch Raka & Sinta {mood}',
-      body: '💞 SOULMATCH\n\n{a} x {b}\nKecocokan hati: *{hati}%*\nKecocokan pikiran: *{pikiran}%*\nKecocokan nasib: *{nasib}%*\nRata-rata jiwa: *{total}%*\n\n{verdict} {mood}',
+      ask: '╭─❏ 💞 「 *SOULMATCH* 」\n┊ Tulis dua nama dipisah tanda &, contohnya: .soulmatch Raka & Sinta\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 💞 「 *SOULMATCH* 」\n┊ {a} x {b}\n┊ ᴋᴇᴄᴏᴄᴏᴋᴀɴ ʜᴀᴛɪ: *{hati}%*\n┊ ᴋᴇᴄᴏᴄᴏᴋᴀɴ ᴘɪᴋɪʀᴀɴ: *{pikiran}%*\n┊ ᴋᴇᴄᴏᴄᴏᴋᴀɴ ɴᴀꜱɪʙ: *{nasib}%*\n┊ ʀᴀᴛᴀ-ʀᴀᴛᴀ ᴊɪᴡᴀ: *{total}%*\n┊ {verdict}\n╰━━━━━━━ {mood}',
       vLow: 'Jiwa kalian jalan di rel yang berbeda, tapi bukan berarti mustahil.',
       vMid: 'Ada percikan yang bisa tumbuh kalau sama-sama mau merawat.',
       vHigh: 'Kuat sekali ikatan jiwanya, seperti sudah kenal dari lama.',
       vMax: 'Soulmate level maksimal. Semesta pun ikut tersenyum.',
       btnAgain: '💞 Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     soulmatch: {
       title: 'Soulmatch',
-      ask: 'Write two names separated by &, for example: .soulmatch Raka & Sinta {mood}',
-      body: '💞 SOULMATCH\n\n{a} x {b}\nHeart match: *{hati}%*\nMind match: *{pikiran}%*\nFate match: *{nasib}%*\nSoul average: *{total}%*\n\n{verdict} {mood}',
+      ask: '╭─❏ 💞 「 *SOULMATCH* 」\n┊ Write two names separated by &, for example: .soulmatch Raka & Sinta\n╰━━━━━━━ {mood}',
+      body: '╭─❏ 💞 「 *SOULMATCH* 」\n┊ {a} x {b}\n┊ ʜᴇᴀʀᴛ ᴍᴀᴛᴄʜ: *{hati}%*\n┊ ᴍɪɴᴅ ᴍᴀᴛᴄʜ: *{pikiran}%*\n┊ ꜰᴀᴛᴇ ᴍᴀᴛᴄʜ: *{nasib}%*\n┊ ꜱᴏᴜʟ ᴀᴠᴇʀᴀɢᴇ: *{total}%*\n┊ {verdict}\n╰━━━━━━━ {mood}',
       vLow: 'Your souls run on different tracks, but that does not mean impossible.',
       vMid: 'There is a spark that can grow if both of you nurture it.',
       vHigh: 'A very strong soul bond, like you have known each other forever.',
       vMax: 'Maximum soulmate level. Even the universe is smiling.',
       btnAgain: '💞 Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }

@@ -23,12 +23,12 @@ export const config = {
 export const i18n = {
   id: {
     suitpvp: {
-      challenge: '✊ SUIT PVP\n@{from} menantang @{to} main suit!\n\n@{to}, balas (reply) pesan ini dengan pilihanmu: gunting, batu, atau kertas. Itu tanda kamu menerima tantangannya~',
-      needTarget: 'Tag lawanmu yaa~ Contoh: .suitpvp @6281234567890',
-      selfTarget: 'Tidak bisa suit lawan diri sendiri yaa~ {mood}',
-      firstPick: '@{to} memilih duluan dan pilihannya sudah KANA kunci~\n\n@{from}, sekarang balas (reply) pesan ini dengan pilihanmu: gunting, batu, atau kertas!',
-      invalid: 'Pilihannya gunting, batu, atau kertas saja yaa~ Balas lagi pesan yang terikat.',
-      result: '✊ HASIL SUIT\n@{from}: {fromEmoji} ({fromPick})\n@{to}: {toEmoji} ({toPick})\n\n{verdict}',
+      challenge: '╭─❏ ✊ 「 *SUIT PVP* 」\n┊ @{from} menantang @{to} main suit!\n┊ @{to}, balas (reply) pesan ini dengan pilihanmu: gunting, batu, atau kertas. Itu tanda kamu menerima tantangannya~\n╰━━━━━━━',
+      needTarget: '╭─❏ ✊ 「 *SUIT PVP* 」\n┊ Tag lawanmu yaa~ Contoh: .suitpvp @6281234567890\n╰━━━━━━━',
+      selfTarget: '╭─❏ ✊ 「 *SUIT PVP* 」\n┊ Tidak bisa suit lawan diri sendiri yaa~\n╰━━━━━━━ {mood}',
+      firstPick: '╭─❏ ✊ 「 *SUIT PVP* 」\n┊ @{to} memilih duluan dan pilihannya sudah KANA kunci~\n┊ @{from}, sekarang balas (reply) pesan ini dengan pilihanmu: gunting, batu, atau kertas!\n╰━━━━━━━',
+      invalid: '╭─❏ ✊ 「 *SUIT PVP* 」\n┊ Pilihannya gunting, batu, atau kertas saja yaa~ Balas lagi pesan yang terikat.\n╰━━━━━━━',
+      result: '╭─❏ ✊ 「 *HASIL SUIT* 」\n┊ @{from}: {fromEmoji} ({fromPick})\n┊ @{to}: {toEmoji} ({toPick})\n┊ {verdict}\n╰━━━━━━━',
       winFrom: '🏆 @{from} MENANG!',
       winTo: '🏆 @{to} MENANG!',
       draw: '🤝 SERI! Sama kuatnya~',
@@ -36,12 +36,12 @@ export const i18n = {
   },
   en: {
     suitpvp: {
-      challenge: '✊ RPS PVP\n@{from} challenges @{to} to rock paper scissors!\n\n@{to}, reply to this message with your pick: gunting, batu, or kertas. That accepts the challenge~',
-      needTarget: 'Tag your opponent please~ Example: .suitpvp @6281234567890',
-      selfTarget: 'You cannot play against yourself~ {mood}',
-      firstPick: '@{to} picked first and their choice is locked in~\n\n@{from}, now reply to this message with your pick: gunting, batu, or kertas!',
-      invalid: 'Pick gunting, batu, or kertas only please~ Reply to the bound message again.',
-      result: '✊ RPS RESULT\n@{from}: {fromEmoji} ({fromPick})\n@{to}: {toEmoji} ({toPick})\n\n{verdict}',
+      challenge: '╭─❏ ✊ 「 *RPS PVP* 」\n┊ @{from} challenges @{to} to rock paper scissors!\n┊ @{to}, reply to this message with your pick: gunting, batu, or kertas. That accepts the challenge~\n╰━━━━━━━',
+      needTarget: '╭─❏ ✊ 「 *RPS PVP* 」\n┊ Tag your opponent please~ Example: .suitpvp @6281234567890\n╰━━━━━━━',
+      selfTarget: '╭─❏ ✊ 「 *RPS PVP* 」\n┊ You cannot play against yourself~\n╰━━━━━━━ {mood}',
+      firstPick: '╭─❏ ✊ 「 *RPS PVP* 」\n┊ @{to} picked first and their choice is locked in~\n┊ @{from}, now reply to this message with your pick: gunting, batu, or kertas!\n╰━━━━━━━',
+      invalid: '╭─❏ ✊ 「 *RPS PVP* 」\n┊ Pick gunting, batu, or kertas only please~ Reply to the bound message again.\n╰━━━━━━━',
+      result: '╭─❏ ✊ 「 *RPS RESULT* 」\n┊ @{from}: {fromEmoji} ({fromPick})\n┊ @{to}: {toEmoji} ({toPick})\n┊ {verdict}\n╰━━━━━━━',
       winFrom: '🏆 @{from} WINS!',
       winTo: '🏆 @{to} WINS!',
       draw: '🤝 DRAW! Equally matched~',

@@ -49,18 +49,16 @@ export const i18n = {
   id: {
     suratcinta: {
       title: 'Surat Cinta',
-      body: '💌 SURAT CINTA UNTUK {name}\n\n{letter}\n\nDibuatkan khusus sama Kana~ {mood}',
+      body: '╭─❏ 💌 「 *SURAT CINTA UNTUK {name}* 」\n┊ {letter}\n┊ Dibuatkan khusus sama Kana~\n╰━━━━━━━ {mood}',
       btnAgain: '💌 Buat Lagi',
-      btnMenu: 'Menu Fun',
       dear: 'Untuk {name} tersayang,',
     },
   },
   en: {
     suratcinta: {
       title: 'Love Letter',
-      body: '💌 A LOVE LETTER FOR {name}\n\n{letter}\n\nWritten specially by Kana~ {mood}',
+      body: '╭─❏ 💌 「 *A LOVE LETTER FOR {name}* 」\n┊ {letter}\n┊ Written specially by Kana~\n╰━━━━━━━ {mood}',
       btnAgain: '💌 Write Again',
-      btnMenu: 'Fun Menu',
       dear: 'For my dearest {name},',
     },
   },

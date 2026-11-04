@@ -6,7 +6,7 @@ export const config = {
   alias: ['rps'],
   category: 'fun',
   description: { id: 'Main suit batu gunting kertas lawan KANA', en: 'Play rock paper scissors against KANA' },
-  usage: '.suit <batu|gunting|kertas>',
+  usage: '╭─❏ ✊ 「 *SUIT* 」\n┊ .suit <batu|gunting|kertas>\n╰━━━━━━━',
   example: '.suit batu',
   cooldown: 3,
 }
@@ -14,28 +14,28 @@ export const config = {
 export const i18n = {
   id: {
     suit: {
-      usage: 'Pilih dulu yaa: .suit batu, .suit gunting, atau .suit kertas~ (≧▽≦)',
+      usage: '╭─❏ ✊ 「 *SUIT* 」\n┊ Pilih dulu yaa: .suit batu, .suit gunting, atau .suit kertas~ (≧▽≦)\n╰━━━━━━━',
       you: 'Kamu',
       bot: 'KANA',
       choices: { batu: 'Batu 🪨', gunting: 'Gunting ✂️', kertas: 'Kertas 📄' },
-      win: 'Yayyy kamu menang! {player} ngalahin {bot} nih. +15 XP buat kamu~ (≧▽≦) 🎉 {mood}',
-      lose: 'Ehehe, KANA yang menang kali ini! {bot} ngalahin {player}. Coba lagi yaa~ (•̀ᴗ•́)و',
-      draw: 'Serii~ kita sehati ya, sama-sama {player}. +3 XP deh buat kamu~ 🌸',
+      win: '┊ 🏆 Yayyy kamu menang! {player} ngalahin {bot} nih. +15 XP buat kamu~ (≧▽≦) 🎉\n╰━━━━━━━ {mood}',
+      lose: '┊ 😿 Ehehe, KANA yang menang kali ini! {bot} ngalahin {player}. Coba lagi yaa~ (•̀ᴗ•́)و\n╰━━━━━━━',
+      draw: '┊ 🤝 Serii~ kita sehati ya, sama-sama {player}. +3 XP deh buat kamu~ 🌸\n╰━━━━━━━',
       btnAgain: 'Main Lagi',
-      result: '{you}: {player}\n{bot}: {botChoice}',
+      result: '╭─❏ ✊ 「 *HASIL SUIT* 」\n┊ {you}: *{player}*\n┊ {bot}: *{botChoice}*',
     },
   },
   en: {
     suit: {
-      usage: 'Pick first: .suit batu, .suit gunting, or .suit kertas~ (≧▽≦)',
+      usage: '╭─❏ ✊ 「 *ROCK PAPER SCISSORS* 」\n┊ Pick first: .suit batu, .suit gunting, or .suit kertas~ (≧▽≦)\n╰━━━━━━━',
       you: 'You',
       bot: 'KANA',
       choices: { batu: 'Rock 🪨', gunting: 'Scissors ✂️', kertas: 'Paper 📄' },
-      win: 'Yayyy you win! {player} beats {bot}. +15 XP for you~ (≧▽≦) 🎉 {mood}',
-      lose: 'Ehehe, KANA wins this round! {bot} beats {player}. Try again~ (•̀ᴗ•́)و',
-      draw: 'A draw~ we are in sync, both picked {player}. +3 XP for you~ 🌸',
+      win: '┊ 🏆 Yayyy you win! {player} beats {bot}. +15 XP for you~ (≧▽≦) 🎉\n╰━━━━━━━ {mood}',
+      lose: '┊ 😿 Ehehe, KANA wins this round! {bot} beats {player}. Try again~ (•̀ᴗ•́)و\n╰━━━━━━━',
+      draw: '┊ 🤝 A draw~ we are in sync, both picked {player}. +3 XP for you~ 🌸\n╰━━━━━━━',
       btnAgain: 'Play Again',
-      result: '{you}: {player}\n{bot}: {botChoice}',
+      result: '╭─❏ ✊ 「 *SUIT RESULT* 」\n┊ {you}: *{player}*\n┊ {bot}: *{botChoice}*',
     },
   },
 }

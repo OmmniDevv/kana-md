@@ -15,20 +15,18 @@ export const i18n = {
   id: {
     susunkata: {
       title: 'Kuis Susun Kata',
-      intro: '🔤 KUIS SUSUN KATA\n\nSusun huruf ini jadi kata yang benar:\n\n{letters}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan katanya langsung yaa~ {mood}',
-      already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
+      intro: '╭─❏ 🔤 「 *KUIS SUSUN KATA* 」\n┊ Susun huruf ini jadi kata yang benar:\n┊ {letters}\n┊ ᴘᴏɪɴ: *{points}* | ᴡᴀᴋᴛᴜ: *{seconds} ᴅᴇᴛɪᴋ*\n┊ Balas (reply) pesan ini dengan katanya langsung yaa~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *KUIS BELUM SELESAI* 」\n┊ Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
-      menuBtn: '🎲 Menu Fun',
       footer: 'Kuis KANA',
     },
   },
   en: {
     susunkata: {
       title: 'Word Scramble Quiz',
-      intro: '🔤 WORD SCRAMBLE QUIZ\n\nUnscramble these letters into the right word:\n\n{letters}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the word directly~ {mood}',
-      already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
+      intro: '╭─❏ 🔤 「 *WORD SCRAMBLE QUIZ* 」\n┊ Unscramble these letters into the right word:\n┊ {letters}\n┊ ᴘᴏɪɴᴛꜱ: *{points}* | ᴛɪᴍᴇ: *{seconds} ꜱᴇᴄᴏɴᴅꜱ*\n┊ Reply to this message with the word directly~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *QUIZ STILL RUNNING* 」\n┊ Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
-      menuBtn: '🎲 Fun Menu',
       footer: 'KANA Quiz',
     },
   },

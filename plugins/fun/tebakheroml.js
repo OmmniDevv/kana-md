@@ -15,20 +15,18 @@ export const i18n = {
   id: {
     tebakheroml: {
       title: 'Kuis Tebak Hero ML',
-      intro: '⚔️ KUIS TEBAK HERO ML\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan nama heronya yaa~ {mood}',
-      already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
+      intro: '╭─❏ ⚔️ 「 *KUIS TEBAK HERO ML* 」\n┊ {clue}\n┊ ᴘᴏɪɴ: *{points}* | ᴡᴀᴋᴛᴜ: *{seconds} ᴅᴇᴛɪᴋ*\n┊ Balas (reply) pesan ini dengan nama heronya yaa~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *KUIS BELUM SELESAI* 」\n┊ Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
-      menuBtn: '🎲 Menu Fun',
       footer: 'Kuis KANA',
     },
   },
   en: {
     tebakheroml: {
       title: 'ML Hero Quiz',
-      intro: '⚔️ ML HERO QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the hero name~ {mood}',
-      already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
+      intro: '╭─❏ ⚔️ 「 *ML HERO QUIZ* 」\n┊ {clue}\n┊ ᴘᴏɪɴᴛꜱ: *{points}* | ᴛɪᴍᴇ: *{seconds} ꜱᴇᴄᴏɴᴅꜱ*\n┊ Reply to this message with the hero name~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *QUIZ STILL RUNNING* 」\n┊ Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
-      menuBtn: '🎲 Fun Menu',
       footer: 'KANA Quiz',
     },
   },

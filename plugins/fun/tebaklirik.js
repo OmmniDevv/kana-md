@@ -15,20 +15,18 @@ export const i18n = {
   id: {
     tebaklirik: {
       title: 'Kuis Tebak Lirik',
-      intro: '🎤 KUIS TEBAK LIRIK\n\n{clue}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan kata lirik yang hilang yaa~ {mood}',
-      already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
+      intro: '╭─❏ 🎤 「 *KUIS TEBAK LIRIK* 」\n┊ {clue}\n┊ ᴘᴏɪɴ: *{points}* | ᴡᴀᴋᴛᴜ: *{seconds} ᴅᴇᴛɪᴋ*\n┊ Balas (reply) pesan ini dengan kata lirik yang hilang yaa~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *KUIS BELUM SELESAI* 」\n┊ Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
-      menuBtn: '🎲 Menu Fun',
       footer: 'Kuis KANA',
     },
   },
   en: {
     tebaklirik: {
       title: 'Lyric Quiz',
-      intro: '🎤 LYRIC QUIZ\n\n{clue}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the missing lyric word~ {mood}',
-      already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
+      intro: '╭─❏ 🎤 「 *LYRIC QUIZ* 」\n┊ {clue}\n┊ ᴘᴏɪɴᴛꜱ: *{points}* | ᴛɪᴍᴇ: *{seconds} ꜱᴇᴄᴏɴᴅꜱ*\n┊ Reply to this message with the missing lyric word~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *QUIZ STILL RUNNING* 」\n┊ Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
-      menuBtn: '🎲 Fun Menu',
       footer: 'KANA Quiz',
     },
   },

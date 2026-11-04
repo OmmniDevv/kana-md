@@ -15,22 +15,20 @@ export const i18n = {
   id: {
     tafsirmimpi: {
       title: 'Tafsir Mimpi',
-      body: '🌙 TAFSIR MIMPI: {key}\n\n{arti}\n\nCatatan: ini hiburan ala primbon yaa, bukan ramalan pasti. {mood}',
-      notFound: 'Kata kunci "{key}" belum ada di buku primbon Kana. Coba kata lain seperti ular, terbang, gigi copot, ikan, atau hujan. Atau pencet tombol daftar di bawah yaa~ {mood}',
-      listTitle: '🌙 DAFTAR KATA KUNCI MIMPI\n\n{list}\n\nPakai: .tafsirmimpi <kata kunci>',
+      body: '╭─❏ 🌙 「 *TAFSIR MIMPI: {key}* 」\n┊ {arti}\n┊ ᴄᴀᴛᴀᴛᴀɴ: ini hiburan ala primbon yaa, bukan ramalan pasti.\n╰━━━━━━━ {mood}',
+      notFound: '╭─❏ 🌙 「 *TAFSIR MIMPI* 」\n┊ Kata kunci "{key}" belum ada di buku primbon Kana. Coba kata lain seperti ular, terbang, gigi copot, ikan, atau hujan. Atau pencet tombol daftar di bawah yaa~\n╰━━━━━━━ {mood}',
+      listTitle: '╭─❏ 🌙 「 *DAFTAR KATA KUNCI MIMPI* 」\n┊ {list}\n┊ ᴘᴀᴋᴀɪ: .tafsirmimpi <kata kunci>\n╰━━━━━━━',
       btnList: '🌙 Daftar Kata Kunci',
-      btnMenu: 'Menu Fun',
       disclaimer: 'Tafsir mimpi primbon KANA',
     },
   },
   en: {
     tafsirmimpi: {
       title: 'Dream Meaning',
-      body: '🌙 DREAM MEANING: {key}\n\n{arti}\n\nNote: this is old lore entertainment, not a certain prediction. {mood}',
-      notFound: 'The keyword "{key}" is not in Kana lore book yet. Try another word like snake, flying, tooth, fish, or rain. Or tap the list button below~ {mood}',
-      listTitle: '🌙 DREAM KEYWORD LIST\n\n{list}\n\nUse: .tafsirmimpi <keyword>',
+      body: '╭─❏ 🌙 「 *DREAM MEANING: {key}* 」\n┊ {arti}\n┊ ɴᴏᴛᴇ: this is old lore entertainment, not a certain prediction.\n╰━━━━━━━ {mood}',
+      notFound: '╭─❏ 🌙 「 *DREAM MEANING* 」\n┊ The keyword "{key}" is not in Kana lore book yet. Try another word like snake, flying, tooth, fish, or rain. Or tap the list button below~\n╰━━━━━━━ {mood}',
+      listTitle: '╭─❏ 🌙 「 *DREAM KEYWORD LIST* 」\n┊ {list}\n┊ ᴜꜱᴇ: .tafsirmimpi <keyword>\n╰━━━━━━━',
       btnList: '🌙 Keyword List',
-      btnMenu: 'Fun Menu',
       disclaimer: 'KANA dream lore',
     },
   },
