@@ -1,7 +1,7 @@
 import { MB } from '@rexxhayanasi/elaina-baileys'
 import { sendButtons } from '../../src/ui/buttons.js'
 import { renderProfileCard } from '../../src/ui/profile-card.js'
-import { footerLine } from '../../src/config/templates.js'
+import { footerLine, withButtonEmoji } from '../../src/config/templates.js'
 import { logger } from '../../src/services/logger.js'
 import { getProfile, levelFromXp, limitState, xpForLevel } from '../../src/services/user-service.js'
 
@@ -183,7 +183,7 @@ export async function handler(ctx) {
     builder.setBody(caption)
     builder.setFooter(footer)
     builder.setImage(cardBuffer)
-    for (const reply of replies) builder.addReply(reply.text, reply.id)
+    for (const reply of replies) builder.addReply(withButtonEmoji(reply.text, reply.id), reply.id)
     return await builder.send(ctx.chat)
   } catch (err) {
     logger.warn({ err: err.message }, 'MB.Button profil gagal, fallback ke gambar plus tombol')

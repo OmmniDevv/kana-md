@@ -1,6 +1,6 @@
 import { MB, checkNativeFlowButtons } from '@rexxhayanasi/elaina-baileys'
 import { logger } from '../services/logger.js'
-import { defaultFooterText, footerLine } from '../config/templates.js'
+import { defaultFooterText, footerLine, withButtonEmoji } from '../config/templates.js'
 
 // Bungkus MB.Button (README v1.4.7). Balasan tombol kembali sebagai perintah
 // biasa lewat pipeline (id tombol = perintah). Gagal kirim tombol: fallback teks.
@@ -10,13 +10,19 @@ import { defaultFooterText, footerLine } from '../config/templates.js'
 // watermark dari template pusat. Fungsi t opsional lewat opsi { t } dipakai
 // bila ada, selain itu watermark netral tanpa i18n. Pemanggil lama yang
 // memberi footer sendiri tidak berubah perilakunya.
+// Label tombol: semua label replies dihias satu emoji baku dari peta emoji
+// template pusat (withButtonEmoji, dipilih dari id tombol) sebelum dikirim,
+// baik ke MB.Button maupun daftar label pada fallback teks. Id tombol tidak
+// pernah diubah, jadi balasan tombol tetap kembali sebagai perintah yang sama.
 export async function sendButtons(sock, jid, { title, body, footer, replies = [], textFallback, t } = {}) {
   const resolvedFooter = footer ?? (typeof t === 'function' ? footerLine(t) : defaultFooterText())
-  const fallback = textFallback ?? [title, body, resolvedFooter].filter(Boolean).join('\n')
+  const decorated = replies.map((r) => ({ ...r, text: withButtonEmoji(r.text, r.id) }))
+  const fallback =
+    textFallback ?? [title, body, ...decorated.map((r) => `${r.text} (${r.id})`), resolvedFooter].filter(Boolean).join('\n')
   if (!replies.length) return sock.sendMessage(jid, { text: fallback })
   try {
     const builder = new MB.Button(sock).setTitle(title ?? '').setBody(body ?? '').setFooter(resolvedFooter ?? '')
-    for (const r of replies.slice(0, 10)) builder.addReply(r.text, r.id)
+    for (const r of decorated.slice(0, 10)) builder.addReply(r.text, r.id)
     if (typeof checkNativeFlowButtons === 'function') {
       const check = checkNativeFlowButtons(builder)
       if (check && check.ok === false) throw new Error('validasi tombol gagal')

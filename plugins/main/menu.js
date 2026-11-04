@@ -9,6 +9,7 @@ import {
   loadMenuThumbnail,
   sendQuotedText,
 } from '../../src/ui/fake-thumb.js'
+import { withButtonEmoji } from '../../src/config/templates.js'
 import {
   CATEGORY_ICONS,
   formatMenu,
@@ -248,11 +249,11 @@ async function sendMain(ctx, { categories, commandCount, botName, ownerName }) {
         `.menu ${cat.key}`
       )
     }
-    builder.addUrl(ctx.t('menu.repoButton'), REPO_URL)
-    builder.addCopy(ctx.t('menu.copyButton'), botName)
-    builder.addReply(ctx.t('menu.allCommandsButton'), '.menu all')
-    builder.addReply(ctx.t('menu.botStatusButton'), '.ping')
-    if (ctx.isOwner) builder.addReply(ctx.t('menu.ownerPanelButton'), '.menu owner')
+    builder.addUrl(withButtonEmoji(ctx.t('menu.repoButton'), 'link'), REPO_URL)
+    builder.addCopy(withButtonEmoji(ctx.t('menu.copyButton'), 'copy'), botName)
+    builder.addReply(withButtonEmoji(ctx.t('menu.allCommandsButton'), '.menu all'), '.menu all')
+    builder.addReply(withButtonEmoji(ctx.t('menu.botStatusButton'), '.ping'), '.ping')
+    if (ctx.isOwner) builder.addReply(withButtonEmoji(ctx.t('menu.ownerPanelButton'), '.menu owner'), '.menu owner')
 
     return await builder.send(ctx.chat, { quoted })
   } catch (err) {
