@@ -1,6 +1,6 @@
 export const config = {
   name: 'del',
-  alias: ['hapuspesan'],
+  alias: ['hapuspesan', 'delete'],
   category: 'group',
   description: { id: 'Hapus pesan: balas pesan yang mau dihapus dengan perintah ini (admin grup)', en: 'Delete a message: reply to the message to delete with this command (group admin)' },
   usage: 'Balas pesan dengan .del',

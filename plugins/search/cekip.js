@@ -2,7 +2,7 @@
 // gratis tanpa kunci, pengecualian ringan seperti kurs di DECISIONS.md).
 export const config = {
   name: 'cekip',
-  alias: ['ipinfo', 'iplookup'],
+  alias: ['ipinfo', 'iplookup', 'checkip'],
   category: 'search',
   description: { id: 'Info lokasi dan penyedia dari alamat IP publik', en: 'Location and provider info of a public IP address' },
   usage: '.cekip <alamat ip>',

@@ -1,7 +1,7 @@
 // Info identitas chat dari pesan mentah: JID/LID pengirim dan chat.
 export const config = {
   name: 'ceklid',
-  alias: ['cekjid', 'myid'],
+  alias: ['cekjid', 'myid', 'lid'],
   category: 'user',
   description: { id: 'Lihat JID dan LID kamu di chat ini', en: 'See your JID and LID in this chat' },
   usage: '.ceklid',

@@ -2,7 +2,7 @@ import { digitsOf } from '../../src/services/guard-rules.js'
 
 export const config = {
   name: 'add',
-  alias: [],
+  alias: ['tambah'],
   category: 'group',
   description: { id: 'Tambah member ke grup dari nomor', en: 'Add a member to the group by number' },
   usage: '.add <nomor>',

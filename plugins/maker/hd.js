@@ -10,7 +10,7 @@ const execFileP = promisify(execFile)
 
 export const config = {
   name: 'hd',
-  alias: ['enhance', 'enhancehd'],
+  alias: ['enhance', 'enhancehd', 'remini'],
   category: 'maker',
   description: { id: 'Perbesar gambar yang dikutip 2x (perbesaran biasa, bukan AI)', en: 'Upscale a quoted image 2x (plain upscaling, not AI)' },
   usage: '.hd (kutip gambar)',
