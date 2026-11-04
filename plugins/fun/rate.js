@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'rate',
-  alias: [],
+  alias: ['nilai'],
   category: 'fun',
   description: { id: 'Nilai sesuatu dari 0 sampai 100 persen, hasilnya stabil untuk hal yang sama', en: 'Rate anything from 0 to 100 percent, stable result for the same thing' },
   usage: '.rate <hal yang mau dinilai>',
