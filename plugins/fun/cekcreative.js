@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekcreative: {
       title: 'Cek Kreativitas 🎨',
-      result: 'Tingkat kreativitas {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🎨 「 *CEK KREATIVITAS* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴋʀᴇᴀᴛɪᴠɪᴛᴀꜱ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Kreativitasnya masih malu-malu, perlu dipancing dikit~',
       mid: 'Idenya lumayan sering muncul di saat tidak terduga~',
       high: 'Kreatif nih! Kepalanya penuh ide yang tidak kepikiran orang lain~',
       max: 'KREATIVITAS MELEDAK! Tiap hari ada saja karya barunya~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekcreative: {
       title: 'Creativity Check 🎨',
-      result: 'Creativity level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🎨 「 *CREATIVITY CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴄʀᴇᴀᴛɪᴠɪᴛʏ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Creativity is still shy, needs a little spark~',
       mid: 'Ideas pop up quite often at unexpected moments~',
       high: 'Creative! A head full of ideas others never think of~',
       max: 'EXPLODING CREATIVITY! A new creation every day~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekcreative.btnAgain'), id: '.cekcreative' },
-      { text: ctx.t('cekcreative.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

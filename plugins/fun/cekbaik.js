@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekbaik: {
       title: 'Cek Kebaikan 💖',
-      result: 'Tingkat kebaikan {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 💖 「 *CEK KEBAIKAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴋᴇʙᴀɪᴋᴀɴ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Hmm, kebaikannya lagi hemat daya nih. Semoga cuma lagi capek yaa~',
       mid: 'Lumayan baik kok, apalagi ke orang terdekatnya~',
       high: 'Baik banget orangnya, tipe yang suka bantu tanpa pamrih~',
       max: 'Uwahh, kebaikannya level malaikat pelindung! Beruntung yang kenal dia~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekbaik: {
       title: 'Kindness Check 💖',
-      result: 'Kindness level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 💖 「 *KINDNESS CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴋɪɴᴅɴᴇꜱꜱ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Hmm, kindness is on power saving today. Hopefully just tired~',
       mid: 'Pretty kind, especially to close people~',
       high: 'Very kind, the type who helps without expecting anything back~',
       max: 'Whoaa, guardian angel level kindness! Lucky to know this one~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekbaik.btnAgain'), id: '.cekbaik' },
-      { text: ctx.t('cekbaik.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

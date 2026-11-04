@@ -18,8 +18,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { bagaimana: { hint: 'Tanya yang lengkap yaa~ Contoh: .bagaimana cara move on', body: '🤔 {answer} {mood}' } },
-  en: { bagaimana: { hint: 'Ask a full question please~ Example: .bagaimana how to move on', body: '🤔 {answer} {mood}' } },
+  id: { bagaimana: { hint: '╭─❏ 🤔 「 *BAGAIMANA* 」\n┊ Tanya yang lengkap yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.bagaimana cara move on*\n╰━━━━━━━', body: '╭─❏ 🤔 「 *BAGAIMANA* 」\n┊ {answer}\n╰━━━━━━━ {mood}' } },
+  en: { bagaimana: { hint: '╭─❏ 🤔 「 *BAGAIMANA* 」\n┊ Ask a full question please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.bagaimana how to move on*\n╰━━━━━━━', body: '╭─❏ 🤔 「 *BAGAIMANA* 」\n┊ {answer}\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.bagaimana', expect: /tanya|ask/i }

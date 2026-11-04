@@ -14,8 +14,8 @@ export const i18n = {
   id: {
     apakah: {
       title: 'Bola Kristal: Apakah?',
-      ask: '🔮 {question}\n\nJawaban bola kristal KANA: {answer} {mood}',
-      usage: 'Tanya dulu dong~ Contoh: .apakah <pertanyaan kamu>',
+      ask: '╭─❏ 🔮 「 *APAKAH?* 」\n┊ ❓ *{question}*\n┊ ᴊᴀᴡᴀʙᴀɴ ʙᴏʟᴀ ᴋʀɪꜱᴛᴀʟ ᴋᴀɴᴀ: *{answer}* {mood}\n╰━━━━━━━',
+      usage: '╭─❏ 🔮 「 *APAKAH?* 」\n┊ Tanya dulu dong~\n┊ ᴄᴏɴᴛᴏʜ: *.apakah <pertanyaan kamu>*\n╰━━━━━━━',
       answers: [
   "Iya, jelas iya~ ✨",
   "Iya, kemungkinan besar iya!",
@@ -27,14 +27,13 @@ export const i18n = {
   "Iya, asal kamu yakin dan usaha juga!"
 ],
       btnAgain: 'Tanya Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     apakah: {
       title: 'Crystal Ball: Will It?',
-      ask: '🔮 {question}\n\nKANA crystal ball answer: {answer} {mood}',
-      usage: 'Ask something first~ Example: .apakah <your question>',
+      ask: '╭─❏ 🔮 「 *WILL IT?* 」\n┊ ❓ *{question}*\n┊ ᴋᴀɴᴀ ᴄʀʏꜱᴛᴀʟ ʙᴀʟʟ ᴀɴꜱᴡᴇʀ: *{answer}* {mood}\n╰━━━━━━━',
+      usage: '╭─❏ 🔮 「 *WILL IT?* 」\n┊ Ask something first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.apakah <your question>*\n╰━━━━━━━',
       answers: [
   "Yes, definitely yes~ ✨",
   "Yes, most likely yes!",
@@ -46,12 +45,11 @@ export const i18n = {
   "Yes, if you believe and also make an effort!"
 ],
       btnAgain: 'Ask Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
 
-export const test = { input: '.apakah besok cerah', expect: /bola kristal/i }
+export const test = { input: '.apakah besok cerah', expect: /APAKAH|WILL IT/i }
 
 export async function handler(ctx) {
   const question = (ctx.text || '').trim()

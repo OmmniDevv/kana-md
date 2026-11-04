@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekgacha: {
       title: 'Cek Hoki Gacha 🎰',
-      result: 'Hoki gacha {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🎰 「 *CEK HOKI GACHA* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴏᴋɪ ɢᴀᴄʜᴀ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Ampas alert! Simpan dulu primogem dan tiketmu hari ini~',
       mid: 'Lumayan, ada peluang dapat bintang empat~',
       high: 'Hokinya naik! Sekali multi bisa pulang emas nih~',
       max: 'DEWA GACHA! Sekali tarik langsung pulang yang paling langka~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekgacha: {
       title: 'Gacha Luck Check 🎰',
-      result: 'Gacha luck of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🎰 「 *GACHA LUCK CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ɢᴀᴄʜᴀ ʟᴜᴄᴋ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Bad pull alert! Save your currency and tickets today~',
       mid: 'Decent, there is a chance for a four star pull~',
       high: 'Luck is rising! One multi pull could bring gold home~',
       max: 'GACHA GOD! One pull brings home the rarest one~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekgacha.btnAgain'), id: '.cekgacha' },
-      { text: ctx.t('cekgacha.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

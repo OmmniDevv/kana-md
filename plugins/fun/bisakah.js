@@ -14,8 +14,8 @@ export const i18n = {
   id: {
     bisakah: {
       title: 'Bola Kristal: Bisakah?',
-      ask: '💪 {question}\n\nJawaban bola kristal KANA: {answer} {mood}',
-      usage: 'Tanya dulu dong~ Contoh: .bisakah <pertanyaan kamu>',
+      ask: '╭─❏ 💪 「 *BISAKAH?* 」\n┊ ❓ *{question}*\n┊ ᴊᴀᴡᴀʙᴀɴ ʙᴏʟᴀ ᴋʀɪꜱᴛᴀʟ ᴋᴀɴᴀ: *{answer}* {mood}\n╰━━━━━━━',
+      usage: '╭─❏ 💪 「 *BISAKAH?* 」\n┊ Tanya dulu dong~\n┊ ᴄᴏɴᴛᴏʜ: *.bisakah <pertanyaan kamu>*\n╰━━━━━━━',
       answers: [
   "Bisa banget! Kamu cuma perlu mulai~ 💪",
   "Bisa, asal konsisten dan tidak gampang menyerah",
@@ -27,14 +27,13 @@ export const i18n = {
   "Tentu bisa, kamu lebih kuat dari yang kamu kira~"
 ],
       btnAgain: 'Tanya Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     bisakah: {
       title: 'Crystal Ball: Can I?',
-      ask: '💪 {question}\n\nKANA crystal ball answer: {answer} {mood}',
-      usage: 'Ask something first~ Example: .bisakah <your question>',
+      ask: '╭─❏ 💪 「 *CAN I?* 」\n┊ ❓ *{question}*\n┊ ᴋᴀɴᴀ ᴄʀʏꜱᴛᴀʟ ʙᴀʟʟ ᴀɴꜱᴡᴇʀ: *{answer}* {mood}\n╰━━━━━━━',
+      usage: '╭─❏ 💪 「 *CAN I?* 」\n┊ Ask something first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.bisakah <your question>*\n╰━━━━━━━',
       answers: [
   "Absolutely! You just need to start~ 💪",
   "You can, if you stay consistent and do not give up easily",
@@ -46,12 +45,11 @@ export const i18n = {
   "Of course you can, you are stronger than you think~"
 ],
       btnAgain: 'Ask Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
 
-export const test = { input: '.bisakah besok cerah', expect: /bola kristal/i }
+export const test = { input: '.bisakah besok cerah', expect: /BISAKAH|CAN I/i }
 
 export async function handler(ctx) {
   const question = (ctx.text || '').trim()
@@ -62,7 +60,6 @@ export async function handler(ctx) {
       title: ctx.t('bisakah.title'),
       body,
       footer: ctx.t('menu.footer'),
-      replies: [{ text: ctx.t('bisakah.btnMenu'), id: '.menu fun' }],
       textFallback: body,
     })
   }
@@ -79,7 +76,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('bisakah.btnAgain'), id: '.bisakah' },
-      { text: ctx.t('bisakah.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

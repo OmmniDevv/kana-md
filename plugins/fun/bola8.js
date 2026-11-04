@@ -13,12 +13,11 @@ export const config = {
 export const i18n = {
   id: {
     bola8: {
-      usage: 'Tulis pertanyaannya dulu yaa, contoh: .bola8 apakah hari ini beruntung?~ 🔮',
+      usage: '╭─❏ 🔮 「 *BOLA AJAIB KANA* 」\n┊ Tulis pertanyaannya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.bola8 apakah hari ini beruntung?*\n╰━━━━━━━',
       title: 'Bola Ajaib KANA 🔮',
-      answer: 'Pertanyaan: {question}\nJawaban bola ajaib: {answer} ✨\n\n{disclaimer}',
+      answer: '╭─❏ 🔮 「 *BOLA AJAIB KANA* 」\n┊ ᴘᴇʀᴛᴀɴʏᴀᴀɴ: *{question}*\n┊ ᴊᴀᴡᴀʙᴀɴ ʙᴏʟᴀ ᴀᴊᴀɪʙ: {answer} ✨\n╰━━━━━━━\n{disclaimer}',
       disclaimer: 'Catatan kecil: ini cuma hiburan yaa, jangan dijadiin keputusan hidup~ (≧▽≦)',
       btnAgain: 'Tanya Lagi',
-      btnMenu: 'Menu Fun',
       answers: [
         'Iyaa, pasti itu~ ✨',
         'Kayaknya sih iya, bintang-bintang setuju~ 🌟',
@@ -37,12 +36,11 @@ export const i18n = {
   },
   en: {
     bola8: {
-      usage: 'Write your question first, example: .bola8 will today be lucky?~ 🔮',
+      usage: '╭─❏ 🔮 「 *KANA MAGIC BALL* 」\n┊ Write your question first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.bola8 will today be lucky?*\n╰━━━━━━━',
       title: 'KANA Magic Ball 🔮',
-      answer: 'Question: {question}\nMagic ball says: {answer} ✨\n\n{disclaimer}',
+      answer: '╭─❏ 🔮 「 *KANA MAGIC BALL* 」\n┊ ǫᴜᴇꜱᴛɪᴏɴ: *{question}*\n┊ ᴍᴀɢɪᴄ ʙᴀʟʟ ꜱᴀʏꜱ: {answer} ✨\n╰━━━━━━━\n{disclaimer}',
       disclaimer: 'Small note: this is just for fun, do not make life decisions from it~ (≧▽≦)',
       btnAgain: 'Ask Again',
-      btnMenu: 'Fun Menu',
       answers: [
         'Yes, definitely~ ✨',
         'Looks like yes, the stars agree~ 🌟',

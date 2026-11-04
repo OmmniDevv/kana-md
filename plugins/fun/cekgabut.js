@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekgabut: {
       title: 'Cek Gabut 🥱',
-      result: 'Tingkat gabut {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🥱 「 *CEK GABUT* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ɢᴀʙᴜᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Produktif sekali hari ini, tidak ada celah buat gabut~',
       mid: 'Gabutnya sedang, masih bisa diselamatkan dengan cemilan~',
       high: 'Gabut parah, scroll layar saja sudah bosan~',
       max: 'GABUT MAKSIMAL! Melamun adalah pekerjaan utama hari ini~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekgabut: {
       title: 'Idle Check 🥱',
-      result: 'Idle level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🥱 「 *IDLE CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ɪᴅʟᴇ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Very productive today, no room for idling~',
       mid: 'Moderately idle, still saveable with snacks~',
       high: 'Severely idle, even scrolling feels boring~',
       max: 'MAXIMUM IDLE! Daydreaming is the main job today~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekgabut.btnAgain'), id: '.cekgabut' },
-      { text: ctx.t('cekgabut.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

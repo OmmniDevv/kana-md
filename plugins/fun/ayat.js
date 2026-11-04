@@ -15,7 +15,7 @@ export const i18n = {
   id: {
     ayat: {
       title: 'Ayat Pilihan',
-      body: '📖 AYAT PILIHAN UNTUKMU\n\n"{text}"\n\n({source})\n\nSemoga menenangkan hati yaa~ {mood}',
+      body: '╭─❏ 📖 「 *AYAT PILIHAN* 」\n┊ "{text}"\n┊ ({source})\n╰━━━━━━━\nSemoga menenangkan hati yaa~ {mood}',
       ayatBtn: '📖 Ayat Lain',
       haditsBtn: '🌙 Hadits',
       religiBtn: '🕌 Religi Harian',
@@ -25,7 +25,7 @@ export const i18n = {
   en: {
     ayat: {
       title: 'Selected Verse',
-      body: '📖 A VERSE FOR YOU\n\n"{text}"\n\n({source})\n\nMay it soothe your heart~ {mood}',
+      body: '╭─❏ 📖 「 *SELECTED VERSE* 」\n┊ "{text}"\n┊ ({source})\n╰━━━━━━━\nMay it soothe your heart~ {mood}',
       ayatBtn: '📖 Another Verse',
       haditsBtn: '🌙 Hadith',
       religiBtn: '🕌 Daily Religion',

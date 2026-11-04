@@ -15,10 +15,10 @@ export const i18n = {
   id: {
     asmaulhusna: {
       title: 'Asmaul Husna',
-      body: '🕌 ASMAUL HUSNA\n\n{no}. {latin}\nArtinya: {arti}\n\nSemoga menambah ketenangan hati yaa~ {mood}',
-      listTitle: '🕌 DAFTAR ASMAUL HUSNA (99)\n',
-      listHint: '\n\nPakai .asmaulhusna <nomor> untuk melihat arti satu nama yaa~',
-      notFound: 'Nomornya harus 1 sampai 99 yaa~ Contoh: .asmaulhusna 1',
+      body: '╭─❏ 🕌 「 *ASMAUL HUSNA* 」\n┊ *{no}. {latin}*\n┊ ᴀʀᴛɪɴʏᴀ: {arti}\n╰━━━━━━━\nSemoga menambah ketenangan hati yaa~ {mood}',
+      listTitle: '╭─❏ 🕌 「 *DAFTAR ASMAUL HUSNA (99)* 」\n',
+      listHint: '\n╰━━━━━━━\nPakai *.asmaulhusna <nomor>* untuk melihat arti satu nama yaa~',
+      notFound: '╭─❏ 🕌 「 *ASMAUL HUSNA* 」\n┊ Nomornya harus *1 sampai 99* yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.asmaulhusna 1*\n╰━━━━━━━',
       randomBtn: '🎲 Acak Lagi',
       listBtn: '📜 Daftar 99',
       ayatBtn: '📖 Ayat Pilihan',
@@ -27,10 +27,10 @@ export const i18n = {
   en: {
     asmaulhusna: {
       title: 'Asmaul Husna',
-      body: '🕌 ASMAUL HUSNA\n\n{no}. {latin}\nMeaning: {arti}\n\nMay it bring peace to your heart~ {mood}',
-      listTitle: '🕌 LIST OF ASMAUL HUSNA (99)\n',
-      listHint: '\n\nUse .asmaulhusna <number> to see one name meaning~',
-      notFound: 'The number must be 1 to 99~ Example: .asmaulhusna 1',
+      body: '╭─❏ 🕌 「 *ASMAUL HUSNA* 」\n┊ *{no}. {latin}*\n┊ ᴍᴇᴀɴɪɴɢ: {arti}\n╰━━━━━━━\nMay it bring peace to your heart~ {mood}',
+      listTitle: '╭─❏ 🕌 「 *LIST OF ASMAUL HUSNA (99)* 」\n',
+      listHint: '\n╰━━━━━━━\nUse *.asmaulhusna <number>* to see one name meaning~',
+      notFound: '╭─❏ 🕌 「 *ASMAUL HUSNA* 」\n┊ The number must be *1 to 99*~\n┊ ᴇxᴀᴍᴘʟᴇ: *.asmaulhusna 1*\n╰━━━━━━━',
       randomBtn: '🎲 Random Again',
       listBtn: '📜 List of 99',
       ayatBtn: '📖 Selected Verse',

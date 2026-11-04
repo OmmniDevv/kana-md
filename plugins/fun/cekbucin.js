@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekbucin: {
       title: 'Cek Bucin 💘',
-      result: 'Tingkat bucin {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 💘 「 *CEK BUCIN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ʙᴜᴄɪɴ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Aman, masih pakai logika kalau urusan cinta~',
       mid: 'Mulai agak bucin nih kalau lagi sayang-sayangnya~',
       high: 'Bucin terdeteksi! Apa kata sayang, langsung gas~',
       max: 'BUCIN AKUT! Dunia serasa milik berdua, yang lain ngontrak~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekbucin: {
       title: 'Love Slave Check 💘',
-      result: 'Love slave level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 💘 「 *LOVE SLAVE CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʟᴏᴠᴇ ꜱʟᴀᴠᴇ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Safe, still uses logic when it comes to love~',
       mid: 'Getting a bit love-blind when deeply in love~',
       high: 'Love slave detected! Whatever the partner says, goes~',
       max: 'CRITICAL LOVE SLAVE! The world belongs to the two of them~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }

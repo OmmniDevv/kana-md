@@ -14,7 +14,7 @@ export const i18n = {
   id: {
     bacot: {
       title: 'Bacot Ringan',
-      body: '🔥 BACOT RINGAN UNTUKMU\n\n"{item}"\n\nSantai, ini cuma bercanda yaa~ {mood}',
+      body: '╭─❏ 🔥 「 *BACOT RINGAN* 」\n┊ "{item}"\n╰━━━━━━━\nSantai, ini cuma bercanda yaa~ {mood}',
       pool: [
   "Sinyal wifimu lebih kuat dari sinyal motivasimu.",
   "Kamu buka kulkas berharap ada makanan baru yang muncul seperti update game.",
@@ -32,13 +32,12 @@ export const i18n = {
   "Kamu bukan malas, kamu lagi mode hemat energi permanen."
 ],
       btnAgain: 'Bacot Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     bacot: {
       title: 'Light Roast',
-      body: '🔥 YOUR LIGHT ROAST\n\n"{item}"\n\nNo hard feelings, it is all jokes~ {mood}',
+      body: '╭─❏ 🔥 「 *LIGHT ROAST* 」\n┊ "{item}"\n╰━━━━━━━\nNo hard feelings, it is all jokes~ {mood}',
       pool: [
   "Your wifi signal is stronger than your motivation signal.",
   "You open the fridge hoping new food spawned like a game update.",
@@ -56,7 +55,6 @@ export const i18n = {
   "You are not lazy, you are in permanent energy saving mode."
 ],
       btnAgain: 'Roast Me Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }

@@ -9,8 +9,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { alay: { hint: 'Tulis teksnya yaa~ Contoh: .alay halo apa kabar', body: '😜 Versi alay:\n{result}' } },
-  en: { alay: { hint: 'Write the text please~ Example: .alay hello how are you', body: '😜 Alay version:\n{result}' } },
+  id: { alay: { hint: '╭─❏ 😜 「 *ALAY* 」\n┊ Tulis teksnya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.alay halo apa kabar*\n╰━━━━━━━', body: '╭─❏ 😜 「 *VERSI ALAY* 」\n┊ {result}\n╰━━━━━━━' } },
+  en: { alay: { hint: '╭─❏ 😜 「 *ALAY* 」\n┊ Write the text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.alay hello how are you*\n╰━━━━━━━', body: '╭─❏ 😜 「 *ALAY VERSION* 」\n┊ {result}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.alay', expect: /teks|text/i }

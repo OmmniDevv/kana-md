@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekcupu: {
       title: 'Cek Cupu 🐣',
-      result: 'Tingkat cupu {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🐣 「 *CEK CUPU* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴄᴜᴘᴜ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Tidak cupu sama sekali, sudah pro ini mah~',
       mid: 'Ada cupu-cupunya dikit, tapi masih aman~',
       high: 'Cupu terdeteksi! Masih sering salah pencet yaa~',
       max: 'CUPU LEGENDARIS! Baru pegang langsung bingung~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekcupu: {
       title: 'Newbie Check 🐣',
-      result: 'Newbie level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🐣 「 *NEWBIE CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ɴᴇᴡʙɪᴇ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Not a newbie at all, practically a pro~',
       mid: 'A little newbie energy, but still safe~',
       high: 'Newbie detected! Still pressing the wrong buttons often~',
       max: 'LEGENDARY NEWBIE! Confused the moment they touch anything~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekcupu.btnAgain'), id: '.cekcupu' },
-      { text: ctx.t('cekcupu.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

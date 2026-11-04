@@ -24,27 +24,25 @@ export const i18n = {
   id: {
     cekberuntung: {
       title: 'Cek Keberuntungan 🍀',
-      result: 'Keberuntungan {name} hari ini: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🍀 「 *CEK KEBERUNTUNGAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴋᴇʙᴇʀᴜɴᴛᴜɴɢᴀɴ ʜᴀʀɪ ɪɴɪ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Lagi seret nih... tapi hari buruk bukan berarti minggu buruk, semangat yaa~ (•̀ᴗ•́)و',
       mid: 'Lumayan lah, ada peluang kecil yang bisa kamu jemput hari ini~ 🍀',
       high: 'Beruntung nih! Coba hal baik yang kemarin sempat tertunda~ ✨',
       max: 'Gila sih ini, keberuntunganmu penuh! Manfaatin baik-baik yaa~ 🎉🌟',
       disclaimer: 'Ini cuma hiburan yaa, keberuntungan beneran tetap datang dari usaha dan timing, bukan persen ini~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekberuntung: {
       title: 'Luck Check 🍀',
-      result: '{name} luck today: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🍀 「 *LUCK CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʟᴜᴄᴋ ᴛᴏᴅᴀʏ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Running dry today... but a bad day is not a bad week, keep going~ (•̀ᴗ•́)و',
       mid: 'Not bad, there is a small chance you can grab today~ 🍀',
       high: 'Lucky you! Try that good thing you postponed yesterday~ ✨',
       max: 'Wow, your luck is full today! Make the most of it~ 🎉🌟',
       disclaimer: 'This is just for fun, real luck still comes from effort and timing, not this percent~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }

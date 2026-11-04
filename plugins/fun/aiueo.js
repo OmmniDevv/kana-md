@@ -16,8 +16,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { aiueo: { hint: 'Tulis vokal dan teksnya yaa~ Contoh: .aiueo i selamat pagi semua' } },
-  en: { aiueo: { hint: 'Write the vowel and the text please~ Example: .aiueo i good morning everyone' } },
+  id: { aiueo: { hint: '╭─❏ ✏️ 「 *AIUEO* 」\n┊ Tulis vokal dan teksnya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.aiueo i selamat pagi semua*\n╰━━━━━━━', body: '╭─❏ ✏️ 「 *AIUEO* 」\n┊ {result}\n╰━━━━━━━' } },
+  en: { aiueo: { hint: '╭─❏ ✏️ 「 *AIUEO* 」\n┊ Write the vowel and the text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.aiueo i good morning everyone*\n╰━━━━━━━', body: '╭─❏ ✏️ 「 *AIUEO* 」\n┊ {result}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.aiueo', expect: /vokal|vowel/i }
@@ -27,5 +27,5 @@ export async function handler(ctx) {
   const space = raw.indexOf(' ')
   const vowel = space > 0 ? raw.slice(0, space).toLowerCase() : ''
   if (!VOWELS.includes(vowel) || space < 0) return ctx.reply(ctx.t('aiueo.hint'))
-  return ctx.reply(toVowel(raw.slice(space + 1), vowel))
+  return ctx.reply(ctx.t('aiueo.body', { result: toVowel(raw.slice(space + 1), vowel) }))
 }

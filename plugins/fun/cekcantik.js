@@ -23,27 +23,25 @@ export const i18n = {
   id: {
     cekcantik: {
       title: 'Cek Kecantikan 🌷',
-      result: 'Tingkat kecantikan {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🌷 「 *CEK KECANTIKAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴛɪɴɢᴋᴀᴛ ᴋᴇᴄᴀɴᴛɪᴋᴀɴ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'Cantiknya tipe kalem, tidak perlu banyak gaya sudah manis~',
       mid: 'Cantik natural nih, makin dilihat makin manis~',
       high: 'Cantiknya menonjol! Pantes banyak yang melirik~',
       max: 'CANTIK PARAH! Levelnya sudah seperti tokoh utama drama~',
       disclaimer: 'Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~',
       btnAgain: 'Cek Lagi',
-      btnMenu: 'Menu Fun',
     },
   },
   en: {
     cekcantik: {
       title: 'Beauty Check 🌷',
-      result: 'Beauty level of {name}: {percent}%!\n{comment}\n\n{disclaimer}',
+      result: '╭─❏ 🌷 「 *BEAUTY CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʙᴇᴀᴜᴛʏ ʟᴇᴠᴇʟ ᴏꜰ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}',
       low: 'The calm type of beauty, sweet without much styling~',
       mid: 'Natural beauty, sweeter the longer you look~',
       high: 'Striking beauty! No wonder people glance~',
       max: 'EXTREMELY BEAUTIFUL! Main character of a drama level~',
       disclaimer: 'Just for fun, the percent is KANA playful name reading, not a real measure~',
       btnAgain: 'Check Again',
-      btnMenu: 'Fun Menu',
     },
   },
 }
@@ -66,7 +64,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekcantik.btnAgain'), id: '.cekcantik' },
-      { text: ctx.t('cekcantik.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

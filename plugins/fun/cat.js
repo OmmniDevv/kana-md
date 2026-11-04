@@ -14,8 +14,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { cat: { caption: 'Meong~ Nih kucing gemasnya~ 🐱', fail: 'Gagal ambil foto kucing: {error}' } },
-  en: { cat: { caption: 'Meow~ Here is a cute cat~ 🐱', fail: 'Failed to fetch a cat photo: {error}' } },
+  id: { cat: { caption: '╭─❏ 🐱 「 *KUCING GEMAS* 」\n┊ Meong~ Nih kucing gemasnya~\n╰━━━━━━━', fail: '╭─❏ 🐱 「 *GAGAL AMBIL FOTO* 」\n┊ Gagal ambil foto kucing: {error}\n╰━━━━━━━' } },
+  en: { cat: { caption: '╭─❏ 🐱 「 *CUTE CAT* 」\n┊ Meow~ Here is a cute cat~\n╰━━━━━━━', fail: '╭─❏ 🐱 「 *PHOTO FETCH FAILED* 」\n┊ Failed to fetch a cat photo: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.cat', expect: /meong|meow/i }

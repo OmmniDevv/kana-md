@@ -9,8 +9,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { berapa: { hint: 'Tanya yang lengkap yaa~ Contoh: .berapa kali aku harus mencoba', body: '🔢 Jawabannya: *{number}*.\nPercaya saja dulu, semesta jarang salah hitung. {mood}' } },
-  en: { berapa: { hint: 'Ask a full question please~ Example: .berapa how many times should I try', body: '🔢 The answer: *{number}*.\nJust trust it, the universe rarely miscounts. {mood}' } },
+  id: { berapa: { hint: '╭─❏ 🔢 「 *BERAPA* 」\n┊ Tanya yang lengkap yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.berapa kali aku harus mencoba*\n╰━━━━━━━', body: '╭─❏ 🔢 「 *BERAPA* 」\n┊ ᴊᴀᴡᴀʙᴀɴɴʏᴀ: *{number}*\n┊ Percaya saja dulu, semesta jarang salah hitung~\n╰━━━━━━━ {mood}' } },
+  en: { berapa: { hint: '╭─❏ 🔢 「 *HOW MANY* 」\n┊ Ask a full question please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.berapa how many times should I try*\n╰━━━━━━━', body: '╭─❏ 🔢 「 *HOW MANY* 」\n┊ ᴛʜᴇ ᴀɴꜱᴡᴇʀ: *{number}*\n┊ Just trust it, the universe rarely miscounts~\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.berapa', expect: /tanya|ask/i }

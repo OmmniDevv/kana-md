@@ -22,12 +22,11 @@ export function hashPercent(seed) {
 export const i18n = {
   id: {
     artinama: {
-      usage: 'Tulis namanya dulu yaa, contoh: .artinama Kana~',
+      usage: '╭─❏ 🔤 「 *ARTI NAMA* 」\n┊ Tulis namanya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.artinama Kana*\n╰━━━━━━━',
       title: 'Arti Nama 🔤',
-      result: 'Nama "{name}" versi KANA artinya: pembawa {trait1}, penjaga {trait2}, dan penebar {trait3}!\n\n{disclaimer}',
+      result: '╭─❏ 🔤 「 *ARTI NAMA* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴀʀᴛɪɴʏᴀ ᴠᴇʀꜱɪ ᴋᴀɴᴀ: pembawa *{trait1}*, penjaga *{trait2}*, dan penebar *{trait3}*!\n╰━━━━━━━\n{disclaimer}',
       disclaimer: 'Ini arti nama versi hiburan buatan KANA yaa, bukan arti bahasa resmi. Yang penting orangnya baik~ (≧▽≦)',
       btnAgain: 'Nama Lain',
-      btnMenu: 'Menu Fun',
       traits: [
         'semangat pagi',
         'tawa renyah',
@@ -46,12 +45,11 @@ export const i18n = {
   },
   en: {
     artinama: {
-      usage: 'Write a name first, example: .artinama Kana~',
+      usage: '╭─❏ 🔤 「 *NAME MEANING* 」\n┊ Write a name first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.artinama Kana*\n╰━━━━━━━',
       title: 'Name Meaning 🔤',
-      result: 'The name "{name}", KANA version, means: bringer of {trait1}, keeper of {trait2}, and spreader of {trait3}!\n\n{disclaimer}',
+      result: '╭─❏ 🔤 「 *NAME MEANING* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴋᴀɴᴀ ᴠᴇʀꜱɪᴏɴ ᴍᴇᴀɴɪɴɢ: bringer of *{trait1}*, keeper of *{trait2}*, and spreader of *{trait3}*!\n╰━━━━━━━\n{disclaimer}',
       disclaimer: 'This is a fun name meaning made by KANA, not an official language meaning. What matters is the person is kind~ (≧▽≦)',
       btnAgain: 'Another Name',
-      btnMenu: 'Fun Menu',
       traits: [
         'morning spirit',
         'bright laughter',
@@ -70,7 +68,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.artinama Kana', expect: /artinya/i }
+export const test = { input: '.artinama Kana', expect: /ARTI NAMA|NAME MEANING/i }
 
 export async function handler(ctx) {
   const name = ctx.text.trim()

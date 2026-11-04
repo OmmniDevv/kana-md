@@ -16,8 +16,8 @@ export const i18n = {
   id: {
     caklontong: {
       title: 'Kuis Cak Lontong',
-      intro: '🤭 KUIS CAK LONTONG\n\n{question}\n\n{options}\n\nPoin: {points} | Waktu: {seconds} detik. Balas (reply) pesan ini dengan huruf jawabannya, atau pencet tombolnya yaa~ {mood}',
-      already: 'Ehh, masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet tombol menyerah di bawah yaa~',
+      intro: '╭─❏ 🤭 「 *KUIS CAK LONTONG* 」\n┊ {question}\n┊\n┊ {options}\n╰━━━━━━━\nᴘᴏɪɴ: *{points}* | ᴡᴀᴋᴛᴜ: *{seconds} detik*\nBalas (reply) pesan ini dengan huruf jawabannya, atau pencet tombolnya yaa~ {mood}',
+      already: '╭─❏ 🤭 「 *KUIS CAK LONTONG* 」\n┊ Ehh, masih ada kuis *{type}* yang jalan di chat ini~\n┊ Selesaikan dulu atau pencet tombol menyerah di bawah yaa~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Menyerah (.nyerah)',
       footer: 'Kuis KANA',
     },
@@ -25,8 +25,8 @@ export const i18n = {
   en: {
     caklontong: {
       title: 'Cak Lontong Quiz',
-      intro: '🤭 CAK LONTONG QUIZ\n\n{question}\n\n{options}\n\nPoints: {points} | Time: {seconds} seconds. Reply to this message with the answer letter, or tap an answer button~ {mood}',
-      already: 'Eh, a {type} quiz is still running in this chat. Finish it first or tap the give up button below~',
+      intro: '╭─❏ 🤭 「 *CAK LONTONG QUIZ* 」\n┊ {question}\n┊\n┊ {options}\n╰━━━━━━━\nᴘᴏɪɴᴛꜱ: *{points}* | ᴛɪᴍᴇ: *{seconds} seconds*\nReply to this message with the answer letter, or tap an answer button~ {mood}',
+      already: '╭─❏ 🤭 「 *CAK LONTONG QUIZ* 」\n┊ Eh, a *{type}* quiz is still running in this chat~\n┊ Finish it first or tap the give up button below~\n╰━━━━━━━',
       giveUpBtn: '🏳️ Give Up (.nyerah)',
       footer: 'KANA Quiz',
     },

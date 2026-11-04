@@ -24,8 +24,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { advice: { body: '🌱 Nasihat buatmu:\n{advice} {mood}' } },
-  en: { advice: { body: '🌱 Advice for you:\n{advice} {mood}' } },
+  id: { advice: { body: '╭─❏ 🌱 「 *NASIHAT BUATMU* 」\n┊ {advice}\n╰━━━━━━━ {mood}' } },
+  en: { advice: { body: '╭─❏ 🌱 「 *ADVICE FOR YOU* 」\n┊ {advice}\n╰━━━━━━━ {mood}' } },
 }
 
 export const test = { input: '.advice', expect: /nasihat|advice/i }
