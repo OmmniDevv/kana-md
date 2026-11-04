@@ -231,3 +231,31 @@ CATATAN JENDELA SEARCH 2026-11-04 16:38-16:43 WIB: film, kurs, ocr, qr, resep, s
 | ytmp4 | .ytmp4 | LIVE LOLOS PENUH | Tes live ulang input asli 2026-11-04 16:36 WIB, video "Me at the zoo" terunduh dan terkirim, 0 handler error. Kegagalan run sebelumnya BUKAN bug plugin: cron watchdog menghidupkan bot produksi di tengah jendela tes sehingga sesi WA saling menggantikan ("Connection Closed"); sesudah watchdog dijeda selama jendela, lulus bersih |
 | yts | .yts | LIVE LOLOS PENUH | Tes live kata kunci asli "Tulus Sepatu" 2026-11-04 16:24 WIB, hasil pencarian terkirim, 0 handler error |
 | komik | .komik | LIVE LOLOS PENUH | Tes live judul asli "Solo Leveling" 2026-11-04 16:23 WIB, hasil komik terkirim, 0 handler error |
+
+### Hasil jendela tes live ekspansi (2026-11-04 sore, prosedur kunci livetest.lock)
+
+Jendela 1 (prosedur kunci): font, gambar, gempa, kbbi, 24 plugin cek (cekbaik sampai cekoverpower), apakah: semua completed, terkirim, 0 handler error (baris ringkasan terbaca selama jendela; berkas log jendela hilang karena restart VM menghapus /tmp, hasil yang terbaca dicatat di sini apa adanya).
+
+Jendela 2 (prosedur kunci, sesudah retrofit kuis reply + wiki fake image + aturan tombol; ringkasan utuh tersimpan di ~/workspace/kana-md-run/scratch/livetest-logs/summary.txt): 39 dari 39 completed, 0 handler error: anime, chord, cuaca, sholat, terjemah (antre tes ulang v3 tuntas), family100, susunkata, tebakbendera, tebakkimia, tebakgambar, asahotak, caklontong, tekateki, tebakhewan, tebaknegara, tebakprovinsi, tebakmakanan, tebakprofesi, tebakkalimat, tebaksurah, tebaklagu, tebaklirik, tebakfilm, tebakgame, tebakbola, tebakdrakor, nyerah, wiki, kapankah, bisakah, benarkah, akankah, asmaulhusna, kisahnabi, hijriyah, niatsholat, doaharian, murottal, cekgila. Status tiap plugin ini: LIVE LOLOS.
+
+Verifikasi live pola reply (skenario khusus, prosedur kunci): 10/10 OK. Mulai .tekateki: sesi ada dan ID pesan pertanyaan terikat; reply jawaban salah: sesi tetap jalan; teks biasa berisi jawaban benar tanpa reply: diabaikan; reply ke pesan lain berisi jawaban benar: diabaikan; reply jawaban benar ke pesan pertanyaan: sesi selesai dan XP owner bertambah (0 ke 10). Hangman: binding tercipta, reply huruf pertama tercatat di data tebakan, .hangman stop membersihkan binding. Kasus reply dari user lain dibuktikan di tes unit fase9 (hook yang sama), karena chat uji harness adalah DM owner.
+
+Sampel aturan tombol (koreksi user 17:19): payload relay cekgila diverifikasi lokal berisi tepat SATU tombol quick_reply "Cek Lagi", tanpa Menu Fun dan tanpa karakter panah; cekgila juga LIVE LOLOS di jendela 2.
+
+### Batch ekspansi A (2026-11-04 sore): kuis, cek, tanya, islamic, fun lokal, primbon, tools, user, game reply
+
+Registry sesudah batch ini: 261 plugin unik / 483 perintah terdaftar, 0 karantina, npm test 338 hijau.
+
+- Kuis tebak topik generik (engine TEXT_SETS): tebakhewan, tebaknegara, tebakprovinsi, tebakmakanan, tebakprofesi, tebakkalimat, tebaksurah, tebaklagu, tebaklirik, tebakfilm, tebakgame, tebakbola, tebakdrakor. Dataset dwibahasa ditulis tangan di src/data/quiz.js.
+- Kuis baru: cerdascermat dan kuisumum (pilihan ganda, dataset baru), riddle (teka-teki bebas TEXT_SETS), kataacak (acak kata panjang, dataset KATA_ACAK).
+- Keluarga cek (24): cekbaik, cekbucin, cekcantik, cekcreative, cekcupu, cekgabut, cekgacha, cekgamer, cekganteng, cekgila, cekimut, cekintrovert, cekjahat, cekjomblo, cekkarma, cekkaya, cekkece, cekkepribadian, cekkpopers, ceklapar, cekmalas, cekngantuk, cekotaku, cekoverpower. Persen deterministik dari nama target, stabil per target.
+- Mesin tanya (5): apakah, kapankah, bisakah, benarkah, akankah.
+- Islamic (6): asmaulhusna (99 nama terverifikasi), kisahnabi (25 nabi), hijriyah (kalender Islam Intl), niatsholat (7 niat), doaharian (14 doa), murottal (audio per ayat equran.id, pengecualian API publik tanpa kunci khusus konten Quran seperti pola .sholat MyQuran).
+- Fun lokal: quotebijak, quotesanime, senja, bacot, faktaunik, kerangajaib, puisi, gennama, suratcinta, gachakarakter, rate, cekperfoma, cekpacar, soulmatch.
+- Primbon: tafsirmimpi (30 kata kunci dataset lokal), nomerhoki (deterministik nama + tanggal lahir).
+- Tools user: morse, biner, base64, fliptext, readmore, genpass, usernamegen, umur, bmi.
+- User: setbio (bio persisten di profil), birthday (set/list, namespace birthdays), referal (kode + klaim bonus XP dua arah), tukarxp (10 XP = 1 koin).
+- Game reply-first di router bersama: hangman, tebakangka, sambungkata, mathgame, ulartangga.
+- Retrofit standar baru ke plugin lama: seluruh kuis dijawab lewat reply (perintah .jawab dihapus), tombol menu generik dicabut dari pesan hasil fun, emoji back diganti 🏠, wiki menjadi satu pesan fake image.
+
+Status tes live batch A: yang tercantum di subbab jendela di atas LIVE LOLOS. Sisanya (tools user, user baru, game reply selain hangman parsial, kuis baru cerdascermat/kuisumum/riddle/kataacak, fun lokal selain yang di jendela) menunggu jendela tes berikutnya; hangman sudah terbukti sebagian lewat skenario reply live (mulai + reply huruf + stop), belum dihitung LIVE LOLOS penuh per plugin.
