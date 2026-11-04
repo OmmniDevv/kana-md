@@ -199,8 +199,28 @@ Catatan: games-art.png belum dipasang ke keluaran .games karena helper sendButto
 
 ### Hasil tes live per plugin (Mode A, difilter per plugin)
 
-Status awal: belum ada plugin yang dites live pada gelombang ekspansi ini. Tabel ini diisi satu baris per plugin selama sapuan dan selama batch baru berjalan: nama plugin, perintah uji, status (terkirim/error), dan catatan perbaikan bila ada. Ingat: status terkirim dari harness bukan vonis lulus visual; penilaian akhir tetap di HP owner.
+Definisi selesai per gerbang kualitas user (2026-11-04 16:01 WIB): tes unit hanya saringan awal. Plugin dihitung beres hanya bila berstatus LIVE LOLOS di tabel ini, artinya uji harness Mode A terfilter plugin itu berakhir completed, terkirim, dan nol baris "handler error" di log harness. Plugin yang belum LIVE LOLOS tidak ditulis selesai di dokumen ini. Penilaian visual balasan di HP owner tetap menjadi cek tampilan tambahan.
 
 | Plugin | Uji | Status live | Catatan |
 |---|---|---|---|
-| (menunggu sapuan) | | | |
+| profil | .profil | LIVE LOLOS 2026-11-04 16:03 WIB | Kartu canvas terkirim, 0 handler error; service dipulihkan dan tersambung lagi sesudah tes |
+| ai | .ai | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; aturan mutu 16:06 mewajibkan pertanyaan asli |
+| aiimg | .aiimg | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib prompt asli |
+| aireset | .aireset | LIVE LOLOS 2026-11-04 16:05 WIB | Terkirim, 0 handler error; tanpa argumen memang fungsi aslinya (reset memori) |
+| ringkas | .ringkas | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib teks asli |
+| tts | .tts (plugin ai) | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib teks asli |
+| vision | .vision | LIVE LOLOS 2026-11-04 16:05 WIB | Terkirim, 0 handler error; perilaku aslinya memang menjawab belum dikonfigurasi tanpa VISION_API_URL |
+| aio | .aio | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib URL asli |
+| capcut | .capcut | LIVE LOLOS 2026-11-04 16:05 WIB | Terkirim, 0 handler error; CATATAN audit paritas: ini STUB yang hanya membalas belum tersedia, status fitur SEBAGIAN, wajib diport scrapernya sebelum dihitung fitur selesai |
+| fb | .fb | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib link FB asli |
+| gdrive | .gdrive | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib link Drive asli |
+| ig | .ig | GANGGUAN SUMBER + MENUNGGU TES LIVE ULANG | Scraper SnapSave membalas "Empty response from SnapSave" untuk dua link IG publik asli berbeda (post dan reel) dari VM 2026-11-04; bukan handler error. Tes live jalur usage terkirim 0 handler error |
+| lirik | .lirik | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; kata kunci asli "Tulus Sepatu" lolos smoke scraper |
+| mediafire | .mediafire | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; link asli lolos smoke resolveMediafire |
+| pinterest | .pinterest | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; kata kunci asli lolos smoke pencarian |
+| play | .play | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; URL YouTube asli lolos smoke downloadAudio |
+| soundcloud | .soundcloud | LIVE LOLOS 2026-11-04 16:06 WIB | Terkirim, 0 handler error; CATATAN audit paritas: ini STUB, status fitur SEBAGIAN, wajib diport scrapernya sebelum dihitung fitur selesai |
+| spotify | .spotify | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; link track asli lolos smoke spotifyDownload |
+| threads | .threads | LIVE LOLOS 2026-11-04 16:06 WIB | Terkirim, 0 handler error; CATATAN audit paritas: ini STUB, status fitur SEBAGIAN, wajib diport scrapernya sebelum dihitung fitur selesai |
+| tiktok | .tiktok | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; link asli lolos smoke lewat fallback tikwm |
+| ytmp4 | .ytmp4 | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; wajib URL YouTube asli |
