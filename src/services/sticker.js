@@ -86,6 +86,38 @@ function parseChunks(webpBuffer) {
   return chunks
 }
 
+// Ukuran kanvas dari chunk gambar WebP: VP8 (lossy) menyimpan lebar dan
+// tinggi 14-bit pada byte 14-17 bingkai; VP8L (lossless) pada byte 1-4
+// sesudah tanda tangan 0x2f. Null bila formatnya tidak dikenal.
+function webpCanvasSize(chunks) {
+  const vp8 = chunks.find((c) => c.type === 'VP8 ')
+  if (vp8 && vp8.data.length >= 10) {
+    const w = vp8.data.readUInt16LE(6) & 0x3fff
+    const h = vp8.data.readUInt16LE(8) & 0x3fff
+    if (w && h) return { width: w, height: h }
+  }
+  const vp8l = chunks.find((c) => c.type === 'VP8L')
+  if (vp8l && vp8l.data.length >= 5 && vp8l.data[0] === 0x2f) {
+    const bits = vp8l.data.readUInt32LE(1)
+    return { width: (bits & 0x3fff) + 1, height: ((bits >> 14) & 0x3fff) + 1 }
+  }
+  return null
+}
+
+// Chunk VP8X baru (10 byte) dengan bit EXIF menyala. Wajib ada supaya
+// chunk EXIF sah: tanpa VP8X, berkas WebP sederhana (VP8/VP8L saja,
+// seperti keluaran ffmpeg di sini) yang ditempeli EXIF ditolak pembaca
+// ketat seperti WhatsApp (stiker tidak bisa dibuka).
+function buildVp8xChunk(chunks) {
+  const size = webpCanvasSize(chunks) || { width: 512, height: 512 }
+  const data = Buffer.alloc(10)
+  data[0] = 0x08
+  if (chunks.some((c) => c.type === 'ALPH')) data[0] = data[0] | 0x10
+  data.writeUIntLE(size.width - 1, 4, 3)
+  data.writeUIntLE(size.height - 1, 7, 3)
+  return { type: 'VP8X', data }
+}
+
 // Sisipkan chunk EXIF berisi metadata pack stiker ke RIFF WebP.
 // Chunk EXIF lama (bila ada) dibuang dulu; ukuran RIFF diperbarui.
 export function injectStickerExif(webpBuffer, meta = {}) {
@@ -102,6 +134,7 @@ export function injectStickerExif(webpBuffer, meta = {}) {
     }
     kept.push({ type: chunk.type, data })
   }
+  if (!kept.some((c) => c.type === 'VP8X')) kept.unshift(buildVp8xChunk(chunks))
   kept.push({ type: 'EXIF', data: payload })
 
   const parts = [Buffer.from('WEBP', 'ascii')]
