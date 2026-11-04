@@ -14,8 +14,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { kick: { noTarget: 'Siapa yang mau dikeluarkan? Mention, balas pesannya, atau tulis nomornya yaa~', ok: '@{digits} udah KANA keluarkan dari grup. Maaf ya, demi ketertiban~', fail: 'Gagal mengeluarkan @{digits}: {error}' } },
-  en: { kick: { noTarget: 'Who should be removed? Mention them, reply to their message, or write their number~', ok: '@{digits} has been removed from the group. Sorry, for the group order~', fail: 'Failed to remove @{digits}: {error}' } },
+  id: { kick: { noTarget: '╭─❏ ❓ 「 *SIAPA YANG DIKELUARKAN?* 」\n┊ Mention member grupnya, balas pesannya, atau tulis nomornya yaa~\n╰━━━━━━━', ok: '╭─❏ 👋 「 *MEMBER DIKELUARKAN* 」\n┊ *@{digits}* udah KANA keluarkan dari grup~\n┊ Maaf ya, demi ketertiban grup~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *GAGAL MENGELUARKAN* 」\n┊ *@{digits}*: {error}\n╰━━━━━━━' } },
+  en: { kick: { noTarget: '╭─❏ ❓ 「 *WHO SHOULD BE REMOVED?* 」\n┊ Mention the group member, reply to their message, or write their number~\n╰━━━━━━━', ok: '╭─❏ 👋 「 *MEMBER REMOVED* 」\n┊ *@{digits}* has been removed from the group~\n┊ Sorry, for the group order~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *FAILED TO REMOVE* 」\n┊ *@{digits}*: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.kick', expect: /grup|group/i }

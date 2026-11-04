@@ -12,19 +12,19 @@ export const config = {
 export const i18n = {
   id: {
     poll: {
-      usage: 'Pakai: .poll Pertanyaan | opsi 1 | opsi 2. Minimal 2 opsi, maksimal 12 yaa~',
-      tooFew: 'Opsinya kurang nih, minimal 2 opsi yaa~',
-      tooMany: 'Opsinya kebanyakan, maksimal 12 yaa~',
-      fallback: 'Polling asli gagal terkirim, ini versi teksnya yaa:\n{question}\n{options}\nBalas dengan nomor opsinya~',
+      usage: '╭─❏ 🗳️ 「 *POLLING GRUP* 」\n┊ Pakai: *.poll Pertanyaan | opsi 1 | opsi 2*\n┊ Minimal *2* opsi, maksimal *12* yaa~\n╰━━━━━━━',
+      tooFew: '╭─❏ 🗳️ 「 *OPSINYA KURANG* 」\n┊ Opsinya kurang nih, minimal *2* opsi yaa~\n╰━━━━━━━',
+      tooMany: '╭─❏ 🗳️ 「 *OPSINYA KEBANYAKAN* 」\n┊ Opsinya kebanyakan, maksimal *12* yaa~\n╰━━━━━━━',
+      fallback: '╭─❏ 🗳️ 「 *POLLING GRUP* 」\n┊ Polling asli gagal terkirim, ini versi teksnya yaa~\n┊ *{question}*\n┊ {options}\n╰━━━━━━━\nBalas dengan nomor opsinya~',
       optionLine: '{index}. {option}',
     },
   },
   en: {
     poll: {
-      usage: 'Use: .poll Question | option 1 | option 2. Minimum 2 options, maximum 12~',
-      tooFew: 'Not enough options, minimum 2 please~',
-      tooMany: 'Too many options, maximum 12 please~',
-      fallback: 'The real poll failed to send, here is the text version:\n{question}\n{options}\nReply with the option number~',
+      usage: '╭─❏ 🗳️ 「 *GROUP POLL* 」\n┊ Use: *.poll Question | option 1 | option 2*\n┊ Minimum *2* options, maximum *12*~\n╰━━━━━━━',
+      tooFew: '╭─❏ 🗳️ 「 *NOT ENOUGH OPTIONS* 」\n┊ Not enough options, minimum *2* please~\n╰━━━━━━━',
+      tooMany: '╭─❏ 🗳️ 「 *TOO MANY OPTIONS* 」\n┊ Too many options, maximum *12* please~\n╰━━━━━━━',
+      fallback: '╭─❏ 🗳️ 「 *GROUP POLL* 」\n┊ The real poll failed to send, here is the text version~\n┊ *{question}*\n┊ {options}\n╰━━━━━━━\nReply with the option number~',
       optionLine: '{index}. {option}',
     },
   },
@@ -46,7 +46,7 @@ export async function handler(ctx) {
   try {
     await ctx.sock.sendMessage(ctx.chat, { poll: { name: question, values, selectableCount: 1 } })
   } catch {
-    const options = values.map((option, i) => ctx.t('poll.optionLine', { index: i + 1, option })).join('\n')
+    const options = values.map((option, i) => ctx.t('poll.optionLine', { index: i + 1, option })).join('\n┊ ')
     await ctx.reply(ctx.t('poll.fallback', { question, options }))
   }
 }

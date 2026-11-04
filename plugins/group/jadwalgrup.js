@@ -19,21 +19,21 @@ export const config = {
 export const i18n = {
   id: {
     jadwalgrup: {
-      usage: 'Pakai: .jadwalgrup 07:00 22:00 atau .jadwalgrup off. Format jam HH:mm yaa~',
-      invalid: 'Format jam "{time}" nggak valid. Pakai HH:mm, contoh 07:00~',
-      same: 'Jam buka dan tutup nggak boleh sama yaa~',
-      set: 'Siap~ jadwal grup diatur: buka {open}, tutup {close}. Scheduler KANA yang jalanin tiap menit yaa. {mood}',
-      off: 'Siap~ jadwal buka tutup otomatis dimatikan. {mood}',
+      usage: '╭─❏ 🗓️ 「 *JADWAL GRUP* 」\n┊ Pakai: *.jadwalgrup 07:00 22:00* atau *.jadwalgrup off*\n┊ Format jam *HH:mm* yaa~\n╰━━━━━━━',
+      invalid: '╭─❏ ⚠️ 「 *FORMAT JAM SALAH* 」\n┊ Format jam *{time}* nggak valid~\n┊ Pakai *HH:mm*, contoh *07:00* yaa~\n╰━━━━━━━',
+      same: '╭─❏ ⚠️ 「 *JAMNYA SAMA* 」\n┊ Jam buka dan tutup grup nggak boleh sama yaa~\n╰━━━━━━━',
+      set: '╭─❏ 🗓️ 「 *JADWAL GRUP DIATUR* 」\n┊ ʙᴜᴋᴀ: *{open}*\n┊ ᴛᴜᴛᴜᴘ: *{close}*\n┊ Scheduler KANA yang jalanin tiap menit yaa~\n╰━━━━━━━ {mood}',
+      off: '╭─❏ 🗓️ 「 *JADWAL DIMATIKAN* 」\n┊ Siap~ jadwal buka tutup grup otomatis dimatikan~\n╰━━━━━━━ {mood}',
       footer: 'Jadwal grup KANA', infoBtn: 'Info grup',
     },
   },
   en: {
     jadwalgrup: {
-      usage: 'Use: .jadwalgrup 07:00 22:00 or .jadwalgrup off. Time format is HH:mm~',
-      invalid: 'Time format "{time}" is not valid. Use HH:mm, for example 07:00~',
-      same: 'Open and close times cannot be the same~',
-      set: 'Got it~ group schedule set: open {open}, close {close}. KANA scheduler runs it every minute. {mood}',
-      off: 'Got it~ automatic open close schedule is turned off. {mood}',
+      usage: '╭─❏ 🗓️ 「 *GROUP SCHEDULE* 」\n┊ Use: *.jadwalgrup 07:00 22:00* or *.jadwalgrup off*\n┊ Time format is *HH:mm*~\n╰━━━━━━━',
+      invalid: '╭─❏ ⚠️ 「 *INVALID TIME FORMAT* 」\n┊ Time format *{time}* is not valid~\n┊ Use *HH:mm*, for example *07:00*~\n╰━━━━━━━',
+      same: '╭─❏ ⚠️ 「 *SAME TIMES* 」\n┊ Group open and close times cannot be the same~\n╰━━━━━━━',
+      set: '╭─❏ 🗓️ 「 *GROUP SCHEDULE SET* 」\n┊ ᴏᴘᴇɴ: *{open}*\n┊ ᴄʟᴏꜱᴇ: *{close}*\n┊ KANA scheduler runs it every minute~\n╰━━━━━━━ {mood}',
+      off: '╭─❏ 🗓️ 「 *SCHEDULE TURNED OFF* 」\n┊ Got it~ automatic group open close schedule is turned off~\n╰━━━━━━━ {mood}',
       footer: 'KANA group schedule', infoBtn: 'Group info',
     },
   },

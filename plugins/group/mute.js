@@ -14,14 +14,14 @@ export const config = {
 export const i18n = {
   id: {
     mute: {
-      done: '🔇 Grup ditutup. Cuma admin yang bisa kirim pesan sekarang. Buka lagi dengan .unmute yaa~ {mood}',
-      fail: 'Gagal menutup grup: {error}. Pastikan KANA admin grup yaa~',
+      done: '╭─❏ 🔇 「 *GRUP DITUTUP* 」\n┊ Cuma admin yang bisa kirim pesan sekarang~\n┊ Buka lagi dengan *.unmute* yaa~\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ ⚠️ 「 *GAGAL MENUTUP GRUP* 」\n┊ {error}\n┊ Pastikan KANA admin grup yaa~\n╰━━━━━━━',
     },
   },
   en: {
     mute: {
-      done: '🔇 Group muted. Only admins can send messages now. Open it again with .unmute~ {mood}',
-      fail: 'Failed to mute the group: {error}. Make sure KANA is a group admin~',
+      done: '╭─❏ 🔇 「 *GROUP MUTED* 」\n┊ Only admins can send messages now~\n┊ Open it again with *.unmute*~\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ ⚠️ 「 *FAILED TO MUTE GROUP* 」\n┊ {error}\n┊ Make sure KANA is a group admin~\n╰━━━━━━━',
     },
   },
 }

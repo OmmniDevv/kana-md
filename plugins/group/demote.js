@@ -14,8 +14,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { demote: { noTarget: 'Siapa yang mau diturunkan? Mention, balas pesannya, atau tulis nomornya yaa~', ok: '@{digits} udah KANA turunkan jadi member biasa yaa.', fail: 'Gagal menurunkan @{digits}: {error}' } },
-  en: { demote: { noTarget: 'Who should be demoted? Mention them, reply to their message, or write their number~', ok: '@{digits} has been demoted to a regular member.', fail: 'Failed to demote @{digits}: {error}' } },
+  id: { demote: { noTarget: '╭─❏ ❓ 「 *SIAPA YANG DITURUNKAN?* 」\n┊ Mention admin grupnya, balas pesannya, atau tulis nomornya yaa~\n╰━━━━━━━', ok: '╭─❏ 🌸 「 *SUDAH DITURUNKAN* 」\n┊ *@{digits}* sekarang jadi member biasa yaa~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *GAGAL MENURUNKKAN* 」\n┊ *@{digits}*: {error}\n╰━━━━━━━' } },
+  en: { demote: { noTarget: '╭─❏ ❓ 「 *WHO SHOULD BE DEMOTED?* 」\n┊ Mention the group admin, reply to their message, or write their number~\n╰━━━━━━━', ok: '╭─❏ 🌸 「 *DEMOTED* 」\n┊ *@{digits}* is now a regular member~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *FAILED TO DEMOTE* 」\n┊ *@{digits}*: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.demote', expect: /grup|group/i }

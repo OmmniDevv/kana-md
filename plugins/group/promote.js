@@ -14,8 +14,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { promote: { noTarget: 'Siapa yang mau dijadikan admin? Mention, balas pesannya, atau tulis nomornya yaa~', ok: 'Yayyy, @{digits} sekarang jadi admin grup. Selamat bertugas~', fail: 'Gagal mempromosikan @{digits}: {error}' } },
-  en: { promote: { noTarget: 'Who should be promoted? Mention them, reply to their message, or write their number~', ok: 'Yayyy, @{digits} is now a group admin. Congrats~', fail: 'Failed to promote @{digits}: {error}' } },
+  id: { promote: { noTarget: '╭─❏ ❓ 「 *SIAPA YANG JADI ADMIN?* 」\n┊ Mention member grupnya, balas pesannya, atau tulis nomornya yaa~\n╰━━━━━━━', ok: '╭─❏ 👑 「 *ADMIN BARU* 」\n┊ Yayyy, *@{digits}* sekarang jadi admin grup~\n┊ Selamat bertugas yaa~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *GAGAL PROMOSI* 」\n┊ *@{digits}*: {error}\n╰━━━━━━━' } },
+  en: { promote: { noTarget: '╭─❏ ❓ 「 *WHO SHOULD BE PROMOTED?* 」\n┊ Mention the group member, reply to their message, or write their number~\n╰━━━━━━━', ok: '╭─❏ 👑 「 *NEW ADMIN* 」\n┊ Yayyy, *@{digits}* is now a group admin~\n┊ Congrats and good luck~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *FAILED TO PROMOTE* 」\n┊ *@{digits}*: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.promote', expect: /grup|group/i }

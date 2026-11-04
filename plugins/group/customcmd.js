@@ -16,28 +16,28 @@ export const config = {
 export const i18n = {
   id: {
     customcmd: {
-      usage: 'Pakai: .customcmd add <pemicu> = <balasan>, .customcmd del <pemicu>, atau .customcmd list yaa~',
-      adminOnly: 'Kelola custom command cuma buat admin grup yaa~',
-      added: 'Siap~ custom command "{trigger}" disimpan. Ketik persis "{trigger}" di grup buat coba yaa~',
-      deleted: 'Custom command "{trigger}" udah KANA hapus yaa~',
-      notFound: 'Custom command "{trigger}" nggak ditemukan nih~',
-      empty: 'Belum ada custom command di grup ini~',
-      list: 'Custom command grup ini:\n{lines}',
-      line: '"{trigger}" -> {reply}',
-      invalid: 'Formatnya: .customcmd add <pemicu> = <balasan>. Tanda sama dengan wajib ada yaa~',
+      usage: '╭─❏ ⌨️ 「 *CUSTOM COMMAND* 」\n┊ Pakai: *.customcmd add <pemicu> = <balasan>*\n┊ *.customcmd del <pemicu>* atau *.customcmd list* yaa~\n╰━━━━━━━',
+      adminOnly: '╭─❏ 🔒 「 *KHUSUS ADMIN* 」\n┊ Kelola custom command grup cuma buat admin grup yaa~\n╰━━━━━━━',
+      added: '╭─❏ ✅ 「 *COMMAND DISIMPAN* 」\n┊ Custom command *{trigger}* disimpan~\n┊ Ketik persis *{trigger}* di grup buat coba yaa~\n╰━━━━━━━',
+      deleted: '╭─❏ 🗑️ 「 *COMMAND DIHAPUS* 」\n┊ Custom command *{trigger}* udah KANA hapus yaa~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *COMMAND TIDAK KETEMU* 」\n┊ Custom command *{trigger}* nggak ditemukan nih~\n╰━━━━━━━',
+      empty: '╭─❏ ⌨️ 「 *CUSTOM COMMAND GRUP* 」\n┊ Belum ada custom command di grup ini~\n╰━━━━━━━',
+      list: '╭─❏ ⌨️ 「 *CUSTOM COMMAND GRUP* 」\n┊ {lines}\n╰━━━━━━━',
+      line: '*{trigger}* -> {reply}',
+      invalid: '╭─❏ ⚠️ 「 *FORMATNYA SALAH* 」\n┊ Formatnya: *.customcmd add <pemicu> = <balasan>*\n┊ Tanda sama dengan wajib ada yaa~\n╰━━━━━━━',
     },
   },
   en: {
     customcmd: {
-      usage: 'Use: .customcmd add <trigger> = <reply>, .customcmd del <trigger>, or .customcmd list~',
-      adminOnly: 'Managing custom commands is for group admins only~',
-      added: 'Got it~ custom command "{trigger}" saved. Type exactly "{trigger}" in the group to try it~',
-      deleted: 'Custom command "{trigger}" has been deleted~',
-      notFound: 'Custom command "{trigger}" was not found~',
-      empty: 'No custom commands in this group yet~',
-      list: 'Custom commands of this group:\n{lines}',
-      line: '"{trigger}" -> {reply}',
-      invalid: 'Format: .customcmd add <trigger> = <reply>. The equals sign is required~',
+      usage: '╭─❏ ⌨️ 「 *CUSTOM COMMAND* 」\n┊ Use: *.customcmd add <trigger> = <reply>*\n┊ *.customcmd del <trigger>* or *.customcmd list*~\n╰━━━━━━━',
+      adminOnly: '╭─❏ 🔒 「 *ADMINS ONLY* 」\n┊ Managing group custom commands is for group admins only~\n╰━━━━━━━',
+      added: '╭─❏ ✅ 「 *COMMAND SAVED* 」\n┊ Custom command *{trigger}* saved~\n┊ Type exactly *{trigger}* in the group to try it~\n╰━━━━━━━',
+      deleted: '╭─❏ 🗑️ 「 *COMMAND DELETED* 」\n┊ Custom command *{trigger}* has been deleted~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *COMMAND NOT FOUND* 」\n┊ Custom command *{trigger}* was not found~\n╰━━━━━━━',
+      empty: '╭─❏ ⌨️ 「 *GROUP CUSTOM COMMANDS* 」\n┊ No custom commands in this group yet~\n╰━━━━━━━',
+      list: '╭─❏ ⌨️ 「 *GROUP CUSTOM COMMANDS* 」\n┊ {lines}\n╰━━━━━━━',
+      line: '*{trigger}* -> {reply}',
+      invalid: '╭─❏ ⚠️ 「 *WRONG FORMAT* 」\n┊ Format: *.customcmd add <trigger> = <reply>*\n┊ The equals sign is required~\n╰━━━━━━━',
     },
   },
 }
@@ -52,7 +52,7 @@ export async function handler(ctx) {
   if (sub === 'list') {
     const entries = Object.entries(commands)
     if (!entries.length) return ctx.reply(ctx.t('customcmd.empty'))
-    const lines = entries.map(([trigger, reply]) => ctx.t('customcmd.line', { trigger, reply })).join('\n')
+    const lines = entries.map(([trigger, reply]) => ctx.t('customcmd.line', { trigger, reply })).join('\n┊ ')
     return ctx.reply(ctx.t('customcmd.list', { lines }))
   }
 

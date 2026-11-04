@@ -12,8 +12,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { linkgrup: { ok: 'Ini link grupnya yaa: {link}\nBagikan cuma ke orang yang dipercaya~', fail: 'Gagal ambil link grup: {error}' } },
-  en: { linkgrup: { ok: 'Here is the group link: {link}\nShare it only with trusted people~', fail: 'Failed to get group link: {error}' } },
+  id: { linkgrup: { ok: '╭─❏ 🔗 「 *LINK GRUP* 」\n┊ {link}\n┊ Bagikan cuma ke orang yang dipercaya yaa~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *GAGAL AMBIL LINK* 」\n┊ Gagal ambil link grup: {error}\n╰━━━━━━━' } },
+  en: { linkgrup: { ok: '╭─❏ 🔗 「 *GROUP LINK* 」\n┊ {link}\n┊ Share it only with trusted people~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *FAILED TO GET LINK* 」\n┊ Failed to get group link: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.linkgrup', expect: /grup|group/i }

@@ -17,27 +17,27 @@ export const config = {
 export const i18n = {
   id: {
     grup: {
-      usage: 'Pakai: .grup open, .grup close, atau .grup info yaa~',
-      opened: 'Siap~ grup dibuka, semua member bisa kirim pesan lagi. {mood}',
-      closed: 'Siap~ grup ditutup, cuma admin yang bisa kirim pesan yaa. {mood}',
-      info: 'Info grup {name}\nMember: {count} orang\nStatus ngobrol: {state}\nJadwal otomatis: {schedule}\nWelcome: {welcome} | Antilink: {antilink}\n{mood}',
+      usage: '╭─❏ 👥 「 *PENGATURAN GRUP* 」\n┊ Pakai: *.grup open*, *.grup close*, atau *.grup info* yaa~\n╰━━━━━━━',
+      opened: '╭─❏ 🔊 「 *GRUP DIBUKA* 」\n┊ Siap~ grup dibuka, semua member bisa kirim pesan lagi~\n╰━━━━━━━ {mood}',
+      closed: '╭─❏ 🔇 「 *GRUP DITUTUP* 」\n┊ Siap~ grup ditutup, cuma admin yang bisa kirim pesan yaa~\n╰━━━━━━━ {mood}',
+      info: '╭─❏ 👥 「 *INFO GRUP* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴍᴇᴍʙᴇʀ: *{count} orang*\n┊ ꜱᴛᴀᴛᴜꜱ ɴɢᴏʙʀᴏʟ: *{state}*\n┊ ᴊᴀᴅᴡᴀʟ ᴏᴛᴏᴍᴀᴛɪꜱ: *{schedule}*\n┊ ᴡᴇʟᴄᴏᴍᴇ: *{welcome}*\n┊ ᴀɴᴛɪʟɪɴᴋ: *{antilink}*\n╰━━━━━━━ {mood}',
       stateOpen: 'terbuka (semua bisa kirim)', stateClosed: 'hanya admin', stateUnknown: 'tidak diketahui',
       scheduleOff: 'mati', scheduleOn: 'buka {open}, tutup {close}',
       on: 'AKTIF', off: 'mati',
-      fail: 'Gagal ubah pengaturan grup: {error}',
+      fail: '╭─❏ ⚠️ 「 *GAGAL UBAH GRUP* 」\n┊ Gagal ubah pengaturan grup: {error}\n╰━━━━━━━',
       footer: 'Pengaturan grup KANA', scheduleBtn: 'Atur jadwal', protectBtn: 'Proteksi',
     },
   },
   en: {
     grup: {
-      usage: 'Use: .grup open, .grup close, or .grup info~',
-      opened: 'Got it~ the group is open, all members can send messages again. {mood}',
-      closed: 'Got it~ the group is closed, only admins can send messages. {mood}',
-      info: 'Group info {name}\nMembers: {count}\nChat status: {state}\nAuto schedule: {schedule}\nWelcome: {welcome} | Antilink: {antilink}\n{mood}',
+      usage: '╭─❏ 👥 「 *GROUP SETTINGS* 」\n┊ Use: *.grup open*, *.grup close*, or *.grup info*~\n╰━━━━━━━',
+      opened: '╭─❏ 🔊 「 *GROUP OPENED* 」\n┊ Got it~ the group is open, all members can send messages again~\n╰━━━━━━━ {mood}',
+      closed: '╭─❏ 🔇 「 *GROUP CLOSED* 」\n┊ Got it~ the group is closed, only admins can send messages~\n╰━━━━━━━ {mood}',
+      info: '╭─❏ 👥 「 *GROUP INFO* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴍᴇᴍʙᴇʀꜱ: *{count}*\n┊ ᴄʜᴀᴛ ꜱᴛᴀᴛᴜꜱ: *{state}*\n┊ ᴀᴜᴛᴏ ꜱᴄʜᴇᴅᴜʟᴇ: *{schedule}*\n┊ ᴡᴇʟᴄᴏᴍᴇ: *{welcome}*\n┊ ᴀɴᴛɪʟɪɴᴋ: *{antilink}*\n╰━━━━━━━ {mood}',
       stateOpen: 'open (everyone can send)', stateClosed: 'admins only', stateUnknown: 'unknown',
       scheduleOff: 'off', scheduleOn: 'open {open}, close {close}',
       on: 'ON', off: 'off',
-      fail: 'Failed to change group setting: {error}',
+      fail: '╭─❏ ⚠️ 「 *FAILED TO CHANGE GROUP* 」\n┊ Failed to change group setting: {error}\n╰━━━━━━━',
       footer: 'KANA group settings', scheduleBtn: 'Set schedule', protectBtn: 'Protection',
     },
   },
@@ -76,7 +76,6 @@ export async function handler(ctx) {
     replies: [
       { text: ctx.t('grup.scheduleBtn'), id: '.jadwalgrup' },
       { text: ctx.t('grup.protectBtn'), id: '.protect' },
-      { text: 'Menu grup', id: '.menu group' },
     ],
     textFallback: body,
   })

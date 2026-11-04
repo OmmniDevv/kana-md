@@ -14,8 +14,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { add: { noTarget: 'Tulis nomor yang mau ditambah yaa, contoh .add 6281234567890~', ok: '@{digits} udah KANA tambahkan ke grup. Selamat datang~', fail: 'Gagal menambahkan @{digits}: {error}. Kadang nomor itu membatasi undangan grup, coba pakai .linkgrup yaa.' } },
-  en: { add: { noTarget: 'Write the number to add, for example .add 6281234567890~', ok: '@{digits} has been added to the group. Welcome~', fail: 'Failed to add @{digits}: {error}. Sometimes that number restricts group invites, try .linkgrup instead.' } },
+  id: { add: { noTarget: '╭─❏ 📥 「 *MAU TAMBAH SIAPA?* 」\n┊ Tulis nomor yang mau ditambah ke grup yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.add 6281234567890*\n╰━━━━━━━', ok: '╭─❏ 🎉 「 *MEMBER BARU DATANG* 」\n┊ *@{digits}* udah KANA tambahkan ke grup~\n┊ Selamat datang yaa~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *GAGAL MENAMBAHKAN* 」\n┊ *@{digits}*: {error}\n┊ Kadang nomor itu membatasi undangan grup, coba pakai *.linkgrup* yaa~\n╰━━━━━━━' } },
+  en: { add: { noTarget: '╭─❏ 📥 「 *WHO SHOULD BE ADDED?* 」\n┊ Write the number to add to the group~\n┊ ᴇxᴀᴍᴘʟᴇ: *.add 6281234567890*\n╰━━━━━━━', ok: '╭─❏ 🎉 「 *NEW MEMBER ARRIVED* 」\n┊ *@{digits}* has been added to the group~\n┊ Welcome~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *FAILED TO ADD* 」\n┊ *@{digits}*: {error}\n┊ Sometimes that number restricts group invites, try *.linkgrup* instead~\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.add', expect: /grup|group/i }

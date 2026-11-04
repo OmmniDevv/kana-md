@@ -14,22 +14,22 @@ export const config = {
 export const i18n = {
   id: {
     grupstats: {
-      body: '📊 STATISTIK GRUP\n\nNama: {name}\nDibuat: {created}\nMember: {members} orang\nAdmin: {admins} orang\nPesan tercatat (topchat): {messages}\nProteksi aktif: {protections}\nMode: {mode} {mood}',
+      body: '╭─❏ 📊 「 *STATISTIK GRUP* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴅɪʙᴜᴀᴛ: *{created}*\n┊ ᴍᴇᴍʙᴇʀ: *{members} orang*\n┊ ᴀᴅᴍɪɴ: *{admins} orang*\n┊ ᴘᴇꜱᴀɴ ᴛᴇʀᴄᴀᴛᴀᴛ (ᴛᴏᴘᴄʜᴀᴛ): *{messages}*\n┊ ᴘʀᴏᴛᴇᴋꜱɪ ᴀᴋᴛɪꜰ: *{protections}*\n┊ ᴍᴏᴅᴇ: *{mode}*\n╰━━━━━━━ {mood}',
       unknown: 'tidak diketahui',
       none: 'tidak ada',
       closed: 'hanya admin (tertutup)',
       open: 'terbuka',
-      fail: 'Gagal ambil data grup: {error}',
+      fail: '╭─❏ ⚠️ 「 *GAGAL AMBIL DATA* 」\n┊ Gagal ambil data grup: {error}\n╰━━━━━━━',
     },
   },
   en: {
     grupstats: {
-      body: '📊 GROUP STATISTICS\n\nName: {name}\nCreated: {created}\nMembers: {members}\nAdmins: {admins}\nRecorded messages (topchat): {messages}\nActive protections: {protections}\nMode: {mode} {mood}',
+      body: '╭─❏ 📊 「 *GROUP STATISTICS* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴄʀᴇᴀᴛᴇᴅ: *{created}*\n┊ ᴍᴇᴍʙᴇʀꜱ: *{members}*\n┊ ᴀᴅᴍɪɴꜱ: *{admins}*\n┊ ʀᴇᴄᴏʀᴅᴇᴅ ᴍᴇꜱꜱᴀɢᴇꜱ (ᴛᴏᴘᴄʜᴀᴛ): *{messages}*\n┊ ᴀᴄᴛɪᴠᴇ ᴘʀᴏᴛᴇᴄᴛɪᴏɴꜱ: *{protections}*\n┊ ᴍᴏᴅᴇ: *{mode}*\n╰━━━━━━━ {mood}',
       unknown: 'unknown',
       none: 'none',
       closed: 'admins only (closed)',
       open: 'open',
-      fail: 'Failed to get group data: {error}',
+      fail: '╭─❏ ⚠️ 「 *FAILED TO GET DATA* 」\n┊ Failed to get group data: {error}\n╰━━━━━━━',
     },
   },
 }

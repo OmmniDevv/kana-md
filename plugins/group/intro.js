@@ -13,13 +13,13 @@ export const config = {
 }
 
 export const DEFAULT_INTRO = {
-  id: 'Halo semua, kenalin yaa~\nNama: {nama}\nNomor: {nomor}\nGrup: {grup}\nSemoga betah dan jangan sungkan ngobrol yaa!',
-  en: 'Hello everyone, let me introduce myself~\nName: {nama}\nNumber: {nomor}\nGroup: {grup}\nMake yourself at home and do not be shy to chat!',
+  id: 'Halo semua, kenalin yaa~\nɴᴀᴍᴀ: {nama}\nɴᴏᴍᴏʀ: {nomor}\nɢʀᴜᴘ: {grup}\nSemoga betah dan jangan sungkan ngobrol yaa!',
+  en: 'Hello everyone, let me introduce myself~\nɴᴀᴍᴇ: {nama}\nɴᴜᴍʙᴇʀ: {nomor}\nɢʀᴏᴜᴘ: {grup}\nMake yourself at home and do not be shy to chat!',
 }
 
 export const i18n = {
-  id: { intro: { header: '🎤 KARTU PERKENALAN\n\n{card}' } },
-  en: { intro: { header: '🎤 INTRODUCTION CARD\n\n{card}' } },
+  id: { intro: { header: '╭─❏ 🎤 「 *KARTU PERKENALAN* 」\n┊ {card}\n╰━━━━━━━' } },
+  en: { intro: { header: '╭─❏ 🎤 「 *INTRODUCTION CARD* 」\n┊ {card}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.intro', expect: /perkenalan|introduction/i }
@@ -44,5 +44,6 @@ export async function handler(ctx) {
     nomor: digitsOf(ctx.sender),
     grup: groupName,
   })
-  return ctx.reply(ctx.t('intro.header', { card }))
+  const cardLines = card.split('\n').join('\n┊ ')
+  return ctx.reply(ctx.t('intro.header', { card: cardLines }))
 }

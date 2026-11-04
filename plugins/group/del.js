@@ -14,16 +14,16 @@ export const config = {
 export const i18n = {
   id: {
     del: {
-      needQuote: 'Balas (reply) pesan yang mau dihapus dengan .del yaa~ {mood}',
-      done: '🗑️ Pesan sudah KANA hapus~',
-      fail: 'Gagal hapus pesan: {error}. KANA harus jadi admin grup buat hapus pesan orang lain yaa~',
+      needQuote: '╭─❏ 🗑️ 「 *BALAS PESANNYA DULU* 」\n┊ Balas (reply) pesan yang mau dihapus dengan *.del* yaa~\n╰━━━━━━━ {mood}',
+      done: '╭─❏ 🗑️ 「 *PESAN DIHAPUS* 」\n┊ Pesan sudah KANA hapus~\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *GAGAL HAPUS PESAN* 」\n┊ {error}\n┊ KANA harus jadi admin grup buat hapus pesan orang lain yaa~\n╰━━━━━━━',
     },
   },
   en: {
     del: {
-      needQuote: 'Reply to the message you want deleted with .del~ {mood}',
-      done: '🗑️ Message deleted~',
-      fail: 'Failed to delete the message: {error}. KANA must be a group admin to delete other people messages~',
+      needQuote: '╭─❏ 🗑️ 「 *REPLY TO THE MESSAGE FIRST* 」\n┊ Reply to the message you want deleted with *.del*~\n╰━━━━━━━ {mood}',
+      done: '╭─❏ 🗑️ 「 *MESSAGE DELETED* 」\n┊ The message has been deleted~\n╰━━━━━━━',
+      fail: '╭─❏ ⚠️ 「 *FAILED TO DELETE* 」\n┊ {error}\n┊ KANA must be a group admin to delete other people messages~\n╰━━━━━━━',
     },
   },
 }

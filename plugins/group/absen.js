@@ -17,32 +17,32 @@ export const config = {
 export const i18n = {
   id: {
     absen: {
-      usage: 'Pakai: .absen start, .absen check, atau .absen close yaa~',
-      adminOnly: 'Bagian absen ini cuma buat admin grup yaa~',
-      started: 'Absen dimulai oleh @{digits}~ Silakan ketik .absen check buat catat kehadiran kalian yaa!',
-      already: 'Absen lagi berjalan kok, dimulai oleh {by}. Ketik .absen check aja yaa~',
-      noSession: 'Belum ada sesi absen yang berjalan. Admin bisa mulai dengan .absen start yaa~',
-      checked: 'Siap, @{digits} udah KANA catat hadir. Total hadir sekarang {count} orang~',
-      checkedAgain: '@{digits} udah tercatat hadir kok dari tadi~',
-      closed: 'Absen ditutup. Hadir {count} orang:\n{list}\nMakasih semuanya~ {mood}',
-      closedEmpty: 'Absen ditutup. Belum ada yang check in nih. {mood}',
-      line: '{index}. @{digits} ({name})',
+      usage: '╭─❏ 📋 「 *ABSEN GRUP* 」\n┊ Pakai: *.absen start*, *.absen check*, atau *.absen close* yaa~\n╰━━━━━━━',
+      adminOnly: '╭─❏ 🔒 「 *KHUSUS ADMIN* 」\n┊ Bagian absen grup ini cuma buat admin grup yaa~\n╰━━━━━━━',
+      started: '╭─❏ 📋 「 *ABSEN DIMULAI* 」\n┊ Absen dimulai oleh *@{digits}*~\n┊ Silakan ketik *.absen check* buat catat kehadiran kalian yaa!\n╰━━━━━━━',
+      already: '╭─❏ 📋 「 *ABSEN LAGI BERJALAN* 」\n┊ Absen lagi berjalan kok, dimulai oleh *{by}*~\n┊ Ketik *.absen check* aja yaa~\n╰━━━━━━━',
+      noSession: '╭─❏ 📋 「 *BELUM ADA ABSEN* 」\n┊ Belum ada sesi absen grup yang berjalan~\n┊ Admin bisa mulai dengan *.absen start* yaa~\n╰━━━━━━━',
+      checked: '╭─❏ ✅ 「 *KEHADIRAN DICATAT* 」\n┊ Siap, *@{digits}* udah KANA catat hadir~\n┊ Total hadir sekarang *{count} orang*~\n╰━━━━━━━',
+      checkedAgain: '╭─❏ 🌸 「 *SUDAH TERCATAT* 」\n┊ *@{digits}* udah tercatat hadir kok dari tadi~\n╰━━━━━━━',
+      closed: '╭─❏ 📋 「 *ABSEN DITUTUP* 」\n┊ Hadir *{count} orang*:\n┊ {list}\n╰━━━━━━━\nMakasih semuanya~ {mood}',
+      closedEmpty: '╭─❏ 📋 「 *ABSEN DITUTUP* 」\n┊ Belum ada yang check in nih~\n╰━━━━━━━ {mood}',
+      line: '{index}. *@{digits}* ({name})',
       footer: 'Absen grup KANA',
       checkBtn: 'Saya hadir', closeBtn: 'Tutup absen', startBtn: 'Mulai absen',
     },
   },
   en: {
     absen: {
-      usage: 'Use: .absen start, .absen check, or .absen close~',
-      adminOnly: 'This part of attendance is for group admins only~',
-      started: 'Attendance started by @{digits}~ Please type .absen check to record your presence!',
-      already: 'Attendance is already running, started by {by}. Just type .absen check~',
-      noSession: 'No attendance session is running. An admin can start with .absen start~',
-      checked: 'Got it, @{digits} is marked present. Total present now {count} people~',
-      checkedAgain: '@{digits} was already marked present~',
-      closed: 'Attendance closed. Present {count} people:\n{list}\nThanks everyone~ {mood}',
-      closedEmpty: 'Attendance closed. Nobody checked in yet. {mood}',
-      line: '{index}. @{digits} ({name})',
+      usage: '╭─❏ 📋 「 *GROUP ATTENDANCE* 」\n┊ Use: *.absen start*, *.absen check*, or *.absen close*~\n╰━━━━━━━',
+      adminOnly: '╭─❏ 🔒 「 *ADMINS ONLY* 」\n┊ This part of group attendance is for group admins only~\n╰━━━━━━━',
+      started: '╭─❏ 📋 「 *ATTENDANCE STARTED* 」\n┊ Attendance started by *@{digits}*~\n┊ Please type *.absen check* to record your presence!\n╰━━━━━━━',
+      already: '╭─❏ 📋 「 *ATTENDANCE RUNNING* 」\n┊ Attendance is already running, started by *{by}*~\n┊ Just type *.absen check*~\n╰━━━━━━━',
+      noSession: '╭─❏ 📋 「 *NO ATTENDANCE YET* 」\n┊ No group attendance session is running~\n┊ An admin can start with *.absen start*~\n╰━━━━━━━',
+      checked: '╭─❏ ✅ 「 *PRESENCE RECORDED* 」\n┊ Got it, *@{digits}* is marked present~\n┊ Total present now *{count} people*~\n╰━━━━━━━',
+      checkedAgain: '╭─❏ 🌸 「 *ALREADY RECORDED* 」\n┊ *@{digits}* was already marked present~\n╰━━━━━━━',
+      closed: '╭─❏ 📋 「 *ATTENDANCE CLOSED* 」\n┊ Present *{count} people*:\n┊ {list}\n╰━━━━━━━\nThanks everyone~ {mood}',
+      closedEmpty: '╭─❏ 📋 「 *ATTENDANCE CLOSED* 」\n┊ Nobody checked in yet~\n╰━━━━━━━ {mood}',
+      line: '{index}. *@{digits}* ({name})',
       footer: 'KANA group attendance',
       checkBtn: 'I am present', closeBtn: 'Close attendance', startBtn: 'Start attendance',
     },
@@ -103,7 +103,7 @@ export async function handler(ctx) {
     const entries = Object.entries(session.present ?? {})
     await updateGroupSettings(ctx.storage, ctx.chat, { absen: null })
     if (!entries.length) return ctx.reply(ctx.t('absen.closedEmpty', { mood: ctx.say('senang') }))
-    const list = entries.map(([digits, name], i) => ctx.t('absen.line', { index: i + 1, digits, name })).join('\n')
+    const list = entries.map(([digits, name], i) => ctx.t('absen.line', { index: i + 1, digits, name })).join('\n┊ ')
     const mentions = entries.map(([digits]) => `${digits}@s.whatsapp.net`)
     await ctx.sock.sendMessage(ctx.chat, {
       text: ctx.t('absen.closed', { count: entries.length, list, mood: ctx.say('senang') }),

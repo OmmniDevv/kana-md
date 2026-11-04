@@ -12,8 +12,8 @@ export const config = {
 }
 
 export const i18n = {
-  id: { hidetag: { defaultText: 'Halo halo semuanya, ada pengumuman dari KANA yaa~', fail: 'Gagal ambil daftar member grup: {error}' } },
-  en: { hidetag: { defaultText: 'Hello everyone, an announcement from KANA~', fail: 'Failed to get group members: {error}' } },
+  id: { hidetag: { defaultText: '╭─❏ 📣 「 *PENGUMUMAN GRUP* 」\n┊ Halo halo semuanya, ada pengumuman dari KANA yaa~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *GAGAL HIDETAG* 」\n┊ Gagal ambil daftar member grup: {error}\n╰━━━━━━━' } },
+  en: { hidetag: { defaultText: '╭─❏ 📣 「 *GROUP ANNOUNCEMENT* 」\n┊ Hello everyone, an announcement from KANA~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *HIDETAG FAILED* 」\n┊ Failed to get group members: {error}\n╰━━━━━━━' } },
 }
 
 export const test = { input: '.hidetag', expect: /grup|group/i }

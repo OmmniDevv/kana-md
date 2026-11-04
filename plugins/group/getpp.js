@@ -14,18 +14,18 @@ export const config = {
 export const i18n = {
   id: {
     getpp: {
-      captionGroup: 'Foto profil grup ini yaa~ {mood}',
-      captionUser: 'Foto profil @{digits} yaa~ {mood}',
-      notFound: 'Foto profilnya tidak ketemu atau disembunyikan pengaturannya. {mood}',
-      fail: 'Gagal ambil foto profil: {error}',
+      captionGroup: '╭─❏ 🖼️ 「 *FOTO PROFIL GRUP* 」\n┊ Ini foto profil grupnya yaa~\n╰━━━━━━━ {mood}',
+      captionUser: '╭─❏ 🖼️ 「 *FOTO PROFIL* 」\n┊ Ini foto profil *@{digits}* yaa~\n╰━━━━━━━ {mood}',
+      notFound: '╭─❏ 🔍 「 *FOTO PROFIL TIDAK KETEMU* 」\n┊ Foto profilnya tidak ketemu atau disembunyikan pengaturannya~\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ ⚠️ 「 *GAGAL AMBIL FOTO* 」\n┊ Gagal ambil foto profil: {error}\n╰━━━━━━━',
     },
   },
   en: {
     getpp: {
-      captionGroup: 'Here is the group profile picture~ {mood}',
-      captionUser: 'Here is the profile picture of @{digits}~ {mood}',
-      notFound: 'The profile picture was not found or is hidden by privacy settings. {mood}',
-      fail: 'Failed to get the profile picture: {error}',
+      captionGroup: '╭─❏ 🖼️ 「 *GROUP PROFILE PICTURE* 」\n┊ Here is the group profile picture~\n╰━━━━━━━ {mood}',
+      captionUser: '╭─❏ 🖼️ 「 *PROFILE PICTURE* 」\n┊ Here is the profile picture of *@{digits}*~\n╰━━━━━━━ {mood}',
+      notFound: '╭─❏ 🔍 「 *PROFILE PICTURE NOT FOUND* 」\n┊ The profile picture was not found or is hidden by privacy settings~\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ ⚠️ 「 *FAILED TO GET PICTURE* 」\n┊ Failed to get the profile picture: {error}\n╰━━━━━━━',
     },
   },
 }

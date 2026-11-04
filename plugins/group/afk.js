@@ -16,22 +16,22 @@ export const config = {
 export const i18n = {
   id: {
     afk: {
-      set: 'Siap~ kamu AFK sekarang: {reason}. KANA catat yaa, istirahat yang cukup~',
-      setNoReason: 'Siap~ kamu AFK sekarang. KANA catat yaa, istirahat yang cukup~',
-      back: 'Selamat datang kembali, @{digits}~ Kamu AFK selama {duration}. Udah nggak AFK lagi yaa~',
-      info: '@{digits} lagi AFK sejak {duration} yang lalu. Alasan: {reason}',
-      infoNoReason: '@{digits} lagi AFK sejak {duration} yang lalu.',
+      set: '╭─❏ 🌙 「 *AFK DULU YAA* 」\n┊ Kamu AFK sekarang: *{reason}*\n┊ KANA catat yaa, istirahat yang cukup~\n╰━━━━━━━',
+      setNoReason: '╭─❏ 🌙 「 *AFK DULU YAA* 」\n┊ Kamu AFK sekarang~\n┊ KANA catat yaa, istirahat yang cukup~\n╰━━━━━━━',
+      back: '╭─❏ 🌸 「 *SELAMAT DATANG KEMBALI* 」\n┊ Halo *@{digits}*~\n┊ Kamu AFK selama *{duration}*, sekarang udah nggak AFK lagi yaa~\n╰━━━━━━━',
+      info: '╭─❏ 🌙 「 *LAGI AFK* 」\n┊ *@{digits}* lagi AFK sejak *{duration}* yang lalu~\n┊ ᴀʟᴀꜱᴀɴ: *{reason}*\n╰━━━━━━━',
+      infoNoReason: '╭─❏ 🌙 「 *LAGI AFK* 」\n┊ *@{digits}* lagi AFK sejak *{duration}* yang lalu~\n╰━━━━━━━',
       minutes: '{count} menit', hours: '{count} jam', justNow: 'baru aja',
       defaultReason: 'lagi sibuk',
     },
   },
   en: {
     afk: {
-      set: 'Got it~ you are AFK now: {reason}. I noted it, please rest well~',
-      setNoReason: 'Got it~ you are AFK now. I noted it, please rest well~',
-      back: 'Welcome back, @{digits}~ You were AFK for {duration}. You are no longer AFK~',
-      info: '@{digits} is AFK since {duration} ago. Reason: {reason}',
-      infoNoReason: '@{digits} is AFK since {duration} ago.',
+      set: '╭─❏ 🌙 「 *AFK FOR NOW* 」\n┊ You are AFK now: *{reason}*\n┊ I noted it, please rest well~\n╰━━━━━━━',
+      setNoReason: '╭─❏ 🌙 「 *AFK FOR NOW* 」\n┊ You are AFK now~\n┊ I noted it, please rest well~\n╰━━━━━━━',
+      back: '╭─❏ 🌸 「 *WELCOME BACK* 」\n┊ Hello *@{digits}*~\n┊ You were AFK for *{duration}*, you are no longer AFK~\n╰━━━━━━━',
+      info: '╭─❏ 🌙 「 *CURRENTLY AFK* 」\n┊ *@{digits}* is AFK since *{duration}* ago~\n┊ ʀᴇᴀꜱᴏɴ: *{reason}*\n╰━━━━━━━',
+      infoNoReason: '╭─❏ 🌙 「 *CURRENTLY AFK* 」\n┊ *@{digits}* is AFK since *{duration}* ago~\n╰━━━━━━━',
       minutes: '{count} minutes', hours: '{count} hours', justNow: 'just now',
       defaultReason: 'busy',
     },

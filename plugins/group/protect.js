@@ -18,27 +18,25 @@ export const config = {
 export const i18n = {
   id: {
     protect: {
-      status: 'Status proteksi:\n{lines}\n{mood}',
-      line: '{feature}: {state}',
+      status: '╭─❏ 🛡️ 「 *STATUS PROTEKSI GRUP* 」\n┊ {lines}\n╰━━━━━━━ {mood}',
+      line: '{feature}: *{state}*',
       on: 'AKTIF', off: 'mati',
-      changed: 'Siap~ {feature} sekarang {state}. {mood}',
-      unknown: 'Fitur "{feature}" nggak dikenal. Pilihan: {features}',
-      usage: 'Pakai: .protect <fitur> <on|off>. Fitur: {features}',
+      changed: '╭─❏ 🛡️ 「 *PROTEKSI DIUBAH* 」\n┊ Siap~ *{feature}* sekarang *{state}*~\n╰━━━━━━━ {mood}',
+      unknown: '╭─❏ 🔍 「 *FITUR TIDAK DIKENAL* 」\n┊ Fitur *{feature}* nggak dikenal~\n┊ ᴘɪʟɪʜᴀɴ: *{features}*\n╰━━━━━━━',
+      usage: '╭─❏ 🛡️ 「 *PROTEKSI GRUP* 」\n┊ Pakai: *.protect <fitur> <on|off>*\n┊ ꜰɪᴛᴜʀ: *{features}*\n╰━━━━━━━',
       footer: 'Proteksi grup KANA',
-      menuGroup: 'Menu grup',
       enable: 'Aktifkan {feature}',
     },
   },
   en: {
     protect: {
-      status: 'Protection status:\n{lines}\n{mood}',
-      line: '{feature}: {state}',
+      status: '╭─❏ 🛡️ 「 *GROUP PROTECTION STATUS* 」\n┊ {lines}\n╰━━━━━━━ {mood}',
+      line: '{feature}: *{state}*',
       on: 'ON', off: 'off',
-      changed: 'Got it~ {feature} is now {state}. {mood}',
-      unknown: 'Unknown feature "{feature}". Options: {features}',
-      usage: 'Use: .protect <feature> <on|off>. Features: {features}',
+      changed: '╭─❏ 🛡️ 「 *PROTECTION CHANGED* 」\n┊ Got it~ *{feature}* is now *{state}*~\n╰━━━━━━━ {mood}',
+      unknown: '╭─❏ 🔍 「 *UNKNOWN FEATURE* 」\n┊ Unknown feature *{feature}*~\n┊ ᴏᴘᴛɪᴏɴꜱ: *{features}*\n╰━━━━━━━',
+      usage: '╭─❏ 🛡️ 「 *GROUP PROTECTION* 」\n┊ Use: *.protect <feature> <on|off>*\n┊ ꜰᴇᴀᴛᴜʀᴇꜱ: *{features}*\n╰━━━━━━━',
       footer: 'KANA group protection',
-      menuGroup: 'Group menu',
       enable: 'Enable {feature}',
     },
   },
@@ -51,16 +49,16 @@ export async function handler(ctx) {
   const feature = (featureRaw || '').toLowerCase()
   const showStatus = async () => {
     const s = await getGroupSettings(ctx.storage, ctx.chat)
-    const lines = FEATURES.map((f) => ctx.t('protect.line', { feature: f, state: ctx.t(s[f] ? 'protect.on' : 'protect.off') })).join('\n')
+    const lines = FEATURES.map((f) => ctx.t('protect.line', { feature: f, state: ctx.t(s[f] ? 'protect.on' : 'protect.off') })).join('\n┊ ')
     const body = ctx.t('protect.status', { lines, mood: ctx.say('senang') })
     const off = FEATURES.filter((f) => !s[f]).slice(0, 5)
+    if (!off.length) return ctx.reply(body)
     await sendButtons(ctx.sock, ctx.chat, {
       title: 'KANA',
       body,
       footer: ctx.t('protect.footer'),
       replies: [
         ...off.map((f) => ({ text: ctx.t('protect.enable', { feature: f }), id: `.protect ${f} on` })),
-        { text: ctx.t('protect.menuGroup'), id: '.menu group' },
       ],
       textFallback: body,
     })
@@ -73,13 +71,13 @@ export async function handler(ctx) {
   const body = ctx.t('protect.changed', { feature, state: ctx.t(value ? 'protect.on' : 'protect.off'), mood: ctx.say('senang') })
   const s = await getGroupSettings(ctx.storage, ctx.chat)
   const off = FEATURES.filter((f) => !s[f]).slice(0, 5)
+  if (!off.length) return ctx.reply(body)
   await sendButtons(ctx.sock, ctx.chat, {
     title: 'KANA',
     body,
     footer: ctx.t('protect.footer'),
     replies: [
       ...off.map((f) => ({ text: ctx.t('protect.enable', { feature: f }), id: `.protect ${f} on` })),
-      { text: ctx.t('protect.menuGroup'), id: '.menu group' },
     ],
     textFallback: body,
   })
