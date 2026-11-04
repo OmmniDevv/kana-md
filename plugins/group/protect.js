@@ -1,7 +1,7 @@
 import { getGroupSettings, updateGroupSettings } from '../../src/services/group-service.js'
 import { sendButtons } from '../../src/ui/buttons.js'
 
-export const FEATURES = ['welcome', 'goodbye', 'antilink', 'antispam', 'antitoxic', 'antijudol', 'antiphising']
+export const FEATURES = ['welcome', 'goodbye', 'antilink', 'antispam', 'antitoxic', 'antijudol', 'antiphising', 'antidocument', 'antisticker', 'antiflood', 'antitagsw', 'antivirtex', 'antihidetag']
 
 export const config = {
   name: 'protect',
