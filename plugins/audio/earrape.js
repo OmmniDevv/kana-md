@@ -14,16 +14,20 @@ export const config = {
 export const i18n = {
   id: {
     earrape: {
-      needAudio: 'Kutip audio atau videonya dulu yaa, terus ketik .earrape~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal menerapkan efek: {message}~',
+      needAudio: '╭─❏ 🎧 「 *EFEK EARRAPE* 」\n┊ Kutip audio atau videonya dulu yaa, terus ketik *.earrape*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *EFEK EARRAPE* 」\n┊ Tunggu sebentar yaa, efeknya lagi KANA proses~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *EFEK EARRAPE* 」\n┊ Nih, audionya udah jadi pakai efek *Earrape*~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *EFEK EARRAPE* 」\n┊ Mouu, medianya kegedean (di atas *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *EFEK EARRAPE* 」\n┊ Mouu, gagal menerapkan efek: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     earrape: {
-      needAudio: 'Quote an audio or video first, then type .earrape~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to apply the effect: {message}~',
+      needAudio: '╭─❏ 🎧 「 *EARRAPE EFFECT* 」\n┊ Quote an audio or video first, then type *.earrape*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *EARRAPE EFFECT* 」\n┊ Wait a moment, KANA is applying the effect~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *EARRAPE EFFECT* 」\n┊ Here, your audio now uses the *Earrape* effect~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *EARRAPE EFFECT* 」\n┊ Mouu, the media is too big (over *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *EARRAPE EFFECT* 」\n┊ Mouu, failed to apply the effect: *{message}*~\n╰━━━━━━━',
     },
   },
 }

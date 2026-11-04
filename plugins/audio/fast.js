@@ -14,16 +14,20 @@ export const config = {
 export const i18n = {
   id: {
     fast: {
-      needAudio: 'Kutip audio atau videonya dulu yaa, terus ketik .fast~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal menerapkan efek: {message}~',
+      needAudio: '╭─❏ 🎧 「 *EFEK FAST* 」\n┊ Kutip audio atau videonya dulu yaa, terus ketik *.fast*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *EFEK FAST* 」\n┊ Tunggu sebentar yaa, efeknya lagi KANA proses~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *EFEK FAST* 」\n┊ Nih, audionya udah jadi pakai efek *Fast*~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *EFEK FAST* 」\n┊ Mouu, medianya kegedean (di atas *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *EFEK FAST* 」\n┊ Mouu, gagal menerapkan efek: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     fast: {
-      needAudio: 'Quote an audio or video first, then type .fast~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to apply the effect: {message}~',
+      needAudio: '╭─❏ 🎧 「 *FAST EFFECT* 」\n┊ Quote an audio or video first, then type *.fast*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *FAST EFFECT* 」\n┊ Wait a moment, KANA is applying the effect~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *FAST EFFECT* 」\n┊ Here, your audio now uses the *Fast* effect~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *FAST EFFECT* 」\n┊ Mouu, the media is too big (over *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *FAST EFFECT* 」\n┊ Mouu, failed to apply the effect: *{message}*~\n╰━━━━━━━',
     },
   },
 }

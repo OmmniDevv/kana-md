@@ -14,16 +14,20 @@ export const config = {
 export const i18n = {
   id: {
     nightcore: {
-      needAudio: 'Kutip audio atau videonya dulu yaa, terus ketik .nightcore~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal menerapkan efek: {message}~',
+      needAudio: '╭─❏ 🎧 「 *EFEK NIGHTCORE* 」\n┊ Kutip audio atau videonya dulu yaa, terus ketik *.nightcore*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *EFEK NIGHTCORE* 」\n┊ Tunggu sebentar yaa, efeknya lagi KANA proses~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *EFEK NIGHTCORE* 」\n┊ Nih, audionya udah jadi pakai efek *Nightcore*~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *EFEK NIGHTCORE* 」\n┊ Mouu, medianya kegedean (di atas *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *EFEK NIGHTCORE* 」\n┊ Mouu, gagal menerapkan efek: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     nightcore: {
-      needAudio: 'Quote an audio or video first, then type .nightcore~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to apply the effect: {message}~',
+      needAudio: '╭─❏ 🎧 「 *NIGHTCORE EFFECT* 」\n┊ Quote an audio or video first, then type *.nightcore*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *NIGHTCORE EFFECT* 」\n┊ Wait a moment, KANA is applying the effect~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *NIGHTCORE EFFECT* 」\n┊ Here, your audio now uses the *Nightcore* effect~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *NIGHTCORE EFFECT* 」\n┊ Mouu, the media is too big (over *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *NIGHTCORE EFFECT* 」\n┊ Mouu, failed to apply the effect: *{message}*~\n╰━━━━━━━',
     },
   },
 }

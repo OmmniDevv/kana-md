@@ -14,16 +14,20 @@ export const config = {
 export const i18n = {
   id: {
     reverse: {
-      needAudio: 'Kutip audio atau videonya dulu yaa, terus ketik .reverse~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal menerapkan efek: {message}~',
+      needAudio: '╭─❏ 🎧 「 *EFEK REVERSE* 」\n┊ Kutip audio atau videonya dulu yaa, terus ketik *.reverse*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *EFEK REVERSE* 」\n┊ Tunggu sebentar yaa, efeknya lagi KANA proses~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *EFEK REVERSE* 」\n┊ Nih, audionya udah jadi pakai efek *Reverse*~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *EFEK REVERSE* 」\n┊ Mouu, medianya kegedean (di atas *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *EFEK REVERSE* 」\n┊ Mouu, gagal menerapkan efek: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     reverse: {
-      needAudio: 'Quote an audio or video first, then type .reverse~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to apply the effect: {message}~',
+      needAudio: '╭─❏ 🎧 「 *REVERSE EFFECT* 」\n┊ Quote an audio or video first, then type *.reverse*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *REVERSE EFFECT* 」\n┊ Wait a moment, KANA is applying the effect~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *REVERSE EFFECT* 」\n┊ Here, your audio now uses the *Reverse* effect~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *REVERSE EFFECT* 」\n┊ Mouu, the media is too big (over *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *REVERSE EFFECT* 」\n┊ Mouu, failed to apply the effect: *{message}*~\n╰━━━━━━━',
     },
   },
 }

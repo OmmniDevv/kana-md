@@ -14,16 +14,20 @@ export const config = {
 export const i18n = {
   id: {
     slowrev: {
-      needAudio: 'Kutip audio atau videonya dulu yaa, terus ketik .slowrev~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal menerapkan efek: {message}~',
+      needAudio: '╭─❏ 🎧 「 *EFEK SLOWED REVERB* 」\n┊ Kutip audio atau videonya dulu yaa, terus ketik *.slowrev*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *EFEK SLOWED REVERB* 」\n┊ Tunggu sebentar yaa, efeknya lagi KANA proses~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *EFEK SLOWED REVERB* 」\n┊ Nih, audionya udah jadi pakai efek *Slowed Reverb*~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *EFEK SLOWED REVERB* 」\n┊ Mouu, medianya kegedean (di atas *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *EFEK SLOWED REVERB* 」\n┊ Mouu, gagal menerapkan efek: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     slowrev: {
-      needAudio: 'Quote an audio or video first, then type .slowrev~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to apply the effect: {message}~',
+      needAudio: '╭─❏ 🎧 「 *SLOWED REVERB EFFECT* 」\n┊ Quote an audio or video first, then type *.slowrev*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *SLOWED REVERB EFFECT* 」\n┊ Wait a moment, KANA is applying the effect~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *SLOWED REVERB EFFECT* 」\n┊ Here, your audio now uses the *Slowed Reverb* effect~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *SLOWED REVERB EFFECT* 」\n┊ Mouu, the media is too big (over *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *SLOWED REVERB EFFECT* 」\n┊ Mouu, failed to apply the effect: *{message}*~\n╰━━━━━━━',
     },
   },
 }

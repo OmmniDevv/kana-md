@@ -14,16 +14,20 @@ export const config = {
 export const i18n = {
   id: {
     fat: {
-      needAudio: 'Kutip audio atau videonya dulu yaa, terus ketik .fat~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal menerapkan efek: {message}~',
+      needAudio: '╭─❏ 🎧 「 *EFEK FAT* 」\n┊ Kutip audio atau videonya dulu yaa, terus ketik *.fat*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *EFEK FAT* 」\n┊ Tunggu sebentar yaa, efeknya lagi KANA proses~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *EFEK FAT* 」\n┊ Nih, audionya udah jadi pakai efek *Fat*~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *EFEK FAT* 」\n┊ Mouu, medianya kegedean (di atas *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *EFEK FAT* 」\n┊ Mouu, gagal menerapkan efek: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     fat: {
-      needAudio: 'Quote an audio or video first, then type .fat~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to apply the effect: {message}~',
+      needAudio: '╭─❏ 🎧 「 *FAT EFFECT* 」\n┊ Quote an audio or video first, then type *.fat*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *FAT EFFECT* 」\n┊ Wait a moment, KANA is applying the effect~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *FAT EFFECT* 」\n┊ Here, your audio now uses the *Fat* effect~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *FAT EFFECT* 」\n┊ Mouu, the media is too big (over *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *FAT EFFECT* 」\n┊ Mouu, failed to apply the effect: *{message}*~\n╰━━━━━━━',
     },
   },
 }

@@ -14,16 +14,20 @@ export const config = {
 export const i18n = {
   id: {
     deep: {
-      needAudio: 'Kutip audio atau videonya dulu yaa, terus ketik .deep~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal menerapkan efek: {message}~',
+      needAudio: '╭─❏ 🎧 「 *EFEK DEEP VOICE* 」\n┊ Kutip audio atau videonya dulu yaa, terus ketik *.deep*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *EFEK DEEP VOICE* 」\n┊ Tunggu sebentar yaa, efeknya lagi KANA proses~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *EFEK DEEP VOICE* 」\n┊ Nih, audionya udah jadi pakai efek *Deep Voice*~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *EFEK DEEP VOICE* 」\n┊ Mouu, medianya kegedean (di atas *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *EFEK DEEP VOICE* 」\n┊ Mouu, gagal menerapkan efek: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     deep: {
-      needAudio: 'Quote an audio or video first, then type .deep~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to apply the effect: {message}~',
+      needAudio: '╭─❏ 🎧 「 *DEEP VOICE EFFECT* 」\n┊ Quote an audio or video first, then type *.deep*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *DEEP VOICE EFFECT* 」\n┊ Wait a moment, KANA is applying the effect~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *DEEP VOICE EFFECT* 」\n┊ Here, your audio now uses the *Deep Voice* effect~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *DEEP VOICE EFFECT* 」\n┊ Mouu, the media is too big (over *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *DEEP VOICE EFFECT* 」\n┊ Mouu, failed to apply the effect: *{message}*~\n╰━━━━━━━',
     },
   },
 }

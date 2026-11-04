@@ -14,16 +14,20 @@ export const config = {
 export const i18n = {
   id: {
     chipmunk: {
-      needAudio: 'Kutip audio atau videonya dulu yaa, terus ketik .chipmunk~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal menerapkan efek: {message}~',
+      needAudio: '╭─❏ 🎧 「 *EFEK CHIPMUNK* 」\n┊ Kutip audio atau videonya dulu yaa, terus ketik *.chipmunk*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *EFEK CHIPMUNK* 」\n┊ Tunggu sebentar yaa, efeknya lagi KANA proses~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *EFEK CHIPMUNK* 」\n┊ Nih, audionya udah jadi pakai efek *Chipmunk*~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *EFEK CHIPMUNK* 」\n┊ Mouu, medianya kegedean (di atas *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *EFEK CHIPMUNK* 」\n┊ Mouu, gagal menerapkan efek: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     chipmunk: {
-      needAudio: 'Quote an audio or video first, then type .chipmunk~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to apply the effect: {message}~',
+      needAudio: '╭─❏ 🎧 「 *CHIPMUNK EFFECT* 」\n┊ Quote an audio or video first, then type *.chipmunk*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *CHIPMUNK EFFECT* 」\n┊ Wait a moment, KANA is applying the effect~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *CHIPMUNK EFFECT* 」\n┊ Here, your audio now uses the *Chipmunk* effect~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *CHIPMUNK EFFECT* 」\n┊ Mouu, the media is too big (over *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *CHIPMUNK EFFECT* 」\n┊ Mouu, failed to apply the effect: *{message}*~\n╰━━━━━━━',
     },
   },
 }

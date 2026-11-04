@@ -14,16 +14,20 @@ export const config = {
 export const i18n = {
   id: {
     blown: {
-      needAudio: 'Kutip audio atau videonya dulu yaa, terus ketik .blown~',
-      tooBig: 'Mouu, medianya kegedean (di atas 64 MB)~',
-      failed: 'Mouu, gagal menerapkan efek: {message}~',
+      needAudio: '╭─❏ 🎧 「 *EFEK BLOWN* 」\n┊ Kutip audio atau videonya dulu yaa, terus ketik *.blown*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *EFEK BLOWN* 」\n┊ Tunggu sebentar yaa, efeknya lagi KANA proses~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *EFEK BLOWN* 」\n┊ Nih, audionya udah jadi pakai efek *Blown*~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *EFEK BLOWN* 」\n┊ Mouu, medianya kegedean (di atas *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *EFEK BLOWN* 」\n┊ Mouu, gagal menerapkan efek: *{message}*~\n╰━━━━━━━',
     },
   },
   en: {
     blown: {
-      needAudio: 'Quote an audio or video first, then type .blown~',
-      tooBig: 'Mouu, the media is too big (over 64 MB)~',
-      failed: 'Mouu, failed to apply the effect: {message}~',
+      needAudio: '╭─❏ 🎧 「 *BLOWN EFFECT* 」\n┊ Quote an audio or video first, then type *.blown*~\n╰━━━━━━━',
+      processing: '╭─❏ 🎧 「 *BLOWN EFFECT* 」\n┊ Wait a moment, KANA is applying the effect~\n╰━━━━━━━',
+      done: '╭─❏ 🎧 「 *BLOWN EFFECT* 」\n┊ Here, your audio now uses the *Blown* effect~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🎧 「 *BLOWN EFFECT* 」\n┊ Mouu, the media is too big (over *64 MB*)~\n╰━━━━━━━',
+      failed: '╭─❏ 🎧 「 *BLOWN EFFECT* 」\n┊ Mouu, failed to apply the effect: *{message}*~\n╰━━━━━━━',
     },
   },
 }
