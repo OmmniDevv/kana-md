@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Snake</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:460px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;box-sizing:border-box;position:relative;overflow:hidden;background:#17102B}
+h1{font-size:19px;margin:2px 0;color:#EDE9FE}
+.hud{color:#D8CCFF;font-size:15px;min-height:19px;text-align:center}
+.how{color:#A78BFA;font-size:12px;text-align:center;padding:0 8px}
+canvas{background:#241845;border-radius:12px;touch-action:none}
+.btn{background:#8B5CF6;color:#fff;border:0;border-radius:999px;padding:9px 18px;font-size:15px;cursor:pointer}
+.btn:active{background:#D946EF}
+.ctl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.cbtn{background:#2E1065;color:#fff;border:2px solid #8B5CF6;border-radius:12px;width:52px;height:46px;font-size:20px;cursor:pointer;touch-action:none}
+.cbtn:active{background:#D946EF}
+#over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,6,28,.88);z-index:5;text-align:center}
+#overT{font-size:24px;color:#F0ABFC}
+#overLine{font-size:17px;color:#D8CCFF}
+
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1 id="t"></h1><div class="hud"><span id="sl"></span>: <b id="sc">0</b></div>
+<canvas id="cv"></canvas>
+<div class="ctl"><button class="cbtn" data-d="up">⬆</button></div>
+<div class="ctl"><button class="cbtn" data-d="left">⬅</button><button class="cbtn" data-d="down">⬇</button><button class="cbtn" data-d="right">➡</button></div>
+<div class="how" id="how"></div>
+<div id="over"><div id="overT"></div><div id="overLine"><span class="osl"></span> <b id="final">0</b></div><button class="btn" id="again"></button></div>
+</div>
+<script>
+var BOT=null;try{BOT=window.__BOT||null}catch(e){BOT=null}
+if(!BOT){try{BOT=__BOT_VARS_JSON__}catch(e){BOT=null}}
+var LANG=(BOT&&BOT.lang==='en')?'en':'id';
+function el(i){return document.getElementById(i)}
+var AC=null;
+function beep(f,d){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f||440;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+(d||.08));o.stop(AC.currentTime+(d||.08));}catch(e){}}
+var sentScore=false;
+function submitScore(sc){if(sentScore)return;sentScore=true;sc=Math.floor(sc||0);if(sc<=0||!BOT||!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){try{ws.close()}catch(e){}};setTimeout(function(){try{ws.close()}catch(e){}},3000);}catch(e){}}
+function gameOver(sc){el('final').textContent=Math.floor(sc||0);el('over').style.display='flex';beep(160,.25);submitScore(sc)}
+function fitCanvas(cv,w,h){var d=Math.min(window.devicePixelRatio||1,3);cv.width=w*d;cv.height=h*d;cv.style.width='100%';cv.style.maxWidth=w+'px';cv.style.height=h+'px';var c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return c}
+function ptr(cv,e,w,h){var r=cv.getBoundingClientRect();var t=(e.touches&&e.touches[0])?e.touches[0]:e;return{x:(t.clientX-r.left)*w/r.width,y:(t.clientY-r.top)*h/r.height}}
+el('again').addEventListener('click',function(){el('over').style.display='none';sentScore=false;if(window.__restart)window.__restart()});
+</script>
+<script>
+var STR={id:{t:'Ular KANA',s:'Skor',o:'Game Over!',a:'Main Lagi',h:'Geser di papan atau pakai tombol arah. Makan apel untuk tumbuh!'},en:{t:'KANA Snake',s:'Score',o:'Game Over!',a:'Play Again',h:'Swipe on the board or use the arrow buttons. Eat apples to grow!'}}[LANG];
+el('t').textContent=STR.t+' 🐍';el('sl').textContent=STR.s;el('how').textContent=STR.h;el('overT').textContent=STR.o;el('again').textContent=STR.a;document.querySelector('.osl').textContent=STR.s+':';
+var N=17,CELL=18,W=N*CELL,cv=el('cv'),ctx=fitCanvas(cv,W,W);
+var snake,dir,ndir,food,foods,run,raf,last,acc;
+function placeFood(){while(true){var f={x:Math.floor(Math.random()*N),y:Math.floor(Math.random()*N)};var ok=true;for(var i=0;i<snake.length;i++)if(snake[i].x===f.x&&snake[i].y===f.y)ok=false;if(ok){food=f;return}}}
+function start(){snake=[{x:8,y:8},{x:7,y:8},{x:6,y:8}];dir={x:1,y:0};ndir=dir;foods=0;run=true;last=0;acc=0;el('sc').textContent='0';placeFood();if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+function step(){dir=ndir;var hd={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+ if(hd.x<0||hd.y<0||hd.x>=N||hd.y>=N){run=false;gameOver(foods*10);return}
+ for(var i=0;i<snake.length-1;i++)if(snake[i].x===hd.x&&snake[i].y===hd.y){run=false;gameOver(foods*10);return}
+ snake.unshift(hd);
+ if(hd.x===food.x&&hd.y===food.y){foods++;el('sc').textContent=foods*10;beep(760,.06);placeFood()}else snake.pop()}
+function draw(){ctx.clearRect(0,0,W,W);ctx.fillStyle='#3B1470';ctx.fillRect(food.x*CELL+2,food.y*CELL+2,CELL-4,CELL-4);ctx.font='15px sans-serif';ctx.fillText('🍎',food.x*CELL+1,food.y*CELL+15);
+ for(var i=snake.length-1;i>=0;i--){ctx.fillStyle=i===0?'#D946EF':'#8B5CF6';ctx.beginPath();ctx.arc(snake[i].x*CELL+CELL/2,snake[i].y*CELL+CELL/2,CELL/2-1.5,0,Math.PI*2);ctx.fill()}}
+function loop(ts){if(!run)return;var dt=Math.min(100,ts-(last||ts));last=ts;acc+=dt;var iv=Math.max(70,130-foods*2);
+ while(acc>=iv&&run){acc-=iv;step()} draw(); if(run)raf=requestAnimationFrame(loop)}
+function setDir(x,y){if(dir.x===-x&&dir.y===-y)return;ndir={x:x,y:y}}
+var db=document.querySelectorAll('[data-d]');
+for(var k=0;k<db.length;k++)db[k].addEventListener('pointerdown',function(e){e.preventDefault();var d=this.getAttribute('data-d');if(d==='up')setDir(0,-1);if(d==='down')setDir(0,1);if(d==='left')setDir(-1,0);if(d==='right')setDir(1,0)});
+var sx=0,sy=0;
+cv.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+cv.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx,dy2=e.changedTouches[0].clientY-sy;if(Math.abs(dx)<12&&Math.abs(dy2)<12)return;if(Math.abs(dx)>Math.abs(dy2))setDir(dx>0?1:-1,0);else setDir(0,dy2>0?1:-1)});
+document.addEventListener('keydown',function(e){if(e.key==='ArrowUp')setDir(0,-1);if(e.key==='ArrowDown')setDir(0,1);if(e.key==='ArrowLeft')setDir(-1,0);if(e.key==='ArrowRight')setDir(1,0)});
+document.addEventListener('visibilitychange',function(){if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=null}else if(run&&!raf){last=0;raf=requestAnimationFrame(loop)}});
+window.__restart=start;start();
+</script>
+</body>
+</html>

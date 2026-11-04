@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Memory Match</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:460px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;box-sizing:border-box;position:relative;overflow:hidden;background:#17102B}
+h1{font-size:19px;margin:2px 0;color:#EDE9FE}
+.hud{color:#D8CCFF;font-size:15px;min-height:19px;text-align:center}
+.how{color:#A78BFA;font-size:12px;text-align:center;padding:0 8px}
+canvas{background:#241845;border-radius:12px;touch-action:none}
+.btn{background:#8B5CF6;color:#fff;border:0;border-radius:999px;padding:9px 18px;font-size:15px;cursor:pointer}
+.btn:active{background:#D946EF}
+.ctl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.cbtn{background:#2E1065;color:#fff;border:2px solid #8B5CF6;border-radius:12px;width:52px;height:46px;font-size:20px;cursor:pointer;touch-action:none}
+.cbtn:active{background:#D946EF}
+#over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,6,28,.88);z-index:5;text-align:center}
+#overT{font-size:24px;color:#F0ABFC}
+#overLine{font-size:17px;color:#D8CCFF}
+
+#grid{display:grid;grid-template-columns:repeat(4,64px);gap:8px}
+.card{width:64px;height:64px;border-radius:12px;border:2px solid #8B5CF6;background:#2E1065;color:#fff;font-size:30px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.card.open{background:#4C1D95;border-color:#D946EF}
+.card.done{background:#701A75;border-color:#F0ABFC;opacity:.75}
+
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1 id="t"></h1><div class="hud"><span id="al"></span>: <b id="at">0</b> · <span id="tl"></span>: <b id="tm">0</b>s</div>
+<div id="grid"></div>
+<div class="how" id="how"></div>
+<div id="over"><div id="overT"></div><div id="overLine"><span class="osl"></span> <b id="final">0</b></div><button class="btn" id="again"></button></div>
+</div>
+<script>
+var BOT=null;try{BOT=window.__BOT||null}catch(e){BOT=null}
+if(!BOT){try{BOT=__BOT_VARS_JSON__}catch(e){BOT=null}}
+var LANG=(BOT&&BOT.lang==='en')?'en':'id';
+function el(i){return document.getElementById(i)}
+var AC=null;
+function beep(f,d){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f||440;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+(d||.08));o.stop(AC.currentTime+(d||.08));}catch(e){}}
+var sentScore=false;
+function submitScore(sc){if(sentScore)return;sentScore=true;sc=Math.floor(sc||0);if(sc<=0||!BOT||!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){try{ws.close()}catch(e){}};setTimeout(function(){try{ws.close()}catch(e){}},3000);}catch(e){}}
+function gameOver(sc){el('final').textContent=Math.floor(sc||0);el('over').style.display='flex';beep(160,.25);submitScore(sc)}
+function fitCanvas(cv,w,h){var d=Math.min(window.devicePixelRatio||1,3);cv.width=w*d;cv.height=h*d;cv.style.width='100%';cv.style.maxWidth=w+'px';cv.style.height=h+'px';var c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return c}
+function ptr(cv,e,w,h){var r=cv.getBoundingClientRect();var t=(e.touches&&e.touches[0])?e.touches[0]:e;return{x:(t.clientX-r.left)*w/r.width,y:(t.clientY-r.top)*h/r.height}}
+el('again').addEventListener('click',function(){el('over').style.display='none';sentScore=false;if(window.__restart)window.__restart()});
+</script>
+<script>
+var STR={id:{t:'Memori KANA',o:'Selesai!',a:'Main Lagi',at:'Percobaan',tm:'Waktu',h:'Balik kartu dan temukan 8 pasangan emoji. Makin cepat dan sedikit percobaan, makin tinggi skor!'},en:{t:'KANA Memory',o:'Complete!',a:'Play Again',at:'Tries',tm:'Time',h:'Flip cards and find all 8 emoji pairs. Fewer tries and faster time mean a higher score!'}}[LANG];
+el('t').textContent=STR.t+' 🧠';el('al').textContent=STR.at;el('tl').textContent=STR.tm;el('how').textContent=STR.h;el('overT').textContent=STR.o+' 🎉';el('again').textContent=STR.a;document.querySelector('.osl').textContent=(LANG==='id'?'Skor':'Score')+':';
+var EM=['🍓','🍇','🍋','🍑','🥝','🍒','🍉','🍍'];
+var first,lockB,attempts,secs,timer,matched,started;
+function start(){if(timer)clearInterval(timer);timer=null;first=null;lockB=false;attempts=0;secs=0;matched=0;started=false;el('at').textContent='0';el('tm').textContent='0';
+ var deck=EM.concat(EM).sort(function(){return Math.random()-0.5});
+ var g=el('grid');g.innerHTML='';
+ deck.forEach(function(em){var d=document.createElement('button');d.className='card';d.textContent='💜';d.setAttribute('data-e',em);
+  d.addEventListener('click',function(){flip(d,em)});g.appendChild(d)})}
+function flip(d,em){if(lockB||d.classList.contains('open')||d.classList.contains('done'))return;
+ if(!started){started=true;timer=setInterval(function(){if(!document.hidden){secs++;el('tm').textContent=secs}},1000)}
+ d.classList.add('open');d.textContent=em;beep(560,.05);
+ if(!first){first={d:d,em:em};return}
+ attempts++;el('at').textContent=attempts;
+ if(first.em===em){first.d.classList.add('done');d.classList.add('done');first=null;matched++;beep(880,.08);
+  if(matched===8){if(timer)clearInterval(timer);var sc=Math.max(10,1000-attempts*10-secs*2);setTimeout(function(){gameOver(sc)},300)}}
+ else{lockB=true;var f=first;first=null;setTimeout(function(){f.d.classList.remove('open');f.d.textContent='💜';d.classList.remove('open');d.textContent='💜';lockB=false},650)}}
+window.__restart=start;start();
+</script>
+</body>
+</html>

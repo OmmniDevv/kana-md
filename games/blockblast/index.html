@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Block Blast</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:520px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;box-sizing:border-box;position:relative;overflow:hidden;background:#17102B}
+h1{font-size:19px;margin:2px 0;color:#EDE9FE}
+.hud{color:#D8CCFF;font-size:15px;min-height:19px;text-align:center}
+.how{color:#A78BFA;font-size:12px;text-align:center;padding:0 8px}
+canvas{background:#241845;border-radius:12px;touch-action:none}
+.btn{background:#8B5CF6;color:#fff;border:0;border-radius:999px;padding:9px 18px;font-size:15px;cursor:pointer}
+.btn:active{background:#D946EF}
+.ctl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.cbtn{background:#2E1065;color:#fff;border:2px solid #8B5CF6;border-radius:12px;width:52px;height:46px;font-size:20px;cursor:pointer;touch-action:none}
+.cbtn:active{background:#D946EF}
+#over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,6,28,.88);z-index:5;text-align:center}
+#overT{font-size:24px;color:#F0ABFC}
+#overLine{font-size:17px;color:#D8CCFF}
+
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1 id="t"></h1><div class="hud"><span id="sl"></span>: <b id="sc">0</b></div>
+<canvas id="cv"></canvas>
+<div class="how" id="how"></div>
+<div id="over"><div id="overT"></div><div id="overLine"><span class="osl"></span> <b id="final">0</b></div><button class="btn" id="again"></button></div>
+</div>
+<script>
+var BOT=null;try{BOT=window.__BOT||null}catch(e){BOT=null}
+if(!BOT){try{BOT=__BOT_VARS_JSON__}catch(e){BOT=null}}
+var LANG=(BOT&&BOT.lang==='en')?'en':'id';
+function el(i){return document.getElementById(i)}
+var AC=null;
+function beep(f,d){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f||440;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+(d||.08));o.stop(AC.currentTime+(d||.08));}catch(e){}}
+var sentScore=false;
+function submitScore(sc){if(sentScore)return;sentScore=true;sc=Math.floor(sc||0);if(sc<=0||!BOT||!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){try{ws.close()}catch(e){}};setTimeout(function(){try{ws.close()}catch(e){}},3000);}catch(e){}}
+function gameOver(sc){el('final').textContent=Math.floor(sc||0);el('over').style.display='flex';beep(160,.25);submitScore(sc)}
+function fitCanvas(cv,w,h){var d=Math.min(window.devicePixelRatio||1,3);cv.width=w*d;cv.height=h*d;cv.style.width='100%';cv.style.maxWidth=w+'px';cv.style.height=h+'px';var c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return c}
+function ptr(cv,e,w,h){var r=cv.getBoundingClientRect();var t=(e.touches&&e.touches[0])?e.touches[0]:e;return{x:(t.clientX-r.left)*w/r.width,y:(t.clientY-r.top)*h/r.height}}
+el('again').addEventListener('click',function(){el('over').style.display='none';sentScore=false;if(window.__restart)window.__restart()});
+</script>
+<script>
+var STR={id:{t:'Block Blast KANA',s:'Skor',o:'Game Over!',a:'Main Lagi',h:'Ketuk blok di bawah untuk memilih, lalu ketuk sel papan sebagai sudut kiri atasnya. Baris atau kolom penuh akan hilang!'},en:{t:'KANA Block Blast',s:'Score',o:'Game Over!',a:'Play Again',h:'Tap a block below to select it, then tap a board cell as its top left corner. Full rows or columns clear!'}}[LANG];
+el('t').textContent=STR.t+' 🟪';el('sl').textContent=STR.s;el('how').textContent=STR.h;el('overT').textContent=STR.o;el('again').textContent=STR.a;document.querySelector('.osl').textContent=STR.s+':';
+var N=8,CELL=34,BW=N*CELL,W=288,H=404,OY=8,cv=el('cv'),ctx=fitCanvas(cv,W,H);
+var SHAPES=[[[0,0]],[[0,0],[1,0]],[[0,0],[0,1]],[[0,0],[1,0],[2,0]],[[0,0],[0,1],[0,2]],[[0,0],[1,0],[0,1],[1,1]],[[0,0],[1,0],[2,0],[0,1]],[[0,0],[1,0],[2,0],[1,1]],[[0,0],[0,1],[1,1]],[[0,0],[1,0],[2,0],[3,0]],[[0,0],[1,0],[1,1],[2,1]],[[0,0],[0,1],[0,2],[1,2]]];
+var COLS2=['#8B5CF6','#D946EF','#22D3EE','#F472B6','#A78BFA','#F0ABFC','#818CF8'];
+var grid,pieces,sel,score;
+function canPlace(sh,ox,oy){for(var i=0;i<sh.length;i++){var x=ox+sh[i][0],y=oy+sh[i][1];if(x<0||y<0||x>=N||y>=N||grid[y][x])return false}return true}
+function fitsAnywhere(sh){for(var y=0;y<N;y++)for(var x=0;x<N;x++)if(canPlace(sh,x,y))return true;return false}
+function newPieces(){pieces=[];for(var i=0;i<3;i++){var s=SHAPES[Math.floor(Math.random()*SHAPES.length)];pieces.push({sh:s,col:COLS2[Math.floor(Math.random()*COLS2.length)],used:false})}sel=0}
+function draw(){ctx.clearRect(0,0,W,H);
+ for(var y=0;y<N;y++)for(var x=0;x<N;x++){ctx.fillStyle=grid[y][x]||'#241845';ctx.fillRect(8+x*CELL+1,OY+y*CELL+1,CELL-2,CELL-2);ctx.strokeStyle='rgba(139,92,246,.35)';ctx.strokeRect(8+x*CELL+1,OY+y*CELL+1,CELL-2,CELL-2)}
+ var py=OY+N*CELL+16;
+ for(var i=0;i<3;i++){var p=pieces[i],sx=14+i*94;
+  if(i===sel&&!p.used){ctx.strokeStyle='#F0ABFC';ctx.lineWidth=3;ctx.strokeRect(sx-6,py-6,88,86)}
+  if(p.used){ctx.fillStyle='rgba(255,255,255,.25)';ctx.font='13px sans-serif';ctx.fillText('✓',sx+30,py+40);continue}
+  ctx.fillStyle=p.col;var cs=17;
+  for(var k=0;k<p.sh.length;k++)ctx.fillRect(sx+p.sh[k][0]*cs+1,py+p.sh[k][1]*cs+1,cs-2,cs-2)}}
+function clearLines(){var rows=[],cols=[];
+ for(var y=0;y<N;y++){var f=true;for(var x=0;x<N;x++)if(!grid[y][x])f=false;if(f)rows.push(y)}
+ for(var x2=0;x2<N;x2++){var f2=true;for(var y2=0;y2<N;y2++)if(!grid[y2][x2])f2=false;if(f2)cols.push(x2)}
+ var n=rows.length+cols.length;if(!n)return 0;
+ for(var i=0;i<rows.length;i++)for(var x3=0;x3<N;x3++)grid[rows[i]][x3]=null;
+ for(var j=0;j<cols.length;j++)for(var y3=0;y3<N;y3++)grid[y3][cols[j]]=null;
+ return n}
+function checkEnd(){for(var i=0;i<3;i++)if(!pieces[i].used&&fitsAnywhere(pieces[i].sh))return false;return true}
+function place(i,ox,oy){var p=pieces[i];if(p.used||!canPlace(p.sh,ox,oy))return false;
+ for(var k=0;k<p.sh.length;k++)grid[oy+p.sh[k][1]][ox+p.sh[k][0]]=p.col;
+ score+=p.sh.length;p.used=true;beep(600,.05);
+ var ln=clearLines();if(ln){score+=ln*10+(ln>1?ln*10:0);beep(900,.09)}
+ el('sc').textContent=score;
+ var allUsed=true;for(var j=0;j<3;j++)if(!pieces[j].used)allUsed=false;
+ if(allUsed)newPieces();else{for(var m=0;m<3;m++)if(!pieces[m].used){sel=m;break}}
+ draw();
+ if(checkEnd())setTimeout(function(){gameOver(score)},250);
+ return true}
+cv.addEventListener('pointerdown',function(e){var p=ptr(cv,e,W,H);
+ var py=OY+N*CELL+16;
+ if(p.y>=py-8){var i=Math.floor((p.x-8)/94);if(i>=0&&i<3&&!pieces[i].used){sel=i;beep(440,.03);draw()}return}
+ var cx=Math.floor((p.x-8)/CELL),cy=Math.floor((p.y-OY)/CELL);
+ if(cx>=0&&cy>=0&&cx<N&&cy<N)place(sel,cx,cy)});
+function start(){grid=[];for(var y=0;y<N;y++){var r=[];for(var x=0;x<N;x++)r.push(null);grid.push(r)}
+ score=0;el('sc').textContent='0';newPieces();draw()}
+window.__restart=start;start();
+</script>
+</body>
+</html>

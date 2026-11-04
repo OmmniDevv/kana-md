@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Minesweeper</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:480px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;box-sizing:border-box;position:relative;overflow:hidden;background:#17102B}
+h1{font-size:19px;margin:2px 0;color:#EDE9FE}
+.hud{color:#D8CCFF;font-size:15px;min-height:19px;text-align:center}
+.how{color:#A78BFA;font-size:12px;text-align:center;padding:0 8px}
+canvas{background:#241845;border-radius:12px;touch-action:none}
+.btn{background:#8B5CF6;color:#fff;border:0;border-radius:999px;padding:9px 18px;font-size:15px;cursor:pointer}
+.btn:active{background:#D946EF}
+.ctl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.cbtn{background:#2E1065;color:#fff;border:2px solid #8B5CF6;border-radius:12px;width:52px;height:46px;font-size:20px;cursor:pointer;touch-action:none}
+.cbtn:active{background:#D946EF}
+#over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,6,28,.88);z-index:5;text-align:center}
+#overT{font-size:24px;color:#F0ABFC}
+#overLine{font-size:17px;color:#D8CCFF}
+
+#grid{display:grid;grid-template-columns:repeat(8,38px);gap:4px}
+.cell{width:38px;height:38px;border-radius:8px;border:2px solid #8B5CF6;background:#2E1065;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;padding:0}
+.cell.open{background:#1E1140;border-color:#4C1D95}
+.cell.mine{background:#7F1D3B}
+
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1 id="t"></h1><div class="hud">💣 <b id="left">10</b> · <span id="sl"></span>: <b id="sc">0</b></div>
+<div id="grid"></div>
+<div class="ctl"><button class="btn" id="mode"></button></div>
+<div class="how" id="how"></div>
+<div id="over"><div id="overT"></div><div id="overLine"><span class="osl"></span> <b id="final">0</b></div><button class="btn" id="again"></button></div>
+</div>
+<script>
+var BOT=null;try{BOT=window.__BOT||null}catch(e){BOT=null}
+if(!BOT){try{BOT=__BOT_VARS_JSON__}catch(e){BOT=null}}
+var LANG=(BOT&&BOT.lang==='en')?'en':'id';
+function el(i){return document.getElementById(i)}
+var AC=null;
+function beep(f,d){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f||440;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+(d||.08));o.stop(AC.currentTime+(d||.08));}catch(e){}}
+var sentScore=false;
+function submitScore(sc){if(sentScore)return;sentScore=true;sc=Math.floor(sc||0);if(sc<=0||!BOT||!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){try{ws.close()}catch(e){}};setTimeout(function(){try{ws.close()}catch(e){}},3000);}catch(e){}}
+function gameOver(sc){el('final').textContent=Math.floor(sc||0);el('over').style.display='flex';beep(160,.25);submitScore(sc)}
+function fitCanvas(cv,w,h){var d=Math.min(window.devicePixelRatio||1,3);cv.width=w*d;cv.height=h*d;cv.style.width='100%';cv.style.maxWidth=w+'px';cv.style.height=h+'px';var c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return c}
+function ptr(cv,e,w,h){var r=cv.getBoundingClientRect();var t=(e.touches&&e.touches[0])?e.touches[0]:e;return{x:(t.clientX-r.left)*w/r.width,y:(t.clientY-r.top)*h/r.height}}
+el('again').addEventListener('click',function(){el('over').style.display='none';sentScore=false;if(window.__restart)window.__restart()});
+</script>
+<script>
+var STR={id:{t:'Ranjau KANA',s:'Skor',o:'Game Over!',ow:'Kamu Menang! 🎉',a:'Main Lagi',dig:'Mode: Gali ⛏️',flag:'Mode: Bendera 🚩',h:'Ketuk untuk membuka sel. Tahan lama atau mode bendera untuk menandai ranjau. 8x8, 10 ranjau.'},en:{t:'KANA Mines',s:'Score',o:'Game Over!',ow:'You Win! 🎉',a:'Play Again',dig:'Mode: Dig ⛏️',flag:'Mode: Flag 🚩',h:'Tap to open a cell. Long press or flag mode to mark mines. 8x8, 10 mines.'}}[LANG];
+el('t').textContent=STR.t+' 💣';el('sl').textContent=STR.s;el('how').textContent=STR.h;el('again').textContent=STR.a;document.querySelector('.osl').textContent=STR.s+':';
+var N=8,MINES=10,mines,opened,flags,flagMode,placed,ended,cells;
+function idx(x,y){return y*N+x}
+function neighbors(x,y){var r=[];for(var dy=-1;dy<=1;dy++)for(var dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;var nx=x+dx,ny=y+dy;if(nx>=0&&ny>=0&&nx<N&&ny<N)r.push(idx(nx,ny))}return r}
+function placeMines(safe){mines={};var n=0;while(n<MINES){var i=Math.floor(Math.random()*64);if(i===safe||mines[i])continue;mines[i]=true;n++}placed=true}
+function count(i){var x=i%N,y=Math.floor(i/N),nb=neighbors(x,y),c=0;for(var k=0;k<nb.length;k++)if(mines[nb[k]])c++;return c}
+function reveal(i){var stack=[i];while(stack.length){var cur=stack.pop();var d=cells[cur];if(d.classList.contains('open')||d.getAttribute('data-f')==='1')continue;
+ d.classList.add('open');opened++;var c=count(cur);
+ if(c>0)d.textContent=c;else{var x=cur%N,y=Math.floor(cur/N),nb=neighbors(x,y);for(var k=0;k<nb.length;k++)if(!cells[nb[k]].classList.contains('open'))stack.push(nb[k])}}
+ el('sc').textContent=opened*5}
+function toggleFlag(d){if(d.classList.contains('open'))return;var f=d.getAttribute('data-f')==='1';d.setAttribute('data-f',f?'0':'1');d.textContent=f?'':'🚩';flags+=f?-1:1;el('left').textContent=MINES-flags;beep(500,.04)}
+function tap(i){if(ended)return;var d=cells[i];
+ if(flagMode){toggleFlag(d);return}
+ if(d.getAttribute('data-f')==='1'||d.classList.contains('open'))return;
+ if(!placed)placeMines(i);
+ if(mines[i]){ended=true;d.classList.add('open');d.classList.add('mine');d.textContent='💣';
+  for(var k=0;k<64;k++)if(mines[k]){cells[k].classList.add('open');if(k!==i)cells[k].textContent='💣'}
+  el('overT').textContent=STR.o;gameOver(opened*5);return}
+ reveal(i);beep(620,.04);
+ if(opened===64-MINES){ended=true;el('overT').textContent=STR.ow;gameOver(opened*5+500)}}
+function start(){mines={};opened=0;flags=0;flagMode=false;placed=false;ended=false;el('left').textContent=MINES;el('sc').textContent='0';el('mode').textContent=STR.dig;el('overT').textContent=STR.o;
+ var g=el('grid');g.innerHTML='';cells=[];
+ for(var i=0;i<64;i++){(function(i){var d=document.createElement('button');d.className='cell';d.setAttribute('data-f','0');cells.push(d);
+  var pt=null,lp=false;
+  d.addEventListener('pointerdown',function(){lp=false;pt=setTimeout(function(){lp=true;if(!ended)toggleFlag(d)},550)});
+  d.addEventListener('pointerup',function(){if(pt)clearTimeout(pt)});
+  d.addEventListener('pointerleave',function(){if(pt)clearTimeout(pt)});
+  d.addEventListener('click',function(){if(lp){lp=false;return}tap(i)});
+  g.appendChild(d)})(i)}}
+el('mode').addEventListener('click',function(){flagMode=!flagMode;el('mode').textContent=flagMode?STR.flag:STR.dig});
+window.__restart=start;start();
+</script>
+</body>
+</html>

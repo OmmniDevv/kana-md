@@ -13,3 +13,40 @@ export async function sendHtmlGame(sock, jid, htmlPath, { title, label, height =
   }
   return MB.sendHtmlApp(sock, jid, html, { title, label, height })
 }
+
+function varsJson(vars) {
+  // Escape "<" supaya nama pemain yang mengandung "</script>" tidak bisa
+  // menutup tag script suntikan lebih awal. JSON tetap valid.
+  return JSON.stringify(vars ?? {}).replace(/</g, '\\u003c')
+}
+
+// Suntikkan variabel bot ke HTML game (murni, gampang dites).
+// Kontrak Fase 3: vars = { sid, lang, name, token, ws }.
+// Bila HTML mengandung token string __BOT_VARS_JSON__, token itu diganti
+// JSON vars-nya. Selain itu sisipkan
+// <script>window.__BOT = <JSON></script> tepat sebelum </body>
+// (atau di akhir dokumen bila tidak ada </body>).
+export function buildGameHtml(html, vars) {
+  const json = varsJson(vars)
+  const source = String(html ?? '')
+  if (source.includes('__BOT_VARS_JSON__')) return source.split('__BOT_VARS_JSON__').join(json)
+  const script = `<script>window.__BOT = ${json}</script>`
+  const idx = source.toLowerCase().lastIndexOf('</body>')
+  if (idx === -1) return source + script
+  return source.slice(0, idx) + script + source.slice(idx)
+}
+
+// Kirim game dengan variabel bot tersuntik: baca file, jalankan
+// checkHtmlApp, suntikkan vars, lalu MB.sendHtmlApp.
+export async function sendGameWithVars(sock, jid, htmlPath, { title, label, height = 360, vars } = {}) {
+  const html = await readFile(htmlPath, 'utf8')
+  const built = buildGameHtml(html, vars)
+  if (typeof checkHtmlApp === 'function') {
+    try {
+      const report = checkHtmlApp(built, { height })
+      const problems = Array.isArray(report) ? report : [...(report?.problems ?? []), ...(report?.warnings ?? [])]
+      if (problems.length) logger.warn({ warnings: problems }, 'checkHtmlApp')
+    } catch {}
+  }
+  return MB.sendHtmlApp(sock, jid, built, { title, label, height })
+}

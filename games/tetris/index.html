@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Tetris</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:560px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;box-sizing:border-box;position:relative;overflow:hidden;background:#17102B}
+h1{font-size:19px;margin:2px 0;color:#EDE9FE}
+.hud{color:#D8CCFF;font-size:15px;min-height:19px;text-align:center}
+.how{color:#A78BFA;font-size:12px;text-align:center;padding:0 8px}
+canvas{background:#241845;border-radius:12px;touch-action:none}
+.btn{background:#8B5CF6;color:#fff;border:0;border-radius:999px;padding:9px 18px;font-size:15px;cursor:pointer}
+.btn:active{background:#D946EF}
+.ctl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.cbtn{background:#2E1065;color:#fff;border:2px solid #8B5CF6;border-radius:12px;width:52px;height:46px;font-size:20px;cursor:pointer;touch-action:none}
+.cbtn:active{background:#D946EF}
+#over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,6,28,.88);z-index:5;text-align:center}
+#overT{font-size:24px;color:#F0ABFC}
+#overLine{font-size:17px;color:#D8CCFF}
+
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1 id="t"></h1><div class="hud"><span id="sl"></span>: <b id="sc">0</b> · <span id="ll"></span>: <b id="ln">0</b></div>
+<canvas id="cv"></canvas>
+<div class="ctl"><button class="cbtn" data-a="left">⬅</button><button class="cbtn" data-a="rot">⟳</button><button class="cbtn" data-a="right">➡</button><button class="cbtn" data-a="down">⬇</button><button class="cbtn" data-a="drop">⏬</button></div>
+<div class="how" id="how"></div>
+<div id="over"><div id="overT"></div><div id="overLine"><span class="osl"></span> <b id="final">0</b></div><button class="btn" id="again"></button></div>
+</div>
+<script>
+var BOT=null;try{BOT=window.__BOT||null}catch(e){BOT=null}
+if(!BOT){try{BOT=__BOT_VARS_JSON__}catch(e){BOT=null}}
+var LANG=(BOT&&BOT.lang==='en')?'en':'id';
+function el(i){return document.getElementById(i)}
+var AC=null;
+function beep(f,d){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f||440;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+(d||.08));o.stop(AC.currentTime+(d||.08));}catch(e){}}
+var sentScore=false;
+function submitScore(sc){if(sentScore)return;sentScore=true;sc=Math.floor(sc||0);if(sc<=0||!BOT||!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){try{ws.close()}catch(e){}};setTimeout(function(){try{ws.close()}catch(e){}},3000);}catch(e){}}
+function gameOver(sc){el('final').textContent=Math.floor(sc||0);el('over').style.display='flex';beep(160,.25);submitScore(sc)}
+function fitCanvas(cv,w,h){var d=Math.min(window.devicePixelRatio||1,3);cv.width=w*d;cv.height=h*d;cv.style.width='100%';cv.style.maxWidth=w+'px';cv.style.height=h+'px';var c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return c}
+function ptr(cv,e,w,h){var r=cv.getBoundingClientRect();var t=(e.touches&&e.touches[0])?e.touches[0]:e;return{x:(t.clientX-r.left)*w/r.width,y:(t.clientY-r.top)*h/r.height}}
+el('again').addEventListener('click',function(){el('over').style.display='none';sentScore=false;if(window.__restart)window.__restart()});
+</script>
+<script>
+var STR={id:{t:'Tetris KANA',s:'Skor',o:'Game Over!',a:'Main Lagi',l:'Garis',h:'Susun balok jadi garis penuh. Tombol: geser, putar, turun, jatuh langsung.'},en:{t:'KANA Tetris',s:'Score',o:'Game Over!',a:'Play Again',l:'Lines',h:'Complete full lines. Buttons: move, rotate, soft drop, hard drop.'}}[LANG];
+el('t').textContent=STR.t+' 🧩';el('sl').textContent=STR.s;el('ll').textContent=STR.l;el('how').textContent=STR.h;el('overT').textContent=STR.o;el('again').textContent=STR.a;document.querySelector('.osl').textContent=STR.s+':';
+var COLS=10,ROWS=20,CELL=19,W=COLS*CELL,H=ROWS*CELL,cv=el('cv'),ctx=fitCanvas(cv,W,H);
+var SHAPES=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]]];
+var PCOL=['#22D3EE','#FACC15','#D946EF','#4ADE80','#F87171','#60A5FA','#FB923C'];
+var grid,cur,score,lines,run,raf,last,acc;
+function newPiece(){var s=Math.floor(Math.random()*7);cur={m:SHAPES[s].map(function(r){return r.slice()}),c:PCOL[s],x:3,y:0};
+ if(collide(cur.m,cur.x,cur.y)){run=false;draw();gameOver(score)}}
+function collide(m,px,py){for(var r=0;r<m.length;r++)for(var c=0;c<m[r].length;c++){if(!m[r][c])continue;var x=px+c,y=py+r;if(x<0||x>=COLS||y>=ROWS)return true;if(y>=0&&grid[y][x])return true}return false}
+function lock(){for(var r=0;r<cur.m.length;r++)for(var c=0;c<cur.m[r].length;c++){if(cur.m[r][c]){var y=cur.y+r;if(y<0){run=false;gameOver(score);return}grid[y][cur.x+c]=cur.c}}
+ var cleared=0,ng=[];
+ for(var y2=0;y2<ROWS;y2++){var full=true;for(var x2=0;x2<COLS;x2++)if(!grid[y2][x2])full=false;if(full)cleared++;else ng.push(grid[y2])}
+ while(ng.length<ROWS)ng.unshift(blankRow());
+ grid=ng;if(cleared){score+=[0,100,300,500,800][cleared];lines+=cleared;el('sc').textContent=score;el('ln').textContent=lines;beep(700+cleared*80,.09)}
+ newPiece()}
+function blankRow(){var a=[];for(var i=0;i<COLS;i++)a.push(null);return a}
+function rotate(){var m=cur.m,rm=[];for(var c=0;c<m[0].length;c++){rm.push([]);for(var r=m.length-1;r>=0;r--)rm[c].push(m[r][c])}
+ if(!collide(rm,cur.x,cur.y))cur.m=rm;else if(!collide(rm,cur.x-1,cur.y)){cur.x--;cur.m=rm}else if(!collide(rm,cur.x+1,cur.y)){cur.x++;cur.m=rm}}
+function draw(){ctx.clearRect(0,0,W,H);ctx.strokeStyle='rgba(139,92,246,.18)';ctx.lineWidth=1;
+ for(var x=0;x<=COLS;x++){ctx.beginPath();ctx.moveTo(x*CELL,0);ctx.lineTo(x*CELL,H);ctx.stroke()}
+ for(var y=0;y<ROWS;y++){for(var x2=0;x2<COLS;x2++){if(grid[y][x2]){ctx.fillStyle=grid[y][x2];ctx.fillRect(x2*CELL+1,y*CELL+1,CELL-2,CELL-2)}}}
+ if(cur){ctx.fillStyle=cur.c;for(var r=0;r<cur.m.length;r++)for(var c=0;c<cur.m[r].length;c++)if(cur.m[r][c])ctx.fillRect((cur.x+c)*CELL+1,(cur.y+r)*CELL+1,CELL-2,CELL-2)}}
+function loop(ts){if(!run)return;var dt=Math.min(100,ts-(last||ts));last=ts;acc+=dt;var iv=Math.max(120,700-lines*18);
+ if(acc>=iv){acc=0;if(!collide(cur.m,cur.x,cur.y+1))cur.y++;else lock()}
+ draw();if(run)raf=requestAnimationFrame(loop)}
+function act(a){if(!run||!cur)return;
+ if(a==='left'&&!collide(cur.m,cur.x-1,cur.y))cur.x--;
+ if(a==='right'&&!collide(cur.m,cur.x+1,cur.y))cur.x++;
+ if(a==='down'){if(!collide(cur.m,cur.x,cur.y+1)){cur.y++;score+=1;el('sc').textContent=score}else lock()}
+ if(a==='rot'){rotate();beep(500,.04)}
+ if(a==='drop'){var n=0;while(!collide(cur.m,cur.x,cur.y+1)){cur.y++;n++}score+=n*2;el('sc').textContent=score;lock();beep(300,.06)}
+ draw()}
+var bb=document.querySelectorAll('[data-a]');
+for(var k=0;k<bb.length;k++)bb[k].addEventListener('pointerdown',function(e){e.preventDefault();act(this.getAttribute('data-a'))});
+document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')act('left');if(e.key==='ArrowRight')act('right');if(e.key==='ArrowDown')act('down');if(e.key==='ArrowUp')act('rot');if(e.code==='Space'){e.preventDefault();act('drop')}});
+document.addEventListener('visibilitychange',function(){if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=null}else if(run&&!raf){last=0;raf=requestAnimationFrame(loop)}});
+function start(){grid=[];for(var i=0;i<ROWS;i++)grid.push(blankRow());score=0;lines=0;run=true;last=0;acc=0;el('sc').textContent='0';el('ln').textContent='0';newPiece();if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+window.__restart=start;start();
+</script>
+</body>
+</html>

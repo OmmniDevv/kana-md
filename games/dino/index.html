@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Dino Run</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:360px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;box-sizing:border-box;position:relative;overflow:hidden;background:#17102B}
+h1{font-size:19px;margin:2px 0;color:#EDE9FE}
+.hud{color:#D8CCFF;font-size:15px;min-height:19px;text-align:center}
+.how{color:#A78BFA;font-size:12px;text-align:center;padding:0 8px}
+canvas{background:#241845;border-radius:12px;touch-action:none}
+.btn{background:#8B5CF6;color:#fff;border:0;border-radius:999px;padding:9px 18px;font-size:15px;cursor:pointer}
+.btn:active{background:#D946EF}
+.ctl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.cbtn{background:#2E1065;color:#fff;border:2px solid #8B5CF6;border-radius:12px;width:52px;height:46px;font-size:20px;cursor:pointer;touch-action:none}
+.cbtn:active{background:#D946EF}
+#over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,6,28,.88);z-index:5;text-align:center}
+#overT{font-size:24px;color:#F0ABFC}
+#overLine{font-size:17px;color:#D8CCFF}
+
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1 id="t"></h1><div class="hud"><span id="sl"></span>: <b id="sc">0</b></div>
+<canvas id="cv"></canvas>
+<div class="ctl"><button class="btn" id="jump"></button></div>
+<div class="how" id="how"></div>
+<div id="over"><div id="overT"></div><div id="overLine"><span class="osl"></span> <b id="final">0</b></div><button class="btn" id="again"></button></div>
+</div>
+<script>
+var BOT=null;try{BOT=window.__BOT||null}catch(e){BOT=null}
+if(!BOT){try{BOT=__BOT_VARS_JSON__}catch(e){BOT=null}}
+var LANG=(BOT&&BOT.lang==='en')?'en':'id';
+function el(i){return document.getElementById(i)}
+var AC=null;
+function beep(f,d){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f||440;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+(d||.08));o.stop(AC.currentTime+(d||.08));}catch(e){}}
+var sentScore=false;
+function submitScore(sc){if(sentScore)return;sentScore=true;sc=Math.floor(sc||0);if(sc<=0||!BOT||!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){try{ws.close()}catch(e){}};setTimeout(function(){try{ws.close()}catch(e){}},3000);}catch(e){}}
+function gameOver(sc){el('final').textContent=Math.floor(sc||0);el('over').style.display='flex';beep(160,.25);submitScore(sc)}
+function fitCanvas(cv,w,h){var d=Math.min(window.devicePixelRatio||1,3);cv.width=w*d;cv.height=h*d;cv.style.width='100%';cv.style.maxWidth=w+'px';cv.style.height=h+'px';var c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return c}
+function ptr(cv,e,w,h){var r=cv.getBoundingClientRect();var t=(e.touches&&e.touches[0])?e.touches[0]:e;return{x:(t.clientX-r.left)*w/r.width,y:(t.clientY-r.top)*h/r.height}}
+el('again').addEventListener('click',function(){el('over').style.display='none';sentScore=false;if(window.__restart)window.__restart()});
+</script>
+<script>
+var STR={id:{t:'Dino Lari',s:'Skor',o:'Game Over!',a:'Main Lagi',j:'Lompat',h:'Ketuk layar atau tombol Lompat untuk melewati kaktus. Makin jauh, makin cepat!'},en:{t:'Dino Run',s:'Score',o:'Game Over!',a:'Play Again',j:'Jump',h:'Tap the screen or the Jump button to leap over cactuses. Farther means faster!'}}[LANG];
+el('t').textContent=STR.t+' 🦖';el('sl').textContent=STR.s;el('jump').textContent=STR.j+' ⬆';el('how').textContent=STR.h;el('overT').textContent=STR.o;el('again').textContent=STR.a;document.querySelector('.osl').textContent=STR.s+':';
+var W=340,H=190,GY=158,cv=el('cv'),ctx=fitCanvas(cv,W,H);
+var dy,vy,obs,spd,dist,run,raf,last,spawnT;
+function start(){dy=0;vy=0;obs=[];spd=3.2;dist=0;run=true;last=0;spawnT=40;el('sc').textContent='0';if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+function jump(){if(!run)return;if(dy<=0){vy=-11.5;beep(520,.07)}}
+function loop(ts){if(!run)return;var dt=Math.min(32,ts-(last||ts));last=ts;var f=dt/16.7;
+ vy+=0.62*f;dy-=vy*f;if(dy<0){dy=0;vy=0}
+ dist+=spd*f;spd=3.2+dist/2600;el('sc').textContent=Math.floor(dist/10);
+ spawnT-=f;if(spawnT<=0){obs.push({x:W+10,w:16+Math.random()*10,h:24+Math.random()*22});spawnT=52+Math.random()*46-spd*2;if(spawnT<30)spawnT=30}
+ for(var i=obs.length-1;i>=0;i--){obs[i].x-=spd*f;if(obs[i].x<-30)obs.splice(i,1)}
+ ctx.clearRect(0,0,W,H);ctx.strokeStyle='#8B5CF6';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,GY+30);ctx.lineTo(W,GY+30);ctx.stroke();
+ ctx.font='30px sans-serif';ctx.fillText('🦖',36,GY+28-dy);
+ ctx.font='26px sans-serif';
+ for(var j=0;j<obs.length;j++){var o=obs[j];ctx.fillText('🌵',o.x,GY+28);
+  if(36+22>o.x+4&&36+4<o.x+o.w&&GY+28-dy>GY+28-o.h&&GY-dy<GY+28){run=false;gameOver(dist/10);return}}
+ raf=requestAnimationFrame(loop)}
+cv.addEventListener('pointerdown',function(e){e.preventDefault();jump()});
+el('jump').addEventListener('pointerdown',function(e){e.preventDefault();jump()});
+document.addEventListener('keydown',function(e){if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}});
+document.addEventListener('visibilitychange',function(){if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=null}else if(run&&!raf){last=0;raf=requestAnimationFrame(loop)}});
+window.__restart=start;start();
+</script>
+</body>
+</html>
