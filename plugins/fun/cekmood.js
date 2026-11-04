@@ -66,7 +66,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('cekmood.btnAgain'), id: '.cekmood' },
-      { text: ctx.t('cekmood.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

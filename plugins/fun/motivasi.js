@@ -80,7 +80,6 @@ export async function handler(ctx) {
     replies: [
       { text: ctx.t('motivasi.btnAgain'), id: '.motivasi' },
       { text: ctx.t('motivasi.btnPantun'), id: '.pantun' },
-      { text: ctx.t('motivasi.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })

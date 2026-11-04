@@ -75,7 +75,6 @@ export async function handler(ctx) {
     footer: ctx.t('menu.footer'),
     replies: [
       { text: ctx.t('bola8.btnAgain'), id: `.bola8 ${question.slice(0, 60)}` },
-      { text: ctx.t('bola8.btnMenu'), id: '.menu fun' },
     ],
     textFallback: body,
   })
