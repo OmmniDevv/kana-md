@@ -204,23 +204,25 @@ Definisi selesai per gerbang kualitas user (2026-11-04 16:01 WIB): tes unit hany
 | Plugin | Uji | Status live | Catatan |
 |---|---|---|---|
 | profil | .profil | LIVE LOLOS 2026-11-04 16:03 WIB | Kartu canvas terkirim, 0 handler error; service dipulihkan dan tersambung lagi sesudah tes |
-| ai | .ai | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; aturan mutu 16:06 mewajibkan pertanyaan asli |
-| aiimg | .aiimg | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib prompt asli |
+| ai | .ai | LIVE LOLOS PENUH | Tes live input asli 2026-11-04 16:22 WIB: pertanyaan "Apa ibu kota Jepang?" dijawab Tokyo, terkirim, 0 handler error |
+| aiimg | .aiimg | LIVE LOLOS PENUH | Tes live prompt asli 2026-11-04 16:22 WIB: gambar kucing oren berkacamata terkirim, 0 handler error |
 | aireset | .aireset | LIVE LOLOS 2026-11-04 16:05 WIB | Terkirim, 0 handler error; tanpa argumen memang fungsi aslinya (reset memori) |
-| ringkas | .ringkas | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib teks asli |
-| tts | .tts (plugin ai) | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib teks asli |
+| ringkas | .ringkas | LIVE LOLOS PENUH | Tes live teks asli 3 kalimat 2026-11-04 16:22 WIB, ringkasan terkirim, 0 handler error |
+| tts | .tts (plugin ai) | LIVE LOLOS PENUH | Tes live teks asli 2026-11-04 16:22 WIB, voice note terkirim, 0 handler error |
 | vision | .vision | LIVE LOLOS 2026-11-04 16:05 WIB | Terkirim, 0 handler error; perilaku aslinya memang menjawab belum dikonfigurasi tanpa VISION_API_URL |
-| aio | .aio | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib URL asli |
+| aio | .aio | LIVE LOLOS PENUH | Tes live link TikTok asli 2026-11-04 16:23 WIB lewat rantai unduh TikTok, terkirim, 0 handler error |
 | capcut | .capcut | LIVE LOLOS 2026-11-04 16:05 WIB | Terkirim, 0 handler error; CATATAN audit paritas: ini STUB yang hanya membalas belum tersedia, status fitur SEBAGIAN, wajib diport scrapernya sebelum dihitung fitur selesai |
-| fb | .fb | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib link FB asli |
-| gdrive | .gdrive | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:05 WIB, 0 handler error; wajib link Drive asli |
-| ig | .ig | GANGGUAN SUMBER + MENUNGGU TES LIVE ULANG | Scraper SnapSave membalas "Empty response from SnapSave" untuk dua link IG publik asli berbeda (post dan reel) dari VM 2026-11-04; bukan handler error. Tes live jalur usage terkirim 0 handler error |
-| lirik | .lirik | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; kata kunci asli "Tulus Sepatu" lolos smoke scraper |
-| mediafire | .mediafire | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; link asli lolos smoke resolveMediafire |
-| pinterest | .pinterest | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; kata kunci asli lolos smoke pencarian |
-| play | .play | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; URL YouTube asli lolos smoke downloadAudio |
+| fb | .fb | LIVE LOLOS PENUH | Tes live link FB publik asli 2026-11-04 16:23 WIB, video terkirim, 0 handler error |
+| gdrive | .gdrive | LIVE LOLOS PENUH | Tes live link Drive publik asli 2026-11-04 16:23 WIB, berkas terkirim, 0 handler error |
+| ig | .ig | GANGGUAN SUMBER | Tes live ulang input asli 2026-11-04 16:23 WIB: balasan terkirim 0 handler error, tetapi isinya pemberitahuan gagal karena SnapSave membalas "Empty response from SnapSave" untuk dua link IG publik asli berbeda (bukti smoke VM); bukan lulus penuh |
+| lirik | .lirik | MENUNGGU TES ULANG (koneksi) | Run 16:23 WIB gagal "Connection Closed" karena koneksi WA harness putus di tengah jendela (log "koneksi putus, reconnect"); bukan error logika handler; smoke scraper VM lolos, lirik 910 karakter; wajib tes live ulang |
+| mediafire | .mediafire | MENUNGGU TES ULANG (koneksi) | Run 16:23 WIB gagal "Connection Closed" karena koneksi WA harness putus di tengah jendela (log "koneksi putus, reconnect"); bukan error logika handler; smoke resolveMediafire VM lolos, PDF 1,17 MB; wajib tes live ulang |
+| pinterest | .pinterest | MENUNGGU TES ULANG (koneksi) | Run 16:23 WIB gagal "Connection Closed" karena koneksi WA harness putus di tengah jendela (log "koneksi putus, reconnect"); bukan error logika handler; smoke pencarian VM memberi hasil; wajib tes live ulang |
+| play | .play | MENUNGGU TES ULANG (koneksi) | Run 16:23 WIB gagal "Connection Closed" karena koneksi WA harness putus di tengah jendela (log "koneksi putus, reconnect"); bukan error logika handler; smoke downloadAudio VM lolos, buffer 309 KB; wajib tes live ulang |
 | soundcloud | .soundcloud | LIVE LOLOS 2026-11-04 16:06 WIB | Terkirim, 0 handler error; CATATAN audit paritas: ini STUB, status fitur SEBAGIAN, wajib diport scrapernya sebelum dihitung fitur selesai |
-| spotify | .spotify | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; link track asli lolos smoke spotifyDownload |
+| spotify | .spotify | MENUNGGU TES ULANG (koneksi) | Run 16:24 WIB gagal "Connection Closed" karena koneksi WA harness putus di tengah jendela (log "koneksi putus, reconnect"); bukan error logika handler; smoke spotifyDownload VM status true; wajib tes live ulang |
 | threads | .threads | LIVE LOLOS 2026-11-04 16:06 WIB | Terkirim, 0 handler error; CATATAN audit paritas: ini STUB, status fitur SEBAGIAN, wajib diport scrapernya sebelum dihitung fitur selesai |
-| tiktok | .tiktok | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; link asli lolos smoke lewat fallback tikwm |
-| ytmp4 | .ytmp4 | MENUNGGU TES ULANG INPUT ASLI | Jalur usage terkirim 2026-11-04 16:06 WIB, 0 handler error; wajib URL YouTube asli |
+| tiktok | .tiktok | MENUNGGU TES ULANG (cek kesehatan) | Run 16:24 WIB berhenti aborted-health sesaat: cek kesehatan harness gagal membaca info capping ("unexpected response structure"), bukan vonis akun capped; run tepat sebelum dan sesudahnya sehat dan terkirim; wajib tes live ulang |
+| ytmp4 | .ytmp4 | MENUNGGU TES ULANG (koneksi) | Run 16:24 WIB gagal "Connection Closed" karena koneksi WA harness putus di tengah jendela (log "koneksi putus, reconnect"); bukan error logika handler; sumber YouTube sama dengan .play yang lolos smoke; wajib tes live ulang |
+| yts | .yts | LIVE LOLOS PENUH | Tes live kata kunci asli "Tulus Sepatu" 2026-11-04 16:24 WIB, hasil pencarian terkirim, 0 handler error |
+| komik | .komik | LIVE LOLOS PENUH | Tes live judul asli "Solo Leveling" 2026-11-04 16:23 WIB, hasil komik terkirim, 0 handler error |
