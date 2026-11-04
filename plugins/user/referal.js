@@ -1,5 +1,13 @@
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { MB } from '@rexxhayanasi/elaina-baileys'
 import { getProfile, updateProfile, addXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+import { logger } from '../../src/services/logger.js'
+import { buildFakeContactQuoted, loadMenuBanner } from '../../src/ui/fake-thumb.js'
+import { smallCaps, withButtonEmoji } from '../../src/config/templates.js'
+
+const here = dirname(fileURLToPath(import.meta.url))
+const BANNER_PATH = join(here, '../../assets/referal.jpg')
 
 export const config = {
   name: 'referal',
@@ -28,28 +36,96 @@ export const i18n = {
   id: {
     referal: {
       title: 'Referal KANA',
-      body: '🎁 KODE REFERALMU\n\nKode: *{code}*\nSudah mengundang: {count} orang\n\nBagikan kodemu, teman yang klaim dapat {claimant} XP dan kamu dapat {referrer} XP tiap orangnya. Klaim punya teman dengan: .referal klaim <kode> {mood}',
-      btnClaim: '🎁 Klaim Kode',
-      self: 'Itu kodemu sendiri, tidak bisa klaim punya sendiri yaa~ {mood}',
-      unknown: 'Kode referalnya tidak ketemu. Periksa lagi tulisannya yaa~ {mood}',
-      already: 'Kamu sudah pernah klaim kode referal, satu kali saja yaa~ {mood}',
-      claimed: '🎉 Klaim berhasil! Kamu dapat {claimant} XP dan pemilik kode dapat {referrer} XP. Selamat datang di KANA~ {mood}',
+      heading: 'REFERAL KANA',
+      codeLabel: 'Kode kamu',
+      countLabel: 'Sudah mengundang',
+      countUnit: 'orang',
+      rewardClaimant: 'Teman yang klaim dapat',
+      rewardReferrer: 'Kamu dapat',
+      xpUnit: 'XP tiap orangnya',
+      claimHint: 'Klaim kode teman pakai',
+      claimCommand: '.referal klaim <kode>',
+      btnCopy: 'Salin Kode',
+      btnShare: 'Bagikan ke Teman',
+      self: '╭─❏ 🙈 「 *ITU KODEMU SENDIRI* 」\n┊ Kode sendiri tidak bisa diklaim yaa~\n╰━━━━━━━ {mood}',
+      unknown: '╭─❏ 🔍 「 *KODE TIDAK KETEMU* 」\n┊ Periksa lagi tulisan kodenya yaa~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ 🌸 「 *SUDAH PERNAH KLAIM* 」\n┊ Klaim kode referal cuma bisa satu kali saja yaa~\n╰━━━━━━━ {mood}',
+      claimed: '╭─❏ 🎉 「 *KLAIM BERHASIL* 」\n┊ Kamu dapat *{claimant} XP*\n┊ Pemilik kode dapat *{referrer} XP*\n╰━━━━━━━\nSelamat datang di KANA~ {mood}',
     },
   },
   en: {
     referal: {
       title: 'KANA Referral',
-      body: '🎁 YOUR REFERRAL CODE\n\nCode: *{code}*\nPeople invited: {count}\n\nShare your code, friends who claim get {claimant} XP and you get {referrer} XP per person. Claim a friend code with: .referal klaim <code> {mood}',
-      btnClaim: '🎁 Claim a Code',
-      self: 'That is your own code, you cannot claim your own~ {mood}',
-      unknown: 'That referral code was not found. Please check the spelling~ {mood}',
-      already: 'You already claimed a referral code, only once~ {mood}',
-      claimed: '🎉 Claim successful! You got {claimant} XP and the code owner got {referrer} XP. Welcome to KANA~ {mood}',
+      heading: 'KANA REFERRAL',
+      codeLabel: 'Your code',
+      countLabel: 'People invited',
+      countUnit: 'people',
+      rewardClaimant: 'Friends who claim get',
+      rewardReferrer: 'You get',
+      xpUnit: 'XP per person',
+      claimHint: 'Claim a friend code with',
+      claimCommand: '.referal klaim <code>',
+      btnCopy: 'Copy Code',
+      btnShare: 'Share to Friends',
+      self: '╭─❏ 🙈 「 *THAT IS YOUR OWN CODE* 」\n┊ You cannot claim your own code~\n╰━━━━━━━ {mood}',
+      unknown: '╭─❏ 🔍 「 *CODE NOT FOUND* 」\n┊ Please check the spelling once more~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ 🌸 「 *ALREADY CLAIMED* 」\n┊ A referral code can only be claimed once~\n╰━━━━━━━ {mood}',
+      claimed: '╭─❏ 🎉 「 *CLAIM SUCCESSFUL* 」\n┊ You got *{claimant} XP*\n┊ The code owner got *{referrer} XP*\n╰━━━━━━━\nWelcome to KANA~ {mood}',
     },
   },
 }
 
 export const test = { input: '.referal', expect: /referal/i }
+
+function botNumber(ctx) {
+  return String(process.env.BOT_NUMBER || ctx.botJid || ctx.sock?.user?.id || '').replace(/\D/g, '')
+}
+
+function buildCardBody(ctx, { code, count }) {
+  const lines = [
+    `╭─❏ 🎁 「 *${ctx.t('referal.heading')}* 」`,
+    `┊ ${smallCaps(ctx.t('referal.codeLabel'))}: *${code}*`,
+    `┊ ${smallCaps(ctx.t('referal.countLabel'))}: *${count} ${ctx.t('referal.countUnit')}*`,
+    '╰━━━━━━━',
+    `💎 ${ctx.t('referal.rewardClaimant')} *${CLAIMANT_BONUS} ${ctx.t('referal.xpUnit')}*`,
+    `👑 ${ctx.t('referal.rewardReferrer')} *${REFERRER_BONUS} ${ctx.t('referal.xpUnit')}*`,
+    '',
+    `${ctx.t('referal.claimHint')}: *${ctx.t('referal.claimCommand')}* ${ctx.say('senang')}`,
+  ]
+  return lines.join('\n')
+}
+
+async function sendReferralCard(ctx, { code, count }) {
+  const body = buildCardBody(ctx, { code, count })
+  const banner = await loadMenuBanner(BANNER_PATH)
+  const contextInfo = {
+    mentionedJid: [`${ctx.senderDigits}@s.whatsapp.net`],
+    forwardingScore: 999,
+    isForwarded: true,
+  }
+  const quoted = buildFakeContactQuoted({ botName: process.env.BOT_NAME || 'KANA' })
+  const number = botNumber(ctx)
+  const shareUrl = number
+    ? `https://wa.me/${number}?text=${encodeURIComponent(`.referal klaim ${code}`)}`
+    : null
+  try {
+    const builder = new MB.Button(ctx.sock)
+    builder.setTitle(ctx.t('referal.title'))
+    builder.setBody(body)
+    builder.setFooter(ctx.t('menu.footer'))
+    if (banner) builder.setImage(banner)
+    builder.setContextInfo({ ...contextInfo, mentionedJid: [...contextInfo.mentionedJid] })
+    builder.addCopy(withButtonEmoji(ctx.t('referal.btnCopy'), 'copy'), code)
+    if (shareUrl) builder.addUrl(withButtonEmoji(ctx.t('referal.btnShare'), 'link'), shareUrl)
+    return await builder.send(ctx.chat, { quoted })
+  } catch (err) {
+    logger.warn({ err: err.message }, 'MB.Button referal gagal, fallback ke gambar plus caption')
+    const content = banner
+      ? { image: banner, caption: body, contextInfo }
+      : { text: body, contextInfo }
+    return ctx.sock.sendMessage(ctx.chat, content, { quoted })
+  }
+}
 
 export async function handler(ctx) {
   const arg = (ctx.text || '').trim()
@@ -71,12 +147,5 @@ export async function handler(ctx) {
   }
   await ctx.storage.set('referral', `code:${myCode}`, ctx.senderDigits)
   const count = Number((await ctx.storage.get('referral', `count:${ctx.senderDigits}`)) ?? 0)
-  const body = ctx.t('referal.body', { code: myCode, count, claimant: CLAIMANT_BONUS, referrer: REFERRER_BONUS, mood: ctx.say('senang') })
-  return sendButtons(ctx.sock, ctx.chat, {
-    title: ctx.t('referal.title'),
-    body,
-    footer: ctx.t('menu.footer'),
-    replies: [{ text: ctx.t('referal.btnClaim'), id: '.referal' }],
-    textFallback: body,
-  })
+  return sendReferralCard(ctx, { code: myCode, count })
 }

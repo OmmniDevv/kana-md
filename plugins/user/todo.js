@@ -25,7 +25,6 @@ export const i18n = {
       cleared: 'Semua tugas dibersihkan. Lembaran baru nih~ ✨',
       notFound: 'Nomor tugas {n} nggak ada di daftarmu (╥﹏╥)',
       btnList: 'Lihat Daftar',
-      btnMenu: 'Menu User',
     },
   },
   en: {
@@ -42,7 +41,6 @@ export const i18n = {
       cleared: 'All tasks cleared. A fresh sheet~ ✨',
       notFound: 'Task number {n} is not on your list (╥﹏╥)',
       btnList: 'View List',
-      btnMenu: 'User Menu',
     },
   },
 }
@@ -72,7 +70,7 @@ function listBody(ctx, todos) {
 async function withButtons(ctx, body, { listButton = true } = {}) {
   const replies = []
   if (listButton) replies.push({ text: ctx.t('todo.btnList'), id: '.todo list' })
-  replies.push({ text: ctx.t('todo.btnMenu'), id: '.menu user' })
+  if (!replies.length) return ctx.reply(body)
   return sendButtons(ctx.sock, ctx.chat, {
     title: 'KANA',
     body,
