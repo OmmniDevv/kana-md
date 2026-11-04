@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'soulmatch',
-  alias: ['kecocokanjiwa'],
+  alias: ['kecocokanjiwa', 'shipcouple', 'match', 'love'],
   category: 'fun',
   description: { id: 'Cek kecocokan jiwa dua nama: hati, pikiran, dan nasib (hiburan)', en: 'Check the soul match of two names: heart, mind, and fate (fun)' },
   usage: '.soulmatch <nama1> & <nama2>',
