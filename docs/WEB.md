@@ -182,3 +182,10 @@ dashboard saat menghitung atau menampilkan member.
   memanggil `startWebLoginWatcher({ session, storage })` saat boot.
 - Bila dashboard pindah domain, sesuaikan env `WEB_LOGIN_URL` di sisi bot
   supaya tautan di balasan `.webcode` tetap benar.
+
+
+## (e) Jembatan HTTPS sisi bot (aktif sejak 2026-11-04)
+
+Bot production berjalan dengan storage lokal; koneksi pg langsung dari VM ke pooler Supabase timeout, jadi watcher tidak bisa membaca bot.kv lewat driver pg. Jembatan (src/services/web-bridge.js + supabase-rest.js) merutekan namespace web_login_requests dan web_login_limits serta key bot_stats (ns kv) ke PostgREST proyek Supabase dengan profil skema bot dan service role key dari .env (SUPABASE_REST_URL, SUPABASE_SERVICE_ROLE_KEY). Namespace lain tetap di storage utama. Kontrak record di dokumen ini tidak berubah.
+
+Setiap siklus polling menulis ~/workspace/kana-md-run/data/bridge-health.json secara atomik: { lastPollOkAt, lastCodeSentAt, lastError }. Watchdog kana-bot menilai sehat bila lastPollOkAt segar (kurang dari 15 menit) dan lastError kosong. Bukti live pertama: 2026-11-04 16:31 WIB record pending owner berubah sent, attempts 1, codePlain terhapus.
