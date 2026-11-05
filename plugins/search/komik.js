@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'komik',
-  alias: ['komikcast', 'carikomik'],
+  alias: ['komikcast', 'carikomik', 'komiksearch', 'manga'],
   category: 'search',
   description: { id: 'Cari komik di Komikcast', en: 'Search comics on Komikcast' },
   usage: '.komik <judul komik>',

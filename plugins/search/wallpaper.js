@@ -3,7 +3,7 @@ import { sendImage } from '../../src/ui/media.js'
 
 export const config = {
   name: 'wallpaper',
-  alias: ['wp'],
+  alias: ['wp', 'wallcraft'],
   category: 'search',
   description: { id: 'Cari wallpaper dari wallpaperflare.com', en: 'Search wallpapers from wallpaperflare.com' },
   usage: '.wallpaper <kata kunci>',
