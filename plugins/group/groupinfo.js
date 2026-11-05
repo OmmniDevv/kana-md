@@ -1,4 +1,5 @@
 import { digitsOf } from '../../src/services/guard-rules.js'
+import { resolveGroupMember } from '../../src/services/group-members.js'
 
 export const config = {
   name: 'groupinfo',
@@ -39,14 +40,26 @@ export async function handler(ctx) {
   const participants = meta.participants ?? []
   const admins = participants.filter((p) => p.admin)
   const ownerParticipant = participants.find((p) => p.admin === 'superadmin')
-  const ownerJid = meta.owner || ownerParticipant?.phoneNumber || ownerParticipant?.id || ''
+  // Di grup mode LID, meta.owner berisi LID pemilik, bukan nomor telepon;
+  // resolusikan ke nomor asli lewat peta identitas peserta (pola yang sama
+  // dengan perbaikan identitas df925b4) supaya LID tidak tercetak sebagai
+  // nomor dan mention menunjuk JID nomor telepon yang benar.
+  const ownerMember =
+    (meta.owner ? resolveGroupMember(participants, meta.owner) : null) ||
+    (ownerParticipant?.id ? resolveGroupMember(participants, ownerParticipant.id) : null)
+  const ownerDigits =
+    ownerMember?.digits ||
+    (ownerParticipant?.phoneNumber ? digitsOf(ownerParticipant.phoneNumber) : '') ||
+    (meta.owner ? digitsOf(meta.owner) : '') ||
+    (ownerParticipant?.id ? digitsOf(ownerParticipant.id) : '')
+  const ownerJid = ownerMember?.jid || (ownerDigits ? `${ownerDigits}@s.whatsapp.net` : '')
   const created = meta.creation
     ? new Date(meta.creation * 1000).toLocaleDateString(ctx.lang === 'en' ? 'en-US' : 'id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
     : ctx.t('groupinfo.unknown')
   return ctx.reply(ctx.t('groupinfo.body', {
     name: meta.subject || '-',
     id: meta.id || ctx.chat,
-    owner: ownerJid ? digitsOf(ownerJid) : ctx.t('groupinfo.unknown'),
+    owner: ownerDigits || ctx.t('groupinfo.unknown'),
     created,
     members: participants.length,
     admins: admins.length,

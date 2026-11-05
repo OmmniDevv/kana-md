@@ -44,8 +44,12 @@ export async function handler(ctx) {
   const counts = (await ctx.storage.get('chatcount', ctx.chat)) ?? {}
   const total = Object.values(counts).reduce((acc, n) => acc + Number(n || 0), 0)
   const rows = aggregateTopchat(counts, participants)
+  // aggregateTopchat mengembalikan tuple [digits, count] per baris (pola
+  // yang sama dipakai topchat.js), BUKAN objek; akses .digits/.count pada
+  // tuple menghasilkan undefined dan placeholder bocor mentah ke balasan.
+  const [topDigits, topCount] = rows[0] ?? []
   const top = rows.length
-    ? ctx.t('groupstats.topLine', { digits: rows[0].digits, count: rows[0].count })
+    ? ctx.t('groupstats.topLine', { digits: topDigits, count: topCount })
     : ctx.t('groupstats.none')
   const settings = await getGroupSettings(ctx.storage, ctx.chat)
   const warns = Object.values(settings.warns ?? {}).reduce((acc, w) => acc + Number(w?.count || 0), 0)
@@ -60,5 +64,5 @@ export async function handler(ctx) {
     warns,
     protections,
     mood: ctx.say('senang'),
-  }), rows.length ? { mentions: [rows[0].jid] } : {})
+  }), rows.length ? { mentions: [`${topDigits}@s.whatsapp.net`] } : {})
 }

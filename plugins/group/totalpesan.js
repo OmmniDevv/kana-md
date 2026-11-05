@@ -38,8 +38,12 @@ export async function handler(ctx) {
   const counts = (await ctx.storage.get('chatcount', ctx.chat)) ?? {}
   const total = Object.values(counts).reduce((acc, n) => acc + Number(n || 0), 0)
   const rows = aggregateTopchat(counts, meta?.participants ?? [])
+  // aggregateTopchat mengembalikan tuple [digits, count] per baris (pola
+  // yang sama dipakai topchat.js), BUKAN objek; akses .digits/.count pada
+  // tuple menghasilkan undefined dan placeholder bocor mentah ke balasan.
+  const [topDigits, topCount] = rows[0] ?? []
   const topLine = rows.length
-    ? ctx.t('totalpesan.top', { digits: rows[0].digits, count: rows[0].count })
+    ? ctx.t('totalpesan.top', { digits: topDigits, count: topCount })
     : ctx.t('totalpesan.empty')
   return ctx.reply(ctx.t('totalpesan.body', {
     group: meta?.subject || '-',
@@ -47,5 +51,5 @@ export async function handler(ctx) {
     members: rows.length,
     topLine,
     mood: ctx.say('senang'),
-  }), rows.length ? { mentions: [rows[0].jid] } : {})
+  }), rows.length ? { mentions: [`${topDigits}@s.whatsapp.net`] } : {})
 }
