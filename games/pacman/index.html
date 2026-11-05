@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Pacman</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:460px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;box-sizing:border-box;position:relative;overflow:hidden;background:#17102B}
+h1{font-size:19px;margin:2px 0;color:#EDE9FE}
+.hud{color:#D8CCFF;font-size:15px;min-height:19px;text-align:center}
+.how{color:#A78BFA;font-size:12px;text-align:center;padding:0 8px}
+canvas{background:#12082B;border-radius:12px;touch-action:none}
+.btn{background:#8B5CF6;color:#fff;border:0;border-radius:999px;padding:9px 18px;font-size:15px;cursor:pointer}
+.btn:active{background:#D946EF}
+.ctl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.cbtn{background:#2E1065;color:#fff;border:2px solid #8B5CF6;border-radius:12px;width:52px;height:42px;font-size:19px;cursor:pointer;touch-action:none}
+.cbtn:active{background:#D946EF}
+#over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,6,28,.88);z-index:5;text-align:center}
+#overT{font-size:24px;color:#F0ABFC}
+#overLine{font-size:17px;color:#D8CCFF}
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1 id="t"></h1><div class="hud"><span id="sl"></span>: <b id="sc">0</b></div>
+<canvas id="cv"></canvas>
+<div class="ctl"><button class="cbtn" data-d="0,-1">▲</button><button class="cbtn" data-d="-1,0">◀</button><button class="cbtn" data-d="1,0">▶</button><button class="cbtn" data-d="0,1">▼</button></div>
+<div class="how" id="how"></div>
+<div id="over"><div id="overT"></div><div id="overLine"><span class="osl"></span> <b id="final">0</b></div><button class="btn" id="again"></button></div>
+</div>
+<script>
+var BOT=null;try{BOT=window.__BOT||null}catch(e){BOT=null}
+if(!BOT){try{BOT=__BOT_VARS_JSON__}catch(e){BOT=null}}
+var LANG=(BOT&&BOT.lang==='en')?'en':'id';
+function el(i){return document.getElementById(i)}
+var AC=null;
+function beep(f,d){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f||440;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+(d||.08));o.stop(AC.currentTime+(d||.08));}catch(e){}}
+var sentScore=false;
+function submitScore(sc){if(sentScore)return;sentScore=true;sc=Math.floor(sc||0);if(sc<=0||!BOT||!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){try{ws.close()}catch(e){}};setTimeout(function(){try{ws.close()}catch(e){}},3000);}catch(e){}}
+function gameOver(sc){el('final').textContent=Math.floor(sc||0);el('over').style.display='flex';beep(160,.25);submitScore(sc)}
+function fitCanvas(cv,w,h){var d=Math.min(window.devicePixelRatio||1,3);cv.width=w*d;cv.height=h*d;cv.style.width='100%';cv.style.maxWidth=w+'px';cv.style.height=h+'px';var c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return c}
+el('again').addEventListener('click',function(){el('over').style.display='none';sentScore=false;if(window.__restart)window.__restart()});
+</script>
+<script>
+var STR={id:{t:'Pacman KANA',s:'Skor',o:'Game Over!',a:'Main Lagi',h:'Pakai tombol panah atau geser. Makan semua titik, hindari hantunya!'},en:{t:'KANA Pacman',s:'Score',o:'Game Over!',a:'Play Again',h:'Use the arrow buttons or swipe. Eat all the dots, dodge the ghost!'}}[LANG];
+el('t').textContent=STR.t+' 🟡';el('sl').textContent=STR.s;el('how').textContent=STR.h;el('overT').textContent=STR.o;el('again').textContent=STR.a;document.querySelector('.osl').textContent=STR.s+':';
+var MAP=['###########','#.........#','#.#.###.#.#','#...........#','#.#.###.#.#','#.........#','#.#.....#.#','#.........#','###########'];
+var ROWS=MAP.length,COLS=MAP[0].length,T=28,W=COLS*T,H=ROWS*T;
+var cv=el('cv'),cx=fitCanvas(cv,W,H);
+var walls={},dots={},pac,ghost,score,run,timer,gt;
+function build(){walls={};dots={};for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){var ch=MAP[r][c];if(ch==='#')walls[c+','+r]=1;else if(ch==='.')dots[c+','+r]=1}}
+function reset(){build();pac={x:1,y:1,dx:1,dy:0,wx:1,wy:0};ghost={x:COLS-2,y:ROWS-2,dx:-1,dy:0};score=0;run=true;gt=0;el('sc').textContent='0';draw();clearInterval(timer);timer=setInterval(tick,150)}
+window.__restart=reset;
+function free(x,y){return !walls[x+','+y]}
+function tick(){if(!run)return;
+ if(free(pac.x+pac.wx,pac.y+pac.wy)){pac.dx=pac.wx;pac.dy=pac.wy}
+ if(free(pac.x+pac.dx,pac.y+pac.dy)){pac.x+=pac.dx;pac.y+=pac.dy}
+ var k=pac.x+','+pac.y;if(dots[k]){delete dots[k];score+=10;el('sc').textContent=score;beep(720,.05);if(!Object.keys(dots).length){run=false;gameOver(score+100);return}}
+ gt++;if(gt%2===0){var opts=[[1,0],[-1,0],[0,1],[0,-1]].filter(function(d){return free(ghost.x+d[0],ghost.y+d[1])});
+  opts.sort(function(a,b){return (Math.abs(ghost.x+a[0]-pac.x)+Math.abs(ghost.y+a[1]-pac.y))-(Math.abs(ghost.x+b[0]-pac.x)+Math.abs(ghost.y+b[1]-pac.y))});
+  var pick=Math.random()<0.75?opts[0]:opts[Math.floor(Math.random()*opts.length)];if(pick){ghost.x+=pick[0];ghost.y+=pick[1]}}
+ if(ghost.x===pac.x&&ghost.y===pac.y){run=false;draw();gameOver(score);return}
+ draw()}
+function draw(){cx.fillStyle='#12082B';cx.fillRect(0,0,W,H);
+ for(var key in walls){var p=key.split(',');cx.fillStyle='#4C1D95';cx.fillRect(+p[0]*T+2,+p[1]*T+2,T-4,T-4)}
+ cx.fillStyle='#FDE68A';for(var d in dots){var q=d.split(',');cx.beginPath();cx.arc(+q[0]*T+T/2,+q[1]*T+T/2,3.4,0,6.29);cx.fill()}
+ cx.fillStyle='#FACC15';cx.beginPath();var px=pac.x*T+T/2,py=pac.y*T+T/2,m=0.25+Math.abs(Math.sin(Date.now()/120))*0.15;var ang=Math.atan2(pac.dy,pac.dx);cx.moveTo(px,py);cx.arc(px,py,T/2-3,ang+m,ang+6.28-m);cx.closePath();cx.fill();
+ cx.fillStyle='#F472B6';var gx=ghost.x*T,gy=ghost.y*T;cx.beginPath();cx.arc(gx+T/2,gy+T/2,T/2-3,3.14,0);cx.lineTo(gx+T-3,gy+T-3);cx.lineTo(gx+3,gy+T-3);cx.closePath();cx.fill();
+ cx.fillStyle='#fff';cx.beginPath();cx.arc(gx+T/2-5,gy+T/2-2,3,0,6.29);cx.arc(gx+T/2+5,gy+T/2-2,3,0,6.29);cx.fill();cx.fillStyle='#1E3A8A';cx.beginPath();cx.arc(gx+T/2-5,gy+T/2-2,1.5,0,6.29);cx.arc(gx+T/2+5,gy+T/2-2,1.5,0,6.29);cx.fill()}
+function setDir(x,y){pac.wx=x;pac.wy=y}
+document.querySelectorAll('.cbtn').forEach(function(b){b.addEventListener('click',function(){var d=b.getAttribute('data-d').split(',');setDir(+d[0],+d[1])})});
+document.addEventListener('keydown',function(e){var m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(m){e.preventDefault();setDir(m[0],m[1])}});
+var tx0=0,ty0=0;cv.addEventListener('touchstart',function(e){var t=e.touches[0];tx0=t.clientX;ty0=t.clientY},{passive:true});
+cv.addEventListener('touchend',function(e){var t=e.changedTouches[0],dx=t.clientX-tx0,dy=t.clientY-ty0;if(Math.abs(dx)>Math.abs(dy))setDir(dx>0?1:-1,0);else setDir(0,dy>0?1:-1)},{passive:true});
+reset();
+</script>
+</body>
+</html>

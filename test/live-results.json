@@ -1,0 +1,96 @@
+{
+  "generatedAt": "2026-11-05T04:52:49.530Z",
+  "mode": "A",
+  "status": "completed",
+  "catatan": "Mode A: pesan sintetis disuntikkan ke pipeline, balasan dikirim sungguhan ke chat uji. Harness tidak membaca balasan masuk, jadi kolom expect hanya panduan pencocokan visual user di HP, bukan vonis otomatis. Status sent berarti pesan sudah diserahkan ke pipeline.",
+  "summary": {
+    "total": 10,
+    "sent": 10,
+    "error": 0,
+    "menungguKonfirmasiVisual": 10,
+    "lulusOtomatis": null,
+    "catatan": "Mode A tidak menilai balasan. Status sent menunggu penilaian visual user di HP dengan panduan kolom expect."
+  },
+  "results": [
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".addprem",
+      "expect": "/premium/i",
+      "plugin": "addprem",
+      "sentAt": "2026-11-05T04:52:20.694Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".addsewa",
+      "expect": "/sewa|rent/i",
+      "plugin": "addsewa",
+      "sentAt": "2026-11-05T04:52:24.927Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".delprem",
+      "expect": "/premium/i",
+      "plugin": "delprem",
+      "sentAt": "2026-11-05T04:52:27.611Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".delsewa",
+      "expect": "/sewa|rent/i",
+      "plugin": "delsewa",
+      "sentAt": "2026-11-05T04:52:30.717Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".jadibot",
+      "expect": "/jadibot/i",
+      "plugin": "jadibot",
+      "sentAt": "2026-11-05T04:52:34.256Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".listprem",
+      "expect": "/premium/i",
+      "plugin": "listprem",
+      "sentAt": "2026-11-05T04:52:36.649Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".listsewa",
+      "expect": "/sewa|rent/i",
+      "plugin": "listsewa",
+      "sentAt": "2026-11-05T04:52:39.855Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".cekprem",
+      "expect": "/premium/i",
+      "plugin": "cekprem",
+      "sentAt": "2026-11-05T04:52:42.791Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".ceksewa",
+      "expect": "/sewa|rent/i",
+      "plugin": "ceksewa",
+      "sentAt": "2026-11-05T04:52:46.708Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".infopremium",
+      "expect": "/premium/i",
+      "plugin": "infopremium",
+      "sentAt": "2026-11-05T04:52:49.508Z",
+      "status": "sent"
+    }
+  ]
+}

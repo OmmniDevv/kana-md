@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Geometry Dash</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:420px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;box-sizing:border-box;position:relative;overflow:hidden;background:#17102B}
+h1{font-size:19px;margin:2px 0;color:#EDE9FE}
+.hud{color:#D8CCFF;font-size:15px;min-height:19px;text-align:center}
+.how{color:#A78BFA;font-size:12px;text-align:center;padding:0 8px}
+canvas{background:#241845;border-radius:12px;touch-action:none}
+.btn{background:#8B5CF6;color:#fff;border:0;border-radius:999px;padding:9px 18px;font-size:15px;cursor:pointer}
+.btn:active{background:#D946EF}
+#over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,6,28,.88);z-index:5;text-align:center}
+#overT{font-size:24px;color:#F0ABFC}
+#overLine{font-size:17px;color:#D8CCFF}
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1 id="t"></h1><div class="hud"><span id="sl"></span>: <b id="sc">0</b></div>
+<canvas id="cv"></canvas>
+<div class="how" id="how"></div>
+<div id="over"><div id="overT"></div><div id="overLine"><span class="osl"></span> <b id="final">0</b></div><button class="btn" id="again"></button></div>
+</div>
+<script>
+var BOT=null;try{BOT=window.__BOT||null}catch(e){BOT=null}
+if(!BOT){try{BOT=__BOT_VARS_JSON__}catch(e){BOT=null}}
+var LANG=(BOT&&BOT.lang==='en')?'en':'id';
+function el(i){return document.getElementById(i)}
+var AC=null;
+function beep(f,d){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f||440;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+(d||.08));o.stop(AC.currentTime+(d||.08));}catch(e){}}
+var sentScore=false;
+function submitScore(sc){if(sentScore)return;sentScore=true;sc=Math.floor(sc||0);if(sc<=0||!BOT||!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){try{ws.close()}catch(e){}};setTimeout(function(){try{ws.close()}catch(e){}},3000);}catch(e){}}
+function gameOver(sc){el('final').textContent=Math.floor(sc||0);el('over').style.display='flex';beep(160,.25);submitScore(sc)}
+function fitCanvas(cv,w,h){var d=Math.min(window.devicePixelRatio||1,3);cv.width=w*d;cv.height=h*d;cv.style.width='100%';cv.style.maxWidth=w+'px';cv.style.height=h+'px';var c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return c}
+el('again').addEventListener('click',function(){el('over').style.display='none';sentScore=false;if(window.__restart)window.__restart()});
+</script>
+<script>
+var STR={id:{t:'Geometry Dash KANA',s:'Skor',o:'Game Over!',a:'Main Lagi',h:'Ketuk atau klik untuk melompat. Hindari segitiga duri dan jangan jatuh dari platform!'},en:{t:'KANA Geometry Dash',s:'Score',o:'Game Over!',a:'Play Again',h:'Tap or click to jump. Dodge the spikes and stay on the platforms!'}}[LANG];
+el('t').textContent=STR.t+' 🔷';el('sl').textContent=STR.s;el('how').textContent=STR.h;el('overT').textContent=STR.o;el('again').textContent=STR.a;document.querySelector('.osl').textContent=STR.s+':';
+var W=340,H=300,GY=H-46,cv=el('cv'),cx=fitCanvas(cv,W,H);
+var y,vy,obs,score,run,raf,last,spawnT,speed;
+function reset(){y=GY-26;vy=0;obs=[];score=0;run=true;last=0;spawnT=0;speed=3.2;el('sc').textContent='0';if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+window.__restart=reset;
+function jump(){if(!run)return;if(y>=GY-27){vy=-11.5;beep(660,.07)}}
+cv.addEventListener('pointerdown',function(e){e.preventDefault();jump()});
+document.addEventListener('keydown',function(e){if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}});
+function spawn(){var kind=Math.random()<0.55?'spike':'block';obs.push({x:W+20,kind:kind,w:kind==='spike'?22:44,h:kind==='spike'?26:20,hit:false})}
+function loop(ts){if(!run)return;var dt=Math.min(32,ts-(last||ts));last=ts;spawnT+=dt;if(spawnT>950-Math.min(350,speed*40)){spawnT=0;spawn()}vy+=0.62;y+=vy;if(y>GY-26){y=GY-26;vy=0}
+ cx.fillStyle='#241845';cx.fillRect(0,0,W,H);cx.fillStyle='#17102B';for(var gx=0;gx<W;gx+=34){cx.fillRect(gx-((ts/8)%34),GY,W/34,2)}cx.fillStyle='#8B5CF6';cx.fillRect(0,GY,W,3);
+ for(var i=obs.length-1;i>=0;i--){var o=obs[i];o.x-=speed*(dt/16.7);if(o.x+o.w<0){obs.splice(i,1);continue}
+  if(o.kind==='spike'){cx.fillStyle='#F472B6';cx.beginPath();cx.moveTo(o.x,GY);cx.lineTo(o.x+o.w/2,GY-o.h);cx.lineTo(o.x+o.w,GY);cx.closePath();cx.fill();
+   if(52+20>o.x+4&&52<o.x+o.w-4&&y+26>GY-o.h+6){run=false;gameOver(score);return}}
+  else{cx.fillStyle='#4C1D95';cx.fillRect(o.x,GY-o.h,o.w,o.h);cx.fillStyle='#A78BFA';cx.fillRect(o.x,GY-o.h,o.w,3);
+   if(52+22>o.x&&52<o.x+o.w){if(y+26<=GY-o.h+8&&vy>=0){y=GY-o.h-26;vy=0}else if(y+26>GY-o.h+8){run=false;gameOver(score);return}}}
+  if(!o.hit&&o.x+o.w<52){o.hit=true;score++;el('sc').textContent=score;beep(880,.05)}}
+ cx.save();cx.translate(52+13,y+13);cx.rotate((y<GY-27)?(ts/140)%6.28:0);cx.fillStyle='#FBBF24';cx.fillRect(-13,-13,26,26);cx.fillStyle='#17102B';cx.fillRect(-8,-6,5,5);cx.fillRect(4,-6,5,5);cx.restore();
+ speed+=dt*0.00012;raf=requestAnimationFrame(loop)}
+reset();
+</script>
+</body>
+</html>

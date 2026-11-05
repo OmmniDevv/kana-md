@@ -611,6 +611,42 @@ export const TEXT_SETS = {
     { q: { id: 'Aku menulis lagu kebangsaan Indonesia Raya. Siapakah aku?', en: "I composed Indonesia's national anthem Indonesia Raya. Who am I?" }, a: { id: 'W.R. Supratman', en: 'W.R. Supratman' }, accept: ['wr supratman', 'wage rudolf supratman', 'supratman'] },
     { q: { id: 'Aku adalah pahlawan perempuan dari Aceh yang memimpin perang melawan Belanda. Siapakah aku?', en: 'I am the heroine from Aceh who led the war against the Dutch. Who am I?' }, a: { id: 'Cut Nyak Dien', en: 'Cut Nyak Dien' }, accept: ['cut nyak dhien'] },
   ],
+  tebakanime: [
+    { q: { id: 'Anime ini tentang bajak laut yang mencari harta karun One Piece, tokoh utamanya Luffy. Anime apa?', en: 'This anime is about pirates hunting the One Piece treasure, its main character is Luffy. What anime?' }, a: { id: 'One Piece', en: 'One Piece' }, accept: ['onepiece'] },
+    { q: { id: 'Anime ninja dari Konoha, tokoh utamanya bercita cita jadi Hokage. Anime apa?', en: 'A ninja anime from Konoha, its hero dreams of becoming Hokage. What anime?' }, a: { id: 'Naruto', en: 'Naruto' } },
+    { q: { id: 'Anime tentang pemburu iblis dengan pedang Nichirin, tokoh utamanya Tanjiro Kamado. Anime apa?', en: 'An anime about a demon slayer with a Nichirin sword, its hero is Tanjiro Kamado. What anime?' }, a: { id: 'Demon Slayer', en: 'Demon Slayer' }, accept: ['kimetsu no yaiba'] },
+    { q: { id: 'Anime sekolah pahlawan, tokoh utamanya Izuku Midoriya alias Deku. Anime apa?', en: 'A hero school anime, its hero is Izuku Midoriya also known as Deku. What anime?' }, a: { id: 'My Hero Academia', en: 'My Hero Academia' }, accept: ['boku no hero academia', 'bnha', 'mha'] },
+    { q: { id: 'Anime tentang manusia melawan raksasa Titan, tokoh utamanya Eren Yeager. Anime apa?', en: 'An anime about humans fighting Titans, its hero is Eren Yeager. What anime?' }, a: { id: 'Attack on Titan', en: 'Attack on Titan' }, accept: ['shingeki no kyojin', 'aot', 'snk'] },
+    { q: { id: 'Anime bola voli SMA Karasuno, tokoh utamanya Shoyo Hinata. Anime apa?', en: 'A high school volleyball anime about Karasuno, its hero is Shoyo Hinata. What anime?' }, a: { id: 'Haikyuu', en: 'Haikyuu' }, accept: ['haikyu'] },
+    { q: { id: 'Anime penyihir tanpa sihir di dunia sihir, tokoh utamanya Asta. Anime apa?', en: 'An anime about a boy with no magic in a magic world, its hero is Asta. What anime?' }, a: { id: 'Black Clover', en: 'Black Clover' } },
+    { q: { id: 'Anime tentang catatan kematian milik dewa kematian Ryuk yang dipakai Light Yagami. Anime apa?', en: 'An anime about a death notebook owned by the shinigami Ryuk, used by Light Yagami. What anime?' }, a: { id: 'Death Note', en: 'Death Note' } },
+  ],
+  tebaklogo: [
+    { q: { id: 'Logo huruf F putih di atas latar biru, aplikasi media sosial. Logo apa?', en: 'A white letter F logo on a blue background, a social media app. What logo?' }, a: { id: 'Facebook', en: 'Facebook' } },
+    { q: { id: 'Logo burung, dulu berwarna biru, untuk aplikasi microblogging. Logo apa?', en: 'A bird logo, formerly blue, for a microblogging app. What logo?' }, a: { id: 'Twitter', en: 'Twitter' }, accept: ['x', 'twitter x'] },
+    { q: { id: 'Logo kamera gradasi ungu oranye dengan lingkaran di tengah. Logo apa?', en: 'A gradient purple orange camera logo with a circle in the middle. What logo?' }, a: { id: 'Instagram', en: 'Instagram' }, accept: ['ig'] },
+    { q: { id: 'Logo swoosh seperti centang melengkung, merek sepatu olahraga. Logo apa?', en: 'A swoosh logo like a curved checkmark, a sports shoe brand. What logo?' }, a: { id: 'Nike', en: 'Nike' } },
+    { q: { id: 'Logo huruf M kuning melengkung, restoran cepat saji. Logo apa?', en: 'A yellow curved letter M logo, a fast food restaurant. What logo?' }, a: { id: 'McDonalds', en: 'McDonalds' }, accept: ["mcdonald's", 'mcd'] },
+    { q: { id: 'Logo apel tergigit di satu sisi, perusahaan teknologi. Logo apa?', en: 'A bitten apple logo, a technology company. What logo?' }, a: { id: 'Apple', en: 'Apple' } },
+    { q: { id: 'Logo segitiga warna warni tombol play, toko aplikasi Android. Logo apa?', en: 'A colorful triangle play button logo, the Android app store. What logo?' }, a: { id: 'Google Play', en: 'Google Play' }, accept: ['play store', 'playstore'] },
+    { q: { id: 'Logo hantu putih di latar kuning, aplikasi pesan foto cepat. Logo apa?', en: 'A white ghost logo on a yellow background, a quick photo messaging app. What logo?' }, a: { id: 'Snapchat', en: 'Snapchat' } },
+  ],
+  tebakff: [
+    { q: { id: 'Game battle royale Garena ini disingkat FF. Nama lengkapnya apa?', en: 'This Garena battle royale game is abbreviated FF. What is its full name?' }, a: { id: 'Free Fire', en: 'Free Fire' }, accept: ['garena free fire'] },
+    { q: { id: 'Mata uang premium di Free Fire yang dipakai beli skin dan bundle disebut apa?', en: 'The premium currency in Free Fire used to buy skins and bundles is called what?' }, a: { id: 'Diamond', en: 'Diamond' }, accept: ['dm', 'diamonds'] },
+    { q: { id: 'Karakter Free Fire yang bisa menyembuhkan diri dengan skill medis adalah siapa?', en: 'The Free Fire character who can heal with a medical skill is who?' }, a: { id: 'Alok', en: 'Alok' }, accept: ['dj alok'] },
+    { q: { id: 'Peta pertama dan paling klasik di Free Fire bernama apa?', en: 'The first and most classic map in Free Fire is called what?' }, a: { id: 'Bermuda', en: 'Bermuda' } },
+    { q: { id: 'Sebutan untuk kemenangan atau juara pertama di Free Fire adalah apa?', en: 'The term for winning first place in Free Fire is what?' }, a: { id: 'Booyah', en: 'Booyah' } },
+    { q: { id: 'Senjata jarak dekat ikonik di Free Fire yang bentuknya seperti penggorengan adalah apa?', en: 'The iconic melee weapon in Free Fire shaped like a frying pan is what?' }, a: { id: 'Pan', en: 'Pan' }, accept: ['panci', 'frying pan'] },
+  ],
+  tebaktebakan: [
+    { q: { id: 'Apa yang punya leher tapi tidak punya kepala?', en: 'What has a neck but no head?' }, a: { id: 'Botol', en: 'Bottle' } },
+    { q: { id: 'Apa yang selalu basah saat mengeringkan?', en: 'What gets wet while drying?' }, a: { id: 'Handuk', en: 'Towel' } },
+    { q: { id: 'Apa yang bisa lari tapi tidak pernah jalan?', en: 'What can run but never walks?' }, a: { id: 'Air', en: 'Water' } },
+    { q: { id: 'Apa yang punya banyak kunci tapi tidak bisa membuka satu pintu pun?', en: 'What has many keys but cannot open a single door?' }, a: { id: 'Piano', en: 'Piano' } },
+    { q: { id: 'Apa yang naik saat hujan turun?', en: 'What goes up when the rain comes down?' }, a: { id: 'Payung', en: 'Umbrella' } },
+    { q: { id: 'Apa yang ada di akhir pelangi?', en: 'What is at the end of a rainbow?' }, a: { id: 'Huruf i', en: 'The letter w' }, accept: ['i', 'w', 'huruf w'] },
+  ],
 }
 
 export default { QUIZ_SETS, WORD_LIST, FLAGS, ELEMENTS, IMAGE_WORDS, TEXT_SETS, KATA_ACAK }

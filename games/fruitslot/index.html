@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Fruit Slot</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:420px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px;box-sizing:border-box;position:relative;overflow:hidden;background:#17102B}
+h1{font-size:19px;margin:2px 0;color:#EDE9FE}
+.hud{color:#D8CCFF;font-size:15px;min-height:19px;text-align:center}
+.how{color:#A78BFA;font-size:12px;text-align:center;padding:0 8px}
+.reels{display:flex;gap:10px;margin-top:10px}
+.reel{width:86px;height:96px;background:#241845;border:3px solid #8B5CF6;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:52px}
+.btn{background:#8B5CF6;color:#fff;border:0;border-radius:999px;padding:11px 26px;font-size:16px;cursor:pointer}
+.btn:active{background:#D946EF}
+.btn:disabled{opacity:.45}
+#msg{font-size:16px;color:#F0ABFC;min-height:22px;text-align:center}
+#over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,6,28,.88);z-index:5;text-align:center}
+#overT{font-size:24px;color:#F0ABFC}
+#overLine{font-size:17px;color:#D8CCFF}
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1 id="t"></h1><div class="hud"><span id="sl"></span>: <b id="sc">100</b> • <span id="spl"></span>: <b id="sp">15</b></div>
+<div class="reels"><div class="reel" id="r0">🍒</div><div class="reel" id="r1">🍋</div><div class="reel" id="r2">🍇</div></div>
+<div id="msg"></div>
+<button class="btn" id="spin"></button>
+<div class="how" id="how"></div>
+<div id="over"><div id="overT"></div><div id="overLine"><span class="osl"></span> <b id="final">0</b></div><button class="btn" id="again"></button></div>
+</div>
+<script>
+var BOT=null;try{BOT=window.__BOT||null}catch(e){BOT=null}
+if(!BOT){try{BOT=__BOT_VARS_JSON__}catch(e){BOT=null}}
+var LANG=(BOT&&BOT.lang==='en')?'en':'id';
+function el(i){return document.getElementById(i)}
+var AC=null;
+function beep(f,d){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f||440;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+(d||.08));o.stop(AC.currentTime+(d||.08));}catch(e){}}
+var sentScore=false;
+function submitScore(sc){if(sentScore)return;sentScore=true;sc=Math.floor(sc||0);if(sc<=0||!BOT||!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){try{ws.close()}catch(e){}};setTimeout(function(){try{ws.close()}catch(e){}},3000);}catch(e){}}
+function gameOver(sc){el('final').textContent=Math.floor(sc||0);el('over').style.display='flex';beep(160,.25);submitScore(sc)}
+el('again').addEventListener('click',function(){el('over').style.display='none';sentScore=false;if(window.__restart)window.__restart()});
+</script>
+<script>
+var STR={id:{t:'Fruit Slot KANA',s:'Koin',sp:'Spin',o:'Selesai!',a:'Main Lagi',spin:'PUTAR (10 koin)',h:'Tiga buah sama: jackpot besar. Dua sama: menang kecil. Mulai 100 koin, 15 putaran.',win:'Menang +{n} koin!',jack:'JACKPOT! +{n} koin!',lose:'Belum beruntung, coba lagi~',end:'Putaran habis!'},en:{t:'KANA Fruit Slot',s:'Coins',sp:'Spins',o:'Finished!',a:'Play Again',spin:'SPIN (10 coins)',h:'Three of a kind: big jackpot. A pair: small win. Start with 100 coins, 15 spins.',win:'You won +{n} coins!',jack:'JACKPOT! +{n} coins!',lose:'No luck yet, try again~',end:'Out of spins!'}}[LANG];
+el('t').textContent=STR.t+' 🎰';el('sl').textContent=STR.s;el('spl').textContent=STR.sp;el('how').textContent=STR.h;el('overT').textContent=STR.o;el('again').textContent=STR.a;el('spin').textContent=STR.spin;document.querySelector('.osl').textContent=STR.s+':';
+var FRUITS=['🍒','🍋','🍇','🍓','🍊','⭐','💎'];
+var PAY={'💎':200,'⭐':100,'🍓':60,'🍊':50,'🍇':40,'🍋':35,'🍒':30};
+var coins,spins,busy;
+function reset(){coins=100;spins=15;busy=false;el('sc').textContent=coins;el('sp').textContent=spins;el('msg').textContent='';el('spin').disabled=false}
+window.__restart=reset;
+function rnd(){return FRUITS[Math.floor(Math.random()*FRUITS.length)]}
+el('spin').addEventListener('click',function(){
+ if(busy)return;if(spins<=0||coins<10){gameOver(coins);return}
+ busy=true;coins-=10;spins--;el('sc').textContent=coins;el('sp').textContent=spins;el('spin').disabled=true;el('msg').textContent='...';
+ var ticks=0;var iv=setInterval(function(){for(var i=0;i<3;i++)el('r'+i).textContent=rnd();beep(500+Math.random()*300,.04);if(++ticks>=9){clearInterval(iv);
+  var a=el('r0').textContent,b=el('r1').textContent,c=el('r2').textContent;var win=0,jack=false;
+  if(a===b&&b===c){win=PAY[a]||30;jack=true}else if(a===b||b===c||a===c){win=15}
+  coins+=win;el('sc').textContent=coins;
+  el('msg').textContent=win?(jack?STR.jack.replace('{n}',win):STR.win.replace('{n}',win)):STR.lose;
+  if(win)beep(jack?1200:880,.15);
+  busy=false;el('spin').disabled=false;
+  if(spins<=0||coins<10){el('msg').textContent=STR.end;setTimeout(function(){gameOver(coins)},900)}
+ }},90);
+});
+reset();
+</script>
+</body>
+</html>
