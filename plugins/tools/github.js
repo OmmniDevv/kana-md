@@ -29,19 +29,71 @@ export const i18n = {
 }
 
 const KIND = "github"
-export const test = { input: '.github OmmniDevv', expect: /.+/ }
+export const test = { input: '.github OmmniDevv', expect: /Followers: .+\| Repo publik: \d+/ }
 async function fetchJson(url) {
   const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
   if (!res.ok) throw new Error('HTTP ' + res.status)
   return res.json()
+}
+
+function decodeEntities(s) {
+  return String(s || '')
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/<[^>]+>/g, '')
+    .trim()
+}
+
+// Profil GitHub diambil dari halaman profil publik github.com, BUKAN
+// api.github.com: kuota API tanpa token dari IP VM habis dan membalas
+// HTTP 403 (kasus live .githubstalk 2026-11-06, akar yang sama dengan
+// gitclone lama). Halaman profil memuat nama, bio, jumlah pengikut,
+// mengikuti, dan repo publik. Tanggal gabung tidak tampil di halaman
+// profil, jadi baris itu memang tidak dibuat (tidak dikarang).
+export function parseGithubProfile(html, login) {
+  const src = String(html || '')
+  const nick = src.match(/<span class="p-nickname vcard-username[^"]*" itemprop="additionalName">\s*([^<]+?)\s*<\/span>/)
+  if (!nick) return null
+  const name = src.match(/<span class="p-name vcard-fullname[^"]*" itemprop="name">\s*([^<]+?)\s*<\/span>/)?.[1]
+  const bio = src.match(/data-bio-text="([^"]*)"/)?.[1]
+  const repos = src.match(/Repositories\s*<span title="([\d,]+)"[^>]*class="Counter">/)?.[1]
+  const countFor = (label) => {
+    const labelled = src.match(new RegExp('<span class="text-bold[^"]*">\\s*([\\d.,]+[kKmM]?)\\s*</span>\\s*' + label))
+    if (labelled) return labelled[1]
+    const anchor = src.indexOf('?tab=' + label)
+    if (anchor >= 0) {
+      const span = src.slice(anchor, anchor + 3000).match(/<span class="text-bold[^"]*">\s*([\d.,]+[kKmM]?)\s*<\/span>/)
+      if (span) return span[1]
+    }
+    return '0'
+  }
+  return {
+    login: decodeEntities(nick[1]) || login,
+    name: name ? decodeEntities(name) : '',
+    bio: bio ? decodeEntities(bio) : '',
+    followers: countFor('followers'),
+    following: countFor('following'),
+    repos: repos || '0',
+    url: 'https://github.com/' + encodeURIComponent(login),
+  }
+}
+
+async function fetchGithubProfile(login) {
+  const res = await fetch('https://github.com/' + encodeURIComponent(login), {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36', 'accept-language': 'en-US,en;q=0.9' },
+  })
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error('GitHub HTTP ' + res.status)
+  return parseGithubProfile(await res.text(), login)
 }
 export async function handler(ctx) {
   const q = (ctx.text || '').trim()
   if (!q) return ctx.reply(ctx.t('github.hint'))
   try {
     if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('github.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
+      const u = await fetchGithubProfile(q.replace(/^@/, ''))
+      if (!u) return ctx.reply(ctx.t('github.notfound', { q }))
+      const body = ctx.t('github.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + u.followers + ' | Mengikuti: ' + u.following + ' | Repo publik: ' + u.repos].join('\n┊ '), url: u.url })
       return ctx.reply(body)
     }
     if (KIND === 'npm') {

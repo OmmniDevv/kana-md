@@ -33,25 +33,27 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.pin kucing', expect: /PINTEREST/i }
+export const test = { input: '.pin kucing', expect: /PINTEREST: kucing/ }
 
 const MAX_SEND = 5
 
-export async function handler(ctx, { search = pinterestSearch } = {}) {
+export async function handler(ctx, { search = pinterestSearch, download = downloadBuffer } = {}) {
   const q = (ctx.text || '').trim()
   if (!q) return ctx.reply(ctx.t('pin.needQuery'))
-  let pins
+  let result
   try {
-    pins = await search(q, { limit: 10 })
+    result = await search(q, { limit: 10 })
   } catch (err) {
     return ctx.reply(ctx.t('pin.failed', { message: err.message }))
   }
-  const urls = (pins || []).map((p) => p.image).filter(Boolean)
+  // pinterestSearch membalas envelope { results }; membaca .results wajib,
+  // memperlakukannya sebagai array melempar TypeError (bug live 2026-11-06).
+  const urls = (result?.results || []).map((p) => p.image).filter(Boolean)
   if (!urls.length) return ctx.reply(ctx.t('pin.notFound'))
   const buffers = []
   for (const url of urls.slice(0, MAX_SEND)) {
     try {
-      const { buffer } = await downloadBuffer(url, { maxBytes: MAX_IMAGE_BYTES, timeout: 30000 })
+      const { buffer } = await download(url, { maxBytes: MAX_IMAGE_BYTES, timeout: 30000 })
       buffers.push(buffer)
     } catch {}
   }

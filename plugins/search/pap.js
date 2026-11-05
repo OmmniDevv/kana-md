@@ -34,7 +34,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.pap cewe', expect: /PAP/i }
+export const test = { input: '.pap cewe', expect: /PAP (CEWE|COWO|FEMBOY)/ }
 
 const QUERIES = {
   cewe: 'beautiful woman portrait photography aesthetic',
@@ -42,22 +42,24 @@ const QUERIES = {
   femboy: 'soft aesthetic portrait fashion',
 }
 
-export async function handler(ctx, { search = pinterestSearch } = {}) {
+export async function handler(ctx, { search = pinterestSearch, download = downloadBuffer } = {}) {
   const kind = (ctx.text || '').trim().toLowerCase()
   const query = QUERIES[kind]
   if (!query) return ctx.reply(ctx.t('pap.needKind'))
-  let pins
+  let result
   try {
-    pins = await search(query, { limit: 15 })
+    result = await search(query, { limit: 15 })
   } catch (err) {
     return ctx.reply(ctx.t('pap.failed', { message: err.message }))
   }
-  const images = (pins || []).map((p) => p.image).filter(Boolean)
+  // pinterestSearch membalas envelope { results }; membaca .results wajib,
+  // memperlakukannya sebagai array melempar TypeError (bug live 2026-11-06).
+  const images = (result?.results || []).map((p) => p.image).filter(Boolean)
   if (!images.length) return ctx.reply(ctx.t('pap.notFound'))
   for (let tries = 0; tries < 3; tries += 1) {
     const url = images[Math.floor(Math.random() * images.length)]
     try {
-      const { buffer } = await downloadBuffer(url, { maxBytes: MAX_IMAGE_BYTES, timeout: 30000 })
+      const { buffer } = await download(url, { maxBytes: MAX_IMAGE_BYTES, timeout: 30000 })
       await sendImage(ctx, buffer, { caption: ctx.t('pap.caption', { kind: kind.toUpperCase() }) })
       return undefined
     } catch {}

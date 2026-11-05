@@ -35,12 +35,28 @@ async function createSession() {
   return { cookies, csrf: getCsrfToken(cookies) }
 }
 
+// Urutan rendisi video PROGRESIF (MP4 langsung). Rendisi V_HLS* adalah
+// playlist m3u8, bukan berkas video; memasukkannya ke field video membuat
+// pengirim mengirim teks playlist sebagai video (kasus live .pinvid
+// 2026-11-06). Terverifikasi dari VM: V_EXP7 mengunduh MP4 asli (ftyp).
+const VIDEO_KEYS = ['V_720P', 'V_EXP7', 'V_EXP6', 'V_EXP5', 'V_EXP4', 'V_EXP3', 'V_480P', 'V_360P']
+
+export function progressiveVideoUrl(videoList) {
+  const list = videoList || {}
+  for (const key of VIDEO_KEYS) {
+    if (list[key]?.url) return list[key].url
+  }
+  for (const [key, value] of Object.entries(list)) {
+    if (!key.includes('HLS') && value?.url && value.url.endsWith('.mp4')) return value.url
+  }
+  return null
+}
+
 export function mapPin(pin) {
   const images = pin.images || {}
   const videoList = pin.videos?.video_list || {}
   const image = images.orig?.url || images['736x']?.url || images['564x']?.url || images['236x']?.url || null
-  const video =
-    videoList.V_720P?.url || videoList.V_EXP7?.url || videoList.V_HLSV4?.url || videoList.V_HLSV3_MOBILE?.url || null
+  const video = progressiveVideoUrl(videoList)
   const downloads = []
   if (image) downloads.push({ type: 'image', quality: images.orig?.url ? 'Original Image' : 'Image', url: image })
   if (video) downloads.push({ type: 'video', quality: 'Pinterest Video', url: video })
@@ -65,9 +81,9 @@ export function mapPin(pin) {
   }
 }
 
-async function searchPinterest(query, session, limit) {
-  const sourceUrl = `/search/pins/?q=${encodeURIComponent(query)}`
-  const payload = { options: { query, scope: 'pins', bookmarks: [], page_size: limit }, context: {} }
+async function searchPinterest(query, session, limit, scope = 'pins') {
+  const sourceUrl = `/search/${scope}/?q=${encodeURIComponent(query)}`
+  const payload = { options: { query, scope, bookmarks: [], page_size: limit }, context: {} }
   const endpoint = new URL('/resource/BaseSearchResource/get/', CONFIG.baseUrl)
   endpoint.searchParams.set('source_url', sourceUrl)
   endpoint.searchParams.set('data', JSON.stringify(payload))
@@ -181,6 +197,20 @@ export async function pinterestSearch(query, { limit = CONFIG.limit } = {}) {
     results = await searchPinterestPost(keyword, session, safeLimit)
   }
   return { status: true, query: keyword, total: results.length, results }
+}
+
+// Pencarian khusus pin video (scope 'videos'). Pencarian scope 'pins' tidak
+// pernah memuat data video (terverifikasi dari VM 2026-11-06: 0 video dari
+// puluhan pin di beberapa kueri), sedangkan scope 'videos' membalas pin
+// yang semuanya memiliki videos.video_list. Dipakai .pinvid.
+export async function pinterestVideoSearch(query, { limit = CONFIG.limit } = {}) {
+  const keyword = String(query || '').trim()
+  if (!keyword) throw new Error('Keyword pencarian tidak boleh kosong.')
+  const safeLimit = Math.max(1, Math.min(50, Number(limit) || CONFIG.limit))
+  const session = await createSession()
+  const results = await searchPinterest(keyword, session, safeLimit, 'videos')
+  const videos = results.filter((pin) => pin.video)
+  return { status: true, query: keyword, total: videos.length, results: videos }
 }
 
 export default pinterestSearch

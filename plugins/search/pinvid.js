@@ -1,9 +1,10 @@
-import { pinterestSearch } from '../../src/scrapers/pinterest/pinterest.js'
+import { pinterestVideoSearch } from '../../src/scrapers/pinterest/pinterest.js'
 import { downloadBuffer } from '../../src/scrapers/runner.js'
 import { sendVideo, MAX_VIDEO_BYTES } from '../../src/ui/media.js'
 
-// Cari video di Pinterest dan kirim hasil video teratasnya. Scraper
-// Pinterest sehat memberi field video untuk pin yang memang video.
+// Cari video di Pinterest dan kirim hasil video teratasnya. Wajib jalur
+// pencarian scope 'videos' (pinterestVideoSearch): pencarian pin biasa
+// tidak pernah memuat data video (terverifikasi dari VM 2026-11-06).
 export const config = {
   name: 'pinvid',
   alias: [],
@@ -35,28 +36,33 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.pinvid kucing', expect: /PINTEREST VIDEO/ }
+export const test = { input: '.pinvid kucing', expect: /PINTEREST VIDEO[\s\S]*pinterest\.com\/pin\// }
 
-export async function handler(ctx, { search = pinterestSearch } = {}) {
+export async function handler(ctx, { search = pinterestVideoSearch, download = downloadBuffer } = {}) {
   const q = (ctx.text || '').trim()
   if (!q) return ctx.reply(ctx.t('pinvid.needQuery'))
-  let pins
+  let result
   try {
-    pins = await search(q, { limit: 20 })
+    result = await search(q, { limit: 50 })
   } catch (err) {
     return ctx.reply(ctx.t('pinvid.failed', { message: err.message }))
   }
-  const videos = (pins || []).filter((p) => p.type === 'video' && p.video)
+  // pinterestVideoSearch membalas envelope { results } berisi pin yang
+  // punya video MP4 progresif (minoritas hasil; mayoritas hanya HLS),
+  // jadi limit besar dan beberapa kandidat dicoba bergantian.
+  const videos = (result?.results || []).filter((p) => p.video)
   if (!videos.length) return ctx.reply(ctx.t('pinvid.notFound'))
-  const pin = videos[0]
-  let buffer
-  try {
-    ;({ buffer } = await downloadBuffer(pin.video, { maxBytes: MAX_VIDEO_BYTES, timeout: 60000 }))
-  } catch (err) {
-    return ctx.reply(ctx.t('pinvid.failed', { message: err.message }))
+  let lastErr = null
+  for (const pin of videos.slice(0, 5)) {
+    try {
+      const { buffer } = await download(pin.video, { maxBytes: MAX_VIDEO_BYTES, timeout: 60000 })
+      await sendVideo(ctx, buffer, {
+        caption: ctx.t('pinvid.caption', { title: pin.title || q, link: pin.url || '-' }),
+      })
+      return undefined
+    } catch (err) {
+      lastErr = err
+    }
   }
-  await sendVideo(ctx, buffer, {
-    caption: ctx.t('pinvid.caption', { title: pin.title || q, link: pin.link || '-' }),
-  })
-  return undefined
+  return ctx.reply(ctx.t('pinvid.failed', { message: lastErr?.message || 'video gagal diunduh' }))
 }

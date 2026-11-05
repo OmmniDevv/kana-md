@@ -3,10 +3,31 @@
 // dan thumbnails avatar headshot semuanya HTTP 200. API games Roblox
 // tidak terjangkau (sorts 404, omni timeout/404), jadi modul ini hanya
 // data pemain, bukan data game.
+//
+// Resolusi username WAJIB lewat endpoint persis POST /v1/usernames/users
+// lebih dulu (terverifikasi 2026-11-06: builderman -> id 156). Pencarian
+// kata kunci users/search bisa membalas data kosong untuk username yang
+// jelas ada (kasus live .robloxplayer membalas tidak ketemu), jadi ia
+// hanya cadangan, bukan penentu.
 async function fetchJson(url) {
   const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot', Accept: 'application/json' } })
   if (!res.ok) throw new Error(`Roblox balas HTTP ${res.status}`)
   return res.json()
+}
+
+export async function robloxResolveUsername(username) {
+  const name = String(username || '').trim()
+  if (!name) return null
+  const res = await fetch('https://users.roblox.com/v1/usernames/users', {
+    method: 'POST',
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'KANA-Bot', Accept: 'application/json', 'content-type': 'application/json' },
+    body: JSON.stringify({ usernames: [name], excludeBannedUsers: false }),
+  })
+  if (!res.ok) throw new Error(`Roblox balas HTTP ${res.status}`)
+  const json = await res.json()
+  const hit = (json.data || [])[0]
+  return hit?.id ? { id: hit.id, name: hit.name, displayName: hit.displayName || hit.name } : null
 }
 
 export async function robloxSearchUsers(query, limit = 5) {
@@ -38,7 +59,8 @@ export async function robloxUserDetail(query) {
     user = await fetchJson(`https://users.roblox.com/v1/users/${q}`).catch(() => null)
   }
   if (!user) {
-    const found = await robloxSearchUsers(q, 1)
+    const exact = await robloxResolveUsername(q).catch(() => null)
+    const found = exact ? [exact] : await robloxSearchUsers(q, 1)
     if (!found.length) return null
     user = await fetchJson(`https://users.roblox.com/v1/users/${found[0].id}`).catch(() => null)
     if (!user) user = found[0]

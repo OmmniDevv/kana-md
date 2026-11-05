@@ -37,7 +37,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.robloxplayer builderman', expect: /builderman/i }
+export const test = { input: '.robloxplayer builderman', expect: /ɪᴅ: \*156\*/ }
 
 export async function handler(ctx) {
   const q = (ctx.text || '').trim()
