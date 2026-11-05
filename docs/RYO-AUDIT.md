@@ -14,10 +14,10 @@ Tanggal: 2026-11-05. Perintah owner: analisa semua fitur repo RYO-YAMADA-MD (him
 | Klasifikasi | Jumlah |
 |---|---|
 | SUDAH ADA | 433 |
-| PORT BARU | 6 |
+| PORT BARU | 7 |
 | FALLBACK | 1 |
-| KLON | 75 |
-| TOLAK | 49 |
+| KLON | 76 |
+| TOLAK | 47 |
 | DEFER | 56 |
 | **Total berkas RYO terinventaris** | **620** |
 
@@ -25,13 +25,14 @@ Jumlah semua klasifikasi sama dengan total berkas (620), tidak ada yang terlewat
 
 ## Hasil port (bukti substantif)
 
-### Plugin baru (6 perintah dari 6 berkas RYO)
+### Plugin baru (7 perintah)
 
 1. **.gitclone** (dari downloader/gitclone.js): unduh repo GitHub publik sebagai ZIP lewat zipball API GitHub resmi. Bukti VM: fetchRepoZip pada octocat/Hello-World mengembalikan berkas 387 byte dengan magic PK dan nama octocat-Hello-World.zip. Kode: src/scrapers/download/gitclone.js, plugins/download/gitclone.js.
 2. **.upload** (dari tools/uguu.js dan tools/tourl2.js): unggah media yang dikirim/dikutip ke uguu.se dan balas tautan publiknya. Bukti VM: unggah PNG uji membalas https://d.uguu.se/pKScbKWj.png dan URL itu diunduh balik dengan HTTP 200. Kode: src/scrapers/tools/upload.js, plugins/tools/upload.js. Cadangan litterbox.catbox.moe dicoba dan tidak terjangkau dari VM (HTTP 000), jadi TIDAK dimasukkan rantai.
 3. **.emojistick** (dari sticker/emojistick.js): emoji menjadi stiker dari gambar glyph aslinya. URL pola RYO (raw.githubusercontent googlefonts/noto-emoji) terbukti 404 dari VM, jadi sumber diganti Noto Color Emoji fonts.gstatic.com (utama) dan Twemoji jsdelivr (cadangan), keduanya terverifikasi PNG asli. Bukti VM: fetchEmojiPng untuk 😀 mengembalikan PNG 30192 byte dan toStickerWebp mengubahnya jadi WebP 11090 byte (magic WEBP). Kode: src/services/emoji-image.js, plugins/sticker/emojistick.js.
 4. **.pinpesan** dan **.unpinpesan** (dari group/pinpesan.js): sematkan/lepas pesan yang dikutip memakai content.pin yang didukung jalur kirim library elaina-baileys 1.4.7 (messages-send.js mengenali content.pin menjadi pinInChatMessage). Bukti: tes perilaku handler dengan ctx palsu menegaskan payload { pin: { remoteJid, fromMe, id, participant }, type: 1 } terkirim persis ke sock untuk pin dan type 2 untuk unpin; tanpa kutipan handler hanya membalas petunjuk dan tidak mengirim apa pun. Vonis live WhatsApp menunggu jendela tes chat utama. Kode: src/services/pin-message.js, plugins/group/pinpesan.js, plugins/group/unpinpesan.js.
 5. **.wallpaper** (dari downloader/image-wallpaper.js): cari wallpaper di wallpaperflare.com (scrape halaman pencarian, tanpa cookie statis seperti versi RYO). Bukti VM: pencarian "anime" memberi 10 hasil dan gambar pertama terunduh 50627 byte dengan magic JPEG ffd8. Kode: src/scrapers/search/wallpaper.js, plugins/search/wallpaper.js.
+6. **.wastalk** (dari stalk/wa.js, dinilai ulang 2026-11-05 atas perintah owner): penampil profil PUBLIK WhatsApp sebuah nomor. Penilaian mekanisme membuktikan isinya hanya data yang diekspos WhatsApp ke publik (cek terdaftar, foto profil, teks about, profil bisnis publik), jadi diport gaya KANA dari nol, bukan disalin: method sock library 1.4.7 yang dipakai terverifikasi ada di sumber library (onWhatsApp, fetchStatus dengan parser USyncStatusProtocol, getBusinessProfile, profilePictureUrl). Bukti: 11 tes perilaku di test/wastalk-port.test.js (normalisasi nomor, negara dari awalan, parser status USync dan profil bisnis, alur fetchWaProfile dengan sock tiruan, perilaku handler termasuk target dari pesan yang dibalas dan jalan pintas teks bila foto gagal diunduh). Vonis live WhatsApp menunggu jendela tes chat utama. Kode: src/services/wa-profile.js, plugins/search/wastalk.js.
 
 ### Fallback baru (1)
 
@@ -40,6 +41,7 @@ Jumlah semua klasifikasi sama dengan total berkas (620), tidak ada yang terlewat
 ### Tes
 
 - test/ryo-port.test.js: 11 tes (parser URL GitHub + magic ZIP, parser balasan uguu, codepoint/URL emoji + magic PNG, penyusun payload pin, perilaku handler pin/unpin termasuk gerbang kutipan, parser faa + magic mp3, parser galeri wallpaperflare).
+- test/wastalk-port.test.js: 11 tes (penilaian ulang subset tag dan stalk 2026-11-05: normalisasi nomor, negara dari awalan kode telepon, parser status USync dan profil bisnis, alur fetchWaProfile dengan sock tiruan, perilaku handler wastalk termasuk target dari pesan yang dibalas, nomor tak terdaftar, dan jalan pintas teks bila foto gagal diunduh).
 - npm test penuh: 665/665 hijau (termasuk 11 tes baru di test/ryo-port.test.js).
 - Registry sesudah port: 1414 plugin (1408 + 6 berkas plugin baru), 0 karantina. npm run i18n:check bersih.
 
@@ -257,10 +259,10 @@ Jumlah semua klasifikasi sama dengan total berkas (620), tidak ada yang terlewat
 | group/setppgc.js | setppgc | SUDAH ADA | Padanan KANA: .setppgrup |
 | group/settings.js | gc *open / close*, group, gc | SUDAH ADA | Nama perintah "group" terdaftar di registry KANA |
 | group/setwelcome.js | setwelcome, setw | SUDAH ADA | Nama perintah "setwelcome" terdaftar di registry KANA |
-| group/spamtag.js | spamtag @user, spamtag | TOLAK | Alat spam tag massal: dilarang (spam) |
+| group/spamtag.js | spamtag @user, spamtag | TOLAK | Dinilai ulang per mekanisme 2026-11-05 atas perintah owner: loop mention berulang ke SATU target yang sama (3x pengguna biasa, 5x premium, 10x owner, jeda 700ms) = spam tag banjir untuk mengganggu, bukan tag pengumuman. TETAP DITOLAK (spam, batas keras owner). Tag pengumuman satu kali sudah terwakili .totag, .tagall, dan .hidetag KANA |
 | group/tagadmin.js | tagadmin | SUDAH ADA | Nama perintah "tagadmin" terdaftar di registry KANA |
 | group/tagall.js | tagall | SUDAH ADA | Nama perintah "tagall" terdaftar di registry KANA |
-| group/tagsw.js | swgc, upswgc | TOLAK | Tag massal lewat status WhatsApp: keluarga upsw/colongsw yang dilarang DECISIONS |
+| group/tagsw.js | swgc, upswgc | KLON | Dinilai ulang per mekanisme 2026-11-05 atas perintah owner: bukan mengambil status orang (colongsw), melainkan MEMPOSTING status grup sendiri lewat groupStatusMessageV2/isGroupStatus. Fungsi itu sudah terwakili perintah kanonis KANA .upsw (plugins/group/upsw.js, upload story grup), jadi tidak dibuat perintah duplikat. Pembeda RYO dicatat sebagai bahan pemilik .upsw: target grup lain lewat tautan undangan/JID, warna latar status teks, dan anotasi musik tertanam |
 | group/totag.js | totag, tag | SUDAH ADA | Nama perintah "totag" terdaftar di registry KANA |
 | group/totalchat.js | totalchat | SUDAH ADA | Nama perintah "totalchat" terdaftar di registry KANA |
 | group/totalpesan.js | totalpesan | SUDAH ADA | Nama perintah "totalpesan" terdaftar di registry KANA |
@@ -573,7 +575,7 @@ Jumlah semua klasifikasi sama dengan total berkas (620), tidak ada yang terlewat
 | stalk/threadsstalk.js | threadsstalk <username>, threadsstalk, threadstalk | DEFER | Plugin threads KANA sedang dinonaktifkan, jadi stalk Threads ditunda mengikuti status itu |
 | stalk/ttstalk.js | ttstalk <username>, ttstalk | SUDAH ADA | Padanan KANA: .tiktokstalk |
 | stalk/twitter.js | twitterstalk <username>, twitterstalk, twitter, xstalk | SUDAH ADA | Nama perintah "twitterstalk" terdaftar di registry KANA |
-| stalk/wa.js | wastalk, wa, whatsappstalk | TOLAK | wastalk: dilarang eksplisit di DECISIONS |
+| stalk/wa.js | wastalk, wa, whatsappstalk | PORT BARU | Dinilai ulang per mekanisme 2026-11-05 atas perintah owner: isinya hanya data PUBLIK profil WhatsApp (cek terdaftar onWhatsApp, foto profil profilePictureUrl, teks about fetchStatus, profil bisnis publik getBusinessProfile), sekelas .igstalk, bukan data registrasi non-publik dan bukan mengambil story orang. DIPORT gaya KANA sebagai .wastalk (plugins/search/wastalk.js + src/services/wa-profile.js, 11 tes di test/wastalk-port.test.js). DECISIONS melarang stalking NON-publik; yang ini publik. Vonis live menunggu jendela tes chat utama |
 | stalk/yt.js | ytstalk, youtubestalk | SUDAH ADA | Nama perintah "ytstalk" terdaftar di registry KANA |
 | sticker/animebrat.js | animebrat | SUDAH ADA | Nama perintah "animebrat" terdaftar di registry KANA |
 | sticker/animebratvid.js | animebratvid <teks>, animebratvid, bratanimvid, bratanimevid | KLON | Varian style dari mesin .brat KANA (satu plugin, banyak style) |
@@ -615,7 +617,7 @@ Jumlah semua klasifikasi sama dengan total berkas (620), tidak ada yang terlewat
 | tools/cekidch.js | cekidgc, cekidgrup, cekidch, idch | SUDAH ADA | Nama perintah "cekidgc" terdaftar di registry KANA |
 | tools/cekml.js | cekml, mlbb, mlstalk | SUDAH ADA | Nama perintah "mlbb" terdaftar di registry KANA |
 | tools/ceknsfw.js | nsfwcheck | SUDAH ADA | Nama perintah "nsfwcheck" terdaftar di registry KANA |
-| tools/cekrek.js | cekrek <bank>|<nomor>, cekrek, cekrekening | TOLAK | Parser NIK dan cek rekening orang: stalking non-publik, dilarang DECISIONS |
+| tools/cekrek.js | cekrek <bank>|<nomor>, cekrek, cekrekening | TOLAK | Dinilai ulang per mekanisme 2026-11-05 atas perintah owner: memvalidasi nomor rekening/e-wallet MILIK ORANG LAIN lewat api.nexray.eu.cc = data finansial non-publik. TETAP DITOLAK (stalking non-publik, batas keras owner), tanpa dicarikan sumber alternatif |
 | tools/cekresi.js | cekresi | DEFER | Memakai token ui statis situs cekresi.com dan sesi PHP yang rapuh; belum terverifikasi ujung ke ujung dari VM |
 | tools/codepromt.js | promptcode, detectbug, convertcode, explaincode, imagesolve | SUDAH ADA | Nama perintah "promptcode" terdaftar di registry KANA |
 | tools/copynum.js | copynum | DEFER | Gimmick tombol salin nomor pengirim, bukan fungsi data; nilai port rendah |
@@ -629,7 +631,7 @@ Jumlah semua klasifikasi sama dengan total berkas (620), tidak ada yang terlewat
 | tools/hdvid.js | hdvideo, unblurvideo, vhd | DEFER | API peningkat kualitas video: belum terverifikasi dari VM |
 | tools/ip.js | ip | SUDAH ADA | Padanan KANA: .cekip |
 | tools/jadwaltv.js | jadwaltv | SUDAH ADA | Nama perintah "jadwaltv" terdaftar di registry KANA |
-| tools/nik.js | nik <nomor>, nik | TOLAK | Parser NIK dan cek rekening orang: stalking non-publik, dilarang DECISIONS |
+| tools/nik.js | nik <nomor>, nik | TOLAK | Dinilai ulang per mekanisme 2026-11-05 atas perintah owner: parser NIK lokal membuka tanggal lahir, jenis kelamin, umur, dan wilayah sampai kecamatan dari nomor kependudukan 16 digit orang lain = data pribadi non-publik. TETAP DITOLAK (stalking non-publik, batas keras owner), tanpa dicarikan sumber alternatif |
 | tools/npmjs.js | npmjs | SUDAH ADA | Nama perintah "npmjs" terdaftar di registry KANA |
 | tools/npmshield.js | npmshield | SUDAH ADA | Nama perintah "npmshield" terdaftar di registry KANA |
 | tools/numbgen.js | numbgen | SUDAH ADA | Nama perintah "numbgen" terdaftar di registry KANA |
