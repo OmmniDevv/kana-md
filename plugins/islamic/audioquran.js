@@ -10,7 +10,7 @@ import { fetchSurahMeta, isMp3Buffer } from './murothal.js'
 
 export const config = {
   name: 'audioquran',
-  alias: ['ayat'],
+  alias: [],
   category: 'islamic',
   description: { id: 'Dengarkan audio Al Quran per ayat (Alafasy) dengan menulis nomor surah dan ayatnya', en: 'Listen to Quran audio per verse (Alafasy) by giving the surah and verse numbers' },
   usage: '.audioquran <nomor surah> <nomor ayat>',

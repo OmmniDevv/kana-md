@@ -2,7 +2,7 @@
 // namespace 'reports' dan diteruskan ke chat owner saat itu juga.
 export const config = {
   name: 'lapor',
-  alias: ['laporbug', 'reportbug', 'report'],
+  alias: ['laporbug', 'reportbug'],
   category: 'info',
   description: { id: 'Laporkan bug atau masalah ke owner bot', en: 'Report a bug or problem to the bot owner' },
   usage: '.lapor <isi laporan>',

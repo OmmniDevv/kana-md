@@ -6,7 +6,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'purba',
-  alias: ['dino'],
+  alias: [],
   category: 'fun',
   description: { id: 'Undi dan koleksi makhluk purba asli lengkap dengan era hidup dan faktanya', en: 'Draw and collect real prehistoric creatures complete with their era and facts' },
   usage: '.purba',

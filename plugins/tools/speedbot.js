@@ -5,7 +5,7 @@ import os from 'node:os'
 // dari proses bot yang sedang berjalan.
 export const config = {
   name: 'speedbot',
-  alias: ['botspeed', 'serverstat'],
+  alias: ['botspeed'],
   category: 'tools',
   description: { id: 'Lihat statistik performa server bot saat ini', en: 'See the current bot server performance stats' },
   usage: '.speedbot',

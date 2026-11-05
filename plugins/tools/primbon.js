@@ -3,7 +3,7 @@
 // pasaran 5 hari dan neptu memakai tabel pakem umum primbon.
 export const config = {
   name: 'primbon',
-  alias: ['weton', 'cekprimbon'],
+  alias: ['cekprimbon'],
   category: 'tools',
   description: { id: 'Hitung weton, pasaran, dan neptu dari tanggal lahir', en: 'Calculate Javanese weton, pasaran, and neptu from a birth date' },
   usage: '.primbon <dd-mm-yyyy>',

@@ -11,7 +11,7 @@ import { MAX_AUDIO_BYTES } from '../../src/ui/media.js'
 
 export const config = {
   name: 'murothal',
-  alias: ['murrotal', 'murottal'],
+  alias: ['murrotal'],
   category: 'islamic',
   description: { id: 'Dengarkan murottal Al Quran satu surah penuh (audio Alafasy) dengan menulis nomor surahnya', en: 'Listen to a full surah murottal (Alafasy audio) by giving the surah number' },
   usage: '.murothal <nomor surah>',

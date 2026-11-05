@@ -7,7 +7,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'math',
-  alias: ['maths', 'matematika'],
+  alias: ['maths'],
   category: 'game',
   description: { id: 'Kuis matematika: hitung soal aritmetika yang dibangkitkan acak, jawab dengan membalas pesan soal', en: 'Math quiz: solve randomly generated arithmetic, answer by replying to the question message' },
   usage: '.math lalu balas pesan soal dengan hasil hitungnya',

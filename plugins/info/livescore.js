@@ -3,7 +3,7 @@
 // yang sedang berjalan bila tersedia.
 export const config = {
   name: 'livescore',
-  alias: ['skorlangsung', 'bola'],
+  alias: ['skorlangsung'],
   category: 'info',
   description: { id: 'Skor langsung pertandingan sepak bola (TheSportsDB)', en: 'Live football scores (TheSportsDB)' },
   usage: '.livescore',

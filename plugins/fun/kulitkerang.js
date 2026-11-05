@@ -6,7 +6,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'kulitkerang',
-  alias: ['kerang'],
+  alias: [],
   category: 'fun',
   description: { id: 'Undi dan koleksi kulit kerang laut asli lengkap dengan nama Latin dan faktanya', en: 'Draw and collect real seashells complete with Latin names and facts' },
   usage: '.kulitkerang',
