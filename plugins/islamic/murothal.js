@@ -1,57 +1,91 @@
+// Perbaikan audit templat 2026-11-05 (gelombang 2): versi lama hanya
+// teks statis tanpa audio sama sekali. Sekarang murottal NYATA: audio
+// surah penuh Mishary Alafasy 128kbps dari CDN Islamic Network
+// (cdn.islamic.network/quran/audio-surah) yang terverifikasi dari VM
+// dengan byte magic MP3 valid, metadata nama surah dari API equran.id.
+// Surah yang berkasnya melebihi batas kirim WhatsApp (16 MB) tidak
+// dipaksakan: KANA membalas jujur dengan tautan dengar langsungnya.
+// .murrotal (ejaan lama) menjadi alias kanonis file ini.
+import { downloadBuffer } from '../../src/scrapers/runner.js'
+import { MAX_AUDIO_BYTES } from '../../src/ui/media.js'
 
-import { getPrayerInfo } from '../../src/scrapers/search/sholat.js'
 export const config = {
-  name: "murothal",
-  alias: [],
-  category: "islamic",
-  description: { id: "Fitur murothal versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD murothal feature, rewritten in KANA style" },
-  usage: ".murothal",
-  example: ".murothal",
-  cooldown: 5,
+  name: 'murothal',
+  alias: ['murrotal', 'murottal'],
+  category: 'islamic',
+  description: { id: 'Dengarkan murottal Al Quran satu surah penuh (audio Alafasy) dengan menulis nomor surahnya', en: 'Listen to a full surah murottal (Alafasy audio) by giving the surah number' },
+  usage: '.murothal <nomor surah>',
+  example: '.murothal 1',
+  cooldown: 10,
 }
 
 export const i18n = {
   id: {
-    "murothal": {
-      body: "╭─❏ 🕌 「 *MUROTHAL* 」\n┊ {text}\n╰━━━━━━━",
-      hint: "╭─❏ 🕌 「 *MUROTHAL* 」\n┊ {text}\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *GAGAL* 」\n┊ {error}\n╰━━━━━━━",
+    murothal: {
+      usage: '╭─❏ 🕌 「 *MUROTTAL* 」\n┊ Tulis nomor surahnya yaa, contoh: *.murothal 1* (Al-Fatihah)\n┊ Nomor surah dari 1 sampai 114\n╰━━━━━━━',
+      info: '╭─❏ 🕌 「 *MUROTTAL* 」\n┊ ꜱᴜʀᴀʜ ᴋᴇ: *{n}*\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴊᴜᴍʟᴀʜ ᴀʏᴀᴛ: *{ayat}*\n┊ Qari: Mishary Rashid Alafasy. Audionya KANA kirim di bawah ini yaa~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🕌 「 *MUROTTAL {name}* 」\n┊ Audio surah ke-{n} ini ukurannya *{mb} MB*, melebihi batas kirim audio WhatsApp (16 MB), jadi KANA tidak bisa melampirkannya langsung.\n┊ Dengarkan lewat tautan resminya di sini:\n┊ {url}\n╰━━━━━━━',
+      failed: '╭─❏ 🕌 「 *MUROTTAL GAGAL* 」\n┊ Audio surah ke-{n} gagal diambil: *{message}*\n╰━━━━━━━',
     },
   },
   en: {
-    "murothal": {
-      body: "╭─❏ 🕌 「 *MUROTHAL* 」\n┊ {text}\n╰━━━━━━━",
-      hint: "╭─❏ 🕌 「 *MUROTHAL* 」\n┊ {text}\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *FAILED* 」\n┊ {error}\n╰━━━━━━━",
+    murothal: {
+      usage: '╭─❏ 🕌 「 *MUROTTAL* 」\n┊ Write the surah number please, example: *.murothal 1* (Al-Fatihah)\n┊ Surah numbers run from 1 to 114\n╰━━━━━━━',
+      info: '╭─❏ 🕌 「 *MUROTTAL* 」\n┊ ꜱᴜʀᴀʜ: *{n}*\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴠᴇʀꜱᴇꜱ: *{ayat}*\n┊ Reciter: Mishary Rashid Alafasy. The audio is sent below~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🕌 「 *MUROTTAL {name}* 」\n┊ The audio for surah {n} is *{mb} MB*, over the WhatsApp audio send limit (16 MB), so KANA cannot attach it directly.\n┊ Listen through the official link here:\n┊ {url}\n╰━━━━━━━',
+      failed: '╭─❏ 🕌 「 *MUROTTAL FAILED* 」\n┊ The audio for surah {n} could not be fetched: *{message}*\n╰━━━━━━━',
     },
   },
 }
 
-const MODE = "curated"
-export const test = { input: '.murothal', expect: /murothal/i }
-const CURATED = "{}"
-export async function handler(ctx) {
-  const say = (text) => ctx.reply(ctx.t('murothal.body', { text }))
+export const test = { input: '.murothal 1', expect: /MUROTTAL|AL-FATIHAH/i }
+
+export function surahAudioUrl(n) {
+  return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${n}.mp3`
+}
+
+// MP3 valid diawali header ID3 atau sinkronisasi frame 0xFFEx/0xFFFx.
+export function isMp3Buffer(buffer) {
+  if (!buffer || buffer.length < 3) return false
+  if (buffer[0] === 0x49 && buffer[1] === 0x44 && buffer[2] === 0x33) return true
+  return buffer[0] === 0xff && (buffer[1] & 0xe0) === 0xe0
+}
+
+export async function fetchSurahMeta(n, fetchImpl = fetch) {
   try {
-    if (MODE === 'quran') {
-      const num = Math.max(1, Math.min(114, parseInt(ctx.args[0]) || 1))
-      const res = await fetch('https://equran.id/api/v2/surat/' + num, { signal: AbortSignal.timeout(20000) })
-      const j = await res.json()
-      const d = j.data
-      const lines = (d.ayat || []).slice(0, 8).map((a) => a.nomorAyat + '. ' + a.teksArab + '\n   ' + (a.teksIndonesia || '')).join('\n┊ ')
-      return say('*' + d.namaLatin + '* (surah ke-' + d.nomor + ', ' + d.jumlahAyat + ' ayat)\n┊ ' + (d.deskripsi || '').replace(/<[^>]+>/g, '').slice(0, 200) + '\n┊ ' + lines)
+    const res = await fetchImpl(`https://equran.id/api/v2/surat/${n}`)
+    if (!res?.ok) return null
+    const json = await res.json()
+    const data = json?.data
+    if (!data) return null
+    return { name: data.namaLatin ?? data.nama ?? '', ayat: data.jumlahAyat ?? 0 }
+  } catch {
+    return null
+  }
+}
+
+export async function handler(ctx, { fetchImpl = fetch, download = downloadBuffer } = {}) {
+  const n = Number.parseInt(ctx.args?.[0] ?? '', 10)
+  if (!Number.isInteger(n) || n < 1 || n > 114) return ctx.reply(ctx.t('murothal.usage'))
+  const url = surahAudioUrl(n)
+  const meta = await fetchSurahMeta(n, fetchImpl)
+  const name = meta?.name || `Surah ${n}`
+  try {
+    const head = await fetchImpl(url, { method: 'HEAD' }).catch(() => null)
+    const length = Number(head?.headers?.get?.('content-length') ?? 0)
+    if (length > MAX_AUDIO_BYTES) {
+      return ctx.reply(ctx.t('murothal.tooBig', { n, name, mb: (length / 1048576).toFixed(1), url }))
     }
-    if (MODE === 'hijri') {
-      const fmt = new Intl.DateTimeFormat('id-ID-u-ca-islamic', { day: 'numeric', month: 'long', year: 'numeric' })
-      return say('Tanggal Hijriah hari ini: *' + fmt.format(new Date()) + '*')
-    }
-    if (MODE === 'sholat') {
-      const info = await getPrayerInfo((ctx.text || '').trim() || 'Jakarta')
-      const rows = typeof info === 'object' ? Object.entries(info).filter(([, v]) => typeof v === 'string').map(([k, v]) => '* ' + k + ': ' + v).join('\n┊ ') : String(info)
-      return say('Jadwal sholat *' + ((ctx.text || '').trim() || 'Jakarta') + '*:\n┊ ' + rows)
-    }
-    return say(CURATED[ctx.lang] || CURATED.id || 'Bismillahirrahmanirrahim. Semoga Allah mudahkan urusanmu hari ini, jaga sholat lima waktu, perbanyak istighfar, dan sedekah semampunya. Barakallahu fiik~')
+    const { buffer } = await download(url, { maxBytes: MAX_AUDIO_BYTES, timeout: 120000 })
+    if (!isMp3Buffer(buffer)) throw new Error('berkas bukan MP3 valid')
+    await ctx.reply(ctx.t('murothal.info', { n, name, ayat: meta?.ayat || '-' }))
+    await ctx.sock.sendMessage(ctx.chat, {
+      audio: buffer,
+      mimetype: 'audio/mpeg',
+      fileName: `murothal-${n}.mp3`,
+    }, { quoted: ctx.raw })
+    return undefined
   } catch (err) {
-    return ctx.reply(ctx.t('murothal.fail', { error: err.message }))
+    return ctx.reply(ctx.t('murothal.failed', { n, message: err.message }))
   }
 }

@@ -1,60 +1,52 @@
-
-import { getProfile, updateProfile } from '../../src/services/user-service.js'
+// Perbaikan audit templat 2026-11-05 (gelombang 2): versi lama mesin duel
+// angka taruhan generik. Sekarang kuis surah beneran memakai mesin kuis
+// repo dengan dataset nomor dan fakta surah sendiri (TEXT_SETS.surah,
+// berbeda dari set tebaksurah), sesi berjalan lewat reply ke pesan soal.
+import { getSession, startQuiz, bindQuestionMessage } from '../../src/quiz/engine.js'
 import { sendButtons } from '../../src/ui/buttons.js'
+
 export const config = {
-  name: "surah",
-  alias: [],
-  category: "game",
-  description: { id: "Fitur surah versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD surah feature, rewritten in KANA style" },
-  usage: ".surah",
-  example: ".surah",
+  name: 'surah',
+  alias: ['kuissurah'],
+  category: 'game',
+  description: { id: 'Kuis surah: tebak nama surah dari nomor urut dan faktanya, jawab dengan membalas pesan soal', en: 'Surah quiz: guess the surah name from its order number and facts by replying to the question message' },
+  usage: '.surah lalu balas pesan soal dengan nama surahnya',
+  example: '.surah',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "surah": {
-      usage: "╭─❏ 🎲 「 *SURAH* 」\n┊ Tulis jumlah betnya yaa, contoh: *.surah 100*\n┊ Bet 10 sampai 10000 koin~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *SURAH* 」\n┊ Betnya harus angka bulat 10 sampai 10000 yaa~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, bet *{bet} koin*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *SURAH* 」\n┊ {detail}\n┊ Menang! Untung *{bet} koin*~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *SURAH* 」\n┊ {detail}\n┊ Kalah nih, *{bet} koin* melayang~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *SURAH* 」\n┊ {detail}\n┊ Seri! Bet kamu balik utuh~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      btnAgain: "Main Lagi",
+    surah: {
+      title: 'Kuis Surah',
+      intro: '╭─❏ 🕌 「 *KUIS SURAH* 」\n┊ {clue}\n┊ ᴘᴏɪɴ: *{points}* | ᴡᴀᴋᴛᴜ: *{seconds} detik*\n┊ Balas (reply) pesan ini dengan nama surahnya yaa~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *KUIS BELUM SELESAI* 」\n┊ Masih ada kuis {type} yang jalan di chat ini. Selesaikan dulu atau pencet menyerah yaa~\n╰━━━━━━━',
+      giveUpBtn: '🏳️ Menyerah (.nyerah)',
+      footer: 'Kuis KANA',
     },
   },
   en: {
-    "surah": {
-      usage: "╭─❏ 🎲 「 *SURAH* 」\n┊ Write your bet amount, example: *.surah 100*\n┊ Bet 10 to 10000 coins~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *SURAH* 」\n┊ The bet must be a whole number from 10 to 10000~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, bet *{bet} coins*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *SURAH* 」\n┊ {detail}\n┊ You win! Profit *{bet} coins*~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *SURAH* 」\n┊ {detail}\n┊ You lose, *{bet} coins* gone~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *SURAH* 」\n┊ {detail}\n┊ Draw! Your bet returns in full~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      btnAgain: "Play Again",
+    surah: {
+      title: 'Surah Quiz',
+      intro: '╭─❏ 🕌 「 *SURAH QUIZ* 」\n┊ {clue}\n┊ ᴘᴏɪɴᴛꜱ: *{points}* | ᴛɪᴍᴇ: *{seconds} seconds*\n┊ Reply to this message with the surah name~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ⏳ 「 *QUIZ NOT FINISHED* 」\n┊ A {type} quiz is still running in this chat. Finish it first or tap give up~\n╰━━━━━━━',
+      giveUpBtn: '🏳️ Give Up (.nyerah)',
+      footer: 'KANA Quiz',
     },
   },
 }
 
-export function resolveGame(player, bot, bet) {
-  if (player > bot) return { outcome: 'win', delta: bet }
-  if (player < bot) return { outcome: 'lose', delta: -bet }
-  return { outcome: 'draw', delta: 0 }
-}
-export const test = { input: '.surah', expect: /bet/i }
+export const test = { input: '.surah', expect: /surah/i }
+
 export async function handler(ctx) {
-  const bet = Number(ctx.args[0])
-  if (!ctx.args[0]) return ctx.reply(ctx.t('surah.usage'))
-  if (!Number.isInteger(bet) || bet < 10 || bet > 10000) return ctx.reply(ctx.t('surah.bad'))
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  if (balance < bet) return ctx.reply(ctx.t('surah.poor', { balance, bet }))
-  const player = 1 + Math.floor(Math.random() * 100)
-  const bot = 1 + Math.floor(Math.random() * 100)
-  const r = resolveGame(player, bot, bet)
-  const next = balance + r.delta
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: next })
-  const detail = '🎯 Kamu: *' + player + '* vs KANA: *' + bot + '*'
-  const body = ctx.t('surah.' + r.outcome, { detail, bet, balance: next })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('surah.btnAgain'), id: '.surah ' + bet }], textFallback: body })
+  const existing = await getSession(ctx.storage, ctx.chat)
+  if (existing) {
+    const body = ctx.t('surah.already', { type: existing.type })
+    return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('surah.title'), body, footer: ctx.t('surah.footer'), replies: [{ text: ctx.t('surah.giveUpBtn'), id: '.nyerah' }], textFallback: body })
+  }
+  const { question } = await startQuiz(ctx.storage, ctx.chat, 'surah', { lang: ctx.lang, startedBy: ctx.senderDigits })
+  const body = ctx.t('surah.intro', { clue: question.text, points: question.points, seconds: 120, mood: ctx.say('senang') })
+  const sent = await sendButtons(ctx.sock, ctx.chat, { title: ctx.t('surah.title'), body, footer: ctx.t('surah.footer'), replies: [{ text: ctx.t('surah.giveUpBtn'), id: '.nyerah' }], textFallback: body })
+  await bindQuestionMessage(ctx.storage, ctx.chat, sent?.key?.id)
+  return sent
 }

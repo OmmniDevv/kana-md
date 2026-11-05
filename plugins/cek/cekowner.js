@@ -1,53 +1,58 @@
-
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05 (gelombang 2): versi lama klon
+// persen hashPercent, membalas persen acak untuk pertanyaan boolean.
+// Sekarang cek owner NYATA: nomor dibandingkan dengan OWNER_NUMBER dan
+// status isOwner pemanggil dari pipeline, hasilnya boolean jujur.
 export const config = {
-  name: "cekowner",
+  name: 'cekowner',
   alias: [],
-  category: "cek",
-  description: { id: "Cek apakah user adalah owner bot", en: "KANA version of the Elaina-MD cekowner feature, rewritten in KANA style" },
-  usage: ".cekowner",
-  example: ".cekowner",
+  category: 'cek',
+  description: { id: 'Cek apakah kamu atau nomor tertentu adalah owner bot, hasilnya boolean nyata', en: 'Check whether you or a given number is the bot owner, a real boolean result' },
+  usage: '.cekowner | .cekowner <nomor>',
+  example: '.cekowner',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "cekowner": {
-      title: "Cek owner",
-      result: "╭─❏ 🔮 「 *CEK OWNER* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴀꜱɪʟ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Masih kecil nih, tapi potensinya ada kok~",
-      mid: "Lumayan, di tengah tengah, kadang muncul kadang tidak~",
-      high: "Tinggi nih! Kelihatan banget dari auranya~",
-      max: "PARAH, level maksimal! Sudah level legenda~",
-      disclaimer: "Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~",
-      btnAgain: "Cek Lagi",
+    cekowner: {
+      result: '╭─❏ 👑 「 *CEK OWNER* 」\n┊ ɴᴏᴍᴏʀ: *{target}*\n┊ OWNER: *{verdict}*\n┊ {note}\n╰━━━━━━━',
+      yesNote: 'Nomor ini terdaftar sebagai owner bot KANA~',
+      noNote: 'Nomor ini bukan owner bot KANA, cuma pengguna biasa~',
     },
   },
   en: {
-    "cekowner": {
-      title: "owner check",
-      result: "╭─❏ 🔮 「 *OWNER CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʀᴇꜱᴜʟᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Still small, but the potential is there~",
-      mid: "Decent, in the middle, sometimes it shows sometimes not~",
-      high: "High! It really shows from the aura~",
-      max: "EXTREME, maximum level! Legendary tier~",
-      disclaimer: "Just for fun, the percent is KANA playful name reading, not a real measure~",
-      btnAgain: "Check Again",
+    cekowner: {
+      result: '╭─❏ 👑 「 *OWNER CHECK* 」\n┊ ɴᴜᴍʙᴇʀ: *{target}*\n┊ OWNER: *{verdict}*\n┊ {note}\n╰━━━━━━━',
+      yesNote: 'This number is registered as the KANA bot owner~',
+      noNote: 'This number is not the KANA bot owner, just a regular user~',
     },
   },
 }
 
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
+export const test = { input: '.cekowner 6285869074622', expect: /OWNER: (YA|BUKAN|YES|NO)/ }
+
+// Keputusan murni: target adalah owner bila sama dengan nomor owner di
+// env, atau bila target adalah pemanggil dan pipeline menandainya owner.
+export function decideOwner({ targetDigits, senderDigits, isOwnerFlag, ownerEnvDigits }) {
+  if (ownerEnvDigits && targetDigits === ownerEnvDigits) return true
+  if (targetDigits === senderDigits && isOwnerFlag) return true
+  return false
 }
-export const test = { input: '.cekowner Budi', expect: /cek|check/i }
+
 export async function handler(ctx) {
-  const target = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
-  const percent = hashPercent(target.toLowerCase() + ':cekowner')
-  const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'
-  const body = ctx.t('cekowner.result', { name: target, percent, comment: ctx.t('cekowner.' + band), disclaimer: ctx.t('cekowner.disclaimer') })
-  return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('cekowner.title'), body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('cekowner.btnAgain'), id: '.cekowner' }], textFallback: body })
+  const argDigits = (ctx.args?.[0] ?? '').replace(/\D/g, '')
+  const target = argDigits || ctx.senderDigits
+  const ownerEnvDigits = (process.env.OWNER_NUMBER || '').replace(/\D/g, '')
+  const isOwner = decideOwner({
+    targetDigits: target,
+    senderDigits: ctx.senderDigits,
+    isOwnerFlag: Boolean(ctx.isOwner),
+    ownerEnvDigits,
+  })
+  const verdict = ctx.lang === 'en' ? (isOwner ? 'YES' : 'NO') : (isOwner ? 'YA' : 'BUKAN')
+  return ctx.reply(ctx.t('cekowner.result', {
+    target,
+    verdict,
+    note: ctx.t(isOwner ? 'cekowner.yesNote' : 'cekowner.noNote'),
+  }))
 }

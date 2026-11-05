@@ -1,53 +1,68 @@
-
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05 (gelombang 2): versi lama klon
+// persen hashPercent, tidak mengirim pesan ke siapa pun. Sekarang
+// confess anonim NYATA mengikuti pola sehat .menfess: pesan dikirim
+// lewat bot ke nomor target tanpa menyebut pengirim, pengirim hanya
+// menerima konfirmasi terkirim. Nomor divalidasi lewat onWhatsApp,
+// pesan dibatasi 500 karakter, dan ada cooldown per pengirim
+// (config.cooldown 60 detik ditegakkan pipeline) anti spam beruntun.
 export const config = {
-  name: "confess",
+  name: 'confess',
   alias: [],
-  category: "fun",
-  description: { id: "Fitur confess versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD confess feature, rewritten in KANA style" },
-  usage: ".confess",
-  example: ".confess",
-  cooldown: 5,
+  category: 'fun',
+  description: { id: 'Kirim confess anonim ke nomor seseorang lewat bot, namamu tidak ditampilkan', en: 'Send an anonymous confession to someone via the bot, your name is not shown' },
+  usage: '.confess <nomor> | <pesan>',
+  example: '.confess 6281234567890 | Aku suka kamu sejak lama',
+  cooldown: 60,
 }
 
 export const i18n = {
   id: {
-    "confess": {
-      title: "Cek confess",
-      result: "╭─❏ 🔮 「 *CEK CONFESS* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴀꜱɪʟ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Masih kecil nih, tapi potensinya ada kok~",
-      mid: "Lumayan, di tengah tengah, kadang muncul kadang tidak~",
-      high: "Tinggi nih! Kelihatan banget dari auranya~",
-      max: "PARAH, level maksimal! Sudah level legenda~",
-      disclaimer: "Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~",
-      btnAgain: "Cek Lagi",
+    confess: {
+      hint: '╭─❏ 💌 「 *CONFESS* 」\n┊ Formatnya: *.confess <nomor tujuan> | <pesan>*\n┊ Contoh: *.confess 6281234567890 | Aku suka kamu sejak lama*\n╰━━━━━━━',
+      sent: '╭─❏ 💌 「 *CONFESS TERKIRIM* 」\n┊ Confess kamu sudah KANA kirim secara anonim.\n┊ Namamu tidak ditampilkan ke penerima~\n╰━━━━━━━ {mood}',
+      received: '╭─❏ 💌 「 *ADA CONFESS BUAT KAMU* 」\n┊ "{message}"\n┊ \n┊ ᴅᴀʀɪ: seseorang yang merahasiakan namanya.\n╰━━━━━━━',
+      badNumber: '╭─❏ 💌 「 *NOMOR TIDAK VALID* 」\n┊ Nomor tujuannya tidak valid atau tidak terdaftar di WhatsApp.\n┊ Pakai format *628xxxxxxxxxx* yaa~\n╰━━━━━━━',
+      tooLong: '╭─❏ 💌 「 *PESAN KEPANJANGAN* 」\n┊ Pesanmu kepanjangan (maks *500 karakter*).\n╰━━━━━━━',
+      toSelf: '╭─❏ 💌 「 *CONFESS* 」\n┊ Tidak bisa confess ke nomor sendiri lewat bot yaa~\n╰━━━━━━━',
+      fail: '╭─❏ 💌 「 *GAGAL KIRIM CONFESS* 」\n┊ Gagal kirim confessnya: {error}\n╰━━━━━━━',
     },
   },
   en: {
-    "confess": {
-      title: "confess check",
-      result: "╭─❏ 🔮 「 *CONFESS CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʀᴇꜱᴜʟᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Still small, but the potential is there~",
-      mid: "Decent, in the middle, sometimes it shows sometimes not~",
-      high: "High! It really shows from the aura~",
-      max: "EXTREME, maximum level! Legendary tier~",
-      disclaimer: "Just for fun, the percent is KANA playful name reading, not a real measure~",
-      btnAgain: "Check Again",
+    confess: {
+      hint: '╭─❏ 💌 「 *CONFESS* 」\n┊ Format: *.confess <target number> | <message>*\n┊ Example: *.confess 6281234567890 | I have liked you for a long time*\n╰━━━━━━━',
+      sent: '╭─❏ 💌 「 *CONFESS SENT* 」\n┊ Your confession has been sent anonymously.\n┊ Your name is not shown to the recipient~\n╰━━━━━━━ {mood}',
+      received: '╭─❏ 💌 「 *A CONFESSION FOR YOU* 」\n┊ "{message}"\n┊ \n┊ ꜰʀᴏᴍ: someone keeping their name secret.\n╰━━━━━━━',
+      badNumber: '╭─❏ 💌 「 *INVALID NUMBER* 」\n┊ The target number is invalid or not registered on WhatsApp.\n┊ Use the *628xxxxxxxxxx* format please~\n╰━━━━━━━',
+      tooLong: '╭─❏ 💌 「 *MESSAGE TOO LONG* 」\n┊ Your message is too long (max *500 characters*).\n╰━━━━━━━',
+      toSelf: '╭─❏ 💌 「 *CONFESS* 」\n┊ You cannot confess to your own number through the bot~\n╰━━━━━━━',
+      fail: '╭─❏ 💌 「 *FAILED TO SEND CONFESS* 」\n┊ Failed to send the confession: {error}\n╰━━━━━━━',
     },
   },
 }
 
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
+export const test = { input: '.confess 6285869074622 | Halo, ini confess uji dari KANA', expect: /CONFESS TERKIRIM|CONFESS SENT/ }
+
+export function parseConfess(raw) {
+  const sep = raw.indexOf('|')
+  if (sep < 1) return null
+  const number = raw.slice(0, sep).replace(/\D/g, '')
+  const message = raw.slice(sep + 1).trim()
+  if (number.length < 9 || number.length > 15 || !message) return null
+  return { number, message }
 }
-export const test = { input: '.confess Budi', expect: /cek|check/i }
+
 export async function handler(ctx) {
-  const target = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
-  const percent = hashPercent(target.toLowerCase() + ':confess')
-  const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'
-  const body = ctx.t('confess.result', { name: target, percent, comment: ctx.t('confess.' + band), disclaimer: ctx.t('confess.disclaimer') })
-  return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('confess.title'), body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('confess.btnAgain'), id: '.confess' }], textFallback: body })
+  const parsed = parseConfess(ctx.text || '')
+  if (!parsed) return ctx.reply(ctx.t('confess.hint'))
+  if (parsed.message.length > 500) return ctx.reply(ctx.t('confess.tooLong'))
+  if (parsed.number === ctx.senderDigits) return ctx.reply(ctx.t('confess.toSelf'))
+  const jid = `${parsed.number}@s.whatsapp.net`
+  try {
+    const [check] = await ctx.sock.onWhatsApp(jid)
+    if (check && check.exists === false) return ctx.reply(ctx.t('confess.badNumber'))
+    await ctx.sock.sendMessage(jid, { text: ctx.t('confess.received', { message: parsed.message }) })
+    return ctx.reply(ctx.t('confess.sent', { mood: ctx.say('senang') }))
+  } catch (err) {
+    return ctx.reply(ctx.t('confess.fail', { error: err.message }))
+  }
 }

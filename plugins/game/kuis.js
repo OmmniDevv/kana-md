@@ -1,60 +1,82 @@
-
-import { getProfile, updateProfile } from '../../src/services/user-service.js'
+// Perbaikan audit templat 2026-11-05 (gelombang 2): versi lama mesin duel
+// angka taruhan generik. Sekarang kuis pilihan ganda beneran memakai
+// mesin kuis repo (src/quiz/engine.js, set kuisumum) dengan sesi reply.
+import { answerQuiz, bindQuestionMessage, getSession, startQuiz } from '../../src/quiz/engine.js'
+import { reportResult } from '../../src/quiz/respond.js'
 import { sendButtons } from '../../src/ui/buttons.js'
+
 export const config = {
-  name: "kuis",
+  name: 'kuis',
   alias: [],
-  category: "game",
-  description: { id: "Fitur kuis versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD kuis feature, rewritten in KANA style" },
-  usage: ".kuis",
-  example: ".kuis",
+  category: 'game',
+  description: { id: 'Kuis pengetahuan umum pilihan ganda, jawab dengan membalas pesan soal', en: 'General knowledge multiple choice quiz, answer by replying to the question message' },
+  usage: '.kuis lalu balas pesan soal dengan huruf jawabanmu',
+  example: '.kuis',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "kuis": {
-      usage: "╭─❏ 🎲 「 *KUIS* 」\n┊ Tulis jumlah betnya yaa, contoh: *.kuis 100*\n┊ Bet 10 sampai 10000 koin~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *KUIS* 」\n┊ Betnya harus angka bulat 10 sampai 10000 yaa~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, bet *{bet} koin*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *KUIS* 」\n┊ {detail}\n┊ Menang! Untung *{bet} koin*~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *KUIS* 」\n┊ {detail}\n┊ Kalah nih, *{bet} koin* melayang~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *KUIS* 」\n┊ {detail}\n┊ Seri! Bet kamu balik utuh~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      btnAgain: "Main Lagi",
+    kuis: {
+      title: 'Kuis',
+      intro: '╭─❏ ❓ 「 *KUIS* 」\n┊ {question}\n┊\n┊ {options}\n┊\n┊ ᴘᴏɪɴ: *{points}* | ᴡᴀᴋᴛᴜ: *{seconds} detik*\n┊ Balas (reply) pesan ini dengan huruf jawabannya, atau pencet tombolnya yaa~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ❓ 「 *KUIS MASIH JALAN* 」\n┊ Masih ada kuis *{type}* yang jalan di chat ini.\n┊ Selesaikan dulu atau pencet tombol menyerah di bawah yaa~\n╰━━━━━━━',
+      giveUpBtn: '🏳️ Menyerah (.nyerah)',
+      footer: 'Kuis KANA',
     },
   },
   en: {
-    "kuis": {
-      usage: "╭─❏ 🎲 「 *KUIS* 」\n┊ Write your bet amount, example: *.kuis 100*\n┊ Bet 10 to 10000 coins~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *KUIS* 」\n┊ The bet must be a whole number from 10 to 10000~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, bet *{bet} coins*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *KUIS* 」\n┊ {detail}\n┊ You win! Profit *{bet} coins*~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *KUIS* 」\n┊ {detail}\n┊ You lose, *{bet} coins* gone~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *KUIS* 」\n┊ {detail}\n┊ Draw! Your bet returns in full~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      btnAgain: "Play Again",
+    kuis: {
+      title: 'Quiz',
+      intro: '╭─❏ ❓ 「 *QUIZ* 」\n┊ {question}\n┊\n┊ {options}\n┊\n┊ ᴘᴏɪɴᴛꜱ: *{points}* | ᴛɪᴍᴇ: *{seconds} seconds*\n┊ Reply to this message with the answer letter, or tap an answer button~\n╰━━━━━━━ {mood}',
+      already: '╭─❏ ❓ 「 *QUIZ STILL RUNNING* 」\n┊ A *{type}* quiz is still running in this chat.\n┊ Finish it first or tap the give up button below~\n╰━━━━━━━',
+      giveUpBtn: '🏳️ Give Up (.nyerah)',
+      footer: 'KANA Quiz',
     },
   },
 }
 
-export function resolveGame(player, bot, bet) {
-  if (player > bot) return { outcome: 'win', delta: bet }
-  if (player < bot) return { outcome: 'lose', delta: -bet }
-  return { outcome: 'draw', delta: 0 }
-}
-export const test = { input: '.kuis', expect: /bet/i }
+const LETTERS = ['A', 'B', 'C', 'D']
+
+export const test = { input: '.kuis', expect: /kuis/i }
+
 export async function handler(ctx) {
-  const bet = Number(ctx.args[0])
-  if (!ctx.args[0]) return ctx.reply(ctx.t('kuis.usage'))
-  if (!Number.isInteger(bet) || bet < 10 || bet > 10000) return ctx.reply(ctx.t('kuis.bad'))
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  if (balance < bet) return ctx.reply(ctx.t('kuis.poor', { balance, bet }))
-  const player = 1 + Math.floor(Math.random() * 100)
-  const bot = 1 + Math.floor(Math.random() * 100)
-  const r = resolveGame(player, bot, bet)
-  const next = balance + r.delta
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: next })
-  const detail = '🎯 Kamu: *' + player + '* vs KANA: *' + bot + '*'
-  const body = ctx.t('kuis.' + r.outcome, { detail, bet, balance: next })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('kuis.btnAgain'), id: '.kuis ' + bet }], textFallback: body })
+  const existing = await getSession(ctx.storage, ctx.chat)
+  const letterArg = (ctx.text || '').trim().toUpperCase()
+  if (existing && existing.type === 'kuisumum' && /^[A-D]$/.test(letterArg)) {
+    const result = await answerQuiz(ctx.storage, ctx.chat, ctx.senderDigits, letterArg)
+    return reportResult(ctx, result)
+  }
+  if (existing) {
+    const body = ctx.t('kuis.already', { type: existing.type })
+    return sendButtons(ctx.sock, ctx.chat, {
+      title: ctx.t('kuis.title'),
+      body,
+      footer: ctx.t('kuis.footer'),
+      replies: [{ text: ctx.t('kuis.giveUpBtn'), id: '.nyerah' }],
+      textFallback: body,
+    })
+  }
+  const { question } = await startQuiz(ctx.storage, ctx.chat, 'kuisumum', {
+    lang: ctx.lang,
+    startedBy: ctx.senderDigits,
+  })
+  const options = question.options ?? []
+  const optionsText = options.map((opt, i) => `${LETTERS[i]}. ${opt}`).join('\n┊ ')
+  const body = ctx.t('kuis.intro', {
+    question: question.text,
+    options: optionsText,
+    points: question.points,
+    seconds: 120,
+    mood: ctx.say('senang'),
+  })
+  const sentQuestion = await sendButtons(ctx.sock, ctx.chat, {
+    title: ctx.t('kuis.title'),
+    body,
+    footer: ctx.t('kuis.footer'),
+    replies: options.map((opt, i) => ({ text: `${LETTERS[i]}. ${opt}`.slice(0, 60), id: `.kuis ${LETTERS[i]}` })),
+    textFallback: body,
+  })
+  await bindQuestionMessage(ctx.storage, ctx.chat, sentQuestion?.key?.id)
+  return sentQuestion
 }

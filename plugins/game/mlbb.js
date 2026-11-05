@@ -1,60 +1,69 @@
-
-import { getProfile, updateProfile } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05 (gelombang 2): versi lama mesin duel
+// angka generik. Sekarang info MLBB dari dataset kurasi lokal: tier list
+// per hero dan counter-nya. Jujur di deskripsi: data kurasi lokal KANA,
+// bukan data live dari server game.
 export const config = {
-  name: "mlbb",
-  alias: [],
-  category: "game",
-  description: { id: "Informasi MLBB: Rekomendasi Counter, Sinergi Hero, Prediksi Matchup, & Tier List", en: "KANA version of the Elaina-MD mlbb feature, rewritten in KANA style" },
-  usage: ".mlbb",
-  example: ".mlbb",
+  name: 'mlbb',
+  alias: ['ml'],
+  category: 'game',
+  description: { id: 'Info MLBB dari data kurasi lokal: tier list hero dan hero counter-nya (bukan data live)', en: 'MLBB info from local curated data: hero tier list and counters (not live data)' },
+  usage: '.mlbb | .mlbb <nama hero>',
+  example: '.mlbb fanny',
   cooldown: 5,
+}
+
+// Tier dan counter adalah kurasi lokal berdasarkan pengetahuan umum
+// meta Mobile Legends; bisa berubah mengikuti patch resmi.
+export const HEROES = [
+  { name: 'Fanny', role: 'Assassin', tier: 'S', counters: ['Khufra', 'Minsitthar', 'Saber'], note: { id: 'Ratu kabel, mobilitas tertinggi; lemah lawan crowd control yang mengunci gerakan', en: 'Cable queen, highest mobility; weak against lockdown crowd control' } },
+  { name: 'Ling', role: 'Assassin', tier: 'S', counters: ['Khufra', 'Kaja', 'Franco'], note: { id: 'Assassin dinding, burst besar; butuh buff biru dan lemah lawan suppress', en: 'Wall assassin with big burst; needs blue buff and is weak to suppress' } },
+  { name: 'Valentina', role: 'Mage', tier: 'S', counters: ['Baxia', 'Lolita', 'Kagura'], note: { id: 'Bisa meniru ultimate lawan; kuat di teamfight panjang', en: 'Can copy enemy ultimates; strong in long teamfights' } },
+  { name: 'Novaria', role: 'Mage', tier: 'A', counters: ['Ling', 'Hayabusa', 'Kagura'], note: { id: 'Poke jarak sangat jauh; rapuh bila ditempel assassin', en: 'Very long range poke; fragile when assassins get close' } },
+  { name: 'Arlott', role: 'Fighter', tier: 'S', counters: ['Minsitthar', 'Phoveus', 'Terizla'], note: { id: 'Dash reset dari pasifnya membuat dia lincah di EXP lane', en: 'Passive dash resets make him slippery in the EXP lane' } },
+  { name: 'Khufra', role: 'Tank', tier: 'S', counters: ['Valir', 'Diggie', 'Karrie'], note: { id: 'Bola pantulnya membatalkan hampir semua dash lawan', en: 'His bouncing ball cancels almost every enemy dash' } },
+  { name: 'Karrie', role: 'Marksman', tier: 'A', counters: ['Lolita', 'Belerick', 'Hayabusa'], note: { id: 'True damage persen HP, penghancur tank di late game', en: 'Percent HP true damage, a late game tank shredder' } },
+  { name: 'Beatrix', role: 'Marksman', tier: 'A', counters: ['Hayabusa', 'Ling', 'Natalia'], note: { id: 'Empat senjata, fleksibel di semua fase; mekanik tinggi', en: 'Four weapons, flexible in every phase; high mechanics' } },
+  { name: 'Fredrinn', role: 'Fighter/Tank', tier: 'S', counters: ['Karrie', 'Lunox', 'Valir'], note: { id: 'Sustain besar dari kristal energi; lemah lawan true damage', en: 'Huge sustain from energy crystals; weak to true damage' } },
+  { name: 'Mathilda', role: 'Support/Assassin', tier: 'A', counters: ['Khufra', 'Phoveus', 'Minsitthar'], note: { id: 'Mobilitas tim lewat Guiding Wind, enak buat rotasi cepat', en: 'Team mobility via Guiding Wind, great for fast rotations' } },
+  { name: 'Gloo', role: 'Tank', tier: 'B', counters: ['Karrie', 'Lunox', 'Faramis'], note: { id: 'Menempel ke lawan dan membelah diri; kuat mengganggu backline', en: 'Sticks to enemies and splits; great at disrupting the backline' } },
+  { name: 'Hayabusa', role: 'Assassin', tier: 'A', counters: ['Saber', 'Kaja', 'Eudora'], note: { id: 'Split push dan burst bayangan; kalah lawan kunci titik langsung', en: 'Split push and shadow burst; loses to direct point lock' } },
+]
+
+export function findHero(query) {
+  const q = String(query ?? '').trim().toLowerCase()
+  if (!q) return null
+  return HEROES.find((h) => h.name.toLowerCase() === q) ?? HEROES.find((h) => h.name.toLowerCase().includes(q)) ?? null
 }
 
 export const i18n = {
   id: {
-    "mlbb": {
-      usage: "╭─❏ 🎲 「 *MLBB* 」\n┊ Tulis jumlah betnya yaa, contoh: *.mlbb 100*\n┊ Bet 10 sampai 10000 koin~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *MLBB* 」\n┊ Betnya harus angka bulat 10 sampai 10000 yaa~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, bet *{bet} koin*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *MLBB* 」\n┊ {detail}\n┊ Menang! Untung *{bet} koin*~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *MLBB* 」\n┊ {detail}\n┊ Kalah nih, *{bet} koin* melayang~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *MLBB* 」\n┊ {detail}\n┊ Seri! Bet kamu balik utuh~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      btnAgain: "Main Lagi",
+    mlbb: {
+      list: '╭─❏ 🎮 「 *MLBB: TIER LIST LOKAL* 」\n┊ {rows}\n┊ \n┊ Data kurasi lokal KANA, bukan data live; meta bisa berubah tiap patch.\n┊ Detail dan counter: *.mlbb <nama hero>*\n╰━━━━━━━',
+      detail: '╭─❏ 🎮 「 *{name}* 」\n┊ ʀᴏʟᴇ: *{role}*\n┊ ᴛɪᴇʀ ʟᴏᴋᴀʟ: *{tier}*\n┊ ᴄᴏᴜɴᴛᴇʀ: *{counters}*\n┊ {note}\n╰━━━━━━━',
+      notFound: '╭─❏ 🎮 「 *MLBB* 」\n┊ Hero *{q}* belum ada di data lokal KANA. Yang tersedia: {names}\n╰━━━━━━━',
     },
   },
   en: {
-    "mlbb": {
-      usage: "╭─❏ 🎲 「 *MLBB* 」\n┊ Write your bet amount, example: *.mlbb 100*\n┊ Bet 10 to 10000 coins~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *MLBB* 」\n┊ The bet must be a whole number from 10 to 10000~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, bet *{bet} coins*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *MLBB* 」\n┊ {detail}\n┊ You win! Profit *{bet} coins*~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *MLBB* 」\n┊ {detail}\n┊ You lose, *{bet} coins* gone~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *MLBB* 」\n┊ {detail}\n┊ Draw! Your bet returns in full~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      btnAgain: "Play Again",
+    mlbb: {
+      list: '╭─❏ 🎮 「 *MLBB: LOCAL TIER LIST* 」\n┊ {rows}\n┊ \n┊ KANA local curated data, not live data; the meta changes every patch.\n┊ Details and counters: *.mlbb <hero name>*\n╰━━━━━━━',
+      detail: '╭─❏ 🎮 「 *{name}* 」\n┊ ʀᴏʟᴇ: *{role}*\n┊ ʟᴏᴄᴀʟ ᴛɪᴇʀ: *{tier}*\n┊ ᴄᴏᴜɴᴛᴇʀꜱ: *{counters}*\n┊ {note}\n╰━━━━━━━',
+      notFound: '╭─❏ 🎮 「 *MLBB* 」\n┊ Hero *{q}* is not in KANA local data yet. Available: {names}\n╰━━━━━━━',
     },
   },
 }
 
-export function resolveGame(player, bot, bet) {
-  if (player > bot) return { outcome: 'win', delta: bet }
-  if (player < bot) return { outcome: 'lose', delta: -bet }
-  return { outcome: 'draw', delta: 0 }
-}
-export const test = { input: '.mlbb', expect: /bet/i }
+export const test = { input: '.mlbb fanny', expect: /fanny/i }
+
 export async function handler(ctx) {
-  const bet = Number(ctx.args[0])
-  if (!ctx.args[0]) return ctx.reply(ctx.t('mlbb.usage'))
-  if (!Number.isInteger(bet) || bet < 10 || bet > 10000) return ctx.reply(ctx.t('mlbb.bad'))
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  if (balance < bet) return ctx.reply(ctx.t('mlbb.poor', { balance, bet }))
-  const player = 1 + Math.floor(Math.random() * 100)
-  const bot = 1 + Math.floor(Math.random() * 100)
-  const r = resolveGame(player, bot, bet)
-  const next = balance + r.delta
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: next })
-  const detail = '🎯 Kamu: *' + player + '* vs KANA: *' + bot + '*'
-  const body = ctx.t('mlbb.' + r.outcome, { detail, bet, balance: next })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('mlbb.btnAgain'), id: '.mlbb ' + bet }], textFallback: body })
+  const q = (ctx.text || '').trim()
+  if (!q) {
+    const rows = HEROES.map((h) => `*${h.tier}* ${h.name} (${h.role})`).join('\n┊ ')
+    return ctx.reply(ctx.t('mlbb.list', { rows }))
+  }
+  const hero = findHero(q)
+  if (!hero) return ctx.reply(ctx.t('mlbb.notFound', { q, names: HEROES.map((h) => h.name).join(', ') }))
+  return ctx.reply(ctx.t('mlbb.detail', {
+    name: hero.name, role: hero.role, tier: hero.tier,
+    counters: hero.counters.join(', '), note: hero.note[ctx.lang] ?? hero.note.id,
+  }))
 }

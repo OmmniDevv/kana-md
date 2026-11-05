@@ -1,60 +1,64 @@
-
-import { getProfile, updateProfile } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05 (gelombang 2): versi lama mesin duel
+// angka generik. Sekarang profil karakter Genshin Impact dari dataset
+// kurasi lokal. Jujur di deskripsi: data kurasi lokal KANA, bukan data
+// live dari server game.
 export const config = {
-  name: "genshinprofile",
-  alias: [],
-  category: "game",
-  description: { id: "Fitur genshinprofile versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD genshinprofile feature, rewritten in KANA style" },
-  usage: ".genshinprofile",
-  example: ".genshinprofile",
+  name: 'genshinprofile',
+  alias: ['giprofile'],
+  category: 'game',
+  description: { id: 'Profil karakter Genshin Impact dari data kurasi lokal: elemen, senjata, rarity, dan peran (bukan data live)', en: 'Genshin Impact character profiles from local curated data: element, weapon, rarity, and role (not live data)' },
+  usage: '.genshinprofile | .genshinprofile <nama karakter>',
+  example: '.genshinprofile raiden',
   cooldown: 5,
+}
+
+export const CHARACTERS = [
+  { name: 'Raiden Shogun', element: 'Electro', weapon: 'Polearm', rarity: 5, role: 'Sub-DPS / Baterai energi tim', region: 'Inazuma' },
+  { name: 'Nahida', element: 'Dendro', weapon: 'Catalyst', rarity: 5, role: 'Support reaksi Dendro', region: 'Sumeru' },
+  { name: 'Zhongli', element: 'Geo', weapon: 'Polearm', rarity: 5, role: 'Perisai terkuat dan shred resistansi', region: 'Liyue' },
+  { name: 'Hu Tao', element: 'Pyro', weapon: 'Polearm', rarity: 5, role: 'DPS vaporize HP rendah', region: 'Liyue' },
+  { name: 'Ayaka', element: 'Cryo', weapon: 'Sword', rarity: 5, role: 'DPS freeze burst area', region: 'Inazuma' },
+  { name: 'Kazuha', element: 'Anemo', weapon: 'Sword', rarity: 5, role: 'Support crowd control dan buff elemental', region: 'Inazuma' },
+  { name: 'Bennett', element: 'Pyro', weapon: 'Sword', rarity: 4, role: 'Support buff ATK dan heal', region: 'Mondstadt' },
+  { name: 'Xingqiu', element: 'Hydro', weapon: 'Sword', rarity: 4, role: 'Sub-DPS hydro off-field', region: 'Liyue' },
+  { name: 'Furina', element: 'Hydro', weapon: 'Sword', rarity: 5, role: 'Support buff damage Fanfare', region: 'Fontaine' },
+  { name: 'Venti', element: 'Anemo', weapon: 'Bow', rarity: 5, role: 'Crowd control angin area luas', region: 'Mondstadt' },
+  { name: 'Ganyu', element: 'Cryo', weapon: 'Bow', rarity: 5, role: 'DPS charged shot melt/freeze', region: 'Liyue' },
+  { name: 'Diluc', element: 'Pyro', weapon: 'Claymore', rarity: 5, role: 'DPS pyro klasik', region: 'Mondstadt' },
+]
+
+export function findCharacter(query) {
+  const q = String(query ?? '').trim().toLowerCase()
+  if (!q) return null
+  return CHARACTERS.find((c) => c.name.toLowerCase() === q) ?? CHARACTERS.find((c) => c.name.toLowerCase().includes(q)) ?? null
 }
 
 export const i18n = {
   id: {
-    "genshinprofile": {
-      usage: "╭─❏ 🎲 「 *GENSHINPROFILE* 」\n┊ Tulis jumlah betnya yaa, contoh: *.genshinprofile 100*\n┊ Bet 10 sampai 10000 koin~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *GENSHINPROFILE* 」\n┊ Betnya harus angka bulat 10 sampai 10000 yaa~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, bet *{bet} koin*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *GENSHINPROFILE* 」\n┊ {detail}\n┊ Menang! Untung *{bet} koin*~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *GENSHINPROFILE* 」\n┊ {detail}\n┊ Kalah nih, *{bet} koin* melayang~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *GENSHINPROFILE* 」\n┊ {detail}\n┊ Seri! Bet kamu balik utuh~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      btnAgain: "Main Lagi",
+    genshinprofile: {
+      list: '╭─❏ ✨ 「 *PROFIL GENSHIN (LOKAL)* 」\n┊ {rows}\n┊ \n┊ Data kurasi lokal KANA, bukan data live.\n┊ Detail: *.genshinprofile <nama karakter>*\n╰━━━━━━━',
+      detail: '╭─❏ ✨ 「 *{name}* 」\n┊ ᴇʟᴇᴍᴇɴ: *{element}* | ꜱᴇɴᴊᴀᴛᴀ: *{weapon}*\n┊ ʀᴀʀɪᴛʏ: *{rarity} bintang*\n┊ ᴘᴇʀᴀɴ: *{role}*\n┊ ᴡɪʟᴀʏᴀʜ: *{region}*\n╰━━━━━━━',
+      notFound: '╭─❏ ✨ 「 *PROFIL GENSHIN* 」\n┊ Karakter *{q}* belum ada di data lokal KANA. Yang tersedia: {names}\n╰━━━━━━━',
     },
   },
   en: {
-    "genshinprofile": {
-      usage: "╭─❏ 🎲 「 *GENSHINPROFILE* 」\n┊ Write your bet amount, example: *.genshinprofile 100*\n┊ Bet 10 to 10000 coins~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *GENSHINPROFILE* 」\n┊ The bet must be a whole number from 10 to 10000~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, bet *{bet} coins*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *GENSHINPROFILE* 」\n┊ {detail}\n┊ You win! Profit *{bet} coins*~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *GENSHINPROFILE* 」\n┊ {detail}\n┊ You lose, *{bet} coins* gone~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *GENSHINPROFILE* 」\n┊ {detail}\n┊ Draw! Your bet returns in full~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      btnAgain: "Play Again",
+    genshinprofile: {
+      list: '╭─❏ ✨ 「 *GENSHIN PROFILES (LOCAL)* 」\n┊ {rows}\n┊ \n┊ KANA local curated data, not live data.\n┊ Details: *.genshinprofile <character name>*\n╰━━━━━━━',
+      detail: '╭─❏ ✨ 「 *{name}* 」\n┊ ᴇʟᴇᴍᴇɴᴛ: *{element}* | ᴡᴇᴀᴘᴏɴ: *{weapon}*\n┊ ʀᴀʀɪᴛʏ: *{rarity} star*\n┊ ʀᴏʟᴇ: *{role}*\n┊ ʀᴇɢɪᴏɴ: *{region}*\n╰━━━━━━━',
+      notFound: '╭─❏ ✨ 「 *GENSHIN PROFILES* 」\n┊ Character *{q}* is not in KANA local data yet. Available: {names}\n╰━━━━━━━',
     },
   },
 }
 
-export function resolveGame(player, bot, bet) {
-  if (player > bot) return { outcome: 'win', delta: bet }
-  if (player < bot) return { outcome: 'lose', delta: -bet }
-  return { outcome: 'draw', delta: 0 }
-}
-export const test = { input: '.genshinprofile', expect: /bet/i }
+export const test = { input: '.genshinprofile raiden', expect: /raiden/i }
+
 export async function handler(ctx) {
-  const bet = Number(ctx.args[0])
-  if (!ctx.args[0]) return ctx.reply(ctx.t('genshinprofile.usage'))
-  if (!Number.isInteger(bet) || bet < 10 || bet > 10000) return ctx.reply(ctx.t('genshinprofile.bad'))
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  if (balance < bet) return ctx.reply(ctx.t('genshinprofile.poor', { balance, bet }))
-  const player = 1 + Math.floor(Math.random() * 100)
-  const bot = 1 + Math.floor(Math.random() * 100)
-  const r = resolveGame(player, bot, bet)
-  const next = balance + r.delta
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: next })
-  const detail = '🎯 Kamu: *' + player + '* vs KANA: *' + bot + '*'
-  const body = ctx.t('genshinprofile.' + r.outcome, { detail, bet, balance: next })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('genshinprofile.btnAgain'), id: '.genshinprofile ' + bet }], textFallback: body })
+  const q = (ctx.text || '').trim()
+  if (!q) {
+    const rows = CHARACTERS.map((c) => `*${c.name}* (${c.element}, ${c.rarity}★)`).join('\n┊ ')
+    return ctx.reply(ctx.t('genshinprofile.list', { rows }))
+  }
+  const c = findCharacter(q)
+  if (!c) return ctx.reply(ctx.t('genshinprofile.notFound', { q, names: CHARACTERS.map((x) => x.name).join(', ') }))
+  return ctx.reply(ctx.t('genshinprofile.detail', { name: c.name, element: c.element, weapon: c.weapon, rarity: c.rarity, role: c.role, region: c.region }))
 }

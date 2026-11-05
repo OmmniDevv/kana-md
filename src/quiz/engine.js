@@ -180,6 +180,24 @@ export async function startQuiz(storage, chat, type, { lang = 'id', rng = Math.r
       category: item.category[lang] ?? item.category.id,
       points: TEXT_POINTS,
     }
+  } else if (type === 'math') {
+    // Soal aritmetika dibangkitkan langsung (bukan dataset statis):
+    // tambah, kurang, kali, dan bagi dengan hasil selalu bilangan bulat.
+    const ops = [
+      { sym: '+', make: (r) => { const a = 2 + Math.floor(r() * 98); const b = 2 + Math.floor(r() * 98); return [a, b, a + b] } },
+      { sym: '-', make: (r) => { const a = 10 + Math.floor(r() * 90); const b = 2 + Math.floor(r() * (a - 1)); return [a, b, a - b] } },
+      { sym: 'x', make: (r) => { const a = 2 + Math.floor(r() * 11); const b = 2 + Math.floor(r() * 11); return [a, b, a * b] } },
+      { sym: ':', make: (r) => { const b = 2 + Math.floor(r() * 11); const c = 2 + Math.floor(r() * 11); return [b * c, b, c] } },
+    ]
+    const op = pick(ops, rng)
+    const [a, b, result] = op.make(rng)
+    session = {
+      ...base,
+      question: `${a} ${op.sym} ${b} = ?`,
+      answerText: String(result),
+      accepted: [String(result)],
+      points: TEXT_POINTS,
+    }
   } else if (data.textSets?.[type]?.length) {
     // Topik tebak teks bebas generik dari TEXT_SETS (src/data/quiz.js):
     // petunjuk dua bahasa, satu jawaban benar plus varian yang diterima.
