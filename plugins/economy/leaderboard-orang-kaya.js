@@ -2,6 +2,7 @@
 // ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
 // mekanik nyata memakai service RPG yang sama dengan fitur sehat.
 import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { resolveDisplayDigits } from '../owner/listpc.js'
 export const config = {
   name: "leaderboard-orang-kaya",
   alias: [],
@@ -37,6 +38,9 @@ export async function handler(ctx) {
   rows.sort((a, b) => b.balance - a.balance)
   const top = rows.slice(0, 10)
   if (!top.length) return ctx.reply(ctx.t('leaderboard-orang-kaya.empty'))
+  // Kunci storage bisa berupa LID; tampilkan nomor telepon aslinya bila
+  // pemetaan sesi mengenalnya (pola yang sama dengan .listpc).
+  for (const r of top) r.digits = await resolveDisplayDigits(ctx, r.digits)
   const list = top.map((r, i) => (i + 1) + '. ' + (r.name ? r.name + ' ' : '') + '(' + r.digits + ') : ' + r.balance + ' koin, lv' + r.level).join('\n┊ ')
   return ctx.reply(ctx.t('leaderboard-orang-kaya.list', { list }))
 }

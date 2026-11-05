@@ -13,7 +13,7 @@ import {
 } from '../src/services/blackjack.js'
 import { decideSuit } from '../plugins/fun/suit.js'
 import { wetonOf } from '../plugins/fun/weton.js'
-import { convert } from '../plugins/user/konversi.js'
+import { convertUnits as convert, parseConvert } from '../plugins/tools/converter.js'
 import { spin, evaluateSpin, handler as slotHandler, i18n as slotI18n } from '../plugins/game/slot.js'
 import { resolveDice } from '../plugins/game/daduvs.js'
 import { handler as todoHandler, i18n as todoI18n } from '../plugins/user/todo.js'
@@ -131,7 +131,8 @@ test('konversi: panjang, berat, suhu, data, waktu', () => {
   assert.equal(convert(2, 'jam', 'menit'), 120)
   assert.equal(convert(1, 'm', 'kg'), null)
   assert.equal(convert(1, 'xyz', 'm'), null)
-  assert.equal(convert('abc', 'm', 'km'), null)
+  // Input bukan angka ditolak di pengurai handler kanonis (.converter).
+  assert.equal(parseConvert('abc m km'), null)
 })
 
 // ---------- Suit ----------
