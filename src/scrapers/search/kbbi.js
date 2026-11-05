@@ -2,10 +2,15 @@
 // definisi dengan cheerio. Struktur situs bisa berubah; parser mencoba
 // beberapa pola penampung definisi yang lazim dan menyerah dengan jujur
 // (daftar kosong) bila tidak ada yang cocok.
+// Cadangan (ditambahkan 2026-11-05 saat sapuan live): kbbi.web.id, cermin
+// komunitas KBBI yang datanya sama. Dipakai bila host kemdikbud tidak
+// terjangkau sama sekali dari jaringan bot (terbukti fetch failed /
+// HTTP 000 berulang), supaya fiturnya tetap hidup.
 import * as cheerio from 'cheerio'
 import { randomUserAgent, retry, withBreaker } from '../runner.js'
 
 const BASE = 'https://kbbi.kemdikbud.go.id'
+const MIRROR = 'https://kbbi.web.id'
 
 const clean = (value) => (value || '').replace(/\s+/g, ' ').trim()
 
@@ -34,19 +39,49 @@ export function parseKbbiDefinitions(html) {
   return found.slice(0, 10)
 }
 
+// Parser cermin kbbi.web.id: definisi berada di <div id="d1">, tiap
+// entri (kata dasar dan turunannya) dipisahkan <br><br> dan diawali
+// <b>kata kepala</b>. Terverifikasi pada halaman asli /cinta.
+export function parseKbbiMirrorDefinitions(html) {
+  if (!html || typeof html !== 'string') return []
+  const $ = cheerio.load(html)
+  const box = $('#d1')
+  if (!box.length) return []
+  const found = []
+  for (const chunk of (box.html() || '').split(/<br\s*\/?>\s*<br\s*\/?>/i)) {
+    const t = clean(cheerio.load(`<div>${chunk}</div>`)('div').text())
+    if (t && t.length > 2 && !found.includes(t)) found.push(t)
+  }
+  return found.slice(0, 10)
+}
+
+async function fetchKbbiPage(url) {
+  const res = await fetch(url, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'User-Agent': randomUserAgent(), Accept: 'text/html' },
+  })
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`KBBI balas HTTP ${res.status}`)
+  return res.text()
+}
+
 export async function searchKbbi(word) {
   const kata = String(word || '').trim().toLowerCase()
   if (!kata) throw new Error('Kata wajib diisi')
   return withBreaker('kbbi', () =>
     retry(async () => {
-      const res = await fetch(`${BASE}/entri/${encodeURIComponent(kata)}`, {
-        signal: AbortSignal.timeout(20000),
-        headers: { 'User-Agent': randomUserAgent(), Accept: 'text/html' },
-      })
-      if (res.status === 404) return { word: kata, definitions: [] }
-      if (!res.ok) throw new Error(`KBBI balas HTTP ${res.status}`)
-      const html = await res.text()
-      return { word: kata, definitions: parseKbbiDefinitions(html) }
+      try {
+        const html = await fetchKbbiPage(`${BASE}/entri/${encodeURIComponent(kata)}`)
+        if (html === null) return { word: kata, definitions: [] }
+        return { word: kata, definitions: parseKbbiDefinitions(html) }
+      } catch (err) {
+        // Host resmi tidak terjangkau: coba cermin komunitas. Bila
+        // cermin juga gagal, lempar error aslinya.
+        const html = await fetchKbbiPage(`${MIRROR}/${encodeURIComponent(kata)}`).catch(() => undefined)
+        if (html === undefined) throw err
+        if (html === null) return { word: kata, definitions: [] }
+        return { word: kata, definitions: parseKbbiMirrorDefinitions(html) }
+      }
     })
   )
 }
