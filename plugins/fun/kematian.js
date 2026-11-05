@@ -1,53 +1,82 @@
-
 import { sendButtons } from '../../src/ui/buttons.js'
+
+// Kematian: ramalan kematian lucu seperti padanan Elaina-MD. Nama dari
+// argumen atau pushName, tanggal acak di masa mendatang, dan penyebab
+// acak dari daftar penyebab lucu. Murni hiburan, murni Math.random.
 export const config = {
-  name: "kematian",
+  name: 'kematian',
   alias: [],
-  category: "fun",
-  description: { id: "Fitur kematian versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD kematian feature, rewritten in KANA style" },
-  usage: ".kematian",
-  example: ".kematian",
+  category: 'fun',
+  description: { id: 'Ramalan kematian lucu: tanggal dan penyebab acak', en: 'Funny death fortune: random date and cause' },
+  usage: '.kematian <nama>',
+  example: '.kematian Budi',
   cooldown: 5,
 }
 
+export const DEATH_CAUSES = [
+  'keracunan cilok expired 😵',
+  'ditabrak mobil odading 😩',
+  'terpeleset di kamar mandi pas nyanyi dangdut 🚿🎤',
+  'kecanduan scrolling TikTok 48 jam nonstop 📱',
+  'ngambek sama bot sendiri terus putus asa 😭',
+  'kelamaan jomblo sampai badan menghilang 🫥',
+  'makan mie pakai kopi dan susu 🤢',
+  'diculik alien terus dikira bahan eksperimen 👽',
+  'dipukul karma karena suka nyolong meme 🙃',
+  'ketawa ngakak sampai lupa napas 😂',
+]
+
 export const i18n = {
   id: {
-    "kematian": {
-      title: "Cek kematian",
-      result: "╭─❏ 🔮 「 *CEK KEMATIAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴀꜱɪʟ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Masih kecil nih, tapi potensinya ada kok~",
-      mid: "Lumayan, di tengah tengah, kadang muncul kadang tidak~",
-      high: "Tinggi nih! Kelihatan banget dari auranya~",
-      max: "PARAH, level maksimal! Sudah level legenda~",
-      disclaimer: "Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~",
-      btnAgain: "Cek Lagi",
+    kematian: {
+      title: 'Ramalan Kematian',
+      result: '╭─❏ 💀 「 *RAMALAN KEMATIAN* 」\n┊ 📛 ɴᴀᴍᴀ: *{name}*\n┊ 🗓️ ᴛᴀɴɢɢᴀʟ: *{date}*\n┊ ⚰️ ᴘᴇɴʏᴇʙᴀʙ: *{cause}*\n┊\n┊ _Cuma ramalan iseng buat hiburan yaa, bukan beneran~_\n╰━━━━━━━',
+      btnAgain: 'Ramalan Lagi',
     },
   },
   en: {
-    "kematian": {
-      title: "kematian check",
-      result: "╭─❏ 🔮 「 *KEMATIAN CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʀᴇꜱᴜʟᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Still small, but the potential is there~",
-      mid: "Decent, in the middle, sometimes it shows sometimes not~",
-      high: "High! It really shows from the aura~",
-      max: "EXTREME, maximum level! Legendary tier~",
-      disclaimer: "Just for fun, the percent is KANA playful name reading, not a real measure~",
-      btnAgain: "Check Again",
+    kematian: {
+      title: 'Death Fortune',
+      result: '╭─❏ 💀 「 *DEATH FORTUNE* 」\n┊ 📛 ɴᴀᴍᴇ: *{name}*\n┊ 🗓️ ᴅᴀᴛᴇ: *{date}*\n┊ ⚰️ ᴄᴀᴜꜱᴇ: *{cause}*\n┊\n┊ _Just a playful fortune for fun, not real~_\n╰━━━━━━━',
+      btnAgain: 'Fortune Again',
     },
   },
 }
 
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
+export const test = { input: '.kematian Budi', expect: /ramalan kematian|death fortune/i }
+
+// Tanggal acak wajar di masa mendatang: 1 sampai 70 tahun dari
+// sekarang, hari dan bulan dipilih acak dan selalu tanggal nyata.
+export function randomDeathDate(rng = Math.random, now = new Date()) {
+  const year = now.getFullYear() + 1 + Math.floor(rng() * 70)
+  const month = Math.floor(rng() * 12)
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const day = 1 + Math.floor(rng() * daysInMonth)
+  return new Date(year, month, day)
 }
-export const test = { input: '.kematian Budi', expect: /cek|check/i }
+
+export function formatDeathDate(date, lang = 'id') {
+  return date.toLocaleDateString(lang === 'en' ? 'en-US' : 'id-ID', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+export function pickDeathCause(rng = Math.random) {
+  return DEATH_CAUSES[Math.min(DEATH_CAUSES.length - 1, Math.floor(rng() * DEATH_CAUSES.length))]
+}
+
 export async function handler(ctx) {
-  const target = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
-  const percent = hashPercent(target.toLowerCase() + ':kematian')
-  const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'
-  const body = ctx.t('kematian.result', { name: target, percent, comment: ctx.t('kematian.' + band), disclaimer: ctx.t('kematian.disclaimer') })
-  return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('kematian.title'), body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('kematian.btnAgain'), id: '.kematian' }], textFallback: body })
+  const name = (ctx.text || '').trim().slice(0, 60) || ctx.pushName || ctx.senderDigits
+  const date = formatDeathDate(randomDeathDate(), ctx.lang)
+  const body = ctx.t('kematian.result', { name, date, cause: pickDeathCause() })
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: ctx.t('kematian.title'),
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: [{ text: ctx.t('kematian.btnAgain'), id: '.kematian' }],
+    textFallback: body,
+  })
 }

@@ -1,53 +1,82 @@
-
 import { sendButtons } from '../../src/ui/buttons.js'
+
+// Seberapagila: persen kegilaan acak murni Math.random 0-100 (bukan
+// hash nama), dengan komentar yang mengikuti tingkat persennya,
+// berjenjang enam tingkat.
 export const config = {
-  name: "seberapagila",
+  name: 'seberapagila',
   alias: [],
-  category: "fun",
-  description: { id: "Fitur seberapagila versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD seberapagila feature, rewritten in KANA style" },
-  usage: ".seberapagila",
-  example: ".seberapagila",
+  category: 'fun',
+  description: { id: 'Tes tingkat kegilaan acak hari ini', en: 'A random craziness level test for today' },
+  usage: '.seberapagila <nama>',
+  example: '.seberapagila Budi',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "seberapagila": {
-      title: "Cek seberapagila",
-      result: "╭─❏ 🔮 「 *CEK SEBERAPAGILA* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴀꜱɪʟ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Masih kecil nih, tapi potensinya ada kok~",
-      mid: "Lumayan, di tengah tengah, kadang muncul kadang tidak~",
-      high: "Tinggi nih! Kelihatan banget dari auranya~",
-      max: "PARAH, level maksimal! Sudah level legenda~",
-      disclaimer: "Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~",
-      btnAgain: "Cek Lagi",
+    seberapagila: {
+      title: 'Tes Kegilaan',
+      result: '╭─❏ 🧠 「 *TES KEGILAAN HARI INI* 」\n┊ 👤 ɴᴀᴍᴀ: *{name}*\n┊ 📊 ᴛɪɴɢᴋᴀᴛ ɢɪʟᴀ: *{percent}%*\n┊ 🗯️ ᴋᴏᴍᴇɴᴛᴀʀ: *{comment}*\n╰━━━━━━━',
+      btnAgain: 'Tes Lagi',
+      comments: [
+        'Normal banget, waras seperti batu bata.',
+        'Sedikit nyeleneh, tapi masih aman diajak diskusi.',
+        'Agak nyeleneh, kadang ketawa sendiri tanpa sebab jelas.',
+        'Sudah mulai ngaco, tolong dijaga baik baik.',
+        'Wah ini sih gila beneran, cocok masuk rumah tertawa.',
+        'Level dewa, gila tapi keren, bot saja sampai pusing bacanya.',
+      ],
     },
   },
   en: {
-    "seberapagila": {
-      title: "seberapagila check",
-      result: "╭─❏ 🔮 「 *SEBERAPAGILA CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʀᴇꜱᴜʟᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Still small, but the potential is there~",
-      mid: "Decent, in the middle, sometimes it shows sometimes not~",
-      high: "High! It really shows from the aura~",
-      max: "EXTREME, maximum level! Legendary tier~",
-      disclaimer: "Just for fun, the percent is KANA playful name reading, not a real measure~",
-      btnAgain: "Check Again",
+    seberapagila: {
+      title: 'Craziness Test',
+      result: '╭─❏ 🧠 「 *CRAZINESS TEST TODAY* 」\n┊ 👤 ɴᴀᴍᴇ: *{name}*\n┊ 📊 ᴄʀᴀᴢɪɴᴇꜱꜱ ʟᴇᴠᴇʟ: *{percent}%*\n┊ 🗯️ ᴄᴏᴍᴍᴇɴᴛ: *{comment}*\n╰━━━━━━━',
+      btnAgain: 'Test Again',
+      comments: [
+        'Totally normal, sane as a brick.',
+        'A little quirky, but still safe to talk with.',
+        'Somewhat quirky, sometimes laughs alone for no clear reason.',
+        'Starting to go off the rails, please keep an eye on them.',
+        'Properly crazy, fits right into a house of laughter.',
+        'God tier, crazy but cool, even the bot gets dizzy reading it.',
+      ],
     },
   },
 }
 
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
+export const test = { input: '.seberapagila Budi', expect: /tes kegilaan|craziness test/i }
+
+// Jenjang komentar: 0-15, 16-35, 36-55, 56-75, 76-90, 91-100.
+export function tierFor(percent) {
+  if (percent <= 15) return 0
+  if (percent <= 35) return 1
+  if (percent <= 55) return 2
+  if (percent <= 75) return 3
+  if (percent <= 90) return 4
+  return 5
 }
-export const test = { input: '.seberapagila Budi', expect: /cek|check/i }
+
+export function drawCrazy(rng = Math.random) {
+  const percent = Math.min(100, Math.floor(rng() * 101))
+  return { percent, tier: tierFor(percent) }
+}
+
 export async function handler(ctx) {
-  const target = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
-  const percent = hashPercent(target.toLowerCase() + ':seberapagila')
-  const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'
-  const body = ctx.t('seberapagila.result', { name: target, percent, comment: ctx.t('seberapagila.' + band), disclaimer: ctx.t('seberapagila.disclaimer') })
-  return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('seberapagila.title'), body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('seberapagila.btnAgain'), id: '.seberapagila' }], textFallback: body })
+  const pack = i18n[ctx.lang]?.seberapagila ?? i18n.id.seberapagila
+  const name = (ctx.text || '').trim().slice(0, 60) || ctx.pushName || ctx.senderDigits
+  const draw = drawCrazy()
+  const body = ctx.t('seberapagila.result', {
+    name,
+    percent: draw.percent,
+    comment: pack.comments[draw.tier],
+  })
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: ctx.t('seberapagila.title'),
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: [{ text: ctx.t('seberapagila.btnAgain'), id: '.seberapagila' }],
+    textFallback: body,
+  })
 }

@@ -1,53 +1,75 @@
-
 import { sendButtons } from '../../src/ui/buttons.js'
+
+// Coba: user menulis pertanyaan atau tebakan, bot mengulang
+// pertanyaannya lalu menjawab dengan satu tebakan acak dari daftar
+// khusus coba, seperti padanan Elaina-MD.
 export const config = {
-  name: "coba",
-  alias: [],
-  category: "fun",
-  description: { id: "Coba tanyakan sesuatu ke bot", en: "KANA version of the Elaina-MD coba feature, rewritten in KANA style" },
-  usage: ".coba",
-  example: ".coba",
+  name: 'coba',
+  alias: ['try'],
+  category: 'fun',
+  description: { id: 'Coba tanyakan atau tebak sesuatu, KANA menebak balik', en: 'Ask or guess something, KANA guesses back' },
+  usage: '.coba <pertanyaan>',
+  example: '.coba tebak apa yang aku pikirkan',
   cooldown: 5,
 }
 
+export const COBA_ANSWERS = [
+  'Hmm, aku coba ya... Kamu lagi mikirin makanan!',
+  'Aku tebak... Kamu lagi gabut berat!',
+  'Coba ya... Kayaknya kamu lagi senang nih!',
+  'Hmm, aku rasa kamu lagi bingung.',
+  'Aku coba nebak... Kamu lagi kangen seseorang?',
+  'Kayaknya kamu lagi santai deh.',
+  'Aku tebak kamu lagi scroll HP terus dari tadi.',
+  'Hmm, pasti lagi bosan ya?',
+  'Coba ditebak... Kamu lagi pengen jalan-jalan!',
+  'Aku rasa kamu lagi butuh hiburan.',
+  'Hmm, kayaknya kamu lagi happy banget!',
+  'Aku coba... Kamu pasti lagi penasaran!',
+  'Tebakan aku: kamu lagi rebahan sambil main HP.',
+  'Hmm, kamu mungkin lagi mikirin seseorang yang spesial.',
+  'Aku coba: kamu lagi mau curhat ya?',
+  'Kayaknya kamu lagi pengen main game!',
+  'Hmm, aku tebak kamu lagi dengerin musik.',
+  'Coba aku tebak... Kamu lagi di kamar!',
+  'Aku rasa kamu lagi menunggu sesuatu.',
+  'Hmm, tebakan aku: kamu butuh teman ngobrol!',
+]
+
 export const i18n = {
   id: {
-    "coba": {
-      title: "Cek coba",
-      result: "╭─❏ 🔮 「 *CEK COBA* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴀꜱɪʟ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Masih kecil nih, tapi potensinya ada kok~",
-      mid: "Lumayan, di tengah tengah, kadang muncul kadang tidak~",
-      high: "Tinggi nih! Kelihatan banget dari auranya~",
-      max: "PARAH, level maksimal! Sudah level legenda~",
-      disclaimer: "Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~",
-      btnAgain: "Cek Lagi",
+    coba: {
+      title: 'Coba Tebak',
+      usage: '╭─❏ 🎯 「 *COBA* 」\n┊ Tulis pertanyaannya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.coba tebak apa yang aku pikirkan*\n╰━━━━━━━',
+      result: '╭─❏ 🎯 「 *COBA TEBAK* 」\n┊ ᴘᴇʀᴛᴀɴʏᴀᴀɴ: *{question}*\n┊ ᴛᴇʙᴀᴋᴀɴ ᴋᴀɴᴀ: *{answer}*\n╰━━━━━━━',
+      btnAgain: 'Coba Lagi',
     },
   },
   en: {
-    "coba": {
-      title: "coba check",
-      result: "╭─❏ 🔮 「 *COBA CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʀᴇꜱᴜʟᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Still small, but the potential is there~",
-      mid: "Decent, in the middle, sometimes it shows sometimes not~",
-      high: "High! It really shows from the aura~",
-      max: "EXTREME, maximum level! Legendary tier~",
-      disclaimer: "Just for fun, the percent is KANA playful name reading, not a real measure~",
-      btnAgain: "Check Again",
+    coba: {
+      title: 'Try a Guess',
+      usage: '╭─❏ 🎯 「 *TRY* 」\n┊ Write your question first please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.coba guess what I am thinking*\n╰━━━━━━━',
+      result: '╭─❏ 🎯 「 *TRY GUESS* 」\n┊ ǫᴜᴇꜱᴛɪᴏɴ: *{question}*\n┊ ᴋᴀɴᴀ ɢᴜᴇꜱꜱ: *{answer}*\n╰━━━━━━━',
+      btnAgain: 'Try Again',
     },
   },
 }
 
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
+export const test = { input: '.coba tebak apa yang aku pikirkan', expect: /coba tebak|try guess/i }
+
+export function pickCobaAnswer(rng = Math.random) {
+  return COBA_ANSWERS[Math.min(COBA_ANSWERS.length - 1, Math.floor(rng() * COBA_ANSWERS.length))]
 }
-export const test = { input: '.coba Budi', expect: /cek|check/i }
+
 export async function handler(ctx) {
-  const target = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
-  const percent = hashPercent(target.toLowerCase() + ':coba')
-  const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'
-  const body = ctx.t('coba.result', { name: target, percent, comment: ctx.t('coba.' + band), disclaimer: ctx.t('coba.disclaimer') })
-  return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('coba.title'), body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('coba.btnAgain'), id: '.coba' }], textFallback: body })
+  const question = (ctx.text || '').trim().slice(0, 300)
+  if (!question) return ctx.reply(ctx.t('coba.usage'))
+  const body = ctx.t('coba.result', { question, answer: pickCobaAnswer() })
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: ctx.t('coba.title'),
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: [{ text: ctx.t('coba.btnAgain'), id: '.coba' }],
+    textFallback: body,
+  })
 }

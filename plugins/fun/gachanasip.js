@@ -1,53 +1,96 @@
-
 import { sendButtons } from '../../src/ui/buttons.js'
+
+// Gachanasip: tarikan nasip acak seperti padanan Elaina-MD. Satu nasip
+// dari daftar nasip khusus plus satu dari tiga bingkai tampilan,
+// dipilih murni dengan Math.random.
 export const config = {
-  name: "gachanasip",
+  name: 'gachanasip',
   alias: [],
-  category: "fun",
-  description: { id: "Fitur gachanasip versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD gachanasip feature, rewritten in KANA style" },
-  usage: ".gachanasip",
-  example: ".gachanasip",
+  category: 'fun',
+  description: { id: 'Gacha nasip dan keberuntungan acak hari ini', en: 'Random fortune and luck gacha for today' },
+  usage: '.gachanasip',
+  example: '.gachanasip',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "gachanasip": {
-      title: "Cek gachanasip",
-      result: "╭─❏ 🔮 「 *CEK GACHANASIP* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴀꜱɪʟ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Masih kecil nih, tapi potensinya ada kok~",
-      mid: "Lumayan, di tengah tengah, kadang muncul kadang tidak~",
-      high: "Tinggi nih! Kelihatan banget dari auranya~",
-      max: "PARAH, level maksimal! Sudah level legenda~",
-      disclaimer: "Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~",
-      btnAgain: "Cek Lagi",
+    gachanasip: {
+      title: 'Gacha Nasip',
+      btnAgain: 'Tarik Lagi',
+      nasips: [
+        'Hari ini hoki banget, rezeki nyangkut di jalan 😎',
+        'Sedikit sial, hati-hati dengan benda tajam ya',
+        'Nasip biasa aja, tapi senyummu manis ❤️',
+        'Rezeki datang tak terduga, siap-siap senyum 😏',
+        'Hari ini banyak godaan, tapi kamu kuat 💪',
+        'Nasip baik, kemungkinan dapat hadiah kecil 🎁',
+        'Sedikit sial, jangan lupa bawa payung ☂️',
+        'Nasip gokil! Ada orang jatuh cinta sama kamu hari ini 🥰',
+        'Peruntungan naik, tapi jangan sombong ya 😉',
+        'Nasip netral, santai aja dan nikmati hari 😎',
+        'Ada kejutan kecil dari arah yang tidak kamu duga 🎉',
+        'Hari ini cocok menyelesaikan urusan yang tertunda ✨',
+      ],
+      templates: [
+        '╭─❏ 🍀 「 *GACHA NASIP* 」\n┊ 👤 Player: *{player}*\n┊ 🍀 Nasip: *{nasip}*\n┊\n┊ Semoga harimu menyenangkan yaa~\n╰━━━━━━━',
+        '╭─❏ 🌟 「 *NASIP GACHA* 」\n┊ Yuk cek nasipmu, *{player}*!\n┊ 🌟 Nasip: *{nasip}*\n┊\n┊ Semoga hoki terus~\n╰━━━━━━━',
+        '╭─❏ 💫 「 *NASIPMU* 」\n┊ 👤 Player: *{player}*\n┊ 🎲 Nasip: *{nasip}*\n┊\n┊ Semoga rezeki dan hoki selalu menyertaimu~\n╰━━━━━━━',
+      ],
     },
   },
   en: {
-    "gachanasip": {
-      title: "gachanasip check",
-      result: "╭─❏ 🔮 「 *GACHANASIP CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʀᴇꜱᴜʟᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Still small, but the potential is there~",
-      mid: "Decent, in the middle, sometimes it shows sometimes not~",
-      high: "High! It really shows from the aura~",
-      max: "EXTREME, maximum level! Legendary tier~",
-      disclaimer: "Just for fun, the percent is KANA playful name reading, not a real measure~",
-      btnAgain: "Check Again",
+    gachanasip: {
+      title: 'Fortune Gacha',
+      btnAgain: 'Draw Again',
+      nasips: [
+        'Super lucky today, fortune is stuck on your path 😎',
+        'A bit unlucky, be careful with sharp objects',
+        'Just an ordinary fortune, but your smile is sweet ❤️',
+        'Unexpected fortune is coming, get ready to smile 😏',
+        'Many temptations today, but you are strong 💪',
+        'Good fortune, you might get a small gift 🎁',
+        'A bit unlucky, do not forget an umbrella ☂️',
+        'Wild fortune! Someone is falling for you today 🥰',
+        'Your luck is rising, but do not get arrogant 😉',
+        'Neutral fortune, just relax and enjoy the day 😎',
+        'A small surprise is coming from an unexpected direction 🎉',
+        'Today suits finishing things you have postponed ✨',
+      ],
+      templates: [
+        '╭─❏ 🍀 「 *FORTUNE GACHA* 」\n┊ 👤 Player: *{player}*\n┊ 🍀 Fortune: *{nasip}*\n┊\n┊ May your day be a pleasant one~\n╰━━━━━━━',
+        '╭─❏ 🌟 「 *FORTUNE DRAW* 」\n┊ Let us check your fortune, *{player}*!\n┊ 🌟 Fortune: *{nasip}*\n┊\n┊ May luck stay with you~\n╰━━━━━━━',
+        '╭─❏ 💫 「 *YOUR FORTUNE* 」\n┊ 👤 Player: *{player}*\n┊ 🎲 Fortune: *{nasip}*\n┊\n┊ May fortune and luck always follow you~\n╰━━━━━━━',
+      ],
     },
   },
 }
 
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
+export const test = { input: '.gachanasip', expect: /gacha nasip|fortune/i }
+
+export function drawNasip(pack, rng = Math.random) {
+  const pick = (arr) => arr[Math.min(arr.length - 1, Math.floor(rng() * arr.length))]
+  return {
+    nasip: pick(pack.nasips),
+    templateIndex: Math.min(pack.templates.length - 1, Math.floor(rng() * pack.templates.length)),
+  }
 }
-export const test = { input: '.gachanasip Budi', expect: /cek|check/i }
+
+export function formatNasip(pack, player, draw) {
+  const vars = { player, nasip: draw.nasip }
+  return pack.templates[draw.templateIndex].replace(/\{(\w+)\}/g, (m, key) => (vars[key] !== undefined ? String(vars[key]) : m))
+}
+
 export async function handler(ctx) {
-  const target = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
-  const percent = hashPercent(target.toLowerCase() + ':gachanasip')
-  const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'
-  const body = ctx.t('gachanasip.result', { name: target, percent, comment: ctx.t('gachanasip.' + band), disclaimer: ctx.t('gachanasip.disclaimer') })
-  return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('gachanasip.title'), body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('gachanasip.btnAgain'), id: '.gachanasip' }], textFallback: body })
+  const pack = i18n[ctx.lang]?.gachanasip ?? i18n.id.gachanasip
+  const draw = drawNasip(pack)
+  const player = ctx.pushName || ctx.senderDigits
+  const body = formatNasip(pack, player, draw)
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: ctx.t('gachanasip.title'),
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: [{ text: ctx.t('gachanasip.btnAgain'), id: '.gachanasip' }],
+    textFallback: body,
+  })
 }

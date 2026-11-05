@@ -1,53 +1,75 @@
+import { quoteCard } from '../../src/ui/cards.js'
+import { sendImage } from '../../src/ui/media.js'
 
-import { sendButtons } from '../../src/ui/buttons.js'
+// Renungan: gambar kartu kutipan renungan, dirender lokal memakai
+// quoteCard (renderer yang sama dengan quotesimage) dengan satu
+// kutipan renungan acak dari daftar lokal. Fallback teks bila render
+// gagal, seperti pola quotesimage.
 export const config = {
-  name: "renungan",
-  alias: [],
-  category: "fun",
-  description: { id: "Random gambar renungan/motivasi", en: "KANA version of the Elaina-MD renungan feature, rewritten in KANA style" },
-  usage: ".renungan",
-  example: ".renungan",
+  name: 'renungan',
+  alias: ['mutiara'],
+  category: 'fun',
+  description: { id: 'Gambar kartu kutipan renungan acak', en: 'A random reflection quote card image' },
+  usage: '.renungan',
+  example: '.renungan',
   cooldown: 5,
 }
 
+export const RENUNGAN_QUOTES = [
+  'Hidup tidak menunggu badai berlalu, hidup belajar menari di tengah hujan.',
+  'Syukuri hal kecil hari ini, karena suatu hari kamu akan sadar itu hal besar.',
+  'Tidak semua yang hilang adalah kerugian, kadang itu cara Tuhan memberi ruang.',
+  'Tenang bukan berarti tanpa beban, tenang berarti percaya beban itu ada jalannya.',
+  'Orang sabar bukan yang tidak pernah marah, tapi yang tahu kapan harus diam.',
+  'Rezeki tidak selalu uang, waktu dan kesehatan juga rezeki yang mewah.',
+  'Jangan bandingkan bab hidupmu dengan bab hidup orang lain, bukunya saja berbeda.',
+  'Lelah itu wajar, menyerah itu pilihan. Istirahatlah, bukan berhenti.',
+  'Kebaikan kecil yang konsisten mengalahkan niat besar yang tidak pernah jalan.',
+  'Maafkan bukan karena mereka pantas, tapi karena hatimu pantas tenang.',
+  'Doa yang sederhana tapi tulus lebih kuat dari keluhan yang panjang.',
+  'Masa sulit mengajari kita siapa yang benar benar tinggal.',
+  'Tidak perlu jadi sempurna, cukup jadi lebih baik dari kemarin.',
+  'Senyum adalah sedekah paling murah yang dampaknya tidak murah.',
+  'Belajar menerima adalah separuh dari belajar bahagia.',
+  'Jaga lisanmu, kata yang keluar tidak bisa ditarik kembali.',
+  'Waktu tidak menyembuhkan segalanya, tapi waktu mengajari kita berdamai.',
+  'Berbuat baiklah tanpa menunggu dilihat, Tuhan tidak pernah luput melihat.',
+  'Ketenangan datang saat kita berhenti memaksa semua hal berjalan sesuai mau kita.',
+  'Setiap orang sedang berjuang dengan ujiannya masing masing, jadilah lembut.',
+  'Harta terbaik adalah hati yang cukup dan tidak iri pada milik orang.',
+  'Bersyukur mengubah apa yang kita punya menjadi terasa cukup.',
+]
+
 export const i18n = {
   id: {
-    "renungan": {
-      title: "Cek renungan",
-      result: "╭─❏ 🔮 「 *CEK RENUNGAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴀꜱɪʟ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Masih kecil nih, tapi potensinya ada kok~",
-      mid: "Lumayan, di tengah tengah, kadang muncul kadang tidak~",
-      high: "Tinggi nih! Kelihatan banget dari auranya~",
-      max: "PARAH, level maksimal! Sudah level legenda~",
-      disclaimer: "Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~",
-      btnAgain: "Cek Lagi",
+    renungan: {
+      author: 'Renungan KANA',
+      caption: '╭─❏ 🕊️ 「 *RENUNGAN* 」\n┊ "{quote}"\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *RENUNGAN GAGAL* 」\n┊ Mouu, kartu renungannya gagal dibuat: *{message}*\n╰━━━━━━━',
     },
   },
   en: {
-    "renungan": {
-      title: "renungan check",
-      result: "╭─❏ 🔮 「 *RENUNGAN CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʀᴇꜱᴜʟᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Still small, but the potential is there~",
-      mid: "Decent, in the middle, sometimes it shows sometimes not~",
-      high: "High! It really shows from the aura~",
-      max: "EXTREME, maximum level! Legendary tier~",
-      disclaimer: "Just for fun, the percent is KANA playful name reading, not a real measure~",
-      btnAgain: "Check Again",
+    renungan: {
+      author: 'KANA Reflection',
+      caption: '╭─❏ 🕊️ 「 *REFLECTION* 」\n┊ "{quote}"\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *REFLECTION FAILED* 」\n┊ Mouu, the reflection card failed to render: *{message}*\n╰━━━━━━━',
     },
   },
 }
 
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
+export const test = { input: '.renungan', expect: /renungan|reflection/i }
+
+export function pickRenunganQuote(rng = Math.random) {
+  return RENUNGAN_QUOTES[Math.min(RENUNGAN_QUOTES.length - 1, Math.floor(rng() * RENUNGAN_QUOTES.length))]
 }
-export const test = { input: '.renungan Budi', expect: /cek|check/i }
+
 export async function handler(ctx) {
-  const target = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
-  const percent = hashPercent(target.toLowerCase() + ':renungan')
-  const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'
-  const body = ctx.t('renungan.result', { name: target, percent, comment: ctx.t('renungan.' + band), disclaimer: ctx.t('renungan.disclaimer') })
-  return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('renungan.title'), body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('renungan.btnAgain'), id: '.renungan' }], textFallback: body })
+  const quote = pickRenunganQuote()
+  try {
+    const image = await quoteCard({ text: quote, author: ctx.t('renungan.author') })
+    if (!Buffer.isBuffer(image) || !image.length) throw new Error('hasil render kosong')
+    return await sendImage(ctx, image, { caption: ctx.t('renungan.caption', { quote }) })
+  } catch {
+    return ctx.reply(ctx.t('renungan.caption', { quote }))
+  }
 }

@@ -1,53 +1,72 @@
-
-import { sendButtons } from '../../src/ui/buttons.js'
+// Halah dan Hilih: pengubah teks deterministik, logika transformasi
+// disalin dari padanan Elaina-MD karena memang itulah mekanik fiturnya.
+// Gaya halah mengganti vokal a, e, o, u menjadi a plus kata khusus,
+// gaya hilih versi i. Teks yang sudah pernah diubah ditolak.
 export const config = {
-  name: "halah",
-  alias: [],
-  category: "fun",
-  description: { id: "Fitur halah versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD halah feature, rewritten in KANA style" },
-  usage: ".halah",
-  example: ".halah",
+  name: 'halah',
+  alias: ['hilih'],
+  category: 'fun',
+  description: { id: 'Ubah teks ke gaya halah, alias hilih untuk gaya i', en: 'Turn text into halah style, alias hilih for the i style' },
+  usage: '.halah <teks> atau .hilih <teks>',
+  example: '.halah congratulations',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "halah": {
-      title: "Cek halah",
-      result: "╭─❏ 🔮 「 *CEK HALAH* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴀꜱɪʟ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Masih kecil nih, tapi potensinya ada kok~",
-      mid: "Lumayan, di tengah tengah, kadang muncul kadang tidak~",
-      high: "Tinggi nih! Kelihatan banget dari auranya~",
-      max: "PARAH, level maksimal! Sudah level legenda~",
-      disclaimer: "Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~",
-      btnAgain: "Cek Lagi",
+    halah: {
+      usage: '╭─❏ 🔁 「 *HALAH* 」\n┊ Kirim teks setelah *.halah* atau *.hilih*, atau kutip pesan teksnya yaa~\n╰━━━━━━━',
+      already: '╭─❏ 🚫 「 *HALAH* 」\n┊ Teks ini sudah pernah diubah sebelumnya~\n╰━━━━━━━',
     },
   },
   en: {
-    "halah": {
-      title: "halah check",
-      result: "╭─❏ 🔮 「 *HALAH CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʀᴇꜱᴜʟᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Still small, but the potential is there~",
-      mid: "Decent, in the middle, sometimes it shows sometimes not~",
-      high: "High! It really shows from the aura~",
-      max: "EXTREME, maximum level! Legendary tier~",
-      disclaimer: "Just for fun, the percent is KANA playful name reading, not a real measure~",
-      btnAgain: "Check Again",
+    halah: {
+      usage: '╭─❏ 🔁 「 *HALAH* 」\n┊ Send text after *.halah* or *.hilih*, or quote a text message please~\n╰━━━━━━━',
+      already: '╭─❏ 🚫 「 *HALAH* 」\n┊ This text has already been transformed before~\n╰━━━━━━━',
     },
   },
 }
 
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
+export const test = { input: '.halah halo', expect: /hala/i }
+
+export function gayaHalah(text) {
+  if (/cangratalataans|laval|rala|raward|samakan|sarang|barantaraksa|nashakaga chasata/i.test(text)) return null
+  return text.replace(/[aeou]/gi, 'a').replace(/congratulations/gi, 'cangratalataans').replace(/you/gi, 'yaa').replace(/level/gi, 'laval').replace(/role/gi, 'rala').replace(/reward/gi, 'raward').replace(/semakin/gi, 'samakan').replace(/sering/gi, 'sarang').replace(/berinteraksi/gi, 'barantaraksa').replace(/dengan/gi, 'dangan').replace(/nishikigi chisato/gi, 'nashakaga chasata').replace(/money/gi, 'manay')
 }
-export const test = { input: '.halah Budi', expect: /cek|check/i }
+
+export function gayaHilih(text) {
+  if (/cingritilitiins|livil|rili|riwird|simikin|siring|birintiriksi|nishikigi chisiti/i.test(text)) return null
+  return text.replace(/[aeou]/gi, 'i').replace(/congratulations/gi, 'cingritilitiins').replace(/you/gi, 'yii').replace(/level/gi, 'livil').replace(/role/gi, 'rili').replace(/reward/gi, 'riwird').replace(/semakin/gi, 'simikin').replace(/sering/gi, 'siring').replace(/berinteraksi/gi, 'birintiriksi').replace(/dengan/gi, 'dingin').replace(/nishikigi chisato/gi, 'nishikigi chisiti').replace(/money/gi, 'miniy')
+}
+
+export function quotedText(ctx) {
+  const m = ctx.quoted?.message
+  if (!m) return ''
+  return (
+    m.conversation ||
+    m.extendedTextMessage?.text ||
+    m.imageMessage?.caption ||
+    m.videoMessage?.caption ||
+    ''
+  )
+}
+
+// Tentukan gaya dari perintah yang dipakai. ctx.command berisi nama
+// kanonis dari pipeline, jadi perintah mentah di pesan asli ikut
+// diperiksa supaya alias .hilih tetap menghasilkan gaya hilih.
+export function halahStyle(ctx) {
+  if (ctx.command === 'hilih') return 'hilih'
+  const rawText =
+    ctx.raw?.message?.conversation || ctx.raw?.message?.extendedTextMessage?.text || ''
+  const firstWord = rawText.trim().replace(/^[.!/]/, '').split(/\s+/)[0]?.toLowerCase()
+  if (firstWord === 'hilih') return 'hilih'
+  return 'halah'
+}
+
 export async function handler(ctx) {
-  const target = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
-  const percent = hashPercent(target.toLowerCase() + ':halah')
-  const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'
-  const body = ctx.t('halah.result', { name: target, percent, comment: ctx.t('halah.' + band), disclaimer: ctx.t('halah.disclaimer') })
-  return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('halah.title'), body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('halah.btnAgain'), id: '.halah' }], textFallback: body })
+  const text = (ctx.text || '').trim() || quotedText(ctx).trim()
+  if (!text) return ctx.reply(ctx.t('halah.usage'))
+  const out = halahStyle(ctx) === 'hilih' ? gayaHilih(text) : gayaHalah(text)
+  if (!out) return ctx.reply(ctx.t('halah.already'))
+  return ctx.reply(out)
 }

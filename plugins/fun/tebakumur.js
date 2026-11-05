@@ -1,53 +1,66 @@
-
 import { sendButtons } from '../../src/ui/buttons.js'
+
+// Tebakumur: nama wajib, lalu bot menebak umur dengan satu bacaan umur
+// acak dari daftar, dipilih murni Math.random seperti padanan
+// Elaina-MD.
 export const config = {
-  name: "tebakumur",
+  name: 'tebakumur',
   alias: [],
-  category: "fun",
-  description: { id: "Fitur tebakumur versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD tebakumur feature, rewritten in KANA style" },
-  usage: ".tebakumur",
-  example: ".tebakumur",
+  category: 'fun',
+  description: { id: 'Tebak umur seseorang dari namanya, bacaan acak', en: 'Guess someone age from their name, a random reading' },
+  usage: '.tebakumur <nama>',
+  example: '.tebakumur Budi',
   cooldown: 5,
 }
 
+export const AGE_READINGS = [
+  '12 Tahun, Masih Bocil',
+  '11 Tahun, Bocilll',
+  '10 Tahun, Aduh Masih Gaboleh Main Hp Dek',
+  '16 Tahun, Remaja Lah Ya',
+  '19 Tahun, Remajaa',
+  '20 Tahun, Udah Nikah?',
+  '21 Tahun, Udah Ketemu Calon Nih?',
+  '14 Tahun',
+  '15 Tahun',
+  '17 Tahun',
+  '18 Tahun, Udah Balig Nih',
+]
+
 export const i18n = {
   id: {
-    "tebakumur": {
-      title: "Cek tebakumur",
-      result: "╭─❏ 🔮 「 *CEK TEBAKUMUR* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴀꜱɪʟ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Masih kecil nih, tapi potensinya ada kok~",
-      mid: "Lumayan, di tengah tengah, kadang muncul kadang tidak~",
-      high: "Tinggi nih! Kelihatan banget dari auranya~",
-      max: "PARAH, level maksimal! Sudah level legenda~",
-      disclaimer: "Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~",
-      btnAgain: "Cek Lagi",
+    tebakumur: {
+      title: 'Tebak Umur',
+      usage: '╭─❏ 🎂 「 *TEBAK UMUR* 」\n┊ Masukkan namamu dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.tebakumur Budi*\n╰━━━━━━━',
+      result: '╭─❏ 🎂 「 *TEBAK UMUR* 」\n┊ ɴᴀᴍᴀ ᴋᴀᴍᴜ: *{name}*\n┊ ᴜᴍᴜʀ: *{reading}*\n╰━━━━━━━',
+      btnAgain: 'Tebak Lagi',
     },
   },
   en: {
-    "tebakumur": {
-      title: "tebakumur check",
-      result: "╭─❏ 🔮 「 *TEBAKUMUR CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʀᴇꜱᴜʟᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Still small, but the potential is there~",
-      mid: "Decent, in the middle, sometimes it shows sometimes not~",
-      high: "High! It really shows from the aura~",
-      max: "EXTREME, maximum level! Legendary tier~",
-      disclaimer: "Just for fun, the percent is KANA playful name reading, not a real measure~",
-      btnAgain: "Check Again",
+    tebakumur: {
+      title: 'Guess Age',
+      usage: '╭─❏ 🎂 「 *GUESS AGE* 」\n┊ Enter your name first please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.tebakumur Budi*\n╰━━━━━━━',
+      result: '╭─❏ 🎂 「 *GUESS AGE* 」\n┊ ʏᴏᴜʀ ɴᴀᴍᴇ: *{name}*\n┊ ᴀɢᴇ: *{reading}*\n╰━━━━━━━',
+      btnAgain: 'Guess Again',
     },
   },
 }
 
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
+export const test = { input: '.tebakumur Budi', expect: /tebak umur|guess age/i }
+
+export function pickAgeReading(rng = Math.random) {
+  return AGE_READINGS[Math.min(AGE_READINGS.length - 1, Math.floor(rng() * AGE_READINGS.length))]
 }
-export const test = { input: '.tebakumur Budi', expect: /cek|check/i }
+
 export async function handler(ctx) {
-  const target = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
-  const percent = hashPercent(target.toLowerCase() + ':tebakumur')
-  const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'
-  const body = ctx.t('tebakumur.result', { name: target, percent, comment: ctx.t('tebakumur.' + band), disclaimer: ctx.t('tebakumur.disclaimer') })
-  return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('tebakumur.title'), body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('tebakumur.btnAgain'), id: '.tebakumur' }], textFallback: body })
+  const name = (ctx.text || '').trim().slice(0, 60)
+  if (!name) return ctx.reply(ctx.t('tebakumur.usage'))
+  const body = ctx.t('tebakumur.result', { name, reading: pickAgeReading() })
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: ctx.t('tebakumur.title'),
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: [{ text: ctx.t('tebakumur.btnAgain'), id: '.tebakumur' }],
+    textFallback: body,
+  })
 }
