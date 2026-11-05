@@ -5,7 +5,7 @@ Tanggal: 2026-11-05. Perintah owner: analisa semua fitur repo RYO-YAMADA-MD (him
 ## Metode
 
 - Inventaris: semua berkas di plugins/ repo RYO (620 berkas, 27 kategori) dibaca nama perintahnya dari handler.command dan handler.help, lalu dipetakan ke registry KANA (1408 plugin, 666 alias, dibaca lewat plugin-loader).
-- Klasifikasi per berkas: SUDAH ADA (fungsi/perintah terdaftar di KANA, termasuk beda nama yang dicatat), PORT BARU (ditulis ulang gaya KANA sebagai plugin baru), FALLBACK (sumbernya ditambahkan ke rantai sumber plugin kanonis KANA), KLON (fungsi sudah terwakili plugin kanonis KANA sehingga tidak dibuatkan perintah duplikat), TOLAK (melanggar batas keras proyek atau mustahil tanpa kredensial pihak ketiga), DEFER (belum diport pada giliran ini, alasan dicatat per berkas).
+- Klasifikasi per berkas: SUDAH ADA (fungsi/perintah terdaftar di KANA, termasuk beda nama yang dicatat), PORT BARU (ditulis ulang gaya KANA sebagai plugin baru), FALLBACK (sumbernya ditambahkan ke rantai sumber plugin kanonis KANA), KLON (fungsi sudah terwakili plugin kanonis KANA sehingga tidak dibuatkan perintah duplikat), TOLAK (melanggar batas keras proyek atau mustahil tanpa kredensial pihak ketiga), PORT PREMIUM (NSFW dewasa yang semula TOLAK lalu diport atas perintah owner 2026-11-05 23:48 sebagai fitur premium), DEFER (belum diport pada giliran ini, alasan dicatat per berkas).
 - Lisensi RYO tidak jelas untuk penyalinan: tidak ada kode RYO yang disalin verbatim. Semua hasil port ditulis ulang dari nol dalam gaya KANA (ESM, i18n id+en, template proyek, tanpa externalAdReply, tanpa em dash) dari perilaku fiturnya saja.
 - Setiap sumber baru wajib terverifikasi dari VM dengan input asli sebelum masuk kode (pola verifikasi fallback .ig): metadata, berkas hasil, dan magic bytes diperiksa. Sumber yang gagal probe tidak dimasukkan rantai dan dicatat di kolom DEFER/TOLAK.
 
@@ -15,9 +15,10 @@ Tanggal: 2026-11-05. Perintah owner: analisa semua fitur repo RYO-YAMADA-MD (him
 |---|---|
 | SUDAH ADA | 433 |
 | PORT BARU | 7 |
+| PORT PREMIUM | 5 |
 | FALLBACK | 1 |
 | KLON | 76 |
-| TOLAK | 47 |
+| TOLAK | 42 |
 | DEFER | 56 |
 | **Total berkas RYO terinventaris** | **620** |
 
@@ -37,6 +38,25 @@ Jumlah semua klasifikasi sama dengan total berkas (620), tidak ada yang terlewat
 ### Fallback baru (1)
 
 - **Cadangan unduh audio YouTube dari api-faa.my.id** (dari downloader/ytmp3v2.js): downloadAudio di src/scrapers/youtube/youtube.js kini mencoba jalur utama ytdl-core dulu; bila gagal total, downloadAudioViaFaa mengambil mp3 dari API faa (pola ytmp3 RYO) dan memvalidasi magic bytes ID3/frame sync sebelum diterima. Bukti VM: untuk video uji ZAfAud_M_mg, API membalas judul asli "Halsey - Without Me" dan berkas mp3 3,61 MB ber-magic ID3 terunduh penuh. Ini memperkuat .play, .ytmp3, dan semua pemakai downloadAudio tanpa perintah baru.
+
+### Port premium NSFW dewasa (perintah owner 2026-11-05 23:48)
+
+Owner memerintahkan NSFW dewasa RYO ikut diport sebagai fitur premium. Lima berkas berpindah dari TOLAK menjadi PORT PREMIUM. Semua hasil port ditulis ulang gaya KANA, tergating config.premium = true mengikuti pola src/services/premium.js, khusus chat pribadi (isPrivate), dan untuk kategori nsfw memakai gerbang konfirmasi 18+ sekali simpan yang sudah menjadi pola kategori itu.
+
+1. **nsfw/xnxx.js menjadi .xnxxsearch** (plugins/nsfw/xnxxsearch.js ditulis ulang total; alias xnxx dan xnxxdl): cari video di xnxx.com lalu unduh mp4 langsung untuk dipilih pemanggil. Versi RYO memakai proksi CORS pihak ketiga (uncors.netlify.app); dari VM situs aslinya terjangkau langsung, jadi proksi dibuang. Bukti VM: pencarian "anime" membalas hasil asli, halaman video memuat URL mp4 CDN langsung, dan potongan berkasnya terverifikasi magic ftyp (isom). Alur pilih memakai subperintah `.xnxxsearch ambil <nomor>` atas hasil pencarian yang disimpan per pemanggil, bukan URL mentah gaya RYO. Kode: src/scrapers/xnxx/xnxx.js.
+2. **nsfw/waifu.js menjadi .waifu18 (alias waifunsfw), .hentai, .oppai, .milf**: gambar anime dewasa dari sumber publik. Sumber RYO api.waifu.im mati total dari VM (koneksi gagal, HTTP 000; api.waifu.pics sama), jadi diganti NekosAPI (rating explicit; berkas WebP terverifikasi magic RIFF/WebP) dan Konachan (query tag oppai dan kolam rating:e; berkas JPEG terverifikasi magic ffd8). Konachan wajib memakai pengecualian tag di query dan saringan tag pada hasil: pos bertanda loli atau shota tidak pernah diteruskan. Tag milf tidak berbuah di booru (probe Konachan dan yande.re sama-sama 0 pos), jadi .milf memakai kolam explicit NekosAPI. Kode: src/scrapers/nsfw/adult-image.js; plugins/nsfw/waifu18.js dan hentai.js ditulis ulang sumbernya, oppai.js dan milf.js berkas baru.
+3. **fun/cekkontol.js, fun/cekmemek.js, fun/cektt.js menjadi .cekkontol, .cekmemek, .cektt** (plugins/cek/, berkas baru): pemeriksa vulgar hiburan, ditulis ulang mengikuti keluarga cek KANA dengan hasil deterministik dari nama (RYO mengacak liar). Bukti: tes perilaku handler dengan ctx tiruan; hasil memuat nama sasaran dan atribut lengkap, dan nama yang sama selalu memberi hasil yang sama.
+
+Yang dinilai ulang pada giliran ini dan ditegaskan TETAP DITOLAK:
+
+- **nsfw/videobkp.js**: satu-satunya sumbernya daftar video koleksi repo GitHub bernama "Asupan" (13 URL video Blogger bertoken). Itu konten asupan, yaitu bocoran/pribadi yang tidak bisa diverifikasi konsensual, jadi tetap ditolak walau perintah owner membuka port NSFW dewasa.
+- **anime/loli.js**: seksualisasi anak/di bawah umur. Batas keras, tidak diport dalam bentuk apa pun.
+- **random/asupan.js dan random/papayang.js**: konten bocoran/pribadi orang. Batas keras, tetap ditolak.
+- **rpg/ewepaksa.js**: tema pemaksaan (paksa/perkosa). Batas keras non-konsensual, tetap ditolak.
+- **fun/stres.js**: memuat perintah perkosa (non-konsensual) dan teks seksual eksplisit yang ditujukan ke nama orang. Seluruh berkas tetap ditolak.
+- **rpg/ewe.js**: simulasi seks RPG berbentuk teks vulgar dengan narasi atas orang fiktif dari layanan michat; bukan pengambil media dewasa publik dan bukan pemeriksa, jadi di luar cakupan yang owner izinkan pada perintah ini, dan satu keluarga dengan ewepaksa. Tetap ditolak.
+
+Tes giliran ini: test/nsfw-premium-port.test.js, 10 tes (parser xnxx atas fixture tangkapan asli VM, parser NekosAPI dan pemilih Konachan atas fixture asli, saringan tag berbahaya termasuk penolakan pos bertanda loli, gerbang premium dan chat pribadi di config kedelapan plugin, alur gerbang 18+ dan konfirmasi xnxxsearch, perilaku handler tiga pemeriksa vulgar). npm test penuh pada giliran ini: 726/726 hijau. Vonis live WhatsApp menunggu jendela tes chat utama seperti port lain.
 
 ### Tes
 
@@ -170,9 +190,9 @@ Jumlah semua klasifikasi sama dengan total berkas (620), tidak ada yang terlewat
 | fun/cekfemboy.js | cekfemboy | SUDAH ADA | Nama perintah "cekfemboy" terdaftar di registry KANA |
 | fun/cekhodam.js | cekkhodam *<name>*, cekkhodam | SUDAH ADA | Nama perintah "cekkhodam" terdaftar di registry KANA |
 | fun/cekjomok.js | jomok | SUDAH ADA | Nama perintah "jomok" terdaftar di registry KANA |
-| fun/cekkontol.js | cekkontol *<name>*, cekkontol | TOLAK | Keluarga cek vulgar (organ seksual): tidak sesuai aturan konten proyek |
-| fun/cekmemek.js | cekmemek *<name>*, cekmemek, cekmmk | TOLAK | Keluarga cek vulgar (organ seksual): tidak sesuai aturan konten proyek |
-| fun/cektt.js | cektt *<name>*, cekpentil, cektt | TOLAK | Keluarga cek vulgar (organ seksual): tidak sesuai aturan konten proyek |
+| fun/cekkontol.js | cekkontol *<name>*, cekkontol | PORT PREMIUM | Diport perintah owner 2026-11-05 sebagai .cekkontol premium (plugins/cek/cekkontol.js), pemeriksa vulgar hiburan deterministik gaya keluarga cek KANA |
+| fun/cekmemek.js | cekmemek *<name>*, cekmemek, cekmmk | PORT PREMIUM | Diport perintah owner 2026-11-05 sebagai .cekmemek premium (plugins/cek/cekmemek.js), pemeriksa vulgar hiburan deterministik gaya keluarga cek KANA |
+| fun/cektt.js | cektt *<name>*, cekpentil, cektt | PORT PREMIUM | Diport perintah owner 2026-11-05 sebagai .cektt premium (plugins/cek/cektt.js, alias cekpentil), pemeriksa vulgar hiburan deterministik gaya keluarga cek KANA |
 | fun/dimanakah.js | dimanakah <pertanyaan>, dimanakah | SUDAH ADA | Nama perintah "dimanakah" terdaftar di registry KANA |
 | fun/funcek.js | goblokcek, jelekcek, gaycek, rate, lesbicek, gantengcek, cantikcek, begocek, suhucek, pintercek, jagocek, nolepcek, babicek, bebancek, baikcek, jahatcek, anjingcek, haramcek, pakboycek, pakgirlcek, sangecek, bapercek, fakboycek, alimcek, fakgirlcek, kerencek, wibucek, pasarkascek, kulcek, cekgoblok, cekjelek, cekgay, ceklesbi, cekganteng, cekcantik, cekbego, ceksuhu, cekpinter, cekjago, ceknolep, cekbabi, cekbeban, cekbaik, cekjahat, cekanjing, cekharam, cekpakboy, cekpakgirl, ceksange, cekbaper, cekfakboy, cekalim, cekfakgirl, cekkeren, cekwibu, cekpasarkas, cekkul | SUDAH ADA | Nama perintah "rate" terdaftar di registry KANA |
 | fun/kapankah.js | kapankah <pertanyaan>, kapankah | SUDAH ADA | Nama perintah "kapankah" terdaftar di registry KANA |
@@ -354,9 +374,9 @@ Jumlah semua klasifikasi sama dengan total berkas (620), tidak ada yang terlewat
 | maker/sticker-brat2.js | bratcanvas <teks>, bratc, bratcanvas | SUDAH ADA | Padanan KANA: .brat (mesin brat-canvas yang sama) |
 | maker/typograpy.js | typogaleri2 judul|tempat (reply video/foto), typogaleri2, typogaleri, tg2 | DEFER | Galeri tipografi dari video: sumber belum terverifikasi |
 | maker/wq.js | wq <text>, wq | KLON | Pembuat kutipan chat: padanan fungsi .qc dan maker kutipan KANA |
-| nsfw/videobkp.js | videobkp | TOLAK | Konten NSFW: dilarang daftar larangan proyek |
-| nsfw/waifu.js | waifunsfw, hentai, oppai, milf | TOLAK | Konten NSFW: dilarang daftar larangan proyek |
-| nsfw/xnxx.js | xnxx | TOLAK | Konten NSFW: dilarang daftar larangan proyek |
+| nsfw/videobkp.js | videobkp | TOLAK | Dinilai ulang 2026-11-05: satu-satunya sumber adalah daftar video koleksi repo GitHub "Asupan" (13 URL video Blogger bertoken), yaitu konten asupan/bocoran yang tidak bisa diverifikasi konsensual. Tetap ditolak walau owner memerintahkan port NSFW dewasa |
+| nsfw/waifu.js | waifunsfw, hentai, oppai, milf | PORT PREMIUM | Diport perintah owner 2026-11-05 sebagai .waifu18 (alias waifunsfw), .hentai, .oppai, .milf premium. Sumber RYO api.waifu.im mati dari VM, diganti NekosAPI + Konachan tersaring (src/scrapers/nsfw/adult-image.js) |
+| nsfw/xnxx.js | xnxx | PORT PREMIUM | Diport perintah owner 2026-11-05 sebagai .xnxxsearch premium (plugins/nsfw/xnxxsearch.js ditulis ulang total, alias xnxx), scraper langsung xnxx.com tanpa proksi CORS RYO (src/scrapers/xnxx/xnxx.js) |
 | owner/addlimit.js | addlimit @user <jumlah>, addlimit nomor <jumlah> | SUDAH ADA | Padanan KANA: .addlimit |
 | owner/addowner.js | addowner <nomor>, addowner | DEFER | Konfigurasi owner seperti ini dikelola KANA lewat env dan berkas konfigurasi, bukan perintah chat |
 | owner/addprem.js | addprem, delprem, add, tambah, del, hapus | SUDAH ADA | Nama perintah "addprem" terdaftar di registry KANA |

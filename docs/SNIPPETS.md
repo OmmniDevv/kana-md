@@ -92,3 +92,18 @@ terpisah memakai input asli, bukan menjalankan kode zip.
 | downloader/blibili.js (bilibili.tv) | DEFER: gateway playurl membalas kode 10015001 (batasan wilayah) untuk semua video uji dari VM; jalur penuh tidak bisa dibuktikan |
 | tools/removevocal.js (aivocalremover.com) | DITOLAK: memakai token statis layanan hasil ekstrak aplikasi web pihak ketiga di dalam kode (pola fastdl/animein) |
 | tools/am.js, ccgen, rvo, bypass, sfl, nik, cekrek, stalk/wa, maker/fake*, nsfw/*, panel/*, dan 41 berkas tolak lain | DITOLAK: bypass premium, generator kartu, view-once, stalking non-publik, bukti palsu, NSFW, panel jualan; rincian per berkas di docs/RYO-AUDIT.md |
+
+## Port NSFW premium RYO (2026-11-05 malam, perintah owner 23:48)
+
+Menimpa sebagian baris ringkas "nsfw/* DITOLAK" pada tabel RYO di atas:
+lima berkas NSFW dewasa RYO jadi diport sebagai fitur premium atas
+perintah owner. Triage sumbernya:
+
+| Sumber | Keputusan |
+|---|---|
+| xnxx.com langsung (pencarian + halaman video) | Diambil: src/scrapers/xnxx/xnxx.js + plugin .xnxxsearch premium. Proksi CORS RYO (uncors.netlify.app) dibuang karena situs asli terjangkau langsung dari VM. Probe VM: pencarian HTTP 200, URL mp4 CDN dari halaman video, magic ftyp terverifikasi |
+| api.waifu.im (sumber asli nsfw/waifu.js RYO) | Mati dari VM: koneksi gagal total (HTTP 000), api.waifu.pics sama. TIDAK dipakai; diganti dua sumber di bawah |
+| NekosAPI api.nekosapi.com (rating explicit) | Diambil: src/scrapers/nsfw/adult-image.js untuk .waifu18 dan .milf. Probe VM: JSON explicit asli, berkas WebP magic RIFF/WebP terverifikasi |
+| Konachan konachan.com/post.json | Diambil dengan saringan: query wajib rating:e + pengecualian tag, dan hasil disaring lagi; pos bertanda loli/shota ditolak. Untuk .hentai dan .oppai. Probe VM: berkas JPEG magic ffd8 terverifikasi |
+| Daftar video repo GitHub zxrow/Asupan (sumber nsfw/videobkp.js) | DITOLAK: koleksi asupan (13 URL video Blogger bertoken), konten bocoran/pribadi yang tidak bisa diverifikasi konsensual. videobkp tetap ditolak |
+| Danbooru, Gelbooru, rule34, yande.re (calon sumber gambar dewasa) | Tidak dipakai: Danbooru sedang down (halaman Downbooru), Gelbooru 401, rule34 API kini wajib autentikasi, kolam acak yande.re terbukti memuat pos bertanda loli pada probe |

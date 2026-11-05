@@ -138,6 +138,30 @@ plugin; bila agen ekspansi membuatnya, perlakukan sebagai premium
 (render lanjutan). Nama enhance, upscale, dan remini adalah alias dari
 `.hd`, yang berstatus limit grup upscale, bukan premium.
 
+## Tambahan 2026-11-05 malam: NSFW dewasa premium (port RYO)
+
+Atas perintah owner 2026-11-05 23:48, delapan plugin NSFW dewasa
+menjadi premium, jadi total premium sekarang 22 plugin. Semuanya
+khusus chat pribadi (config.isPrivate = true), dan yang berkategori
+nsfw memakai gerbang konfirmasi 18+ sekali simpan lebih dulu.
+Rincian penilaian per berkas RYO ada di docs/RYO-AUDIT.md.
+
+| Plugin | Kelompok alasan |
+|---|---|
+| xnxxsearch | NSFW dewasa: cari dan unduh video xnxx.com |
+| waifu18 | NSFW dewasa: gambar waifu 18+ |
+| hentai | NSFW dewasa: gambar hentai |
+| oppai | NSFW dewasa: gambar oppai |
+| milf | NSFW dewasa: gambar milf |
+| cekkontol | NSFW dewasa: pemeriksa vulgar (hiburan) |
+| cekmemek | NSFW dewasa: pemeriksa vulgar (hiburan) |
+| cektt | NSFW dewasa: pemeriksa vulgar (hiburan) |
+
+Batas keras yang tetap berlaku walau ada perintah ini: konten yang
+menyangkut anak atau di bawah umur, tema pemaksaan atau
+non-konsensual, dan konten bocoran/pribadi orang (asupan) tidak
+diport dalam bentuk apa pun.
+
 Yang sengaja TETAP gratis: admin grup dasar, fun dan kuis teks, search
 dan info ringan, RPG dasar (termasuk blackjack, slot, daduvs teks),
 stiker dasar (brat, ttp, attp), maker ringan, dan unduhan audio ringan
