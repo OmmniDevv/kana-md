@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'ingatkan',
-  alias: ['remind'],
+  alias: [],
   category: 'user',
   description: { id: 'Pasang pengingat pribadi, KANA kirim saat waktunya tiba', en: 'Set a personal reminder, KANA sends it when it is due' },
   usage: '.ingatkan <menit> <teks> | .ingatkan list | .ingatkan batal <n>',

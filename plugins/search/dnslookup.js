@@ -3,7 +3,7 @@ const TYPES = { a: 1, aaaa: 28, mx: 15, txt: 16, cname: 5, ns: 2, soa: 6 }
 
 export const config = {
   name: 'dnslookup',
-  alias: ['dns', 'cekdomain', 'lookup'],
+  alias: ['dns', 'cekdomain'],
   category: 'search',
   description: { id: 'Cek record DNS sebuah domain lewat Cloudflare DoH', en: 'Look up DNS records of a domain via Cloudflare DoH' },
   usage: '.dnslookup <domain> [tipe]',

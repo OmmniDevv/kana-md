@@ -2,7 +2,7 @@ import { getWeather } from '../../src/scrapers/search/cuaca.js'
 
 export const config = {
   name: 'cuaca',
-  alias: ['weather'],
+  alias: [],
   category: 'search',
   description: { id: 'Cek cuaca kota dari Open-Meteo', en: 'Check city weather from Open-Meteo' },
   usage: '.cuaca <nama kota>',

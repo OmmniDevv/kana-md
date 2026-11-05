@@ -1,6 +1,6 @@
 export const config = {
   name: 'umur',
-  alias: ['age', 'hitungumur', 'cekage', 'cekumur'],
+  alias: ['age', 'hitungumur', 'cekage'],
   category: 'user',
   description: { id: 'Hitung umur dari tanggal lahir: tahun, bulan, hari, dan hitung mundur ulang tahun', en: 'Calculate age from a birth date: years, months, days, and birthday countdown' },
   usage: '.umur <DD-MM-YYYY>',

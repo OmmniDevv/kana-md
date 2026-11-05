@@ -4,7 +4,7 @@ import { smallCaps } from '../../src/config/templates.js'
 
 export const config = {
   name: 'leaderboard',
-  alias: ['lb', 'top'],
+  alias: ['lb'],
   category: 'user',
   description: { id: 'Papan peringkat XP tertinggi', en: 'Highest XP leaderboard' },
   usage: '.leaderboard',

@@ -4,7 +4,7 @@ import { downloadBuffer } from '../../src/scrapers/runner.js'
 
 export const config = {
   name: 'playstore',
-  alias: ['apksearch', 'pssearch'],
+  alias: ['pssearch'],
   category: 'search',
   description: { id: 'Cari aplikasi di Google Play Store', en: 'Search apps on the Google Play Store' },
   usage: '.playstore <nama aplikasi>',

@@ -2,7 +2,7 @@
 // kelas pengecualian yang sama dengan Jikan di DECISIONS.md.
 export const config = {
   name: 'ghuser',
-  alias: ['githubstalk', 'github'],
+  alias: [],
   category: 'search',
   description: { id: 'Info profil publik GitHub seseorang dari username', en: 'Public GitHub profile info from a username' },
   usage: '.ghuser <username>',

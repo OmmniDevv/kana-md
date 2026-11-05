@@ -3,7 +3,7 @@ import { getProfile, updateProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'transfer',
-  alias: ['tf', 'sawer'],
+  alias: ['tf'],
   category: 'user',
   description: { id: 'Kirim koin saldo kamu ke pengguna lain', en: 'Send your balance coins to another user' },
   usage: '.transfer <nomor> <jumlah>',

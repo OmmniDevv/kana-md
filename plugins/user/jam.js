@@ -1,6 +1,6 @@
 export const config = {
   name: 'jam',
-  alias: ['waktu', 'waktuglobal', 'worldtime'],
+  alias: ['waktu', 'waktuglobal'],
   category: 'user',
   description: { id: 'Lihat jam sekarang di WIB, WITA, WIT, dan UTC', en: 'See the current time in WIB, WITA, WIT, and UTC' },
   usage: '.jam',

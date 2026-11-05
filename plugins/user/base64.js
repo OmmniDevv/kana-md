@@ -1,6 +1,6 @@
 export const config = {
   name: 'base64',
-  alias: ['b64', 'encode', 'decode'],
+  alias: ['b64', 'decode'],
   category: 'user',
   description: { id: 'Encode teks ke base64, atau decode dengan awalan decode', en: 'Encode text to base64, or decode with the decode prefix' },
   usage: '.base64 <teks> atau .base64 decode <kode>',

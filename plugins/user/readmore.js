@@ -1,6 +1,6 @@
 export const config = {
   name: 'readmore',
-  alias: ['spoiler'],
+  alias: [],
   category: 'user',
   description: { id: 'Buat teks Baca Selengkapnya ala WhatsApp: pisahkan teks awal dan lanjutan dengan tanda |', en: 'Make a WhatsApp style Read More text: separate the intro and the rest with a | sign' },
   usage: '.readmore <teks awal> | <teks lanjutan>',

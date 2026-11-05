@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'shortlink',
-  alias: ['short', 'tinyurl', 'shorturl'],
+  alias: ['short', 'shorturl'],
   category: 'search',
   description: { id: 'Pendekkan link panjang lewat TinyURL', en: 'Shorten a long link via TinyURL' },
   usage: '.shortlink <link>',

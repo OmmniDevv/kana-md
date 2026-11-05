@@ -2,7 +2,7 @@ import { evaluateExpression, formatValue } from '../../src/services/calculator.j
 
 export const config = {
   name: 'kalkulator',
-  alias: ['kalk', 'calc'],
+  alias: ['kalk'],
   category: 'user',
   description: { id: 'Hitung ekspresi matematika sederhana dengan aman', en: 'Safely calculate a simple math expression' },
   usage: '.kalkulator <ekspresi>',

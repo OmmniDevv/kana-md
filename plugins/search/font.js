@@ -4,7 +4,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'font',
-  alias: ['dafont'],
+  alias: [],
   category: 'search',
   description: { id: 'Cari font di DaFont, unduh dengan .font dl <slug>', en: 'Search fonts on DaFont, download with .font dl <slug>' },
   usage: '.font <kata kunci> atau .font dl <slug>',

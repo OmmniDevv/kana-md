@@ -2,7 +2,7 @@ import { getProfile, saveProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'tukarxp',
-  alias: ['tukar', 'pointomoney', 'moneytopoin', 'tomoney', 'buycoin', 'redeem', 'tukarkoin'],
+  alias: ['buycoin', 'redeem', 'tukarkoin'],
   category: 'user',
   description: { id: 'Tukar XP menjadi koin saldo: 10 XP untuk 1 koin (level ikut turun)', en: 'Exchange XP into balance coins: 10 XP for 1 coin (level goes down too)' },
   usage: '.tukarxp <jumlah XP kelipatan 10>',

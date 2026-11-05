@@ -8,7 +8,7 @@ const FEEDS = [
 
 export const config = {
   name: 'berita',
-  alias: ['news', 'beritaterkini'],
+  alias: ['beritaterkini'],
   category: 'search',
   description: { id: 'Berita Indonesia terbaru dari RSS publik', en: 'Latest Indonesian news from public RSS' },
   usage: '.berita',

@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'film',
-  alias: ['movie', 'carifilm'],
+  alias: ['carifilm'],
   category: 'search',
   description: { id: 'Cari info serial TV dan film dari TVMaze', en: 'Search TV show and series info from TVMaze' },
   usage: '.film <judul>',

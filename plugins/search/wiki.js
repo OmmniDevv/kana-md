@@ -5,7 +5,7 @@ import { buildFakeTroliQuoted, coverJpeg300, sendQuotedText } from '../../src/ui
 
 export const config = {
   name: 'wiki',
-  alias: ['wikipedia'],
+  alias: [],
   category: 'search',
   description: { id: 'Cari ringkasan artikel Wikipedia', en: 'Search a Wikipedia article summary' },
   usage: '.wiki <judul artikel>',

@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'scanqr',
-  alias: ['readqr', 'bacaqr'],
+  alias: ['bacaqr'],
   category: 'search',
   description: { id: 'Baca isi QR code dari gambar yang dikutip', en: 'Read a QR code from a quoted image' },
   usage: '.scanqr (balas gambar berisi QR)',
