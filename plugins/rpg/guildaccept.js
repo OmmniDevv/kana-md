@@ -3,6 +3,7 @@
 // mekanik nyata memakai service RPG yang sama dengan fitur sehat.
 import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 import { createClan, joinClan, getClan, clanPower, clanWar } from '../../src/rpg/engine.js'
+import { reasonText } from '../../src/rpg/reasons.js'
 export const config = {
   name: "guildaccept",
   alias: [],
@@ -35,7 +36,7 @@ export async function handler(ctx) {
   const result = await joinClan(ctx.storage, ctx.senderDigits, inviteId)
   if (!result.ok) {
     await updateProfile(ctx.storage, ctx.senderDigits, { guildInvite: '' })
-    return ctx.reply(ctx.t('guildaccept.fail', { reason: result.reason }))
+    return ctx.reply(ctx.t('guildaccept.fail', { reason: reasonText(result.reason, ctx.lang) }))
   }
   const clan = result.clan
   clan.invites = (clan.invites ?? []).filter((d) => d !== ctx.senderDigits)

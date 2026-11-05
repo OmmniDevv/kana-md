@@ -1,4 +1,5 @@
 import { sellItem } from '../../src/rpg/engine.js'
+import { reasonText } from '../../src/rpg/reasons.js'
 import { ITEM_MAP } from '../../src/rpg/data.js'
 
 export const config = {
@@ -36,7 +37,7 @@ export async function handler(ctx) {
   const qty = Math.max(1, parseInt(qtyRaw, 10) || 1)
   try {
     const result = await sellItem(ctx.storage, ctx.senderDigits, itemId, qty)
-    if (!result?.ok) return ctx.reply(ctx.t('sell.fail', { error: result?.reason ?? 'unknown' }))
+    if (!result?.ok) return ctx.reply(ctx.t('sell.fail', { error: reasonText(result?.reason, ctx.lang) }))
     const item = ITEM_MAP[itemId]
     const name = item ? (ctx.lang === 'en' ? item.name.en : item.name.id) : itemId
     return ctx.reply(ctx.t('sell.done', {

@@ -29,7 +29,7 @@ export const test = { input: ".selectskill", expect: /daftar pekerjaan|job list|
 export async function handler(ctx) {
 
   const arg = ((ctx.args ?? [])[0] || '').toLowerCase()
-  const { JOB_MAP } = await import('../../src/rpg/data.js')
+  const { JOBS, JOB_MAP } = await import('../../src/rpg/data.js')
   if (!arg) {
     const profile = await getProfile(ctx.storage, ctx.senderDigits)
     const list = JOBS.map((j) => '• ' + j.emoji + ' ' + j.id + ' : ' + (ctx.lang === 'en' ? j.name.en : j.name.id)).join('\n┊ ')

@@ -4,6 +4,7 @@
 import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 import { energyOf } from '../../src/rpg/energy.js'
 import { buyItem, sellItem, craftItem, petAdopt } from '../../src/rpg/engine.js'
+import { reasonText } from '../../src/rpg/reasons.js'
 import { ITEM_MAP, SHOP_MAP, RECIPE_MAP, JOBS, PET_MAP } from '../../src/rpg/data.js'
 import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
@@ -42,6 +43,6 @@ export async function handler(ctx) {
   }
   if (!ids.includes(arg)) return ctx.reply(ctx.t('gunshop.unknown', { item: arg }))
   const result = await buyItem(ctx.storage, ctx.senderDigits, arg, 1)
-  if (!result.ok) return ctx.reply(ctx.t('gunshop.fail', { reason: result.reason, cost: result.cost ?? SHOP_MAP[arg].price }))
+  if (!result.ok) return ctx.reply(ctx.t('gunshop.fail', { reason: reasonText(result.reason, ctx.lang), cost: result.cost ?? SHOP_MAP[arg].price }))
   return ctx.reply(ctx.t('gunshop.done', { item: arg, cost: result.cost, balance: result.balance }))
 }

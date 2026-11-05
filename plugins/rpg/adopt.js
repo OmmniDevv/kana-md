@@ -4,6 +4,7 @@
 import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 import { energyOf } from '../../src/rpg/energy.js'
 import { buyItem, sellItem, craftItem, petAdopt } from '../../src/rpg/engine.js'
+import { reasonText } from '../../src/rpg/reasons.js'
 import { ITEM_MAP, SHOP_MAP, RECIPE_MAP, JOBS, PET_MAP } from '../../src/rpg/data.js'
 import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
@@ -38,6 +39,6 @@ export async function handler(ctx) {
     return ctx.reply(ctx.t('adopt.unknown', { list }))
   }
   const result = await petAdopt(ctx.storage, ctx.senderDigits, kind)
-  if (!result.ok) return ctx.reply(ctx.t('adopt.has', { reason: result.reason }))
+  if (!result.ok) return ctx.reply(ctx.t('adopt.has', { reason: reasonText(result.reason, ctx.lang) }))
   return ctx.reply(ctx.t('adopt.done', { pet: ctx.lang === 'en' ? PET_MAP[kind].name.en : PET_MAP[kind].name.id, emoji: PET_MAP[kind].emoji }))
 }

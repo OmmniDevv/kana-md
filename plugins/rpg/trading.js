@@ -4,6 +4,7 @@
 import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 import { energyOf } from '../../src/rpg/energy.js'
 import { buyItem, sellItem, craftItem, petAdopt } from '../../src/rpg/engine.js'
+import { reasonText } from '../../src/rpg/reasons.js'
 import { ITEM_MAP, SHOP_MAP, RECIPE_MAP, JOBS, PET_MAP } from '../../src/rpg/data.js'
 import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
@@ -36,7 +37,7 @@ export async function handler(ctx) {
   const qty = Math.max(1, Math.floor(Number((ctx.args ?? [])[1]) || 1))
   if (!arg) return ctx.reply(ctx.t('trading.usage'))
   const result = await sellItem(ctx.storage, ctx.senderDigits, arg, qty)
-  if (!result.ok) return ctx.reply(ctx.t('trading.fail', { reason: result.reason, item: arg }))
+  if (!result.ok) return ctx.reply(ctx.t('trading.fail', { reason: reasonText(result.reason, ctx.lang), item: arg }))
   const def = ITEM_MAP[arg]
   const itemName = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : arg
   return ctx.reply(ctx.t('trading.done', { item: itemName, qty: result.qty, gain: result.gain, balance: result.balance }))

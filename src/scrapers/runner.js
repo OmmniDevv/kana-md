@@ -156,8 +156,15 @@ export async function downloadBuffer(rawUrl, { maxBytes = 16 * 1024 * 1024, time
 }
 
 // Jalankan fn di folder temp acak; folder selalu dihapus di akhir.
-export async function withTempDir(fn) {
-  const dir = await mkdtemp(join(tmpdir(), 'kana-'))
+// Dua bentuk panggilan sah: withTempDir(fn) dan withTempDir('prefix-', fn).
+// Bentuk kedua dipakai beberapa plugin (playcall, hdvid, imgtools,
+// resizevideo); dulu string prefix dianggap sebagai fn dan melempar
+// "fn is not a function" saat dipanggil.
+export async function withTempDir(prefixOrFn, maybeFn) {
+  const fn = typeof prefixOrFn === 'function' ? prefixOrFn : maybeFn
+  const prefix = typeof prefixOrFn === 'string' ? prefixOrFn : 'kana-'
+  if (typeof fn !== 'function') throw new TypeError('withTempDir butuh fungsi callback')
+  const dir = await mkdtemp(join(tmpdir(), prefix))
   try {
     return await fn(dir)
   } finally {

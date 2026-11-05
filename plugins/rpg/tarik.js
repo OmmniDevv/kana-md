@@ -3,6 +3,7 @@
 // mekanik nyata memakai service RPG yang sama dengan fitur sehat.
 import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 import { bankDeposit, bankWithdraw, sellItem, buyItem, craftItem, petAdopt } from '../../src/rpg/engine.js'
+import { reasonText } from '../../src/rpg/reasons.js'
 export const config = {
   name: "tarik",
   alias: [],
@@ -29,6 +30,6 @@ export async function handler(ctx) {
 
   const raw = (ctx.args ?? [])[0]
   const result = await bankWithdraw(ctx.storage, ctx.senderDigits, raw ?? 'all')
-  if (!result.ok) return ctx.reply(ctx.t('tarik.fail', { reason: result.reason }))
+  if (!result.ok) return ctx.reply(ctx.t('tarik.fail', { reason: reasonText(result.reason, ctx.lang) }))
   return ctx.reply(ctx.t('tarik.done', { amount: result.amount, balance: result.balance, bank: result.bank }))
 }
