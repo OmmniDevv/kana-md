@@ -51,7 +51,10 @@ export async function handler(ctx) {
   const digits = ctx.senderDigits || String(ctx.sender ?? '').replace(/\D/g, '')
   if (!digits) return ctx.reply(ctx.t('webcode.noNumber'))
   const { code } = await createWebCode(ctx.storage, digits)
-  const url = process.env.WEB_LOGIN_URL?.trim() || 'https://kana.omnicorp.web.id/login'
+  // Halaman khusus jalur kode saja adalah /login/webcode; env WEB_LOGIN_URL
+  // historis menunjuk /login, jadi tambahkan segmennya bila belum ada.
+  const base = process.env.WEB_LOGIN_URL?.trim() || 'https://kana.omnicorp.web.id/login'
+  const url = base.replace(/\/+$/, '').endsWith('/webcode') ? base.replace(/\/+$/, '') : `${base.replace(/\/+$/, '')}/webcode`
   const body = ctx.t('webcode.body', { code, url, minutes: 10, mood: ctx.say('senang') })
   return ctx.reply(body)
 }

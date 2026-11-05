@@ -95,13 +95,30 @@ test('routing: ns login web dan kv bot_stats ke REST, semua lain ke storage utam
   }
   await bridge.set('users', DIGITS, { registered: true })
   await bridge.set('kv', 'sched:123@g.us:2026-11-04:religi', true, 172800)
-  await bridge.set('web_login', DIGITS, { codeHash: 'abc' })
   assert.deepEqual(await bridge.get('users', DIGITS), { registered: true })
   assert.deepEqual(await bridge.keys('users'), [DIGITS])
   await bridge.delete('users', DIGITS)
   assert.equal(await bridge.get('users', DIGITS), undefined)
   assert.deepEqual(setCalls[1], ['kv', 'sched:123@g.us:2026-11-04:religi', true, 172800])
   assert.equal(rest.calls.filter((c) => c[1] === 'users').length, 0)
+})
+
+test('routing: ns web_login (kode .webcode) selalu ke REST, tidak ke storage utama', async () => {
+  const { healthFile } = await tempHealth()
+  const base = memoryStorage()
+  const rest = fakeRest()
+  const bridge = createBridgeStorage(base, rest, { healthFile, now: NOW })
+
+  await bridge.set('web_login', DIGITS, { codeHash: 'abc123', expiresAt: NOW + 600000 })
+  assert.deepEqual(await bridge.get('web_login', DIGITS), { codeHash: 'abc123', expiresAt: NOW + 600000 })
+  assert.deepEqual(await bridge.keys('web_login'), [DIGITS])
+  // Record kode .webcode tidak boleh bocor ke storage utama: web hanya
+  // bisa membacanya bila ia tinggal di Supabase lewat REST.
+  assert.equal(await base.get('web_login', DIGITS), undefined)
+  assert.ok(rest.calls.some((c) => c[0] === 'kvSet' && c[1] === 'web_login'))
+  // Operasi ns web_login tidak menyentuh penanda kesehatan watcher.
+  await bridge.delete('web_login', DIGITS)
+  assert.equal(await bridge.get('web_login', DIGITS), undefined)
 })
 
 test('health: kvList sukses mengisi lastPollOkAt dan lastError null secara atomik', async () => {

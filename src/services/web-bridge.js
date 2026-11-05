@@ -8,6 +8,9 @@
 //
 // Routing:
 // - ns 'web_login_requests' dan 'web_login_limits': selalu REST.
+// - ns 'web_login' (kode dari perintah .webcode): selalu REST, karena web
+//   harus bisa memverifikasi kode itu dari Supabase; tanpa ini kode hanya
+//   tersimpan di storage lokal bot dan tidak terlihat web sama sekali.
 // - ns 'premium', 'sewa_bot', dan 'usage_limits': selalu REST (panel
 //   premium web dan bot berbagi data yang sama, keputusan 2026-11-05).
 // - ns 'kv' dengan key 'bot_stats' dan 'top_users': REST (statistik
@@ -26,9 +29,11 @@
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { REQUESTS_NS, LIMITS_NS } from './web-login-watcher.js'
+import { WEB_LOGIN_NS } from './web-login.js'
 
 export const BRIDGE_REQUESTS_NS = REQUESTS_NS
 export const BRIDGE_LIMITS_NS = LIMITS_NS
+export const BRIDGE_WEB_LOGIN_NS = WEB_LOGIN_NS
 export const STATS_NS = 'kv'
 export const STATS_KEY = 'bot_stats'
 export const TOP_USERS_KEY = 'top_users'
@@ -53,6 +58,7 @@ export const PREMIUM_NS_SET = new Set(['premium', 'sewa_bot', 'usage_limits'])
 
 function isRestRouted(ns, key) {
   if (ns === REQUESTS_NS || ns === LIMITS_NS) return true
+  if (ns === WEB_LOGIN_NS) return true
   if (PREMIUM_NS_SET.has(ns)) return true
   if (ns === STATS_NS && (key === STATS_KEY || key === TOP_USERS_KEY)) return true
   return false
@@ -162,7 +168,7 @@ export function createBridgeStorage(baseStorage, rest, { healthFile, now } = {})
     async keys(ns) {
       // keys hanya membawa namespace: ns login, premium, sewa, dan limit
       // selalu REST, sisanya (termasuk 'kv') ke storage utama.
-      if (ns !== REQUESTS_NS && ns !== LIMITS_NS && !PREMIUM_NS_SET.has(ns)) return baseStorage.keys(ns)
+      if (ns !== REQUESTS_NS && ns !== LIMITS_NS && ns !== WEB_LOGIN_NS && !PREMIUM_NS_SET.has(ns)) return baseStorage.keys(ns)
       const rows = await tracked(ns, () => rest.kvList(ns))
       const nowMs = resolveNowMs(now)
       return rows
