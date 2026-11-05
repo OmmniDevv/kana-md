@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { listGames } from '../src/services/game-catalog.js'
+import { buildGameRelay, toGameFragment } from '../src/ui/htmlgame.js'
 import { addMessages, t as translate } from '../src/i18n/index.js'
 import { say } from '../src/persona/moe.js'
 import { handler as gameHandler, i18n as gameI18n } from '../plugins/game/game.js'
@@ -148,4 +149,55 @@ test('forwarded: .hello (sendHtmlGame) terkirim dengan penanda diteruskan', asyn
   const { ctx } = fakeCtx(sock)
   await helloHandler(ctx)
   assertForwarded(relayed, 'hello (.hello)')
+})
+
+// Struktur payload harus persis bentuk relay manual Elaina (audit
+// 2026-11-05): bentuk library lama tiba di HP user sebagai placeholder
+// "versi WhatsApp tidak mendukung".
+function decodeGameData(relay) {
+  const rich = relay.content.botForwardedMessage.message.richResponseMessage
+  return { rich, data: JSON.parse(Buffer.from(rich.unifiedResponse.data, 'base64').toString('utf8')) }
+}
+
+test('payload game: struktur relay ala Elaina (fragmen, tanpa messageContextInfo bot)', () => {
+  const doc = '<!doctype html><html><head><meta charset="utf-8"><style>.a{color:red}</style></head><body><div id="wrap">Halo</div><script>var x=1;</script></body></html>'
+  const relay = buildGameRelay('628123@s.whatsapp.net', { title: 'KANA Block Blast', html: doc, height: 520, responseId: 'resp-123' })
+
+  // Relay hanya membawa botForwardedMessage; messageContextInfo bawaan
+  // library (botMetadata/botResponseId) tidak boleh ada di level atas.
+  assert.deepEqual(Object.keys(relay.content), ['botForwardedMessage'])
+  assert.equal(relay.content.botForwardedMessage.messageContextInfo.botMetadata, undefined)
+
+  const { rich, data } = decodeGameData(relay)
+  assert.equal(rich.messageType, 1)
+  assert.deepEqual(rich.submessages, [{ messageType: 2, messageText: 'KANA Block Blast' }])
+  assert.equal(data.response_id, 'resp-123')
+  assert.equal(relay.options.messageId, 'resp-123', 'messageId relay harus sama dengan response_id')
+
+  assert.equal(data.sections.length, 1)
+  assert.equal('__typename' in data.sections[0], false, 'section tidak boleh punya __typename luar')
+  const primitive = data.sections[0].view_model.primitive
+  assert.equal(primitive.__typename, 'GenAIaeacdsnwHtmlPrimitive')
+  assert.ok(Array.isArray(primitive.trusted_sources) && primitive.trusted_sources.length >= 1)
+
+  // Payload adalah fragmen: tanpa doctype/html/head/body, style dari head
+  // dan isi body (termasuk script) tetap utuh.
+  assert.ok(!/<!doctype/i.test(primitive.payload))
+  assert.ok(!/<\/?(?:html|head|body)\b/i.test(primitive.payload))
+  assert.ok(primitive.payload.includes('<style>.a{color:red}</style>'))
+  assert.ok(primitive.payload.includes('<div id="wrap">Halo</div>'))
+  assert.ok(primitive.payload.includes('<script>var x=1;</script>'))
+
+  const info = rich.contextInfo
+  assert.equal(info.isForwarded, true)
+  assert.equal(info.forwardingScore, 1)
+  assert.equal(info.forwardedAiBotMessageInfo.botJid, '867051314767696@bot')
+  assert.equal(info.forwardOrigin, 4)
+  assert.equal(info.botMessageSharingInfo, undefined)
+})
+
+test('toGameFragment: fragmen apa adanya dibiarkan, dokumen dipecah benar', () => {
+  assert.equal(toGameFragment('<style>.x{}</style><p>hi</p>'), '<style>.x{}</style><p>hi</p>')
+  const frag = toGameFragment('<!DOCTYPE html><html><head><style>s1</style><style>s2</style></head><body>B</body></html>')
+  assert.equal(frag, '<style>s1</style>\n<style>s2</style>\nB')
 })

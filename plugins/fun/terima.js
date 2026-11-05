@@ -1,53 +1,53 @@
+import { acceptOffer } from './nembak.js'
+import { clearReply, getReplyBinding } from '../../src/ui/reply-router.js'
 
-import { sendButtons } from '../../src/ui/buttons.js'
+// Terima: jawaban perintah untuk tawaran tembakan yang sedang menunggu.
+// Hanya target yang ditembak yang bisa menerima; tawaran dibaca dari
+// binding reply yang dibuat .tembak / .nembak di chat ini, lalu sesi
+// ditutup dan pasangan disimpan lewat resolver bersama nembak.js.
+// Membalas pesan tembakan langsung dengan kata "terima" juga bisa
+// (ditangani router reply), perintah ini jalur eksplisitnya.
 export const config = {
-  name: "terima",
-  alias: [],
-  category: "fun",
-  description: { id: "Fitur terima versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD terima feature, rewritten in KANA style" },
-  usage: ".terima",
-  example: ".terima",
+  name: 'terima',
+  alias: ['accept'],
+  category: 'fun',
+  description: { id: 'Menerima tembakan dari seseorang', en: 'Accept a confession from someone' },
+  usage: '.terima',
+  example: '.terima',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "terima": {
-      title: "Cek terima",
-      result: "╭─❏ 🔮 「 *CEK TERIMA* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴀꜱɪʟ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Masih kecil nih, tapi potensinya ada kok~",
-      mid: "Lumayan, di tengah tengah, kadang muncul kadang tidak~",
-      high: "Tinggi nih! Kelihatan banget dari auranya~",
-      max: "PARAH, level maksimal! Sudah level legenda~",
-      disclaimer: "Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~",
-      btnAgain: "Cek Lagi",
+    terima: {
+      noOffer: '╭─❏ 💌 「 *BELUM ADA TEMBAKAN* 」\n┊ Belum ada yang nembak kamu di chat ini.\n┊ Jawaban cuma berlaku buat orang yang lagi ditembak yaa~\n╰━━━━━━━',
+      notYours: '╭─❏ 💌 「 *BUKAN BUAT KAMU* 」\n┊ Tembakan yang lagi menunggu di chat ini bukan buat kamu.\n┊ Yang ditembak yang berhak jawab yaa~\n╰━━━━━━━',
+      wrongShooter: '╭─❏ 💌 「 *BUKAN DIA* 」\n┊ Yang lagi nembak kamu itu *@{from}*, bukan yang kamu tag~\n╰━━━━━━━',
     },
   },
   en: {
-    "terima": {
-      title: "terima check",
-      result: "╭─❏ 🔮 「 *TERIMA CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʀᴇꜱᴜʟᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Still small, but the potential is there~",
-      mid: "Decent, in the middle, sometimes it shows sometimes not~",
-      high: "High! It really shows from the aura~",
-      max: "EXTREME, maximum level! Legendary tier~",
-      disclaimer: "Just for fun, the percent is KANA playful name reading, not a real measure~",
-      btnAgain: "Check Again",
+    terima: {
+      noOffer: '╭─❏ 💌 「 *NO CONFESSION YET* 」\n┊ No one has confessed to you in this chat.\n┊ Only the person being confessed to can answer~\n╰━━━━━━━',
+      notYours: '╭─❏ 💌 「 *NOT FOR YOU* 」\n┊ The pending confession in this chat is not aimed at you.\n┊ Only its target may answer~\n╰━━━━━━━',
+      wrongShooter: '╭─❏ 💌 「 *NOT THEM* 」\n┊ The one confessing to you is *@{from}*, not the person you tagged~\n╰━━━━━━━',
     },
   },
 }
 
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
-}
-export const test = { input: '.terima Budi', expect: /cek|check/i }
+export const test = { input: '.terima', expect: /belum ada tembakan|no confession/i }
+
 export async function handler(ctx) {
-  const target = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
-  const percent = hashPercent(target.toLowerCase() + ':terima')
-  const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'
-  const body = ctx.t('terima.result', { name: target, percent, comment: ctx.t('terima.' + band), disclaimer: ctx.t('terima.disclaimer') })
-  return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('terima.title'), body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('terima.btnAgain'), id: '.terima' }], textFallback: body })
+  const binding = await getReplyBinding(ctx.storage, ctx.chat)
+  if (!binding || binding.kind !== 'nembak') return ctx.reply(ctx.t('terima.noOffer'))
+  if (binding.ownerDigits !== ctx.senderDigits) return ctx.reply(ctx.t('terima.notYours'))
+  const tagged = ctx.mentionedJids?.[0]?.split('@')[0].split(':')[0]
+  if (tagged && tagged !== binding.data?.fromDigits) {
+    return ctx.sock.sendMessage(ctx.chat, {
+      text: ctx.t('terima.wrongShooter', { from: binding.data.fromDigits }),
+      mentions: [`${binding.data.fromDigits}@s.whatsapp.net`],
+    }, { quoted: ctx.raw })
+  }
+  await clearReply(ctx.storage, ctx.chat)
+  await acceptOffer(ctx, binding.data)
+  return undefined
 }
