@@ -67,7 +67,7 @@ function unwrapTokenUrl(input) {
   return cleaned
 }
 
-export async function instagramDownload(url) {
+async function instagramViaSnapSave(url) {
   try {
     const parsed = assertSafeUrl(url)
     if (!IG_HOST.test(parsed.hostname)) throw new Error('URL harus dari instagram.com')
@@ -160,6 +160,94 @@ export async function instagramDownload(url) {
     }
   } catch (error) {
     return { status: false, message: error.message || 'Failed to scrape Instagram via SnapSave.' }
+  }
+}
+
+// Cadangan (ditambahkan 2026-11-05 saat sapuan live): halaman embed
+// resmi Instagram. SnapSave terbukti fluktuatif untuk Instagram
+// (menjawab sukses tetapi tanpa tautan unduhan, "Empty response"),
+// sedangkan halaman /embed/captioned/ untuk kiriman publik memuat
+// video_url/display_url langsung di JSON halamannya dan terjangkau
+// dari VM bot. Bentuk hasil sama persis dengan jalur SnapSave.
+export function extractEmbedMedia(html) {
+  if (!html || typeof html !== 'string') return null
+  // JSON di halaman embed ter-escape dua lapis (\\\" dan \\\\/), jadi
+  // unescape diulang sampai stabil, maksimal 3 putaran.
+  let plain = html
+  for (let i = 0; i < 3; i++) {
+    const next = plain
+      .replace(/\\u0026/g, '&')
+      .replace(/\\\\/g, '\\')
+      .replace(/\\\//g, '/')
+      .replace(/\\"/g, '"')
+    if (next === plain) break
+    plain = next
+  }
+  const pick = (key) => {
+    const m = plain.match(new RegExp(`"${key}":"(https:[^"]+)"`))
+    return m ? m[1] : null
+  }
+  const videoUrl = pick('video_url')
+  const displayUrl = pick('display_url')
+  const titleMatch = plain.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/)
+  const title = titleMatch ? titleMatch[1].replace(/\s+/g, ' ').trim() : 'Instagram Media'
+  if (videoUrl) {
+    return { title, thumbnail: displayUrl || '', type: 'video', downloads: [{ quality: 'HD', type: 'video', url: videoUrl }] }
+  }
+  if (displayUrl) {
+    return { title, thumbnail: displayUrl, type: 'photo', downloads: [{ quality: 'photo', type: 'photo', url: displayUrl }] }
+  }
+  return null
+}
+
+// Halaman embed WAJIB diambil lewat curl, bukan fetch/axios: edge
+// Instagram membedakan sidik jari TLS klien. Dari VM bot, Node
+// (fetch maupun axios, UA apa pun) selalu menerima varian embed JS
+// 500KB tanpa media, sedangkan curl menerima varian 235KB yang memuat
+// video_url (terbukti berulang pada probe sapuan 2026-11-05). Pola
+// execFile yang sama dipakai scraper soundcloud untuk ffmpeg.
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
+
+const execFileP = promisify(execFile)
+const EMBED_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+
+async function instagramViaEmbed(url) {
+  const parsed = assertSafeUrl(url)
+  if (!IG_HOST.test(parsed.hostname)) throw new Error('URL harus dari instagram.com')
+  const m = parsed.pathname.match(/\/(reel|reels|p|tv)\/([A-Za-z0-9_-]+)/)
+  if (!m) throw new Error('tautan Instagram tidak memuat kode kiriman')
+  const seg = m[1] === 'p' ? 'p' : 'reel'
+  // Halaman embed punya dua varian yang disajikan bergantian menurut
+  // jendela waktu di edge Instagram: varian kaya (235KB, memuat
+  // video_url) dan varian JS (500KB, tanpa media). Coba sampai 4 kali
+  // sampai varian kaya yang didapat.
+  let lastError = null
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      const { stdout } = await execFileP(
+        'curl',
+        ['-sL', '--max-time', '30', '-A', EMBED_UA, `https://www.instagram.com/${seg}/${m[2]}/embed/captioned/`],
+        { maxBuffer: 8 * 1024 * 1024, timeout: 40000 }
+      )
+      const media = extractEmbedMedia(stdout)
+      if (media) return { status: true, result: media }
+      lastError = new Error('varian halaman embed tanpa media')
+    } catch (err) {
+      lastError = err
+    }
+    if (attempt < 3) await new Promise((r) => setTimeout(r, 1500))
+  }
+  throw lastError || new Error('media tidak ditemukan di halaman embed Instagram')
+}
+
+export async function instagramDownload(url) {
+  const viaSnapSave = await instagramViaSnapSave(url)
+  if (viaSnapSave.status) return viaSnapSave
+  try {
+    return await instagramViaEmbed(url)
+  } catch {
+    return viaSnapSave
   }
 }
 

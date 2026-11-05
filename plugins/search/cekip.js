@@ -31,16 +31,26 @@ export const i18n = {
 
 export const test = { input: '.cekip 8.8.8.8', expect: /INFO IP|IP INFO/ }
 
-export async function handler(ctx) {
+// Sumber data: ipwho.is (HTTPS, tanpa key). Penyedia lama ip-api.com
+// tidak bisa dipakai dari VM bot: permintaannya lewat Node fetch
+// menggantung sampai timeout (curl sehat, pola yang sama dengan
+// cdn.jsdelivr.net), terbukti pada sapuan live P11 dan CLEANUP
+// 2026-11-05. ipwho.is menjawab 200 dalam ~1 detik lewat Node fetch.
+async function fetchIpInfo(ip) {
+  const res = await fetch(`https://ipwho.is/${encodeURIComponent(ip)}`, { signal: AbortSignal.timeout(20000) })
+  if (!res.ok) throw new Error(`ipwho.is balas HTTP ${res.status}`)
+  return res.json()
+}
+
+export async function handler(ctx, { fetchInfo = fetchIpInfo } = {}) {
   const ip = (ctx.text || '').trim().split(/\s+/)[0]
   if (!ip) return ctx.reply(ctx.t('cekip.hint'))
   try {
-    const res = await fetch(`http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,message,country,countryCode,regionName,city,isp,org,timezone,query`, { signal: AbortSignal.timeout(20000) })
-    const d = await res.json()
-    if (d.status !== 'success') return ctx.reply(ctx.t('cekip.fail', { mood: ctx.say('gagal') }))
+    const d = await fetchInfo(ip)
+    if (!d || d.success === false) return ctx.reply(ctx.t('cekip.fail', { mood: ctx.say('gagal') }))
     return ctx.reply(ctx.t('cekip.body', {
-      query: d.query, country: d.country, code: d.countryCode, region: d.regionName,
-      city: d.city, isp: d.isp, org: d.org || '-', tz: d.timezone,
+      query: d.ip, country: d.country, code: d.country_code, region: d.region,
+      city: d.city, isp: d.connection?.isp || '-', org: d.connection?.org || '-', tz: d.timezone?.id || '-',
     }))
   } catch (err) {
     return ctx.reply(ctx.t('cekip.error', { error: err.message }))
