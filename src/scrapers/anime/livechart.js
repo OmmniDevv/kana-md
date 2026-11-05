@@ -36,6 +36,34 @@ function posterOf($, $elem) {
   return src.startsWith('http') ? src : BASE + src
 }
 
+// Tanggal tayang kartu. Markup musim LiveChart saat ini menaruh elemen
+// <time data-controller="countdown" data-timestamp="<epoch detik>"> yang
+// TEKSNYA templat hitung mundur mentah "~d ~~h ~~m ~~s" (diisi JavaScript
+// di browser). Tanggal asli hanya ada di atribut: data-timestamp (epoch
+// detik) atau datetime (ISO). Teks elemen tidak pernah dipakai sebelum
+// atribut, dan teks yang cocok pola artefak hitung mundur selalu dibuang:
+// field kosong lebih baik daripada sampah templat.
+const COUNTDOWN_ARTIFACT = /~~?[dhms]/
+export function cleanPremiereDateText(text) {
+  const value = String(text || '').trim()
+  if (!value || COUNTDOWN_ARTIFACT.test(value)) return ''
+  return value
+}
+
+function premiereDateOf($, $elem) {
+  const $time = $elem.find('time[data-timestamp], time[datetime]').first()
+  if ($time.length) {
+    const ts = Number($time.attr('data-timestamp'))
+    if (Number.isFinite(ts) && ts > 0) return new Date(ts * 1000).toDateString()
+    const dt = $time.attr('datetime')
+    if (dt) {
+      const parsed = new Date(dt)
+      if (!Number.isNaN(parsed.getTime())) return parsed.toDateString()
+    }
+  }
+  return cleanPremiereDateText($elem.find('.anime-date').first().text())
+}
+
 function parseCard($, elem) {
   const $elem = $(elem)
   let id = $elem.attr('data-anime-id') || $elem.attr('data-anime-item-id') || ''
@@ -48,10 +76,7 @@ function parseCard($, elem) {
   if (!title) return null
   const ratingText = $elem.find('.anime-avg-user-rating, .lc-anime-card--poster-rating').first().text()
   const ratingMatch = ratingText.match(/(\d+\.\d+)/)
-  const date = $elem.find('.anime-date, time[data-timestamp]').first().text().trim()
-    || ($elem.find('time[data-timestamp]').attr('data-timestamp')
-      ? new Date(Number($elem.find('time[data-timestamp]').attr('data-timestamp')) * 1000).toDateString()
-      : '')
+  const date = premiereDateOf($, $elem)
   const studios = []
   $elem.find('.anime-studios a, .lc-anime-card--studios a').each((_, a) => studios.push($(a).text().trim()))
   return {
@@ -78,25 +103,30 @@ function collectCards($, selector) {
 
 const CARD_SELECTOR = 'article.anime, tr[data-controller="anime-item"], [data-anime-id], [data-anime-item-id], .lc-anime, li.anime-item'
 
+// Parser murni daftar kartu dari HTML LiveChart (dipakai pencarian, musim,
+// dan peringkat; diekspor untuk tes fixture).
+export function parseLivechartCards(html, selector = CARD_SELECTOR) {
+  if (!html) return []
+  const $ = cheerio.load(html)
+  return collectCards($, selector)
+}
+
 export async function livechartSearch(query) {
   const html = await fetchHtml(`${BASE}/search?q=${encodeURIComponent(query)}`)
   if (!html) return []
-  const $ = cheerio.load(html)
-  return collectCards($, CARD_SELECTOR)
+  return parseLivechartCards(html)
 }
 
 export async function livechartSeason(season, year, type = 'tv') {
   const html = await fetchHtml(`${BASE}/${season}-${year}/${type}`)
   if (!html) return []
-  const $ = cheerio.load(html)
-  return collectCards($, CARD_SELECTOR)
+  return parseLivechartCards(html)
 }
 
 export async function livechartRankings() {
   const html = await fetchHtml(`${BASE}/rankings/anime?metric=rating`)
   if (!html) return []
-  const $ = cheerio.load(html)
-  return collectCards($, 'tr[data-controller="anime-item"], article.anime, [data-anime-id]').slice(0, 25)
+  return parseLivechartCards(html, 'tr[data-controller="anime-item"], article.anime, [data-anime-id]').slice(0, 25)
 }
 
 const cleanText = (s) => String(s || '').replace(/\s+/g, ' ').trim()
