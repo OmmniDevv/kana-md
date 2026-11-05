@@ -70,8 +70,21 @@ import {
 } from '../src/scrapers/random/bluearchive.js'
 import { parseRandomQuote } from '../src/scrapers/search/quotes.js'
 import { quoteCard } from '../src/ui/cards.js'
+import { parsePoemLinks, parsePoemPage } from '../src/scrapers/search/puisi.js'
+import { parseHorrorArticles } from '../src/scrapers/search/misteri.js'
+import {
+  i18n as puisiI18n,
+  formatPuisi,
+  test as puisiTest,
+} from '../plugins/fun/puisi.js'
+import {
+  WAIFU_LIST,
+  drawGacha,
+  formatGacha,
+  i18n as gachabiniI18n,
+} from '../plugins/fun/gachabini.js'
 
-for (const mod of [artinamaI18n, ramalanI18n, randomtagI18n, jodohI18n, cekpacarI18n, sulapI18n, shipI18n, usercardI18n, removebgI18n]) {
+for (const mod of [artinamaI18n, ramalanI18n, randomtagI18n, jodohI18n, cekpacarI18n, sulapI18n, shipI18n, usercardI18n, removebgI18n, puisiI18n, gachabiniI18n]) {
   for (const [lang, messages] of Object.entries(mod)) addMessages(lang, messages)
 }
 
@@ -544,4 +557,63 @@ test('quotesimage: parseRandomQuote dan quoteCard menghasilkan PNG valid', async
   const image = await quoteCard({ text: parsed.quote, author: parsed.author })
   assert.ok(image.subarray(0, 4).equals(PNG_MAGIC), 'kartu quotes harus PNG valid')
   assert.ok(image.length > 5000)
+})
+
+/* ---------------- Teks data: puisi, misteri, gachabini ---------------- */
+
+test('puisi: parsePoemLinks mengumpulkan tautan puisi unik dari beranda', () => {
+  const html = `
+    <a href="https://puisipendek.net/puisi/suaraku-di-angkasa">a</a>
+    <a href="https://puisipendek.net/puisi/suaraku-di-angkasa">duplikat</a>
+    <a href="https://puisipendek.net/puisi/hening-senja">b</a>
+    <a href="https://puisipendek.net/about-us">bukan puisi</a>`
+  assert.deepEqual(parsePoemLinks(html), [
+    'https://puisipendek.net/puisi/suaraku-di-angkasa',
+    'https://puisipendek.net/puisi/hening-senja',
+  ])
+})
+
+test('puisi: parsePoemPage mengekstrak judul dan puisi multi-baris', () => {
+  const html = `
+    <html><head><meta property="og:title" content="Suaraku di Angkasa ~ PuisiPendek.net"></head>
+    <body><div class="entry-content"><p>Setiap detik namamu terucap,<br>
+    Di antara bintang yang berkelip,<br>
+    Di atas langit biru yang luas.</p></div></body></html>`
+  const poem = parsePoemPage(html, 'https://puisipendek.net/puisi/suaraku-di-angkasa')
+  assert.equal(poem.title, 'Suaraku di Angkasa')
+  assert.equal(poem.text.split('\n').length, 3)
+  const body = formatPuisi(tId, poem, 'moe~')
+  assert.match(body, /Suaraku di Angkasa/)
+  assert.match(body, /Sumber: https:\/\/puisipendek\.net/)
+  assert.ok(puisiTest.expect.test(body))
+  assert.equal(parsePoemPage('<div class="entry-content"><p>satu baris saja</p></div>', 'x'), null)
+})
+
+test('misteri: parseHorrorArticles mengambil judul, tautan, dan gambar artikel', () => {
+  const link = 'https://www.idntimes.com/hype/entertainment/5-mitos-gunung-arjuno-makin-terasa-mistis-68bc4412e01140a45edcfbbcbf93d7ed'
+  const html = `
+    <a href="${link}"><img src="https://image.idntimes.com/post/20231007/misteri-gunung-arjuno-68bc4412e01140a45edcfbbcbf93d7ed.png" alt="5 Mitos Gunung Arjuno, Makin Terasa Mistis dan Keramat"></a>
+    <img src="https://image.idntimes.com/monorepo/assets/idn-times-logo.svg" alt="IDN Times logo">`
+  const articles = parseHorrorArticles(html)
+  assert.equal(articles.length, 1)
+  assert.equal(articles[0].link, link)
+  assert.match(articles[0].title, /Gunung Arjuno/)
+  assert.match(articles[0].image, /^https:\/\/image\.idntimes\.com\//)
+})
+
+test('gachabini: daftar waifu besar dan tarikan gacha bervariasi mengikuti rng', () => {
+  assert.ok(WAIFU_LIST.length >= 150, `daftar waifu terlalu kecil: ${WAIFU_LIST.length}`)
+  assert.ok(WAIFU_LIST.includes('Rem'))
+  assert.ok(WAIFU_LIST.includes('Frieren'))
+  const first = drawGacha(() => 0)
+  assert.equal(first.waifu, 'Rimuru')
+  assert.equal(first.love, 0)
+  const last = drawGacha(() => 0.9999)
+  assert.equal(last.waifu, WAIFU_LIST[WAIFU_LIST.length - 1])
+  assert.equal(last.love, 100)
+  const pack = gachabiniI18n.id.gachabini
+  const body = formatGacha(tId, pack, 'Penguji', first)
+  assert.match(body, /GACHA BINI/)
+  assert.match(body, /Rimuru/)
+  assert.match(body, /Cinta Sejati/)
 })

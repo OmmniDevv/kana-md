@@ -1,69 +1,57 @@
 import { sendButtons } from '../../src/ui/buttons.js'
+import { getRandomPuisi } from '../../src/scrapers/search/puisi.js'
 
+// Puisi: ambil puisi Indonesia beneran dari PuisiPendek.net (judul + isi
+// + tautan sumber), bukan lagi kumpulan teks statis lokal. API lama
+// Neoxr tidak dipakai karena memakai API key hardcoded bot lain.
 export const config = {
   name: 'puisi',
-  alias: [],
+  alias: ['puisiku', 'sajak'],
   category: 'fun',
-  description: { id: 'Kirim satu puisi pendek asli untuk menemani harimu', en: 'Send one short original poem to accompany your day' },
+  description: { id: 'Kirim satu puisi Indonesia dari PuisiPendek.net', en: 'Send one Indonesian poem from PuisiPendek.net' },
   usage: '.puisi',
   example: '.puisi',
   cooldown: 3,
 }
 
-// Puisi pendek orisinal yang ditulis untuk KANA.
-export const PUISI = {
-  id: [
-    'Di beranda pagi yang masih basah,\nembun menulis surat di daun jendela.\nKopi mengepul, hati pun merekah,\nhari baru selalu punya cara menyapa.',
-    'Hujan mengetuk genting dengan sabar,\nseperti rindu yang tidak mau terburu-buru.\nDi balik jendela kita belajar,\nmenunggu pun bisa terasa semanis madu.',
-    'Perahu kecil menyeberangi senja,\nmembawa pulang lelah seharian.\nLangit oranye jadi saksi bisu saja,\nesok kita berlayar lagi, dengan harapan.',
-    'Kucing tidur di atas tumpukan buku,\nmimpinya mungkin soal ikan dan susu.\nKita yang terjaga mengejar waktu,\nbelajar santai dari yang paling lucu.',
-    'Bintang tidak pernah berisik,\ntapi seluruh malam mendengarkannya.\nJadilah terang tanpa perlu riuh,\nkebaikan pun sama cara kerjanya.',
-    'Di pasar pagi suara bersahutan,\nsayur segar dan tawa berserakan.\nHidup kadang cuma soal tawar-menawar,\nantara lelah dan alasan untuk bertahan.',
-    'Kereta melintas membawa cerita,\norang-orang asing dengan tujuan berbeda.\nKita semua penumpang sementara,\nsaling tersenyum sebelum turun di stasiun masing-masing.',
-    'Layang-layang putus bukan akhir cerita,\nia hanya pindah langit untuk terbang lagi.\nBegitu juga mimpi yang lepas dari genggaman kita,\nsuatu hari kembali dalam bentuk yang lebih baik.',
-  ],
-  en: [
-    'On a porch still wet with morning,\ndew writes letters on window leaves.\nCoffee steams, the heart starts blooming,\na new day always finds its way to greet.',
-    'Rain taps the roof tiles with patience,\nlike longing that refuses to rush.\nBehind the window we learn,\nwaiting can taste as sweet as honey.',
-    'A small boat crosses the evening,\ncarrying home a day of tiredness.\nThe orange sky is a silent witness,\ntomorrow we sail again, with hope.',
-    'A cat sleeps on a pile of books,\ndreaming perhaps of fish and milk.\nWe who stay awake chasing time,\nlearn to relax from the funniest teacher.',
-    'Stars never make any noise,\nyet the whole night listens to them.\nBe a light without the fuss,\nkindness works the same way.',
-    'At the morning market voices collide,\nfresh greens and laughter scattered around.\nLife is sometimes just bargaining,\nbetween tiredness and reasons to hold on.',
-    'A train passes carrying stories,\nstrangers with different destinations.\nWe are all temporary passengers,\nsmiling at each other before our own stations.',
-    'A broken-string kite is not the end,\nit just moves to another sky to fly again.\nSo do dreams that slip from our hands,\none day returning in a better form.',
-  ],
-}
-
 export const i18n = {
   id: {
     puisi: {
-      title: 'Puisi Pendek',
-      body: '╭─❏ 📜 「 *PUISI UNTUKMU* 」\n┊ {item}\n┊\n┊ Semoga baris-baris ini menemani harimu yaa~\n╰━━━━━━━ {mood}',
+      title: 'Puisi Untukmu',
+      body: '╭─❏ 📜 「 *{title}* 」\n┊\n{item}\n\n┊ Sumber: {url}\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ 💦 「 *PUISI GAGAL* 」\n┊ Mouu, puisinya gagal diambil dari sumbernya: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
       btnAgain: 'Puisi Lain',
     },
   },
   en: {
     puisi: {
-      title: 'Short Poem',
-      body: '╭─❏ 📜 「 *A POEM FOR YOU* 」\n┊ {item}\n┊\n┊ May these lines accompany your day~\n╰━━━━━━━ {mood}',
+      title: 'A Poem For You',
+      body: '╭─❏ 📜 「 *{title}* 」\n┊\n{item}\n\n┊ Source: {url}\n╰━━━━━━━ {mood}',
+      fail: '╭─❏ 💦 「 *POEM FAILED* 」\n┊ Mouu, the poem failed to load from its source: *{message}*\n┊ Try again later please~\n╰━━━━━━━',
       btnAgain: 'Another Poem',
     },
   },
 }
 
-export const test = { input: '.puisi', expect: /puisi/i }
+export const test = { input: '.puisi', expect: /puisipendek|sumber:|source:/i }
+
+export function formatPuisi(t, poem, mood) {
+  return t('puisi.body', { title: poem.title, item: poem.text, url: poem.url, mood })
+}
 
 export async function handler(ctx) {
-  const pool = PUISI[ctx.lang] ?? PUISI.id
-  const item = pool[Math.floor(Math.random() * pool.length)]
-  const body = ctx.t('puisi.body', { item, mood: ctx.say('senang') })
+  let poem
+  try {
+    poem = await getRandomPuisi()
+  } catch (err) {
+    return ctx.reply(ctx.t('puisi.fail', { message: err.message }))
+  }
+  const body = formatPuisi(ctx.t, poem, ctx.say('senang'))
   return sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('puisi.title'),
     body,
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('puisi.btnAgain'), id: '.puisi' },
-    ],
+    replies: [{ text: ctx.t('puisi.btnAgain'), id: '.puisi' }],
     textFallback: body,
   })
 }
