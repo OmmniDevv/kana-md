@@ -84,7 +84,10 @@ export async function instagramDownload(url) {
 
     const response = await axios.post('https://snapsave.app/action.php', `url=${encodeURIComponent(target)}`, {
       headers,
-      timeout: 15000,
+      // SnapSave dari VM ini terukur menjawab sekitar 30 detik (probe
+      // sapuan 2026-11-05); batas lama 15 detik selalu memotongnya di
+      // tengah dan menghasilkan "Empty response"/timeout.
+      timeout: 60000,
     })
 
     let html = ''

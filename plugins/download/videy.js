@@ -1,71 +1,51 @@
+// Videy: unduh video dari tautan videy.co (v?id=<id>) lewat CDN
+// publiknya. Ditulis ulang total 2026-11-05: versi lama adalah klon
+// generik salah label yang meneruskan URL apa pun ke downloader
+// YouTube (PLATFORM "youtube") sehingga menggantung 120 detik pada
+// tes live; versi ini mengunduh berkas videy yang sebenarnya.
+import { downloadVidey } from '../../src/scrapers/download/videy.js'
 
-import { downloadBuffer } from '../../src/scrapers/runner.js'
 export const config = {
-  name: "videy",
+  name: 'videy',
   alias: [],
-  category: "download",
-  description: { id: "Download video dari videy.co", en: "KANA version of the Elaina-MD videy feature, rewritten in KANA style" },
-  usage: ".videy",
-  example: ".videy",
+  category: 'download',
+  description: { id: 'Download video dari videy.co', en: 'Download a video from videy.co' },
+  usage: '.videy <link videy.co>',
+  example: '.videy https://videy.co/v/?id=JrNCwEbD1',
   cooldown: 5,
-  limitGroup: "download",
+  limitGroup: 'download',
 }
 
 export const i18n = {
   id: {
-    "videy": {
-      hint: "╭─❏ 📥 「 *VIDEY* 」\n┊ Kirim link youtube-nya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.videy https://...*\n╰━━━━━━━",
-      working: "╭─❏ 📥 「 *LAGI DIAMBIL* 」\n┊ Sebentar, KANA ambil medianya dulu... {mood}\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *UNDUHAN GAGAL* 」\n┊ Mouu, unduhannya gagal: *{message}*\n┊ Sumbernya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
-      caption: "╭─❏ 📥 「 *VIDEY* 」\n┊ Nih medianya~\n╰━━━━━━━",
+    videy: {
+      hint: '╭─❏ 📥 「 *VIDEY* 」\n┊ Kirim link videy.co-nya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.videy https://videy.co/v/?id=JrNCwEbD1*\n╰━━━━━━━',
+      working: '╭─❏ 📥 「 *LAGI DIAMBIL* 」\n┊ Sebentar, KANA ambil videonya dari videy dulu... {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *UNDUHAN GAGAL* 」\n┊ Mouu, unduhannya gagal: *{message}*\n┊ Pastikan link videy-nya benar dan videonya masih ada ya~\n╰━━━━━━━',
+      caption: '╭─❏ 📥 「 *VIDEY* 」\n┊ Nih videonya~\n╰━━━━━━━',
     },
   },
   en: {
-    "videy": {
-      hint: "╭─❏ 📥 「 *VIDEY* 」\n┊ Send the youtube link first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.videy https://...*\n╰━━━━━━━",
-      working: "╭─❏ 📥 「 *FETCHING IT* 」\n┊ One sec, KANA is fetching the media... {mood}\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *DOWNLOAD FAILED* 」\n┊ Mouu, the download failed: *{message}*\n┊ The source is having trouble, try again later~\n╰━━━━━━━",
-      caption: "╭─❏ 📥 「 *VIDEY* 」\n┊ Here is your media~\n╰━━━━━━━",
+    videy: {
+      hint: '╭─❏ 📥 「 *VIDEY* 」\n┊ Send the videy.co link first please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.videy https://videy.co/v/?id=JrNCwEbD1*\n╰━━━━━━━',
+      working: '╭─❏ 📥 「 *FETCHING IT* 」\n┊ One sec, KANA is fetching the video from videy... {mood}\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *DOWNLOAD FAILED* 」\n┊ Mouu, the download failed: *{message}*\n┊ Make sure the videy link is right and the video still exists please~\n╰━━━━━━━',
+      caption: '╭─❏ 📥 「 *VIDEY* 」\n┊ Here is your video~\n╰━━━━━━━',
     },
   },
 }
 
-const PLATFORM = "youtube"
-export const test = { input: '.videy https://videy.co/', expect: /.+/ }
-function pickMediaUrl(obj, depth = 0) {
-  if (!obj || depth > 4) return null
-  if (typeof obj === 'string') return /^https:\/\//.test(obj) ? obj : null
-  if (Array.isArray(obj)) { for (const v of obj) { const u = pickMediaUrl(v, depth + 1); if (u) return u } return null }
-  if (typeof obj === 'object') {
-    for (const k of ['video', 'nowm', 'noWatermark', 'play', 'download', 'downloadUrl', 'audio', 'url', 'image', 'thumbnail']) {
-      if (obj[k]) { const u = pickMediaUrl(obj[k], depth + 1); if (u) return u }
-    }
-    for (const v of Object.values(obj)) { const u = pickMediaUrl(v, depth + 1); if (u) return u }
-  }
-  return null
-}
-export async function handler(ctx) {
+// Input uji adalah tautan videy asli berisi klip uji yang diunggah
+// KANA sendiri (terverifikasi: berkas CDN identik dengan unggahan).
+export const test = { input: '.videy https://videy.co/v/?id=JrNCwEbD1', expect: /VIDEY/ }
+
+export async function handler(ctx, { fetchVideo = downloadVidey } = {}) {
   const url = ((ctx.text || '').match(/https?:\/\/[^\s]+/) || [])[0]
   if (!url) return ctx.reply(ctx.t('videy.hint'))
   await ctx.reply(ctx.t('videy.working', { mood: ctx.say('mikir') }))
   try {
-    let result = null
-    if (PLATFORM === 'tiktok') { const { tiktokDownload } = await import('../../src/scrapers/tiktok/tiktok.js'); result = await tiktokDownload(url) }
-    else if (PLATFORM === 'instagram') { const { instagramDownload } = await import('../../src/scrapers/instagram/instagram.js'); result = await instagramDownload(url) }
-    else if (PLATFORM === 'facebook') { const { facebookDownload } = await import('../../src/scrapers/facebook/facebook.js'); result = await facebookDownload(url) }
-    else if (PLATFORM === 'spotify') { const { spotifyDownload } = await import('../../src/scrapers/spotify/spotify.js'); result = await spotifyDownload(url) }
-    else if (PLATFORM === 'capcut') { const { capcutDownload } = await import('../../src/scrapers/download/capcut.js'); result = await capcutDownload(url) }
-    else if (PLATFORM === 'mediafire') { const { resolveMediafire } = await import('../../src/scrapers/download/mediafire.js'); result = await resolveMediafire(url) }
-    else if (PLATFORM === 'pixeldrain') { const { extractPixeldrainId, pixeldrainFileUrl } = await import('../../src/scrapers/download/pixeldrain.js'); const id = extractPixeldrainId(url); result = { url: pixeldrainFileUrl(id) } }
-    else if (PLATFORM === 'soundcloud') { const { soundcloudAudio } = await import('../../src/scrapers/download/soundcloud.js'); const audio = await soundcloudAudio(url); await ctx.sock.sendMessage(ctx.chat, { audio: audio.buffer ?? audio, mimetype: 'audio/mpeg' }, { quoted: ctx.raw }); return ctx.reply(ctx.t('videy.caption')) }
-    else if (PLATFORM === 'youtube') { const { downloadVideoByUrlOrQuery } = await import('../../src/scrapers/download/ytmp4.js'); const v = await downloadVideoByUrlOrQuery(url); await ctx.sock.sendMessage(ctx.chat, { video: v.buffer ?? v, caption: ctx.t('videy.caption') }, { quoted: ctx.raw }); return undefined }
-    const mediaUrl = pickMediaUrl(result)
-    if (!mediaUrl) throw new Error('media tidak ditemukan dari sumber')
-    const media = await downloadBuffer(mediaUrl, { maxBytes: 64 * 1024 * 1024, timeout: 60000 })
-    const isAudio = /\.mp3|audio/i.test(mediaUrl)
-    if (isAudio) await ctx.sock.sendMessage(ctx.chat, { audio: media.buffer, mimetype: 'audio/mpeg' }, { quoted: ctx.raw })
-    else if (/\.(jpg|jpeg|png|webp)/i.test(mediaUrl)) await ctx.sock.sendMessage(ctx.chat, { image: media.buffer, caption: ctx.t('videy.caption') }, { quoted: ctx.raw })
-    else await ctx.sock.sendMessage(ctx.chat, { video: media.buffer, caption: ctx.t('videy.caption') }, { quoted: ctx.raw })
+    const video = await fetchVideo(url)
+    await ctx.sock.sendMessage(ctx.chat, { video: video.buffer, caption: ctx.t('videy.caption') }, { quoted: ctx.raw })
     return undefined
   } catch (err) {
     return ctx.reply(ctx.t('videy.fail', { message: err.message }))

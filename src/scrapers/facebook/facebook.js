@@ -85,7 +85,9 @@ async function fetchDownloads(url) {
   params.append('url', finalUrl)
   const response = await axios.post(`${BASE}/action.php?lang=id`, params.toString(), {
     headers: { ...headers, 'Content-Type': 'application/x-www-form-urlencoded', Cookie: cookieStr },
-    timeout: 20000,
+    // Samakan dengan jalur Instagram: SnapSave terukur menjawab
+    // sekitar 30 detik dari VM ini (probe sapuan 2026-11-05).
+    timeout: 60000,
   })
 
   const html = typeof response.data === 'string' ? decodePacked(response.data) : ''
