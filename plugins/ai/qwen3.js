@@ -5,7 +5,7 @@ export const config = {
   name: "qwen3",
   alias: [],
   category: "ai",
-  description: { id: "Fitur qwen3 versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD qwen3 feature, rewritten in KANA style" },
+  description: { id: "Persona chat bergaya Qwen3: multibahasa dan kuat di kode, di mesin AI KANA (bukan model Alibaba asli)", en: "Chat persona in the style of Qwen3: multilingual and strong at code, on the KANA AI engine (not the real Alibaba model)" },
   usage: ".qwen3",
   example: ".qwen3",
   cooldown: 5,
@@ -15,8 +15,8 @@ export const config = {
 export const i18n = {
   id: {
     "qwen3": {
-      hint: "╭─❏ 🤖 「 *QWEN3* 」\n┊ Tulis pesan atau pertanyaanmu dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.qwen3 halo, apa kabar*\n╰━━━━━━━",
-      thinking: "╭─❏ 🤖 「 *LAGI MIKIR* 」\n┊ Sebentar, mode qwen3 lagi mikir dulu yaa... {mood}\n╰━━━━━━━",
+      hint: "╭─❏ 🤖 「 *QWEN3* 」\n┊ Ini persona bergaya Qwen3 di mesin AI KANA, bukan model Qwen asli dari Alibaba yaa~\n┊ Tulis pesan atau pertanyaanmu dulu.\n┊ ᴄᴏɴᴛᴏʜ: *.qwen3 jelaskan perbedaan let dan const di javascript*\n╰━━━━━━━",
+      thinking: "╭─❏ 🤖 「 *LAGI MIKIR* 」\n┊ Sebentar, persona Qwen3 lagi mikir dulu yaa... {mood}\n╰━━━━━━━",
       fail: "╭─❏ 💦 「 *AI GAGAL MENJAWAB* 」\n┊ Mouu, AI-nya gagal jawab: *{message}*\n┊ Coba lagi sebentar lagi ya~\n╰━━━━━━━",
       notcfg: "╭─❏ ⚙️ 「 *AI BELUM DIKONFIGURASI* 」\n┊ Provider AI belum tersedia di server ini~\n╰━━━━━━━",
       btnReset: "Lupa Percakapan",
@@ -24,8 +24,8 @@ export const i18n = {
   },
   en: {
     "qwen3": {
-      hint: "╭─❏ 🤖 「 *QWEN3* 」\n┊ Write your message or question first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.qwen3 hello, how are you*\n╰━━━━━━━",
-      thinking: "╭─❏ 🤖 「 *THINKING* 」\n┊ One sec, qwen3 mode is thinking... {mood}\n╰━━━━━━━",
+      hint: "╭─❏ 🤖 「 *QWEN3* 」\n┊ This is a Qwen3 styled persona on the KANA AI engine, not the real thing~\n┊ Write your message or question first.\n┊ ᴇxᴀᴍᴘʟᴇ: *.qwen3 explain the difference between let and const in javascript*\n╰━━━━━━━",
+      thinking: "╭─❏ 🤖 「 *THINKING* 」\n┊ One sec, the Qwen3 persona is thinking... {mood}\n╰━━━━━━━",
       fail: "╭─❏ 💦 「 *AI FAILED TO ANSWER* 」\n┊ Mouu, the AI failed to answer: *{message}*\n┊ Please try again in a bit~\n╰━━━━━━━",
       notcfg: "╭─❏ ⚙️ 「 *AI NOT CONFIGURED* 」\n┊ The AI provider is not available on this server~\n╰━━━━━━━",
       btnReset: "Forget Chat",
@@ -33,9 +33,9 @@ export const i18n = {
   },
 }
 
-const PERSONA_ID = "Kamu adalah fitur AI qwen3 di bot WhatsApp KANA. Jawab pertanyaan user dalam Bahasa Indonesia yang ramah, ringkas, dan membantu. Topik fokusmu: qwen3."
-const PERSONA_EN = "You are the qwen3 AI feature of the KANA WhatsApp bot. Answer the user in friendly, concise, helpful English. Your focus topic: qwen3."
-export const test = { input: '.qwen3 halo', expect: /qwen3|pikir|thinking/i }
+const PERSONA_ID = "Kamu adalah persona chat bernama Qwen3 di bot WhatsApp KANA. Kamu BUKAN model Qwen asli dari Alibaba; kamu persona bergaya Qwen3 yang berjalan di mesin AI umum KANA. Jangan pernah mengklaim dirimu model Qwen asli dari Alibaba; bila pengguna bertanya apakah kamu model atau layanan aslinya, jawab jujur bahwa kamu persona bergaya Qwen3 di KANA. Gaya khasmu: multibahasa dan teknis: kuat membantu kode dan istilah teknis, siap menjawab dalam bahasa yang dipakai pengguna. Jawab dalam Bahasa Indonesia yang ramah dan membantu."
+const PERSONA_EN = "You are a chat persona named Qwen3 in the KANA WhatsApp bot. You are NOT the real thing behind that name; you are a Qwen3 styled persona running on the general KANA AI engine. Never claim to be the real model or service; if asked whether you are the real one, honestly say you are a Qwen3 styled persona in KANA. Your signature style: multilingual and technical: strong at helping with code and technical terms, ready to answer in the language the user uses. Answer in friendly, helpful English."
+export const test = { input: '.qwen3 jelaskan perbedaan let dan const di javascript', expect: /persona|bukan|mesin AI KANA/i }
 export async function handler(ctx) {
   const text = (ctx.text || '').trim()
   if (!text) return ctx.reply(ctx.t('qwen3.hint'))

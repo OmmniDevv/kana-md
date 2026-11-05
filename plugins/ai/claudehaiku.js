@@ -5,7 +5,7 @@ export const config = {
   name: "claudehaiku",
   alias: [],
   category: "ai",
-  description: { id: "Fitur claudehaiku versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD claudehaiku feature, rewritten in KANA style" },
+  description: { id: "Persona chat bergaya Claude Haiku: ringkas dan puitis, di mesin AI KANA (bukan model Anthropic asli)", en: "Chat persona in the style of Claude Haiku: concise and poetic, on the KANA AI engine (not the real Anthropic model)" },
   usage: ".claudehaiku",
   example: ".claudehaiku",
   cooldown: 5,
@@ -15,8 +15,8 @@ export const config = {
 export const i18n = {
   id: {
     "claudehaiku": {
-      hint: "╭─❏ 🤖 「 *CLAUDEHAIKU* 」\n┊ Tulis pesan atau pertanyaanmu dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.claudehaiku halo, apa kabar*\n╰━━━━━━━",
-      thinking: "╭─❏ 🤖 「 *LAGI MIKIR* 」\n┊ Sebentar, mode claudehaiku lagi mikir dulu yaa... {mood}\n╰━━━━━━━",
+      hint: "╭─❏ 🤖 「 *CLAUDEHAIKU* 」\n┊ Ini persona bergaya Claude Haiku di mesin AI KANA, bukan model Claude asli dari Anthropic yaa~\n┊ Tulis pesan atau pertanyaanmu dulu.\n┊ ᴄᴏɴᴛᴏʜ: *.claudehaiku jelaskan fotosintesis dengan singkat*\n╰━━━━━━━",
+      thinking: "╭─❏ 🤖 「 *LAGI MIKIR* 」\n┊ Sebentar, persona Claude Haiku lagi mikir dulu yaa... {mood}\n╰━━━━━━━",
       fail: "╭─❏ 💦 「 *AI GAGAL MENJAWAB* 」\n┊ Mouu, AI-nya gagal jawab: *{message}*\n┊ Coba lagi sebentar lagi ya~\n╰━━━━━━━",
       notcfg: "╭─❏ ⚙️ 「 *AI BELUM DIKONFIGURASI* 」\n┊ Provider AI belum tersedia di server ini~\n╰━━━━━━━",
       btnReset: "Lupa Percakapan",
@@ -24,8 +24,8 @@ export const i18n = {
   },
   en: {
     "claudehaiku": {
-      hint: "╭─❏ 🤖 「 *CLAUDEHAIKU* 」\n┊ Write your message or question first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.claudehaiku hello, how are you*\n╰━━━━━━━",
-      thinking: "╭─❏ 🤖 「 *THINKING* 」\n┊ One sec, claudehaiku mode is thinking... {mood}\n╰━━━━━━━",
+      hint: "╭─❏ 🤖 「 *CLAUDEHAIKU* 」\n┊ This is a Claude Haiku styled persona on the KANA AI engine, not the real thing~\n┊ Write your message or question first.\n┊ ᴇxᴀᴍᴘʟᴇ: *.claudehaiku explain photosynthesis briefly*\n╰━━━━━━━",
+      thinking: "╭─❏ 🤖 「 *THINKING* 」\n┊ One sec, the Claude Haiku persona is thinking... {mood}\n╰━━━━━━━",
       fail: "╭─❏ 💦 「 *AI FAILED TO ANSWER* 」\n┊ Mouu, the AI failed to answer: *{message}*\n┊ Please try again in a bit~\n╰━━━━━━━",
       notcfg: "╭─❏ ⚙️ 「 *AI NOT CONFIGURED* 」\n┊ The AI provider is not available on this server~\n╰━━━━━━━",
       btnReset: "Forget Chat",
@@ -33,9 +33,9 @@ export const i18n = {
   },
 }
 
-const PERSONA_ID = "Kamu adalah fitur AI claudehaiku di bot WhatsApp KANA. Jawab pertanyaan user dalam Bahasa Indonesia yang ramah, ringkas, dan membantu. Topik fokusmu: claudehaiku."
-const PERSONA_EN = "You are the claudehaiku AI feature of the KANA WhatsApp bot. Answer the user in friendly, concise, helpful English. Your focus topic: claudehaiku."
-export const test = { input: '.claudehaiku halo', expect: /claudehaiku|pikir|thinking/i }
+const PERSONA_ID = "Kamu adalah persona chat bernama Claude Haiku di bot WhatsApp KANA. Kamu BUKAN model Claude asli dari Anthropic; kamu persona bergaya Claude Haiku yang berjalan di mesin AI umum KANA. Jangan pernah mengklaim dirimu model Claude asli dari Anthropic; bila pengguna bertanya apakah kamu model atau layanan aslinya, jawab jujur bahwa kamu persona bergaya Claude Haiku di KANA. Gaya khasmu: ringkas, jernih, dan puitis; untuk jawaban yang panjang, tutup dengan satu haiku 5-7-5 tentang topiknya. Jawab dalam Bahasa Indonesia yang ramah dan membantu."
+const PERSONA_EN = "You are a chat persona named Claude Haiku in the KANA WhatsApp bot. You are NOT the real thing behind that name; you are a Claude Haiku styled persona running on the general KANA AI engine. Never claim to be the real model or service; if asked whether you are the real one, honestly say you are a Claude Haiku styled persona in KANA. Your signature style: concise, clear, and poetic; for long answers, close with one 5-7-5 haiku about the topic. Answer in friendly, helpful English."
+export const test = { input: '.claudehaiku jelaskan fotosintesis dengan singkat', expect: /persona|bukan|mesin AI KANA/i }
 export async function handler(ctx) {
   const text = (ctx.text || '').trim()
   if (!text) return ctx.reply(ctx.t('claudehaiku.hint'))
