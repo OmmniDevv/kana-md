@@ -14,6 +14,7 @@ import {
   processWebLoginRequests,
   startWebLoginWatcher,
 } from '../src/services/web-login-watcher.js'
+import { parseExpiresAtMs } from '../src/services/expires-at.js'
 import { wibDateString } from '../src/services/user-service.js'
 
 const NOW = Date.parse('2026-11-04T05:00:00Z') // 12:00 WIB
@@ -219,6 +220,69 @@ test('startWebLoginWatcher mengekspor stop dan tick yang bekerja', async () => {
   await watcher.tick(NOW)
   watcher.stop()
   assert.equal(calls.length, 1)
+})
+
+test('parseExpiresAtMs menerima epoch ms dan string ISO', () => {
+  const ms = NOW + WEB_CODE_TTL_MS
+  assert.equal(parseExpiresAtMs(ms), ms)
+  assert.equal(parseExpiresAtMs(String(ms)), ms)
+  assert.equal(parseExpiresAtMs(new Date(ms).toISOString()), ms)
+  assert.equal(parseExpiresAtMs(new Date(ms)), ms)
+  assert.ok(Number.isNaN(parseExpiresAtMs('bukan-tanggal')))
+  assert.ok(Number.isNaN(parseExpiresAtMs(undefined)))
+})
+
+test('watcher mengirim record pending dengan expiresAt ISO yang belum kedaluwarsa', async () => {
+  const storage = memoryStorage()
+  await storage.set(
+    'web_login_requests',
+    DIGITS,
+    pendingRecord('ISO123', { expiresAt: new Date(NOW + WEB_CODE_TTL_MS).toISOString() })
+  )
+  const { session, calls } = fakeSession()
+  const summary = await processWebLoginRequests({ session, storage, now: NOW })
+  assert.equal(summary.sent, 1)
+  assert.equal(summary.expired, 0)
+  assert.equal(calls.length, 1)
+  assert.ok(calls[0].msg.text.includes('ISO123'))
+  const record = await storage.get('web_login_requests', DIGITS)
+  assert.equal(record.status, 'sent')
+  assert.equal('codePlain' in record, false)
+})
+
+test('watcher menghapus record dengan expiresAt ISO yang sudah kedaluwarsa tanpa mengirim', async () => {
+  const storage = memoryStorage()
+  await storage.set(
+    'web_login_requests',
+    DIGITS,
+    pendingRecord('ISOOLD', { expiresAt: new Date(NOW - 1000).toISOString() })
+  )
+  const { session, calls } = fakeSession()
+  const summary = await processWebLoginRequests({ session, storage, now: NOW })
+  assert.equal(summary.sent, 0)
+  assert.equal(summary.expired, 1)
+  assert.equal(calls.length, 0)
+  assert.equal(await storage.get('web_login_requests', DIGITS), undefined)
+})
+
+test('verifyWebCode menerima record dengan expiresAt ISO dan menolak yang ISO kedaluwarsa', async () => {
+  const storage = memoryStorage()
+  const code = 'ISO456'
+  await storage.set('web_login', DIGITS, {
+    codeHash: hashCode(code),
+    expiresAt: new Date(NOW + WEB_CODE_TTL_MS).toISOString(),
+  })
+  const ok = await verifyWebCode(storage, DIGITS, code, { now: NOW + 1000 })
+  assert.deepEqual(ok, { ok: true })
+
+  const storage2 = memoryStorage()
+  await storage2.set('web_login', DIGITS, {
+    codeHash: hashCode(code),
+    expiresAt: new Date(NOW - 1000).toISOString(),
+  })
+  const expired = await verifyWebCode(storage2, DIGITS, code, { now: NOW })
+  assert.deepEqual(expired, { ok: false, reason: 'expired' })
+  assert.equal(await storage2.get('web_login', DIGITS), undefined)
 })
 
 test('formatCodeMessage berisi kode dalam dua bahasa dan tanpa em dash', () => {

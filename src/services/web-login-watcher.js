@@ -2,6 +2,8 @@
 // Kontrak lengkap ada di docs/WEB.md. Ringkasnya:
 // - Web menulis namespace 'web_login_requests', key = digit nomor member,
 //   value { codeHash, codePlain, expiresAt, status: 'pending', attempts }.
+//   expiresAt dari web adalah string ISO; parser di expires-at.js juga
+//   menerima epoch ms supaya record lama tetap berlaku.
 // - Watcher ini memindai record 'pending', mengirim codePlain lewat WhatsApp,
 //   lalu mengubah status menjadi 'sent' dan MENGHAPUS codePlain dari record.
 //   Sesudah terkirim, kode mentah tidak lagi disimpan di mana pun di sisi bot.
@@ -17,6 +19,9 @@
 //   yang memanggil startWebLoginWatcher saat boot, meniru pola scheduler.
 import { logger } from './logger.js'
 import { wibDateString } from './user-service.js'
+import { isExpiredExpiresAt, parseExpiresAtMs } from './expires-at.js'
+
+export { parseExpiresAtMs }
 
 export const REQUESTS_NS = 'web_login_requests'
 export const LIMITS_NS = 'web_login_limits'
@@ -104,7 +109,9 @@ export async function processWebLoginRequests({ session, storage, now } = {}) {
       }
       // Kedaluwarsa (atau expiresAt rusak): hapus record. Lihat komentar
       // di kepala file soal kenapa tidak ada status 'expired'.
-      if (!Number.isFinite(Number(record.expiresAt)) || nowMs >= Number(record.expiresAt)) {
+      // expiresAt dari web berbentuk string ISO, dari bot epoch ms;
+      // helper bersama menerima kedua format.
+      if (isExpiredExpiresAt(record.expiresAt, nowMs)) {
         await storage.delete(REQUESTS_NS, digits)
         summary.expired += 1
         continue

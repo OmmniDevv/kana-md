@@ -1,6 +1,8 @@
 // Layanan kode login web dashboard (jalur cadangan lewat perintah .webcode).
 // Kontrak lengkap ada di docs/WEB.md. Ringkasnya:
 // - Namespace 'web_login', key = digit nomor member, value { codeHash, expiresAt }.
+//   expiresAt boleh epoch ms (bot) atau string ISO (web); parser bersama
+//   di src/services/expires-at.js menerima kedua format.
 // - codeHash adalah sha256 hex dari kode; kode mentah TIDAK PERNAH disimpan
 //   dan TIDAK PERNAH ditulis ke log. Kode hanya dikembalikan ke pemanggil
 //   supaya bisa dibalas ke user lewat chat (.webcode).
@@ -9,6 +11,9 @@
 // - Kode sekali pakai: verifikasi yang cocok menghapus record.
 // - Masa berlaku 10 menit sejak dibuat.
 import { createHash, randomInt, timingSafeEqual } from 'node:crypto'
+import { isExpiredExpiresAt, parseExpiresAtMs } from './expires-at.js'
+
+export { parseExpiresAtMs }
 
 export const WEB_LOGIN_NS = 'web_login'
 export const WEB_CODE_LENGTH = 6
@@ -82,7 +87,7 @@ export async function verifyWebCode(storage, digitsInput, code, { now } = {}) {
   const record = await storage.get(WEB_LOGIN_NS, digits)
   if (!record || typeof record.codeHash !== 'string') return { ok: false, reason: 'none' }
   const nowMs = resolveNow(now)
-  if (!Number.isFinite(Number(record.expiresAt)) || nowMs >= Number(record.expiresAt)) {
+  if (isExpiredExpiresAt(record.expiresAt, nowMs)) {
     await storage.delete(WEB_LOGIN_NS, digits)
     return { ok: false, reason: 'expired' }
   }

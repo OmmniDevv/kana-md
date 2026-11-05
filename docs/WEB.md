@@ -13,7 +13,12 @@ Aturan umum:
 - Nomor selalu ditulis sebagai digit internasional tanpa tanda plus dan
   tanpa akhiran JID, contoh `6281234567890`. Panjang valid 9 sampai 15 digit.
 - Waktu selalu epoch milidetik (angka), kecuali field tanggal yang memakai
-  format `YYYY-MM-DD` zona Asia/Jakarta (WIB).
+  format `YYYY-MM-DD` zona Asia/Jakarta (WIB). Pengecualian terverifikasi
+  2026-11-05: web menulis `expiresAt` record login sebagai string ISO,
+  jadi parser bot (`src/services/expires-at.js`, dipakai watcher dan
+  `web-login.js`) wajib menerima kedua format: epoch ms dan string ISO.
+  Tanpa itu record ISO dianggap NaN, dihapus sebagai kedaluwarsa, dan
+  kode tidak pernah terkirim (bug live 2026-11-05 11:08 WIB).
 - Kode login selalu 6 karakter. Hash kode selalu sha256 hex (64 karakter
   huruf kecil) dari string kode apa adanya, tanpa spasi.
 - Kode mentah tidak pernah ditulis ke log di sisi bot.
@@ -37,7 +42,9 @@ Aturan umum:
      }
      ```
 
-   - `expiresAt` diisi epoch ms saat pembuatan ditambah 10 menit.
+   - `expiresAt` diisi epoch ms saat pembuatan ditambah 10 menit, atau
+     string ISO dari waktu yang sama (format yang ditulis web saat ini);
+     bot menerima keduanya lewat `parseExpiresAtMs`.
    - `status` hanya boleh salah satu dari `pending`, `sent`, `used`.
    - Satu nomor satu record: permintaan baru menimpa record lama.
 
