@@ -1,121 +1,92 @@
-
-import { getProfile } from '../../src/services/user-service.js'
-import { cleanKanaTmp } from '../../src/services/tmp-cleaner.js'
 export const config = {
-  name: "scanplugin",
+  name: 'scanplugin',
   alias: [],
-  category: "owner",
-  description: { id: "Fitur scanplugin versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD scanplugin feature, rewritten in KANA style" },
-  usage: ".scanplugin",
-  example: ".scanplugin",
+  category: 'owner',
+  description: { id: 'Pindai kesehatan registry plugin: total, karantina, plugin tanpa kasus uji atau deskripsi', en: 'Scan plugin registry health: totals, quarantine, plugins without test cases or descriptions' },
+  usage: '.scanplugin',
+  example: '.scanplugin',
   cooldown: 5,
   isOwner: true,
 }
 
 export const i18n = {
   id: {
-    "scanplugin": {
-      body: "╭─❏ 👑 「 *SCANPLUGIN* 」\n┊ {text}\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *GAGAL* 」\n┊ {error}\n╰━━━━━━━",
-      usage: "╭─❏ 👑 「 *SCANPLUGIN* 」\n┊ {text}\n╰━━━━━━━",
+    scanplugin: {
+      header: '╭─❏ 🩺 「 *SCAN PLUGIN* 」\n┊ Plugin termuat: *{plugins}*\n┊ Nama perintah: *{commands}* (utama + alias)\n┊ Kategori: *{categories}*\n┊ Dikarantina loader: *{quarantined}*',
+      quarantinedRow: '┊   ⚠️ {file}: {reason}',
+      noTest: '┊ Tanpa kasus uji ({count}): {names}',
+      noDesc: '┊ Tanpa deskripsi dwibahasa ({count}): {names}',
+      noI18n: '┊ Tanpa ekspor i18n ({count}): {names}',
+      healthy: '┊ ✅ Semua plugin termuat punya kasus uji, deskripsi, dan i18n.',
+      footer: '╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *GAGAL* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
   en: {
-    "scanplugin": {
-      body: "╭─❏ 👑 「 *SCANPLUGIN* 」\n┊ {text}\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *FAILED* 」\n┊ {error}\n╰━━━━━━━",
-      usage: "╭─❏ 👑 「 *SCANPLUGIN* 」\n┊ {text}\n╰━━━━━━━",
+    scanplugin: {
+      header: '╭─❏ 🩺 「 *PLUGIN SCAN* 」\n┊ Loaded plugins: *{plugins}*\n┊ Command names: *{commands}* (primary + aliases)\n┊ Categories: *{categories}*\n┊ Quarantined by loader: *{quarantined}*',
+      quarantinedRow: '┊   ⚠️ {file}: {reason}',
+      noTest: '┊ Missing test cases ({count}): {names}',
+      noDesc: '┊ Missing bilingual descriptions ({count}): {names}',
+      noI18n: '┊ Missing i18n exports ({count}): {names}',
+      healthy: '┊ ✅ Every loaded plugin has a test case, description, and i18n.',
+      footer: '╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *FAILED* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
 }
 
-const ACTION = "searchplugin"
-export const test = { input: '.scanplugin', expect: /scanplugin/i }
+export const test = { input: '.scanplugin', expect: /scan|pindai|plugin/i }
+
+// Ringkasan kesehatan registry murni dari objek registry plugin-loader.
+export function buildScanReport(registry) {
+  const plugins = typeof registry?.list === 'function' ? registry.list() : []
+  const quarantined = Array.isArray(registry?.quarantined) ? registry.quarantined : []
+  const categories = new Set()
+  let commands = 0
+  const noTest = []
+  const noDesc = []
+  const noI18n = []
+  for (const plugin of plugins) {
+    const cfg = plugin?.config ?? {}
+    const name = cfg.name || '(tanpa nama)'
+    categories.add(cfg.category || 'main')
+    commands += 1 + (Array.isArray(cfg.alias) ? cfg.alias.length : 0)
+    if (!plugin?.test?.input) noTest.push(name)
+    if (!cfg.description?.id || !cfg.description?.en) noDesc.push(name)
+    if (!plugin?.i18n) noI18n.push(name)
+  }
+  return {
+    plugins: plugins.length,
+    commands,
+    categories: categories.size,
+    quarantined,
+    noTest,
+    noDesc,
+    noI18n,
+  }
+}
+
 export async function handler(ctx) {
-  const say = (text) => ctx.reply(ctx.t('scanplugin.body', { text }))
-  const arg = (ctx.text || '').trim()
   try {
-    if (ACTION === 'listban') {
-      const keys = await ctx.storage.keys('users')
-      const rows = []
-      for (const k of keys) { if (/^\d+$/.test(k)) { const pr = await getProfile(ctx.storage, k); if (pr.banned) rows.push(k) } }
-      return say(rows.length ? 'User terbanned:\n┊ ' + rows.map((d) => '* ' + d).join('\n┊ ') : 'Tidak ada user yang terbanned.')
+    const report = buildScanReport(ctx.registry)
+    const lines = [ctx.t('scanplugin.header', {
+      plugins: report.plugins,
+      commands: report.commands,
+      categories: report.categories,
+      quarantined: report.quarantined.length,
+    })]
+    for (const q of report.quarantined.slice(0, 10)) {
+      lines.push(ctx.t('scanplugin.quarantinedRow', { file: String(q.file || '').split('/').pop(), reason: q.reason || '' }))
     }
-    if (ACTION === 'listgc') {
-      const groups = await ctx.sock.groupFetchAllParticipating()
-      const rows = Object.values(groups || {})
-      if (!rows.length) return say('Bot belum masuk grup mana pun.')
-      return say('Grup bot (' + rows.length + '):\n┊ ' + rows.slice(0, 30).map((g, i) => (i + 1) + '. *' + (g.subject || g.id) + '* (' + (g.participants?.length ?? 0) + ')').join('\n┊ '))
+    if (report.noTest.length) lines.push(ctx.t('scanplugin.noTest', { count: report.noTest.length, names: report.noTest.slice(0, 15).join(', ') }))
+    if (report.noDesc.length) lines.push(ctx.t('scanplugin.noDesc', { count: report.noDesc.length, names: report.noDesc.slice(0, 15).join(', ') }))
+    if (report.noI18n.length) lines.push(ctx.t('scanplugin.noI18n', { count: report.noI18n.length, names: report.noI18n.slice(0, 15).join(', ') }))
+    if (!report.quarantined.length && !report.noTest.length && !report.noDesc.length && !report.noI18n.length) {
+      lines.push(ctx.t('scanplugin.healthy'))
     }
-    if (ACTION === 'listjadibot') {
-      let keys = []
-      try { keys = await ctx.storage.keys('jadibot') } catch { keys = [] }
-      return say(keys.length ? 'Sesi jadibot tersimpan:\n┊ ' + keys.map((k) => '* ' + k).join('\n┊ ') : 'Tidak ada sesi jadibot tersimpan.')
-    }
-    if (ACTION === 'checkban') {
-      const target = (arg.replace(/\D/g, '') || ctx.senderDigits)
-      const pr = await getProfile(ctx.storage, target)
-      return say('User *' + target + '*: banned = *' + (pr.banned ? 'YA' : 'tidak') + '*, terdaftar = *' + (pr.registered ? 'ya' : 'belum') + '*')
-    }
-    if (ACTION === 'searchplugin') {
-      const all = ctx.registry.list().map((x) => x.config.name)
-      const hits = arg ? all.filter((x) => x.includes(arg.toLowerCase())) : all
-      return say('Plugin (' + hits.length + '/' + all.length + '):\n┊ ' + hits.slice(0, 60).join(', '))
-    }
-    if (ACTION === 'listcmd') {
-      const all = ctx.registry.list()
-      return say('Total *' + all.length + ' plugin utama* dan *' + all.reduce((s, x) => s + 1 + (x.config.alias?.length || 0), 0) + ' nama perintah* (dengan alias).')
-    }
-    if (ACTION === 'sampah') {
-      const r = await cleanKanaTmp()
-      return say('Pembersihan tmp selesai: ' + JSON.stringify(r).slice(0, 300))
-    }
-    if (ACTION === 'backup') {
-      const dump = {}
-      for (const ns of ['users', 'kv', 'groups']) {
-        dump[ns] = {}
-        let keys = []
-        try { keys = await ctx.storage.keys(ns) } catch { keys = [] }
-        for (const k of keys.slice(0, 500)) { try { dump[ns][k] = await ctx.storage.get(ns, k) } catch {} }
-      }
-      const buf = Buffer.from(JSON.stringify(dump, null, 1))
-      await ctx.sock.sendMessage(ctx.chat, { document: buf, fileName: 'kana-backup-' + Date.now() + '.json', mimetype: 'application/json', caption: 'Backup data bot (users, kv, groups)' }, { quoted: ctx.raw })
-      return say('Backup terkirim sebagai dokumen di atas.')
-    }
-    if (ACTION === 'banchat' || ACTION === 'unbanchat') {
-      const target = (ctx.mentionedJids?.[0] || (arg.replace(/\D/g, '') ? arg.replace(/\D/g, '') + '@s.whatsapp.net' : ''))
-      if (!target) return say('Sebut nomor targetnya yaa~')
-      await ctx.sock.updateBlockStatus(target, ACTION === 'banchat' ? 'block' : 'unblock')
-      return say('Status blokir *' + target + '* diperbarui.')
-    }
-    if (ACTION === 'leave') {
-      const jid = arg.includes('@g.us') ? arg : ctx.chat
-      await ctx.sock.groupLeave(jid)
-      return undefined
-    }
-    if (ACTION === 'groupact') {
-      const target = ctx.mentionedJids?.[0] || (arg.replace(/\D/g, '') ? arg.replace(/\D/g, '') + '@s.whatsapp.net' : '')
-      if (!target) return say('Tag atau sebut nomor targetnya yaa~')
-      const mode = 'scanplugin'.includes('kick') ? 'remove' : 'scanplugin'.includes('promote') ? 'promote' : 'scanplugin'.includes('demote') ? 'demote' : 'add'
-      await ctx.sock.groupParticipantsUpdate(ctx.chat, [target], mode)
-      return say('Aksi grup *' + mode + '* untuk *' + target + '* selesai.')
-    }
-    if (ACTION === 'hapususer') {
-      const target = arg.replace(/\D/g, '')
-      if (!target) return say('Sebut nomor targetnya yaa~')
-      await ctx.storage.delete('users', target)
-      return say('Data user *' + target + '* dihapus dari storage bot.')
-    }
-    if (ACTION === 'similarity') {
-      const [a, b] = arg.split('|').map((s) => (s || '').trim().toLowerCase())
-      if (!a || !b) return say('Format: .similarity <teks a>|<teks b>')
-      const grams = (s) => { const m = new Map(); for (let i = 0; i < s.length - 1; i++) m.set(s.slice(i, i + 2), (m.get(s.slice(i, i + 2)) || 0) + 1); return m }
-      const ga = grams(a); const gb = grams(b)
-      let same = 0; for (const [k, v] of ga) same += Math.min(v, gb.get(k) || 0)
-      const score = Math.round((2 * same / Math.max(1, (a.length - 1) + (b.length - 1))) * 100)
-      return say('Kemiripan dua teks itu: *' + score + '%*')
-    }
-    return say('Aksi owner ini siap~')
+    lines.push(ctx.t('scanplugin.footer'))
+    return ctx.reply(lines.join('\n'))
   } catch (err) {
     return ctx.reply(ctx.t('scanplugin.fail', { error: err.message }))
   }

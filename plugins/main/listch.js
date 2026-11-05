@@ -1,30 +1,61 @@
-
 export const config = {
-  name: "listch",
+  name: 'listch',
   alias: [],
-  category: "main",
-  description: { id: "Fitur listch versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD listch feature, rewritten in KANA style" },
-  usage: ".listch",
-  example: ".listch",
+  category: 'main',
+  description: { id: 'Daftar saluran (channel) WhatsApp yang diikuti akun bot', en: 'List of WhatsApp channels followed by the bot account' },
+  usage: '.listch',
+  example: '.listch',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "listch": {
-      body: "╭─❏ 📄 「 *LISTCH* 」\n┊ Fitur listch versi KANA, ditulis ulang gaya KANA.\n┊ Info lengkap bot ada di *.menu* dan katalog web KANA yaa~\n╰━━━━━━━",
-      btnAgain: "listch",
+    listch: {
+      header: '╭─❏ 📣 「 *SALURAN DIIKUTI ({count})* 」',
+      row: '┊ {index}. *{name}*\n┊    {id}',
+      footer: '╰━━━━━━━',
+      empty: '╭─❏ 📣 「 *SALURAN DIIKUTI* 」\n┊ Akun bot belum mengikuti saluran apa pun~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *GAGAL* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
   en: {
-    "listch": {
-      body: "╭─❏ 📄 「 *LISTCH* 」\n┊ The listch feature, KANA edition, rewritten in KANA style.\n┊ Full bot info is in *.menu* and the KANA web catalog~\n╰━━━━━━━",
-      btnAgain: "listch",
+    listch: {
+      header: '╭─❏ 📣 「 *FOLLOWED CHANNELS ({count})* 」',
+      row: '┊ {index}. *{name}*\n┊    {id}',
+      footer: '╰━━━━━━━',
+      empty: '╭─❏ 📣 「 *FOLLOWED CHANNELS* 」\n┊ The bot account does not follow any channel yet~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *FAILED* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
 }
 
-export const test = { input: '.listch', expect: /listch|KANA/i }
+export const test = { input: '.listch', expect: /saluran|channel/i }
+
+const MAX_ROWS = 30
+
+// Nama channel dari metadata newsletter: bentuknya bisa string polos
+// atau objek teks bertingkat, jadi dibaca defensif seperti referensi.
+export function channelName(ch) {
+  let name = ch?.name?.text || ch?.thread_metadata?.name?.text || ch?.name || ch?.thread_metadata?.name || ''
+  if (typeof name !== 'string') name = ''
+  return name.trim() || 'Unknown Channel'
+}
+
 export async function handler(ctx) {
-  return ctx.reply(ctx.t('listch.body'))
+  try {
+    if (typeof ctx.sock?.newsletterSubscribed !== 'function') {
+      return ctx.reply(ctx.t('listch.fail', { error: 'newsletterSubscribed tidak tersedia di library' }))
+    }
+    const res = await ctx.sock.newsletterSubscribed()
+    const channels = Array.isArray(res) ? res.filter((ch) => ch?.id) : []
+    if (!channels.length) return ctx.reply(ctx.t('listch.empty'))
+    const lines = [ctx.t('listch.header', { count: channels.length })]
+    channels.slice(0, MAX_ROWS).forEach((ch, i) => {
+      lines.push(ctx.t('listch.row', { index: i + 1, name: channelName(ch), id: ch.id }))
+    })
+    lines.push(ctx.t('listch.footer'))
+    return ctx.reply(lines.join('\n'))
+  } catch (err) {
+    return ctx.reply(ctx.t('listch.fail', { error: err.message }))
+  }
 }

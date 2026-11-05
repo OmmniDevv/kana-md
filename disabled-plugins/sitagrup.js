@@ -1,38 +1,48 @@
 
+// DINONAKTIFKAN 2026-11-05 (audit templat, klaster owner): perintah ini
+// tadinya klon ACTION="searchplugin" yang cuma membalas daftar nama
+// plugin. Fungsi aslinya di Elaina adalah kudeta grup paksa: demote
+// semua admin, opsi kick semua member, ganti nama dan deskripsi grup.
+// Itu aksi destruktif massal terhadap member dan admin grup pihak
+// lain, jadi TIDAK diimplementasikan di KANA dalam bentuk apa pun dan
+// perintahnya dimatikan permanen, bukan dibiarkan jadi perintah
+// destruktif palsu. Pengelolaan grup yang sah tersedia lewat perintah
+// grup biasa (.promote, .demote, .kick, .setnamegrup, dan kawan
+// kawan). Lihat scratch/fix-owner-main.md.
 import { getProfile } from '../../src/services/user-service.js'
 import { cleanKanaTmp } from '../../src/services/tmp-cleaner.js'
 export const config = {
-  name: "aktifaudiomenu",
+  name: "sitagrup",
   alias: [],
   category: "owner",
-  description: { id: "Toggle audio saat menampilkan menu", en: "KANA version of the Elaina-MD aktifaudiomenu feature, rewritten in KANA style" },
-  usage: ".aktifaudiomenu",
-  example: ".aktifaudiomenu",
+  description: { id: "Sistem pengambilalihan grup (Kudeta)", en: "KANA version of the Elaina-MD sitagrup feature, rewritten in KANA style" },
+  usage: ".sitagrup",
+  example: ".sitagrup",
   cooldown: 5,
   isOwner: true,
 }
 
 export const i18n = {
   id: {
-    "aktifaudiomenu": {
-      body: "╭─❏ 👑 「 *AKTIFAUDIOMENU* 」\n┊ {text}\n╰━━━━━━━",
+    "sitagrup": {
+      body: "╭─❏ 👑 「 *SITAGRUP* 」\n┊ {text}\n╰━━━━━━━",
       fail: "╭─❏ 💦 「 *GAGAL* 」\n┊ {error}\n╰━━━━━━━",
-      usage: "╭─❏ 👑 「 *AKTIFAUDIOMENU* 」\n┊ {text}\n╰━━━━━━━",
+      usage: "╭─❏ 👑 「 *SITAGRUP* 」\n┊ {text}\n╰━━━━━━━",
     },
   },
   en: {
-    "aktifaudiomenu": {
-      body: "╭─❏ 👑 「 *AKTIFAUDIOMENU* 」\n┊ {text}\n╰━━━━━━━",
+    "sitagrup": {
+      body: "╭─❏ 👑 「 *SITAGRUP* 」\n┊ {text}\n╰━━━━━━━",
       fail: "╭─❏ 💦 「 *FAILED* 」\n┊ {error}\n╰━━━━━━━",
-      usage: "╭─❏ 👑 「 *AKTIFAUDIOMENU* 」\n┊ {text}\n╰━━━━━━━",
+      usage: "╭─❏ 👑 「 *SITAGRUP* 」\n┊ {text}\n╰━━━━━━━",
     },
   },
 }
 
 const ACTION = "searchplugin"
-export const test = { input: '.aktifaudiomenu', expect: /aktifaudiomenu/i }
+export const test = { input: '.sitagrup', expect: /sitagrup/i }
 export async function handler(ctx) {
-  const say = (text) => ctx.reply(ctx.t('aktifaudiomenu.body', { text }))
+  const say = (text) => ctx.reply(ctx.t('sitagrup.body', { text }))
   const arg = (ctx.text || '').trim()
   try {
     if (ACTION === 'listban') {
@@ -96,7 +106,7 @@ export async function handler(ctx) {
     if (ACTION === 'groupact') {
       const target = ctx.mentionedJids?.[0] || (arg.replace(/\D/g, '') ? arg.replace(/\D/g, '') + '@s.whatsapp.net' : '')
       if (!target) return say('Tag atau sebut nomor targetnya yaa~')
-      const mode = 'aktifaudiomenu'.includes('kick') ? 'remove' : 'aktifaudiomenu'.includes('promote') ? 'promote' : 'aktifaudiomenu'.includes('demote') ? 'demote' : 'add'
+      const mode = 'sitagrup'.includes('kick') ? 'remove' : 'sitagrup'.includes('promote') ? 'promote' : 'sitagrup'.includes('demote') ? 'demote' : 'add'
       await ctx.sock.groupParticipantsUpdate(ctx.chat, [target], mode)
       return say('Aksi grup *' + mode + '* untuk *' + target + '* selesai.')
     }
@@ -117,6 +127,6 @@ export async function handler(ctx) {
     }
     return say('Aksi owner ini siap~')
   } catch (err) {
-    return ctx.reply(ctx.t('aktifaudiomenu.fail', { error: err.message }))
+    return ctx.reply(ctx.t('sitagrup.fail', { error: err.message }))
   }
 }

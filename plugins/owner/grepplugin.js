@@ -1,121 +1,111 @@
+import { readdir, readFile, stat } from 'node:fs/promises'
+import { dirname, join, relative } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-import { getProfile } from '../../src/services/user-service.js'
-import { cleanKanaTmp } from '../../src/services/tmp-cleaner.js'
+const here = dirname(fileURLToPath(import.meta.url))
+const PLUGINS_DIR = join(here, '..')
+
 export const config = {
-  name: "grepplugin",
+  name: 'grepplugin',
   alias: [],
-  category: "owner",
-  description: { id: "Fitur grepplugin versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD grepplugin feature, rewritten in KANA style" },
-  usage: ".grepplugin",
-  example: ".grepplugin",
+  category: 'owner',
+  description: { id: 'Cari teks di dalam isi kode semua plugin (grep beneran, bukan cuma nama)', en: 'Search text inside the source code of all plugins (a real grep, not just names)' },
+  usage: '.grepplugin <teks>',
+  example: '.grepplugin relayMessage',
   cooldown: 5,
   isOwner: true,
 }
 
 export const i18n = {
   id: {
-    "grepplugin": {
-      body: "╭─❏ 👑 「 *GREPPLUGIN* 」\n┊ {text}\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *GAGAL* 」\n┊ {error}\n╰━━━━━━━",
-      usage: "╭─❏ 👑 「 *GREPPLUGIN* 」\n┊ {text}\n╰━━━━━━━",
+    grepplugin: {
+      header: '╭─❏ 🔍 「 *GREP PLUGIN: {query}* 」\n┊ Dipindai *{scanned} berkas*, ketemu *{total} kecocokan* di *{files} berkas*:',
+      row: '┊ *{file}* ({count}x) · {snippet}',
+      more: '┊ …dan {rest} berkas lainnya',
+      footer: '╰━━━━━━━',
+      none: '╭─❏ 🔍 「 *GREP PLUGIN: {query}* 」\n┊ Tidak ada kecocokan di *{scanned} berkas* plugin~\n╰━━━━━━━',
+      usage: '╭─❏ 🔍 「 *GREPPLUGIN* 」\n┊ Format: *.grepplugin <teks>*\n┊ Contoh: *.grepplugin relayMessage*\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *GAGAL* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
   en: {
-    "grepplugin": {
-      body: "╭─❏ 👑 「 *GREPPLUGIN* 」\n┊ {text}\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *FAILED* 」\n┊ {error}\n╰━━━━━━━",
-      usage: "╭─❏ 👑 「 *GREPPLUGIN* 」\n┊ {text}\n╰━━━━━━━",
+    grepplugin: {
+      header: '╭─❏ 🔍 「 *PLUGIN GREP: {query}* 」\n┊ Scanned *{scanned} files*, found *{total} matches* in *{files} files*:',
+      row: '┊ *{file}* ({count}x) · {snippet}',
+      more: '┊ …and {rest} more files',
+      footer: '╰━━━━━━━',
+      none: '╭─❏ 🔍 「 *PLUGIN GREP: {query}* 」\n┊ No matches in *{scanned} plugin files*~\n╰━━━━━━━',
+      usage: '╭─❏ 🔍 「 *GREPPLUGIN* 」\n┊ Format: *.grepplugin <text>*\n┊ Example: *.grepplugin relayMessage*\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *FAILED* 」\n┊ {error}\n╰━━━━━━━',
     },
   },
 }
 
-const ACTION = "searchplugin"
-export const test = { input: '.grepplugin', expect: /grepplugin/i }
-export async function handler(ctx) {
-  const say = (text) => ctx.reply(ctx.t('grepplugin.body', { text }))
-  const arg = (ctx.text || '').trim()
-  try {
-    if (ACTION === 'listban') {
-      const keys = await ctx.storage.keys('users')
-      const rows = []
-      for (const k of keys) { if (/^\d+$/.test(k)) { const pr = await getProfile(ctx.storage, k); if (pr.banned) rows.push(k) } }
-      return say(rows.length ? 'User terbanned:\n┊ ' + rows.map((d) => '* ' + d).join('\n┊ ') : 'Tidak ada user yang terbanned.')
+export const test = { input: '.grepplugin relayMessage', expect: /relayMessage/i }
+
+const MAX_ROWS = 15
+
+async function collectJsFiles(dir) {
+  const out = []
+  for (const entry of await readdir(dir)) {
+    const full = join(dir, entry)
+    const info = await stat(full).catch(() => null)
+    if (!info) continue
+    if (info.isDirectory()) out.push(...(await collectJsFiles(full)))
+    else if (entry.endsWith('.js')) out.push(full)
+  }
+  return out
+}
+
+// Grep substring case-insensitive ke semua berkas plugin.
+// Mengembalikan { scanned, total, hits: [{ file, count, snippet }] }.
+export async function grepPlugins(query, dir = PLUGINS_DIR) {
+  const needle = String(query || '').toLowerCase()
+  const files = await collectJsFiles(dir)
+  const hits = []
+  let total = 0
+  for (const file of files) {
+    let content = ''
+    try {
+      content = await readFile(file, 'utf8')
+    } catch {
+      continue
     }
-    if (ACTION === 'listgc') {
-      const groups = await ctx.sock.groupFetchAllParticipating()
-      const rows = Object.values(groups || {})
-      if (!rows.length) return say('Bot belum masuk grup mana pun.')
-      return say('Grup bot (' + rows.length + '):\n┊ ' + rows.slice(0, 30).map((g, i) => (i + 1) + '. *' + (g.subject || g.id) + '* (' + (g.participants?.length ?? 0) + ')').join('\n┊ '))
-    }
-    if (ACTION === 'listjadibot') {
-      let keys = []
-      try { keys = await ctx.storage.keys('jadibot') } catch { keys = [] }
-      return say(keys.length ? 'Sesi jadibot tersimpan:\n┊ ' + keys.map((k) => '* ' + k).join('\n┊ ') : 'Tidak ada sesi jadibot tersimpan.')
-    }
-    if (ACTION === 'checkban') {
-      const target = (arg.replace(/\D/g, '') || ctx.senderDigits)
-      const pr = await getProfile(ctx.storage, target)
-      return say('User *' + target + '*: banned = *' + (pr.banned ? 'YA' : 'tidak') + '*, terdaftar = *' + (pr.registered ? 'ya' : 'belum') + '*')
-    }
-    if (ACTION === 'searchplugin') {
-      const all = ctx.registry.list().map((x) => x.config.name)
-      const hits = arg ? all.filter((x) => x.includes(arg.toLowerCase())) : all
-      return say('Plugin (' + hits.length + '/' + all.length + '):\n┊ ' + hits.slice(0, 60).join(', '))
-    }
-    if (ACTION === 'listcmd') {
-      const all = ctx.registry.list()
-      return say('Total *' + all.length + ' plugin utama* dan *' + all.reduce((s, x) => s + 1 + (x.config.alias?.length || 0), 0) + ' nama perintah* (dengan alias).')
-    }
-    if (ACTION === 'sampah') {
-      const r = await cleanKanaTmp()
-      return say('Pembersihan tmp selesai: ' + JSON.stringify(r).slice(0, 300))
-    }
-    if (ACTION === 'backup') {
-      const dump = {}
-      for (const ns of ['users', 'kv', 'groups']) {
-        dump[ns] = {}
-        let keys = []
-        try { keys = await ctx.storage.keys(ns) } catch { keys = [] }
-        for (const k of keys.slice(0, 500)) { try { dump[ns][k] = await ctx.storage.get(ns, k) } catch {} }
+    const lower = content.toLowerCase()
+    let count = 0
+    let idx = lower.indexOf(needle)
+    let firstLine = ''
+    while (idx !== -1) {
+      count += 1
+      if (!firstLine) {
+        const start = content.lastIndexOf('\n', idx) + 1
+        const end = content.indexOf('\n', idx)
+        firstLine = content.slice(start, end === -1 ? undefined : end).trim().slice(0, 80)
       }
-      const buf = Buffer.from(JSON.stringify(dump, null, 1))
-      await ctx.sock.sendMessage(ctx.chat, { document: buf, fileName: 'kana-backup-' + Date.now() + '.json', mimetype: 'application/json', caption: 'Backup data bot (users, kv, groups)' }, { quoted: ctx.raw })
-      return say('Backup terkirim sebagai dokumen di atas.')
+      idx = lower.indexOf(needle, idx + needle.length)
     }
-    if (ACTION === 'banchat' || ACTION === 'unbanchat') {
-      const target = (ctx.mentionedJids?.[0] || (arg.replace(/\D/g, '') ? arg.replace(/\D/g, '') + '@s.whatsapp.net' : ''))
-      if (!target) return say('Sebut nomor targetnya yaa~')
-      await ctx.sock.updateBlockStatus(target, ACTION === 'banchat' ? 'block' : 'unblock')
-      return say('Status blokir *' + target + '* diperbarui.')
+    if (count) {
+      total += count
+      hits.push({ file: relative(PLUGINS_DIR, file), count, snippet: firstLine })
     }
-    if (ACTION === 'leave') {
-      const jid = arg.includes('@g.us') ? arg : ctx.chat
-      await ctx.sock.groupLeave(jid)
-      return undefined
+  }
+  hits.sort((a, b) => b.count - a.count)
+  return { scanned: files.length, total, hits }
+}
+
+export async function handler(ctx) {
+  const query = (ctx.text || '').trim()
+  if (!query) return ctx.reply(ctx.t('grepplugin.usage'))
+  try {
+    const { scanned, total, hits } = await grepPlugins(query)
+    if (!hits.length) return ctx.reply(ctx.t('grepplugin.none', { query, scanned }))
+    const lines = [ctx.t('grepplugin.header', { query, scanned, total, files: hits.length })]
+    for (const hit of hits.slice(0, MAX_ROWS)) {
+      lines.push(ctx.t('grepplugin.row', { file: hit.file, count: hit.count, snippet: hit.snippet }))
     }
-    if (ACTION === 'groupact') {
-      const target = ctx.mentionedJids?.[0] || (arg.replace(/\D/g, '') ? arg.replace(/\D/g, '') + '@s.whatsapp.net' : '')
-      if (!target) return say('Tag atau sebut nomor targetnya yaa~')
-      const mode = 'grepplugin'.includes('kick') ? 'remove' : 'grepplugin'.includes('promote') ? 'promote' : 'grepplugin'.includes('demote') ? 'demote' : 'add'
-      await ctx.sock.groupParticipantsUpdate(ctx.chat, [target], mode)
-      return say('Aksi grup *' + mode + '* untuk *' + target + '* selesai.')
-    }
-    if (ACTION === 'hapususer') {
-      const target = arg.replace(/\D/g, '')
-      if (!target) return say('Sebut nomor targetnya yaa~')
-      await ctx.storage.delete('users', target)
-      return say('Data user *' + target + '* dihapus dari storage bot.')
-    }
-    if (ACTION === 'similarity') {
-      const [a, b] = arg.split('|').map((s) => (s || '').trim().toLowerCase())
-      if (!a || !b) return say('Format: .similarity <teks a>|<teks b>')
-      const grams = (s) => { const m = new Map(); for (let i = 0; i < s.length - 1; i++) m.set(s.slice(i, i + 2), (m.get(s.slice(i, i + 2)) || 0) + 1); return m }
-      const ga = grams(a); const gb = grams(b)
-      let same = 0; for (const [k, v] of ga) same += Math.min(v, gb.get(k) || 0)
-      const score = Math.round((2 * same / Math.max(1, (a.length - 1) + (b.length - 1))) * 100)
-      return say('Kemiripan dua teks itu: *' + score + '%*')
-    }
-    return say('Aksi owner ini siap~')
+    if (hits.length > MAX_ROWS) lines.push(ctx.t('grepplugin.more', { rest: hits.length - MAX_ROWS }))
+    lines.push(ctx.t('grepplugin.footer'))
+    return ctx.reply(lines.join('\n'))
   } catch (err) {
     return ctx.reply(ctx.t('grepplugin.fail', { error: err.message }))
   }
