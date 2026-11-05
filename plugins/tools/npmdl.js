@@ -1,80 +1,80 @@
+import { downloadBuffer } from '../../src/scrapers/runner.js'
+import { sendDocument } from '../../src/ui/media.js'
 
 export const config = {
-  name: "npmdl",
+  name: 'npmdl',
   alias: [],
-  category: "tools",
-  description: { id: "Download package NPM dalam format tarball .tgz", en: "KANA version of the Elaina-MD npmdl feature, rewritten in KANA style" },
-  usage: ".npmdl",
-  example: ".npmdl",
-  cooldown: 5,
+  category: 'tools',
+  description: { id: 'Unduh paket npm sebagai berkas tarball .tgz dari registry npm resmi dan kirim sebagai dokumen', en: 'Download an npm package as a .tgz tarball from the official npm registry and send it as a document' },
+  usage: '.npmdl <nama paket>',
+  example: '.npmdl express',
+  cooldown: 10,
 }
 
 export const i18n = {
   id: {
-    "npmdl": {
-      hint: "╭─❏ 🔍 「 *NPMDL* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.npmdl kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    npmdl: {
+      hint: '╭─❏ 📦 「 *UNDUH NPM* 」\n┊ Tulis nama paket npmnya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.npmdl express*\n╰━━━━━━━',
+      notfound: '╭─❏ 🔍 「 *PAKET TIDAK KETEMU* 」\n┊ Mouu, paket *{q}* tidak ada di registry npm~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *GAGAL* 」\n┊ Mouu, gagal unduh paket: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      caption: '╭─❏ 📦 「 *{name}@{version}* 」\n┊ ᴛᴀʀʙᴀʟʟ ʀᴇꜱᴍɪ ᴅᴀʀɪ ʀᴇɢɪꜱᴛʀʏ ɴᴘᴍ ({size})\n┊ {desc}\n╰━━━━━━━',
+      toolarge: '╭─❏ 📦 「 *{name}@{version}* 」\n┊ Tarballnya kegedean buat dikirim lewat chat ({size}).\n┊ ᴜɴᴅᴜʜ ʟᴀɴɢꜱᴜɴɢ: {url}\n╰━━━━━━━',
+      badfile: '╭─❏ 💦 「 *BERKAS TIDAK VALID* 」\n┊ Berkas dari registry bukan tarball gzip yang valid, jadi tidak dikirim.\n┊ ᴛᴀᴜᴛᴀɴ ʀᴇꜱᴍɪ: {url}\n╰━━━━━━━',
     },
   },
   en: {
-    "npmdl": {
-      hint: "╭─❏ 🔍 「 *NPMDL* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.npmdl keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    npmdl: {
+      hint: '╭─❏ 📦 「 *NPM DOWNLOAD* 」\n┊ Write the npm package name first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.npmdl express*\n╰━━━━━━━',
+      notfound: '╭─❏ 🔍 「 *PACKAGE NOT FOUND* 」\n┊ Mouu, package *{q}* does not exist on the npm registry~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *FAILED* 」\n┊ Mouu, failed to download the package: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      caption: '╭─❏ 📦 「 *{name}@{version}* 」\n┊ ᴏꜰꜰɪᴄɪᴀʟ ᴛᴀʀʙᴀʟʟ ꜰʀᴏᴍ ᴛʜᴇ ɴᴘᴍ ʀᴇɢɪꜱᴛʀʏ ({size})\n┊ {desc}\n╰━━━━━━━',
+      toolarge: '╭─❏ 📦 「 *{name}@{version}* 」\n┊ The tarball is too large to send in chat ({size}).\n┊ ᴅᴏᴡɴʟᴏᴀᴅ ᴅɪʀᴇᴄᴛʟʏ: {url}\n╰━━━━━━━',
+      badfile: '╭─❏ 💦 「 *INVALID FILE* 」\n┊ The registry file is not a valid gzip tarball, so it was not sent.\n┊ ᴏꜰꜰɪᴄɪᴀʟ ʟɪɴᴋ: {url}\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "npm"
-export const test = { input: '.npmdl express', expect: /.+/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.npmdl express', expect: /express|tgz|tarball/i }
+
+const MAX_SEND = 12 * 1024 * 1024
+
+export function formatSize(bytes) {
+  if (!bytes && bytes !== 0) return '-'
+  if (bytes < 1024) return bytes + ' B'
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
+  return (bytes / 1024 / 1024).toFixed(2) + ' MB'
 }
+
+export function isGzip(buf) {
+  return Boolean(buf) && buf.length > 2 && buf[0] === 0x1f && buf[1] === 0x8b
+}
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
+  const q = (ctx.text || '').trim().split(/\s+/)[0]
   if (!q) return ctx.reply(ctx.t('npmdl.hint'))
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('npmdl.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('npmdl.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('npmdl.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('npmdl.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('npmdl.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('npmdl.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
+    const res = await fetch('https://registry.npmjs.org/' + encodeURIComponent(q), {
+      signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot', Accept: 'application/json' },
+    })
+    if (res.status === 404) return ctx.reply(ctx.t('npmdl.notfound', { q }))
+    if (!res.ok) throw new Error('Registry balas HTTP ' + res.status)
+    const meta = await res.json()
+    const version = meta['dist-tags']?.latest
+    const ver = meta.versions?.[version]
+    const tarball = ver?.dist?.tarball
+    if (!version || !tarball) return ctx.reply(ctx.t('npmdl.notfound', { q }))
+    let buf
     try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('npmdl.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('npmdl.notfound', { q }))
-    return ctx.reply(ctx.t('npmdl.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+      buf = (await downloadBuffer(tarball, { maxBytes: MAX_SEND })).buffer
+    } catch {
+      return ctx.reply(ctx.t('npmdl.toolarge', { name: meta.name || q, version, size: '> ' + formatSize(MAX_SEND), url: tarball }))
+    }
+    if (!isGzip(buf)) return ctx.reply(ctx.t('npmdl.badfile', { url: tarball }))
+    const caption = ctx.t('npmdl.caption', {
+      name: meta.name || q, version, size: formatSize(buf.length),
+      desc: ver.description || meta.description || '-',
+    })
+    return await sendDocument(ctx, buf, { fileName: (meta.name || q).replace(/[@/]/g, '_') + '-' + version + '.tgz', mimetype: 'application/gzip', caption })
   } catch (err) {
     return ctx.reply(ctx.t('npmdl.fail', { message: err.message }))
   }

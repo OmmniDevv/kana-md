@@ -1,80 +1,58 @@
+import { tiktokProfile } from '../../src/scrapers/kindb/social.js'
 
 export const config = {
-  name: "cektiktok",
+  name: 'cektiktok',
   alias: [],
-  category: "tools",
-  description: { id: "Cek informasi akun TikTok (terdaftar atau manual)", en: "KANA version of the Elaina-MD cektiktok feature, rewritten in KANA style" },
-  usage: ".cektiktok",
-  example: ".cektiktok",
-  cooldown: 5,
+  category: 'tools',
+  description: { id: 'Cek info akun TikTok publik: ID, nama, pengikut, mengikuti, video, dan suka. Tanpa argumen memakai username yang kamu daftarkan lewat .daftartiktok', en: 'Check public TikTok account info: ID, name, followers, following, videos, and likes. Without an argument it uses the username you registered via .daftartiktok' },
+  usage: '.cektiktok [username]',
+  example: '.cektiktok tiktok',
+  cooldown: 8,
 }
 
 export const i18n = {
   id: {
-    "cektiktok": {
-      hint: "╭─❏ 🔍 「 *CEKTIKTOK* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.cektiktok kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    cektiktok: {
+      hint: '╭─❏ 🎵 「 *CEK TIKTOK* 」\n┊ Tulis username TikToknya yaa, contoh: *.cektiktok tiktok*\n┊ Atau daftarkan dulu punyamu lewat *.daftartiktok <username>*\n╰━━━━━━━',
+      notfound: '╭─❏ 🔍 「 *AKUN TIDAK KETEMU* 」\n┊ Mouu, akun TikTok *{q}* tidak ketemu atau profilnya tidak publik~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *GAGAL* 」\n┊ Mouu, gagal cek TikTok: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      card: '╭─❏ 🎵 「 *{nickname}* 」\n┊ ᴜꜱᴇʀɴᴀᴍᴇ: *@{username}*\n┊ ɪᴅ: *{id}*\n┊ ᴘᴇɴɢɪᴋᴜᴛ: *{followers}*\n┊ ᴍᴇɴɢɪᴋᴜᴛɪ: *{following}*\n┊ ᴠɪᴅᴇᴏ: *{videos}*\n┊ ꜱᴜᴋᴀ: *{hearts}*\n┊ ᴛᴇʀᴠᴇʀɪꜰɪᴋᴀꜱɪ: *{verified}*\n┊ ᴘʀᴏꜰɪʟ: {url}\n╰━━━━━━━',
+      yes: 'Ya',
+      no: 'Tidak',
     },
   },
   en: {
-    "cektiktok": {
-      hint: "╭─❏ 🔍 「 *CEKTIKTOK* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.cektiktok keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    cektiktok: {
+      hint: '╭─❏ 🎵 「 *CHECK TIKTOK* 」\n┊ Write the TikTok username, example: *.cektiktok tiktok*\n┊ Or register yours first via *.daftartiktok <username>*\n╰━━━━━━━',
+      notfound: '╭─❏ 🔍 「 *ACCOUNT NOT FOUND* 」\n┊ Mouu, TikTok account *{q}* was not found or its profile is not public~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *FAILED* 」\n┊ Mouu, failed to check TikTok: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      card: '╭─❏ 🎵 「 *{nickname}* 」\n┊ ᴜꜱᴇʀɴᴀᴍᴇ: *@{username}*\n┊ ɪᴅ: *{id}*\n┊ ꜰᴏʟʟᴏᴡᴇʀꜱ: *{followers}*\n┊ ꜰᴏʟʟᴏᴡɪɴɢ: *{following}*\n┊ ᴠɪᴅᴇᴏꜱ: *{videos}*\n┊ ʟɪᴋᴇꜱ: *{hearts}*\n┊ ᴠᴇʀɪꜰɪᴇᴅ: *{verified}*\n┊ ᴘʀᴏꜰɪʟᴇ: {url}\n╰━━━━━━━',
+      yes: 'Yes',
+      no: 'No',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.cektiktok indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
+export const test = { input: '.cektiktok tiktok', expect: /@tiktok|TikTok|Pengikut|Followers/i }
+
+const fmt = (n) => (typeof n === 'number' ? n.toLocaleString('id-ID') : '-')
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
+  let q = (ctx.text || '').trim().replace(/^@/, '')
+  if (!q && ctx.storage && ctx.senderDigits) {
+    const saved = await ctx.storage.get('tiktok', ctx.senderDigits).catch(() => null)
+    if (saved?.username) q = saved.username
+  }
   if (!q) return ctx.reply(ctx.t('cektiktok.hint'))
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('cektiktok.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('cektiktok.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('cektiktok.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('cektiktok.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('cektiktok.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('cektiktok.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('cektiktok.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('cektiktok.notfound', { q }))
-    return ctx.reply(ctx.t('cektiktok.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    const p = await tiktokProfile(q)
+    if (!p) return ctx.reply(ctx.t('cektiktok.notfound', { q }))
+    return ctx.reply(ctx.t('cektiktok.card', {
+      nickname: p.nickname, username: p.uniqueId, id: p.id || '-',
+      followers: fmt(p.followers), following: fmt(p.following), videos: fmt(p.videos), hearts: fmt(p.hearts),
+      verified: p.verified ? ctx.t('cektiktok.yes') : ctx.t('cektiktok.no'),
+      url: p.url,
+    }))
   } catch (err) {
     return ctx.reply(ctx.t('cektiktok.fail', { message: err.message }))
   }
