@@ -132,6 +132,21 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
     const key = raw.key ?? {}
     const chat = key.remoteJid
     if (!chat || chat === 'status@broadcast' || key.fromMe) return
+    // Dedupe id pesan: WhatsApp bisa mengirim ulang pesan yang sama
+    // sesudah reconnect, misalnya pesan yang diproses harness livetest
+    // tepat sebelum service produksi naik lagi. Tanpa dedupe, satu
+    // perintah user dibalas dua kali (kasus .wiki 2026-11-05 17:54).
+    // Catatan disimpan di storage bersama supaya instance mana pun yang
+    // memproses pertama menahan pemrosesan berikutnya.
+    if (key.id) {
+      const now = Date.now()
+      const seen = ((await storage.get('dedup', chat)) ?? []).filter(
+        (e) => e && now - e.at < 30 * 60000
+      )
+      if (seen.some((e) => e.id === key.id)) return
+      seen.push({ id: key.id, at: now })
+      await storage.set('dedup', chat, seen.slice(-80))
+    }
     const isGroup = chat.endsWith('@g.us')
     const sender = (isGroup ? key.participant : chat) || chat
     const senderAlt = (isGroup ? key.participantAlt : key.remoteJidAlt) || ''

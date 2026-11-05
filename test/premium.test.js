@@ -170,12 +170,13 @@ function setupPipeline({ plugins = [], storage = memoryStorage() } = {}) {
   return { pipeline, sock, sent, storage }
 }
 
+let rawSeq = 0
 const rawText = (text, { group = false, sender = '628123@s.whatsapp.net', chat } = {}) => ({
   key: {
     remoteJid: chat ?? (group ? '120363@g.us' : '628123@s.whatsapp.net'),
     participant: group ? sender : undefined,
     fromMe: false,
-    id: 'x1',
+    id: `x${++rawSeq}`,
   },
   pushName: 'Senpai',
   message: { conversation: text },

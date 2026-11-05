@@ -33,12 +33,13 @@ function setup({ plugins = [], befores = [], storage = memoryStorage(), sockExtr
   return { pipeline, sock, sent, storage }
 }
 
-const rawText = (text, { group = false, sender = '628123@s.whatsapp.net' } = {}) => ({
+let rawSeq = 0
+const rawText = (text, { group = false, sender = '628123@s.whatsapp.net', id = null } = {}) => ({
   key: {
     remoteJid: group ? '120363@g.us' : '628123@s.whatsapp.net',
     participant: group ? sender : undefined,
     fromMe: false,
-    id: 'x1',
+    id: id ?? `x${++rawSeq}`,
   },
   pushName: 'Senpai',
   message: { conversation: text },
@@ -112,6 +113,25 @@ test('pengguna terbanned diam tanpa balasan, mode self diam untuk non-owner', as
   ownerRaw.key.remoteJid = '628999@s.whatsapp.net'
   await b.pipeline.handle(b.sock, ownerRaw)
   assert.equal(handled, 1)
+})
+
+test('dedupe: pesan dengan id sama hanya diproses sekali, termasuk lintas instance', async () => {
+  let handled = 0
+  const ping = { config: { name: 'ping', cooldown: 0 }, handler: async () => { handled += 1 } }
+  const storage = memoryStorage()
+  const a = setup({ plugins: [ping], storage })
+  const raw = rawText('.ping', { id: 'dup-1' })
+  await a.pipeline.handle(a.sock, raw)
+  await a.pipeline.handle(a.sock, raw)
+  assert.equal(handled, 1)
+  // Instance kedua (mis. service produksi sesudah harness) memakai storage
+  // yang sama: pengiriman ulang pesan yang sama harus ditahan juga.
+  const b = setup({ plugins: [ping], storage })
+  await b.pipeline.handle(b.sock, raw)
+  assert.equal(handled, 1)
+  // Id berbeda tetap diproses normal.
+  await b.pipeline.handle(b.sock, rawText('.ping', { id: 'dup-2' }))
+  assert.equal(handled, 2)
 })
 
 test('perintah sukses memberi XP ke profil pengguna', async () => {
