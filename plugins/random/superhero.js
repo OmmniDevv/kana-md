@@ -55,7 +55,7 @@ export function formatHero(t, hero) {
   const aliases = Array.isArray(bio.aliases) ? bio.aliases.filter((a) => a && a !== '-') : []
   return t('superhero.caption', {
     name: dash(hero.name),
-    fullName: dash(bio['full-name']),
+    fullName: dash(bio.fullName ?? bio['full-name']),
     alignment: dash(bio.alignment),
     publisher: dash(bio.publisher),
     intelligence: dash(stats.intelligence),
@@ -68,8 +68,8 @@ export function formatHero(t, hero) {
     race: dash(app.race),
     height: listJoin(app.height),
     weight: listJoin(app.weight),
-    eyes: dash(app['eye-color']),
-    hair: dash(app['hair-color']),
+    eyes: dash(app.eyeColor ?? app['eye-color']),
+    hair: dash(app.hairColor ?? app['hair-color']),
     aliases: aliases.length ? aliases.slice(0, 5).join(', ') : '-',
     occupation: dash(work.occupation),
     base: dash(work.base),
@@ -82,9 +82,31 @@ export function formatHero(t, hero) {
 // 120 detik pada tes live 2026-11-05 (GAGAL timeout 2x di irisan P1,
 // padahal dataset dan gambarnya sendiri menjawab dalam 1-2 detik saat
 // diprobe manual). Buffer yang gagal diunduh jatuh ke teks tombol.
+// URL gambar dataset menunjuk cdn.jsdelivr.net, yang terbukti
+// menggantung dari Node fetch di VM ini (probe 2026-11-05: timeout
+// 15 detik), sementara akabab.github.io menyajikan berkas yang sama
+// persis dalam 1-2 detik; jadi URL jsdelivr dicerminkan ke github.io
+// lebih dulu, URL asli jadi cadangan terakhir.
+export function heroImageMirror(url) {
+  return String(url).replace(
+    'https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/',
+    'https://akabab.github.io/superhero-api/',
+  )
+}
+
 export async function fetchHeroImage(url) {
-  const { buffer } = await downloadBuffer(url, { maxBytes: 8 * 1024 * 1024, timeout: 20000 })
-  return buffer
+  const mirror = heroImageMirror(url)
+  const candidates = mirror === String(url) ? [url] : [mirror, url]
+  let lastErr = null
+  for (const candidate of candidates) {
+    try {
+      const { buffer } = await downloadBuffer(candidate, { maxBytes: 8 * 1024 * 1024, timeout: 20000 })
+      return buffer
+    } catch (err) {
+      lastErr = err
+    }
+  }
+  throw lastErr
 }
 
 export async function handler(ctx, { fetchHero = findHero, fetchImage = fetchHeroImage } = {}) {

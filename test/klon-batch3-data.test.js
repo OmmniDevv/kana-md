@@ -40,6 +40,7 @@ import {
   i18n as superheroI18n,
   handler as superheroHandler,
   formatHero,
+  heroImageMirror,
   test as superheroTest,
 } from '../plugins/random/superhero.js'
 import { parseMeme, getRandomMeme } from '../src/scrapers/random/meme.js'
@@ -304,8 +305,8 @@ const HEROES = [
   {
     name: 'Batman',
     powerstats: { intelligence: 100, strength: 26, speed: 27, durability: 50, power: 47, combat: 100 },
-    appearance: { gender: 'Male', race: 'Human', height: ['6\'2', '188 cm'], weight: ['210 lb', '95 kg'], 'eye-color': 'Blue', 'hair-color': 'Black' },
-    biography: { 'full-name': 'Bruce Wayne', aliases: ['Insider', 'Matches Malone'], alignment: 'good', publisher: 'DC Comics' },
+    appearance: { gender: 'Male', race: 'Human', height: ['6\'2', '188 cm'], weight: ['210 lb', '95 kg'], eyeColor: 'Blue', hairColor: 'Black' },
+    biography: { fullName: 'Bruce Wayne', aliases: ['Insider', 'Matches Malone'], alignment: 'good', publisher: 'DC Comics' },
     work: { occupation: 'Businessman', base: 'Batcave' },
     connections: { 'group-affiliation': 'Justice League' },
     images: { sm: 'https://cdn.example/batman-sm.jpg', md: 'https://cdn.example/batman-md.jpg', lg: 'https://cdn.example/batman-lg.jpg' },
@@ -339,6 +340,14 @@ test('superhero: formatHero mengikuti susunan Elaina lengkap', () => {
   assert.match(body, /Insider, Matches Malone/)
   assert.match(body, /Batcave/)
   assert.ok(superheroTest.expect.test(body))
+})
+
+test('superhero: URL gambar jsdelivr dicerminkan ke akabab.github.io', () => {
+  assert.equal(
+    heroImageMirror('https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/md/69-batman.jpg'),
+    'https://akabab.github.io/superhero-api/api/images/md/69-batman.jpg',
+  )
+  assert.equal(heroImageMirror('https://example.com/a.jpg'), 'https://example.com/a.jpg')
 })
 
 test('superhero: handler mengirim gambar md plus caption statistik lewat stub', async () => {
