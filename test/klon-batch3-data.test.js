@@ -344,11 +344,37 @@ test('superhero: formatHero mengikuti susunan Elaina lengkap', () => {
 test('superhero: handler mengirim gambar md plus caption statistik lewat stub', async () => {
   const { sock, sent } = fakeSock()
   const { ctx } = fakeCtx(sock, { text: 'batman' })
-  await superheroHandler(ctx, { fetchHero: async () => HEROES[0] })
+  const imgBuf = Buffer.concat([JPEG_MAGIC, Buffer.from([0xe0, 9, 9, 9])])
+  const seenUrls = []
+  await superheroHandler(ctx, {
+    fetchHero: async () => HEROES[0],
+    fetchImage: async (url) => { seenUrls.push(url); return imgBuf },
+  })
+  assert.deepEqual(seenUrls, ['https://cdn.example/batman-md.jpg'])
   assert.equal(sent.length, 1)
-  assert.deepEqual(sent[0].content.image, { url: 'https://cdn.example/batman-md.jpg' })
+  assert.deepEqual(sent[0].content.image, imgBuf)
   assert.match(sent[0].content.caption, /SUPERHERO INFO/)
   assert.match(sent[0].content.caption, /Bruce Wayne/)
+})
+
+test('superhero: gambar gagal diunduh jatuh ke teks statistik, bukan menggantung', async () => {
+  const relayed = []
+  const { sock, sent } = fakeSock({
+    withRelay: false,
+    relayMessage: async (jid, msg) => { relayed.push(msg); return {} },
+  })
+  const { ctx, replies } = fakeCtx(sock, { text: 'batman' })
+  await superheroHandler(ctx, {
+    fetchHero: async () => HEROES[0],
+    fetchImage: async () => { throw new Error('Unduh gagal: HTTP 503') },
+  })
+  const allText = [
+    ...replies,
+    ...sent.map((s) => JSON.stringify(s.content)),
+    ...relayed.map((m) => JSON.stringify(m)),
+  ].join('\n')
+  assert.match(allText, /SUPERHERO INFO/)
+  assert.match(allText, /Bruce Wayne/)
 })
 
 test('superhero: handler jujur bila hero tidak ditemukan dan bila tanpa nama', async () => {

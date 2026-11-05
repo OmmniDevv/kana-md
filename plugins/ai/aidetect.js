@@ -1,8 +1,13 @@
 // Deteksi gambar AI via ZeroGPT aiImageDetect.
 // Diadaptasi dari snippet "Ai image detector" by FruatreMaou (kiriman user 2026-11-05),
 // ditulis ulang gaya KANA (multipart manual tanpa form-data, input URL atau gambar kutipan).
+// ZeroGPT terbukti flaky dari VM ini (probe 2026-11-05): kadang membalas
+// HTTP 200 dengan success:false "Unable to verify content moderation",
+// kadang menggantung lama (GAGAL timeout 120 detik di irisan P2). Karena
+// itu panggilan dibatasi 40 detik, dicoba sampai 2 kali, dan payload
+// success:false diperlakukan sebagai kegagalan layanan, bukan hasil.
 import axios from 'axios'
-import { downloadBuffer } from '../../src/scrapers/runner.js'
+import { downloadBuffer, sleep } from '../../src/scrapers/runner.js'
 
 export const config = {
   name: "aidetect",
@@ -36,13 +41,7 @@ export const i18n = {
   },
 }
 
-export async function detectAiImage(buffer, filename = 'image.jpg', mimeType = 'image/jpeg') {
-  if (buffer.length < 1024) throw new Error('file terlalu kecil (minimal 1 KB)')
-  if (buffer.length > 10 * 1024 * 1024) throw new Error('file terlalu besar (maksimal 10 MB)')
-  const boundary = '----KanaFormBoundary' + Date.now().toString(16)
-  const head = Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${filename}"\r\nContent-Type: ${mimeType}\r\n\r\n`)
-  const tail = Buffer.from(`\r\n--${boundary}--\r\n`)
-  const body = Buffer.concat([head, Buffer.from(buffer), tail])
+async function postToZeroGpt(body, boundary) {
   const res = await axios.post('https://api.zerogpt.com/api/image/aiImageDetect', body, {
     headers: {
       'Content-Type': `multipart/form-data; boundary=${boundary}`,
@@ -51,11 +50,34 @@ export async function detectAiImage(buffer, filename = 'image.jpg', mimeType = '
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
       Accept: 'application/json, text/plain, */*',
     },
-    timeout: 90000,
+    timeout: 40000,
     maxContentLength: 16 * 1024 * 1024,
     maxBodyLength: 16 * 1024 * 1024,
   })
   return res.data
+}
+
+export async function detectAiImage(buffer, filename = 'image.jpg', mimeType = 'image/jpeg', { postImpl = postToZeroGpt, attempts = 2 } = {}) {
+  if (buffer.length < 1024) throw new Error('file terlalu kecil (minimal 1 KB)')
+  if (buffer.length > 10 * 1024 * 1024) throw new Error('file terlalu besar (maksimal 10 MB)')
+  const boundary = '----KanaFormBoundary' + Date.now().toString(16)
+  const head = Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${filename}"\r\nContent-Type: ${mimeType}\r\n\r\n`)
+  const tail = Buffer.from(`\r\n--${boundary}--\r\n`)
+  const body = Buffer.concat([head, Buffer.from(buffer), tail])
+  let lastErr = null
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const data = await postImpl(body, boundary)
+      if (!data || data.success === false) {
+        throw new Error(data?.message || 'layanan deteksi menolak gambar')
+      }
+      return data
+    } catch (err) {
+      lastErr = err
+      if (attempt < attempts) await sleep(1500)
+    }
+  }
+  throw lastErr
 }
 
 function flat(obj, prefix = '', out = []) {
@@ -77,7 +99,7 @@ export async function handler(ctx) {
   let mime = 'image/jpeg'
   try {
     if (url) {
-      const media = await downloadBuffer(url, { maxBytes: 10 * 1024 * 1024, timeout: 60000 })
+      const media = await downloadBuffer(url, { maxBytes: 10 * 1024 * 1024, timeout: 30000 })
       buffer = media.buffer
       mime = media.contentType || mime
     } else if (ctx.quoted?.message?.imageMessage) {

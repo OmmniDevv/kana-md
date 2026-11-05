@@ -29,7 +29,7 @@ export async function fetchAllHeroes({ fetchImpl = fetch } = {}) {
   const heroes = await withBreaker('akabab-superhero', () =>
     retry(async () => {
       const res = await fetchImpl(SUPERHERO_API_URL, {
-        signal: AbortSignal.timeout(30000),
+        signal: AbortSignal.timeout(15000),
         headers: { 'User-Agent': randomUserAgent(), Accept: 'application/json' },
       })
       if (!res.ok) throw new Error(`Dataset superhero balas HTTP ${res.status}`)

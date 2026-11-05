@@ -1,5 +1,6 @@
 import { sendButtons } from '../../src/ui/buttons.js'
 import { findHero } from '../../src/scrapers/random/superhero.js'
+import { downloadBuffer } from '../../src/scrapers/runner.js'
 
 // Superhero: data asli dari dataset akabab superhero-api (pengganti
 // API lolhuman Elaina yang butuh API key berbayar). Gambar hero
@@ -75,7 +76,18 @@ export function formatHero(t, hero) {
   })
 }
 
-export async function handler(ctx, { fetchHero = findHero } = {}) {
+// Unduh gambar hero sebagai buffer dengan batas waktu sendiri. Jalur
+// lama mengirim { image: { url } } dan membiarkan pengunduhan di dalam
+// sendMessage tanpa batas, yang pernah menggantung handler melewati
+// 120 detik pada tes live 2026-11-05 (GAGAL timeout 2x di irisan P1,
+// padahal dataset dan gambarnya sendiri menjawab dalam 1-2 detik saat
+// diprobe manual). Buffer yang gagal diunduh jatuh ke teks tombol.
+export async function fetchHeroImage(url) {
+  const { buffer } = await downloadBuffer(url, { maxBytes: 8 * 1024 * 1024, timeout: 20000 })
+  return buffer
+}
+
+export async function handler(ctx, { fetchHero = findHero, fetchImage = fetchHeroImage } = {}) {
   const query = (ctx.text || '').trim().slice(0, 60)
   if (!query) return ctx.reply(ctx.t('superhero.usage'))
   let hero
@@ -89,9 +101,12 @@ export async function handler(ctx, { fetchHero = findHero } = {}) {
   const imageUrl = hero.images?.md || hero.images?.lg || hero.images?.sm
   if (imageUrl && ctx.sock?.sendMessage) {
     try {
-      return await ctx.sock.sendMessage(ctx.chat, { image: { url: imageUrl }, caption }, { quoted: ctx.raw })
+      const image = await fetchImage(imageUrl)
+      if (image?.length) {
+        return await ctx.sock.sendMessage(ctx.chat, { image, caption }, { quoted: ctx.raw })
+      }
     } catch {
-      // Gambar gagal dikirim, jatuh ke teks di bawah.
+      // Gambar gagal diunduh atau dikirim, jatuh ke teks di bawah.
     }
   }
   return sendButtons(ctx.sock, ctx.chat, {
