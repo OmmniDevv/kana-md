@@ -3,7 +3,7 @@ import { sendAudio, MAX_AUDIO_BYTES } from '../../src/ui/media.js'
 
 export const config = {
   name: 'ytmp3',
-  alias: ['yta', 'youtubemp3', 'ytaudio'],
+  alias: ['youtubemp3', 'ytaudio'],
   category: 'download',
   description: { id: 'Unduh audio MP3 dari link YouTube langsung', en: 'Download MP3 audio from a direct YouTube link' },
   usage: '.ytmp3 <link youtube>',

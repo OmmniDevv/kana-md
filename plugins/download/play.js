@@ -4,7 +4,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'play',
-  alias: ['putar', 'playaudio', 'music'],
+  alias: ['putar', 'playaudio'],
   category: 'download',
   description: { id: 'Putar lagu dari YouTube, audio dikirim langsung', en: 'Play a song from YouTube, audio sent directly' },
   usage: '.play <judul lagu>',
