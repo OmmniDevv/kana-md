@@ -1,4 +1,4 @@
-import { lcScheduleToday } from '../../src/scrapers/kindb/lc-schedule.js'
+import { livechartSchedule } from '../../src/scrapers/anime/livechart.js'
 
 export const config = {
   name: 'animedate',
@@ -35,7 +35,7 @@ export const test = { input: '.animedate', expect: /LiveChart|JADWAL RILIS/i }
 
 export async function handler(ctx) {
   try {
-    const rows = (await lcScheduleToday(12)).slice(0, 12)
+    const rows = (await livechartSchedule(12)).slice(0, 12)
     if (!rows.length) return ctx.reply(ctx.t('animedate.empty'))
     const list = rows.map((r) => ctx.t('animedate.line', {
       time: r.time ? '[' + r.time + ']' : '',

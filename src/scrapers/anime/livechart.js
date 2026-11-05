@@ -99,24 +99,69 @@ export async function livechartRankings() {
   return collectCards($, 'tr[data-controller="anime-item"], article.anime, [data-anime-id]').slice(0, 25)
 }
 
-export async function livechartSchedule() {
+const cleanText = (s) => String(s || '').replace(/\s+/g, ' ').trim()
+
+// Parser jadwal /schedule LiveChart untuk markup saat ini: blok
+// .lc-timetable-anime-block membawa data-anime-item-id dan
+// data-anime-item-romanized-native-title, label episode ada di
+// .lc-timetable-anime-block__label, dan jam ada di elemen
+// time[data-timeslot-target="time"] pada timeslot induknya. Atribut lama
+// data-schedule-anime-* sudah tidak ada di halaman (parser lama balas
+// kosong); tetap dibaca sebagai cadangan. Baris dari seksi hari ini
+// (.lc-today) didahulukan, lalu hari lain mengikuti urutan dokumen.
+// Logika ini menyerap parser kindb lc-schedule.js yang terbukti jalan
+// dari VM (dipakai .animedate) supaya sumber ini punya satu parser saja.
+export function parseLivechartSchedule(html, limit = 0) {
+  const $ = cheerio.load(html || '')
+  const rows = []
+  const push = (row) => {
+    if (limit > 0 && rows.length >= limit) return
+    rows.push(row)
+  }
+  const collect = ($scope) => {
+    $scope.find('.lc-timetable-timeslot').each((_, slot) => {
+      const $slot = $(slot)
+      const $time = $slot.find('time[data-timeslot-target="time"]').first()
+      const time = cleanText($time.text()) || cleanText($slot.find('.lc-current-time__content').first().text())
+      const datetime = $time.attr('datetime') || ''
+      $slot.find('.lc-timetable-anime-block').each((_, el) => {
+        const $el = $(el)
+        const id = $el.attr('data-anime-item-id') || $el.attr('data-schedule-anime-id') || ''
+        const title = cleanText($el.attr('data-anime-item-romanized-native-title') || $el.attr('data-schedule-anime-title') || $el.find('.lc-timetable-anime-block__title').first().text())
+        if (!title) return
+        const label = cleanText($el.find('.lc-timetable-anime-block__label').first().text())
+          || cleanText($el.find('.lc-tt-release-label').first().text())
+        const epMatch = label.match(/EP\s*(\d+)/i)
+        push({
+          id,
+          title,
+          episode: epMatch ? epMatch[1] : '',
+          label,
+          time,
+          datetime,
+          url: id ? `${BASE}/anime/${id}` : BASE,
+        })
+      })
+    })
+  }
+  const $days = $('.lc-timetable-day')
+  if ($days.length) {
+    const $today = $days.filter('.lc-today').first()
+    if ($today.length) collect($today)
+    $days.each((_, day) => {
+      if ($today.length && day === $today[0]) return
+      collect($(day))
+    })
+  } else {
+    collect($('body'))
+  }
+  return rows
+}
+
+export async function livechartSchedule(limit = 0) {
   const html = await fetchHtml(`${BASE}/schedule`)
   if (!html) return []
-  const $ = cheerio.load(html)
-  const rows = []
-  $('.lc-timetable-timeslot').each((_, slot) => {
-    const $slot = $(slot)
-    const time = $slot.find('.lc-timetable-timeslot__time [data-timeslot-target="time"]').text().trim()
-      || $slot.find('.lc-current-time__content').text().trim()
-    $slot.find('.lc-timetable-anime-block').each((_, el) => {
-      const $el = $(el)
-      const id = $el.attr('data-schedule-anime-id')
-      const title = $el.attr('data-schedule-anime-title')
-      const episode = $el.find('.lc-tt-release-label .font-medium').text().trim()
-      if (id && title) rows.push({ id, title, url: `${BASE}/anime/${id}`, time, episode })
-    })
-  })
-  return rows
+  return parseLivechartSchedule(html, limit)
 }
 
 export async function livechartDetail(id) {

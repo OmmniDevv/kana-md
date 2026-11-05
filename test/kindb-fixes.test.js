@@ -11,7 +11,7 @@ import { normalizeOmdb } from '../src/scrapers/kindb/omdb.js'
 import { normalizeRobloxUser } from '../src/scrapers/kindb/roblox.js'
 import { parseTiktokProfile, parseYoutubeChannel } from '../src/scrapers/kindb/social.js'
 import { parseDongengList, parseDongengStory } from '../src/scrapers/kindb/dongeng.js'
-import { parseLcSchedule } from '../src/scrapers/kindb/lc-schedule.js'
+import { parseLivechartSchedule } from '../src/scrapers/anime/livechart.js'
 import { findCallingCode, EXPEDITIONS } from '../src/data/kindb-local.js'
 import { findMlHero, searchDataset, HOK_HEROES, WUWA_RESONATORS, BA_STUDENTS } from '../src/data/kindb-games.js'
 import { makePresets } from '../plugins/tools/preset.js'
@@ -112,7 +112,7 @@ test('LiveChart: parse jadwal struktur sekarang (blok data-anime-item)', () => {
       <a class="lc-timetable-anime-block__title" title="Chocotto Yabacity">Chocotto Yabacity</a>
       <a class="lc-timetable-anime-block__label" href="/anime/13795/schedules/19909"><strong>EP2</strong> · Streaming (JP) - YT</a>
     </div></div></div>`
-  const rows = parseLcSchedule(html, 12)
+  const rows = parseLivechartSchedule(html, 12)
   assert.equal(rows.length, 1)
   assert.equal(rows[0].title, 'Chocotto Yabacity')
   assert.equal(rows[0].episode, '2')
