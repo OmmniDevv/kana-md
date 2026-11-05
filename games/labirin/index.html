@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Labirin</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:540px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;box-sizing:border-box}
+h1{font-size:17px;margin:2px 0;color:#C4B5FD}
+#info{font-size:14px;min-height:20px;text-align:center}
+#cv{background:#0D0820;border-radius:8px;touch-action:none}
+#pad{display:grid;grid-template-columns:repeat(3,52px);gap:6px;justify-content:center}
+#pad button{height:44px;font-size:19px;padding:0}
+button{background:#7C3AED;color:#fff;border:0;border-radius:10px;padding:10px 22px;font-size:15px;cursor:pointer}
+#stat{font-size:13px;color:#DDD6FE}
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1>🌀 Labirin</h1>
+<div id="info">Temukan jalan ke bendera finish ya~</div>
+<canvas id="cv" width="308" height="308"></canvas>
+<div id="stat">Waktu: 0 detik</div>
+<div id="pad">
+<span></span><button data-d="up">⬆️</button><span></span>
+<button data-d="left">⬅️</button><button data-d="down">⬇️</button><button data-d="right">➡️</button>
+</div>
+<button id="btn">Labirin Baru</button>
+</div>
+<script>
+var BOT=window.__BOT||{};
+function report(sc){if(!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){}}catch(e){}}
+var COLS=11,ROWS=11,CELL=28;
+var cv=document.getElementById('cv'),g=cv.getContext('2d'),info=document.getElementById('info'),stat=document.getElementById('stat');
+var walls=[],px=0,py=0,sec=0,timer=null,won=false;
+function gen(){walls=[];for(var i=0;i<COLS*ROWS;i++)walls.push([1,1,1,1]);var seen={},stack=[[0,0]];seen[0]=1;while(stack.length){var cur=stack[stack.length-1];var cx=cur[0],cy=cur[1];var opts=[];var dirs=[[0,-1,0,2],[1,0,1,3],[0,1,2,0],[-1,0,3,1]];for(var d=0;d<4;d++){var nx=cx+dirs[d][0],ny=cy+dirs[d][1];if(nx>=0&&ny>=0&&nx<COLS&&ny<ROWS&&!seen[ny*COLS+nx])opts.push([nx,ny,dirs[d][2],dirs[d][3]])}if(!opts.length){stack.pop();continue}var o=opts[Math.floor(Math.random()*opts.length)];walls[cy*COLS+cx][o[2]]=0;walls[o[1]*COLS+o[0]][o[3]]=0;seen[o[1]*COLS+o[0]]=1;stack.push([o[0],o[1]])}}
+function draw(){g.clearRect(0,0,308,308);g.fillStyle='#1E1548';g.fillRect(0,0,308,308);g.strokeStyle='#A78BFA';g.lineWidth=2;for(var y=0;y<ROWS;y++)for(var x=0;x<COLS;x++){var w=walls[y*COLS+x];g.beginPath();if(w[0]){g.moveTo(x*CELL,y*CELL);g.lineTo(x*CELL+CELL,y*CELL)}if(w[1]){g.moveTo(x*CELL+CELL,y*CELL);g.lineTo(x*CELL+CELL,y*CELL+CELL)}if(w[2]){g.moveTo(x*CELL,y*CELL+CELL);g.lineTo(x*CELL+CELL,y*CELL+CELL)}if(w[3]){g.moveTo(x*CELL,y*CELL);g.lineTo(x*CELL,y*CELL+CELL)}g.stroke()}g.font='20px sans-serif';g.fillText('🏁',(COLS-1)*CELL+4,(ROWS-1)*CELL+22);g.fillStyle='#F472B6';g.beginPath();g.arc(px*CELL+14,py*CELL+14,9,0,7);g.fill()}
+function move(dx,dy,wi){if(won)return;if(walls[py*COLS+px][wi])return;px+=dx;py+=dy;draw();if(px===COLS-1&&py===ROWS-1){won=true;clearInterval(timer);info.textContent='Hore, sampai finish dalam '+sec+' detik! 🎉';report(Math.max(10,600-sec*5))}}
+function start(){gen();px=0;py=0;sec=0;won=false;info.textContent='Temukan jalan ke bendera finish ya~';stat.textContent='Waktu: 0 detik';draw();clearInterval(timer);timer=setInterval(function(){if(!won){sec++;stat.textContent='Waktu: '+sec+' detik'}},1000)}
+var DIRS={up:[0,-1,0],down:[0,1,2],left:[-1,0,3],right:[1,0,1]};
+document.querySelectorAll('#pad button').forEach(function(b){b.addEventListener('click',function(){var d=DIRS[b.dataset.d];move(d[0],d[1],d[2])})});
+document.addEventListener('keydown',function(e){var m={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'}[e.key];if(m){var d=DIRS[m];move(d[0],d[1],d[2])}});
+var sx=0,sy=0;cv.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+cv.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)<14&&Math.abs(dy)<14)return;var k=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');var d=DIRS[k];move(d[0],d[1],d[2])});
+document.getElementById('btn').addEventListener('click',start);
+window.__restart=start;start();
+</script>
+</body>
+</html>

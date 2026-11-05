@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Stack Balok</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:540px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;box-sizing:border-box}
+h1{font-size:17px;margin:2px 0;color:#C4B5FD}
+#info{font-size:14px;min-height:20px;text-align:center}
+#cv{background:#0D0820;border-radius:8px;touch-action:none}
+button{background:#7C3AED;color:#fff;border:0;border-radius:10px;padding:10px 22px;font-size:15px;cursor:pointer}
+#stat{font-size:13px;color:#DDD6FE}
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1>🧱 Stack Balok</h1>
+<div id="info">Ketuk layarnya pas baloknya sejajar buat menjatuhkan~</div>
+<canvas id="cv" width="300" height="380"></canvas>
+<div id="stat">Tinggi: 0</div>
+<button id="btn">Main Lagi</button>
+</div>
+<script>
+var BOT=window.__BOT||{};
+function report(sc){if(!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){}}catch(e){}}
+var W=300,H=380,BH=22;
+var cv=document.getElementById('cv'),g=cv.getContext('2d'),info=document.getElementById('info'),stat=document.getElementById('stat');
+var tower=[],cur=null,dir=1,speed=2.2,over=false,raf=null;
+var COLORS=['#F472B6','#A78BFA','#60A5FA','#34D399','#FACC15','#FB923C','#F87171'];
+function draw(){g.clearRect(0,0,W,H);g.fillStyle='#1E1548';g.fillRect(0,0,W,H);var cam=Math.max(0,(tower.length-8)*BH);tower.forEach(function(b,i){g.fillStyle=COLORS[i%COLORS.length];g.fillRect(b.x,H-(i+1)*BH+cam,b.w,BH-2)});if(cur){g.fillStyle=COLORS[tower.length%COLORS.length];g.fillRect(cur.x,H-(tower.length+1)*BH+cam,cur.w,BH-2)}}
+function loop(){if(over)return;cur.x+=dir*speed;if(cur.x<0){cur.x=0;dir=1}if(cur.x+cur.w>W){cur.x=W-cur.w;dir=-1}draw();raf=requestAnimationFrame(loop)}
+function spawn(){var prev=tower[tower.length-1];cur={x:0,w:prev.w};dir=1}
+function drop(){if(over||!cur)return;var prev=tower[tower.length-1];var left=Math.max(cur.x,prev.x),right=Math.min(cur.x+cur.w,prev.x+prev.w);var w=right-left;if(w<=0){over=true;cancelAnimationFrame(raf);draw();info.textContent='Meleset total... Menaranya berhenti di tinggi '+tower.length+'.';report(tower.length*10);return}tower.push({x:left,w:w});stat.textContent='Tinggi: '+tower.length;speed=Math.min(6,2.2+tower.length*0.25);spawn();draw()}
+function start(){tower=[{x:60,w:180}];over=false;speed=2.2;stat.textContent='Tinggi: 0';info.textContent='Ketuk layarnya pas baloknya sejajar buat menjatuhkan~';spawn();cancelAnimationFrame(raf);draw();raf=requestAnimationFrame(loop)}
+cv.addEventListener('click',drop);cv.addEventListener('touchstart',function(e){e.preventDefault();drop()},{passive:false});
+document.addEventListener('keydown',function(e){if(e.key===' ')drop()});
+document.getElementById('btn').addEventListener('click',start);
+document.addEventListener('visibilitychange',function(){if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=null}else if(!over&&!raf)raf=requestAnimationFrame(loop)});
+window.__restart=start;start();
+</script>
+</body>
+</html>

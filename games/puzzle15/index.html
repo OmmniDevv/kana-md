@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Puzzle 15</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:490px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px;box-sizing:border-box}
+h1{font-size:17px;margin:2px 0;color:#C4B5FD}
+#info{font-size:14px;min-height:20px;text-align:center}
+#board{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:280px;height:280px}
+.tile{background:#7C3AED;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:bold;cursor:pointer;touch-action:manipulation}
+.tile.empty{background:transparent;cursor:default}
+.tile.right{background:#059669}
+button{background:#7C3AED;color:#fff;border:0;border-radius:10px;padding:10px 22px;font-size:15px;cursor:pointer}
+#stat{font-size:13px;color:#DDD6FE}
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1>🧩 Puzzle 15</h1>
+<div id="info">Susun angkanya dari 1 sampai 15 ya~</div>
+<div id="board"></div>
+<div id="stat">Langkah: 0</div>
+<button id="btn">Acak Ulang</button>
+</div>
+<script>
+var BOT=window.__BOT||{};
+function report(sc){if(!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){}}catch(e){}}
+var N=4,tiles=[],moves=0,won=false;
+var board=document.getElementById('board'),info=document.getElementById('info'),stat=document.getElementById('stat');
+function solved(){for(var i=0;i<15;i++)if(tiles[i]!==i+1)return false;return tiles[15]===0}
+function shuffle(){tiles=[];for(var i=1;i<16;i++)tiles.push(i);tiles.push(0);var e=15;for(var k=0;k<200;k++){var nb=[];var x=e%N,y=(e/N)|0;if(x>0)nb.push(e-1);if(x<N-1)nb.push(e+1);if(y>0)nb.push(e-N);if(y<N-1)nb.push(e+N);var t=nb[Math.floor(Math.random()*nb.length)];tiles[e]=tiles[t];tiles[t]=0;e=t}if(solved())shuffle()}
+function draw(){board.innerHTML='';tiles.forEach(function(v,i){var d=document.createElement('div');d.className='tile'+(v===0?' empty':(v===i+1?' right':''));d.textContent=v===0?'':v;d.addEventListener('click',function(){tap(i)});board.appendChild(d)});stat.textContent='Langkah: '+moves}
+function tap(i){if(won)return;var e=tiles.indexOf(0);var x=i%N,y=(i/N)|0,ex=e%N,ey=(e/N)|0;if(Math.abs(x-ex)+Math.abs(y-ey)!==1)return;tiles[e]=tiles[i];tiles[i]=0;moves++;if(solved()){won=true;info.textContent='Hore, selesai dalam '+moves+' langkah! 🎉';var sc=Math.max(10,500-moves*2);report(sc)}draw()}
+function start(){moves=0;won=false;info.textContent='Susun angkanya dari 1 sampai 15 ya~';shuffle();draw()}
+document.getElementById('btn').addEventListener('click',start);
+window.__restart=start;start();
+</script>
+</body>
+</html>
