@@ -1,38 +1,44 @@
-// Pengiriman bubble mini app HTML5 (richResponseMessage), pola Elaina-MD.
+// Pengiriman bubble mini app HTML5 (richResponseMessage), varian
+// RYO-YAMADA (format C).
 //
-// Temuan audit 2026-11-05: bubble yang dibentuk MessageBuilder.sendHtmlApp
-// milik library tiba di HP user sebagai placeholder "versi WhatsApp tidak
-// mendukung" (hanya teks fallback yang terbaca), sementara game Elaina
-// dengan payload yang sama-sama richResponseMessage tampil normal.
-//
-// Bedah total 2026-11-05 (tangkapan sock tiruan dari handler Elaina asli
-// game-blockblast.js dan game-tetris.js vs handler KANA, lalu diff rekursif
-// di level argumen relayMessage DAN di level wire hasil encode proto
-// library) menyempitkan perbedaan ke titik berikut, dan file ini sekarang
-// menyamakan semuanya:
-// - botForwardedMessage Elaina HANYA berisi message. Versi sebelumnya di
-//   sini menyelipkan messageContextInfo (deviceListMetadata) di dalam
-//   botForwardedMessage; field itu memang dibuang encoder proto
-//   (FutureProofMessage hanya membaca .message), tapi tetap dihapus demi
-//   paritas argumen persis.
-// - Submessage messageType 2 Elaina berisi NAMA SINGKAT game ("Block
-//   Blast Mini", "Tetris Tetromino"). Versi KANA sebelumnya mengirim
-//   kalimat label panjang dari i18n plugin; sekarang submessage selalu
-//   judul singkat game (argumen title), label kalimat tidak lagi dipakai
-//   untuk bubble.
-// - Payload Elaina adalah fragmen game apa adanya, TANPA awalan apa pun.
-//   Versi KANA sebelumnya menempel style pengunci tinggi
-//   (html,body{height:Npx}) di depan fragmen; tempelan itu dihapus, tinggi
-//   panggung diatur CSS game sendiri seperti di Elaina. Argumen height
-//   masih diterima demi kompatibilitas pemanggil tapi tidak lagi disuntik.
-// - Sisanya sudah sama dan dipertahankan: section unifiedResponse tanpa
-//   __typename luar, trusted_sources terisi, messageId relay sama dengan
-//   response_id di payload, contextInfo forwardingScore 1, isForwarded
-//   true, forwardedAiBotMessageInfo.botJid Meta AI, forwardOrigin 4
-//   (penanda diteruskan sesuai aturan proyek). Jalur kirim library
-//   (relayMessage, encodeWAMessage, proto) terbukti identik antara
-//   elaina-baileys 1.3.10 yang dipakai Elaina dan 1.4.7 yang dipakai KANA,
-//   jadi tidak ada perbedaan stack yang perlu dikejar.
+// Riwayat format, semuanya divonis langsung oleh owner di HP-nya:
+// - Bentuk library MessageBuilder.sendHtmlApp tiba sebagai placeholder
+//   "versi WhatsApp tidak mendukung" (hanya teks fallback terbaca).
+// - Format A, paritas total dengan Elaina-MD (bedah tangkapan handler
+//   Elaina asli game-blockblast.js dan game-tetris.js sampai level wire
+//   hasil encode proto library, 2026-11-05): data base64, payload
+//   fragmen, submessage judul singkat, tanpa messageContextInfo,
+//   botJid Meta AI di contextInfo, trusted_sources terisi, messageId
+//   relay sama dengan response_id di payload. Tetap placeholder.
+// - Format B, varian pain-bot: messageContextInfo berisi botMetadata
+//   lengkap dengan verificationMetadata (rantai sertifikat dan tanda
+//   tangan acak), data JSON mentah bukan base64, typename
+//   FOAHtmlPrimitiveDemoDONOTUSE, submessages kosong, trusted_sources
+//   kosong, HTML dokumen utuh. Tetap placeholder.
+// - Format C, varian dominan RYO-YAMADA-MD: TAMPIL jadi game beneran,
+//   vonis owner 2026-11-05 23:24 WIB. Ini referensi perilaku dari
+//   plugins/game/tetris.js repo RYO-YAMADA-MD, ditulis ulang di sini
+//   mengikuti bentuknya, bukan salinan kode. Bedanya dari format A
+//   hanya titik berikut:
+//   * messageContextInfo di level atas pesan: deviceListMetadata {}
+//     versi 2 plus botMetadata ramping { messageDisclaimerText: '',
+//     botResponseId } dan TANPA verificationMetadata sama sekali.
+//   * botResponseId adalah UUID acak tersendiri, selalu berbeda dari
+//     response_id di payload.
+//   * forwardedAiBotMessageInfo.botJid adalah '0@bot', bukan botJid
+//     Meta AI.
+//   * trusted_sources di payload array kosong.
+//   * options relay kosong {} (messageId bawaan library), tidak lagi
+//     dipaksa sama dengan response_id.
+//   Sisanya sama seperti format A: data base64 JSON tanpa __typename
+//   root/section (primitive GenAIaeacdsnwHtmlPrimitive, view_model
+//   GenAISingleLayoutViewModel), submessage messageType 2 berisi judul
+//   singkat game (argumen title; kalimat label dari i18n plugin tidak
+//   dipakai untuk bubble), payload fragmen apa adanya lewat
+//   toGameFragment tanpa tempelan style pengunci tinggi (argumen
+//   height diterima demi kompatibilitas pemanggil tapi tidak
+//   disuntik), dan contextInfo forwardingScore 1, isForwarded true,
+//   forwardOrigin 4 sebagai penanda diteruskan sesuai aturan proyek.
 //
 // Tanda tangan publik dipertahankan dari versi lama supaya semua plugin
 // game tidak berubah: sendHtmlGame(sock, jid, htmlPath, { title, label,
@@ -41,11 +47,10 @@
 import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 
-export const GAME_BOT_JID = '867051314767696@bot'
+export const GAME_BOT_JID = '0@bot'
 export const GAME_FORWARD_ORIGIN = 4
-const TRUSTED_SOURCES = ['kana.omnicorp.web.id']
 
-// Ubah dokumen HTML utuh menjadi fragmen ala Elaina: ambil semua blok
+// Ubah dokumen HTML utuh menjadi fragmen: ambil semua blok
 // style dari head, lalu isi body apa adanya (termasuk script di dalamnya).
 // HTML yang sudah berupa fragmen dibiarkan utuh.
 export function toGameFragment(html) {
@@ -68,10 +73,21 @@ export function toGameFragment(html) {
 }
 
 // Susun pesan relay bubble game. Mengembalikan { jid, content, options }
-// persis seperti yang dikirim Elaina lewat sock.relayMessage.
+// dengan bentuk varian RYO-YAMADA (format C) yang terbukti tampil di HP
+// owner: messageContextInfo berisi botMetadata ramping selalu menyertai
+// content di level atas, dan options kosong supaya messageId memakai
+// bawaan library.
 export function buildGameRelay(jid, { title, html, responseId = randomUUID() }) {
   const payload = toGameFragment(html)
   const content = {
+    messageContextInfo: {
+      deviceListMetadata: {},
+      deviceListMetadataVersion: 2,
+      botMetadata: {
+        messageDisclaimerText: '',
+        botResponseId: randomUUID(),
+      },
+    },
     botForwardedMessage: {
       message: {
         richResponseMessage: {
@@ -85,7 +101,7 @@ export function buildGameRelay(jid, { title, html, responseId = randomUUID() }) 
                   primitive: {
                     __typename: 'GenAIaeacdsnwHtmlPrimitive',
                     payload,
-                    trusted_sources: [...TRUSTED_SOURCES],
+                    trusted_sources: [],
                   },
                   __typename: 'GenAISingleLayoutViewModel',
                 },
@@ -102,7 +118,7 @@ export function buildGameRelay(jid, { title, html, responseId = randomUUID() }) 
       },
     },
   }
-  return { jid, content, options: { messageId: responseId } }
+  return { jid, content, options: {} }
 }
 
 // Suntik variabel game ke HTML mentah: ganti placeholder
@@ -126,11 +142,12 @@ export function buildGameHtml(html, gameVars) {
 }
 
 // Kirim satu bubble game: relay fragmen game apa adanya dengan bentuk
-// Elaina. Submessage selalu judul singkat (argumen title); argumen label
-// diterima demi kompatibilitas pemanggil lama tapi SENGAJA tidak dipakai,
-// karena bentuk Elaina yang terbukti tampil memakai nama singkat game di
-// submessage, bukan kalimat label. Argumen height juga tidak lagi
-// disuntik ke payload (lihat catatan bedah di kepala file).
+// varian RYO-YAMADA (format C). Submessage selalu judul singkat
+// (argumen title); argumen label diterima demi kompatibilitas pemanggil
+// lama tapi SENGAJA tidak dipakai, karena bentuk yang terbukti tampil
+// memakai nama singkat game di submessage, bukan kalimat label.
+// Argumen height juga tidak disuntik ke payload (lihat catatan
+// riwayat format di kepala file).
 function deliverGame(sock, jid, { title, label, html, height = 600 }) {
   void label
   void height

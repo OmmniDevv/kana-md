@@ -151,39 +151,57 @@ test('forwarded: .hello (sendHtmlGame) terkirim dengan penanda diteruskan', asyn
   assertForwarded(relayed, 'hello (.hello)')
 })
 
-// Struktur payload harus persis bentuk relay manual Elaina (audit
-// 2026-11-05): bentuk library lama tiba di HP user sebagai placeholder
-// "versi WhatsApp tidak mendukung".
+// Struktur payload harus persis bentuk varian RYO-YAMADA (format C).
+// Format A ala Elaina (tanpa messageContextInfo, botJid Meta AI,
+// trusted_sources terisi, messageId sama dengan response_id) dan
+// format B ala pain-bot (botMetadata lengkap dengan
+// verificationMetadata acak) sama-sama divonis placeholder oleh owner;
+// format C tampil jadi game beneran (vonis owner 2026-11-05 23:24 WIB).
 function decodeGameData(relay) {
   const rich = relay.content.botForwardedMessage.message.richResponseMessage
   return { rich, data: JSON.parse(Buffer.from(rich.unifiedResponse.data, 'base64').toString('utf8')) }
 }
 
-test('payload game: struktur relay ala Elaina (fragmen, tanpa messageContextInfo bot)', () => {
+test('payload game: struktur relay varian RYO-YAMADA (format C)', () => {
   const doc = '<!doctype html><html><head><meta charset="utf-8"><style>.a{color:red}</style></head><body><div id="wrap">Halo</div><script>var x=1;</script></body></html>'
   const relay = buildGameRelay('628123@s.whatsapp.net', { title: 'KANA Block Blast', html: doc, height: 520, responseId: 'resp-123' })
 
-  // Relay hanya membawa botForwardedMessage; messageContextInfo bawaan
-  // library (botMetadata/botResponseId) tidak boleh ada di level atas.
-  assert.deepEqual(Object.keys(relay.content), ['botForwardedMessage'])
-  assert.equal(relay.content.botForwardedMessage.messageContextInfo, undefined)
-  // Bedah total 2026-11-05: botForwardedMessage Elaina HANYA berisi
-  // message. Penjaga lama cuma mengecek botMetadata sehingga
-  // messageContextInfo deviceListMetadata sempat lolos; kunci sekarang
-  // seluruh himpunan kuncinya.
+  // Content membawa messageContextInfo di level atas, mendampingi
+  // botForwardedMessage yang tetap HANYA berisi message.
+  assert.deepEqual(Object.keys(relay.content).sort(), ['botForwardedMessage', 'messageContextInfo'])
   assert.deepEqual(Object.keys(relay.content.botForwardedMessage), ['message'])
+
+  // botMetadata ramping gaya RYO: messageDisclaimerText kosong dan
+  // botResponseId UUID tersendiri, TANPA verificationMetadata.
+  const mci = relay.content.messageContextInfo
+  assert.deepEqual(mci.deviceListMetadata, {})
+  assert.equal(mci.deviceListMetadataVersion, 2)
+  assert.deepEqual(Object.keys(mci.botMetadata).sort(), ['botResponseId', 'messageDisclaimerText'])
+  assert.equal(mci.botMetadata.messageDisclaimerText, '')
+  assert.match(mci.botMetadata.botResponseId, /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
+
+  // Tidak ada verificationMetadata dan tidak ada externalAdReply di
+  // mana pun dalam relay (aturan proyek: externalAdReply dilarang).
+  const serialized = JSON.stringify(relay.content)
+  assert.ok(!serialized.includes('verificationMetadata'), 'relay tidak boleh membawa verificationMetadata')
+  assert.ok(!serialized.includes('externalAdReply'), 'relay tidak boleh membawa externalAdReply')
 
   const { rich, data } = decodeGameData(relay)
   assert.equal(rich.messageType, 1)
   assert.deepEqual(rich.submessages, [{ messageType: 2, messageText: 'KANA Block Blast' }])
   assert.equal(data.response_id, 'resp-123')
-  assert.equal(relay.options.messageId, 'resp-123', 'messageId relay harus sama dengan response_id')
+  assert.notEqual(mci.botMetadata.botResponseId, data.response_id, 'botResponseId harus berbeda dari response_id')
+  // Options kosong: messageId memakai bawaan library, tidak lagi
+  // dipaksa sama dengan response_id seperti format A.
+  assert.deepEqual(relay.options, {})
 
   assert.equal(data.sections.length, 1)
   assert.equal('__typename' in data.sections[0], false, 'section tidak boleh punya __typename luar')
-  const primitive = data.sections[0].view_model.primitive
+  const viewModel = data.sections[0].view_model
+  assert.equal(viewModel.__typename, 'GenAISingleLayoutViewModel')
+  const primitive = viewModel.primitive
   assert.equal(primitive.__typename, 'GenAIaeacdsnwHtmlPrimitive')
-  assert.ok(Array.isArray(primitive.trusted_sources) && primitive.trusted_sources.length >= 1)
+  assert.deepEqual(primitive.trusted_sources, [])
 
   // Payload adalah fragmen: tanpa doctype/html/head/body, style dari head
   // dan isi body (termasuk script) tetap utuh.
@@ -192,25 +210,36 @@ test('payload game: struktur relay ala Elaina (fragmen, tanpa messageContextInfo
   assert.ok(primitive.payload.includes('<style>.a{color:red}</style>'))
   assert.ok(primitive.payload.includes('<div id="wrap">Halo</div>'))
   assert.ok(primitive.payload.includes('<script>var x=1;</script>'))
-  // Payload Elaina tidak diawali tempelan apa pun: style pengunci tinggi
+  // Payload tidak diawali tempelan apa pun: style pengunci tinggi
   // yang dulu ditempel deliverGame di depan fragmen tidak boleh kembali.
   assert.ok(!/html,body\{height:\d+px/.test(primitive.payload), 'payload tidak boleh mengandung style pengunci tinggi tempelan')
 
   const info = rich.contextInfo
   assert.equal(info.isForwarded, true)
   assert.equal(info.forwardingScore, 1)
-  assert.equal(info.forwardedAiBotMessageInfo.botJid, '867051314767696@bot')
+  assert.equal(info.forwardedAiBotMessageInfo.botJid, '0@bot')
   assert.equal(info.forwardOrigin, 4)
   assert.equal(info.botMessageSharingInfo, undefined)
 })
 
-// Perbandingan kerangka struktur melawan tangkapan handler Elaina asli.
-// Fixture test/fixtures/elaina-game-relay-structure.json dibuat dari
-// tangkapan sock tiruan handler plugins/game/game-blockblast.js milik
-// Elaina-MD (bedah total 2026-11-05): semua nilai string diganti penanda,
-// angka/boolean dipertahankan, payload diringkas jadi fitur bentuknya.
-// Tes ini gagal bila struktur relay KANA menyimpang lagi dari bentuk
-// Elaina di field mana pun selain isi konten dan judul.
+test('payload game: tanpa responseId eksplisit, response_id dan botResponseId dua UUID berbeda', () => {
+  const relay = buildGameRelay('628123@s.whatsapp.net', { title: 'KANA Tetris', html: '<p>x</p>' })
+  const { data } = decodeGameData(relay)
+  assert.match(data.response_id, /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
+  const botResponseId = relay.content.messageContextInfo.botMetadata.botResponseId
+  assert.match(botResponseId, /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
+  assert.notEqual(botResponseId, data.response_id)
+  assert.deepEqual(relay.options, {})
+})
+
+// Perbandingan kerangka struktur melawan bentuk varian RYO-YAMADA.
+// Fixture test/fixtures/ryo-game-relay-structure.json dibuat dari
+// konstruksi driver uji ryostyle-driver.mjs yang bubble Tetris-nya
+// divonis TAMPIL oleh owner pada 2026-11-05 23:24 WIB: semua nilai
+// string diganti penanda, angka/boolean dipertahankan, payload
+// diringkas jadi fitur bentuknya. Tes ini gagal bila struktur relay
+// KANA menyimpang dari bentuk format C di field mana pun selain isi
+// konten dan judul.
 import { readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -242,19 +271,18 @@ function skeletonOf(value, key = '') {
   return value
 }
 
-test('struktur relay KANA identik dengan kerangka tangkapan Elaina', async () => {
-  const fixturePath = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'elaina-game-relay-structure.json')
+test('struktur relay KANA identik dengan kerangka varian RYO-YAMADA', async () => {
+  const fixturePath = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'ryo-game-relay-structure.json')
   const fixture = JSON.parse(await readFile(fixturePath, 'utf8'))
 
-  // Dokumen contoh berbentuk seperti berkas game Elaina: style di head,
-  // satu script di body. Judul singkat dan responseId UUID seperti asli.
+  // Dokumen contoh berbentuk seperti berkas game pada umumnya: style
+  // di head, satu script di body. Judul singkat dan responseId UUID.
   const doc = '<!doctype html><html><head><meta charset="utf-8"><style>.a{color:red}</style></head><body><div id="wrap">Halo</div><script>var x=1;</script></body></html>'
   const relay = buildGameRelay('628123@s.whatsapp.net', { title: 'KANA Block Blast', html: doc, responseId: 'bf4aaf35-f9a6-46dd-842f-274461319cea' })
 
   const { data } = decodeGameData(relay)
-  // data unifiedResponse adalah string base64 (sama seperti Elaina);
-  // ganti dengan hasil dekodenya supaya kerangkanya bisa dibandingkan
-  // dengan fixture Elaina.
+  // data unifiedResponse adalah string base64; ganti dengan hasil
+  // dekodenya supaya kerangkanya bisa dibandingkan dengan fixture.
   assert.equal(typeof relay.content.botForwardedMessage.message.richResponseMessage.unifiedResponse.data, 'string')
   const swapData = (node, key = '') => {
     if (key === 'data' && typeof node === 'string') return { $decodedUnifiedResponse: data }
