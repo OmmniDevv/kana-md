@@ -75,3 +75,20 @@ terpisah memakai input asli, bukan menjalankan kode zip.
 | chosicSpotify.js | Ambil token Spotify gratis milik chosic.com lalu panggil api.spotify.com | Dilewati: bertumpu pada token layanan pihak ketiga; metadata Spotify KANA sudah tercakup jalur embed dan iTunes |
 | Sisanya (aio/downvideo, omdown, capcutdl, facebookScraper, pinterest, sswebScraper/thum.io, soundboardScraper/myinstants, removeVocal/x-minus, 8daudio, text2img/pollinations, mangadex, komikstationScraper, anichin, donghive, ttdlzone, ttsearch, spotify partner, ytmp3/ytmp3gg/ytmp3pc/ytscrape/y2mate/invidious, amfinder, picsurf, rannd, wac) | Beragam scraper bersih tanpa kunci hardcoded | Dilewati: bersih, tetapi plugin padanannya di KANA sudah punya sumber yang lulus sapuan live (bukan sumber mati/lemah), atau tidak ada plugin padanan (removeVocal, picsurf, rannd, wac, 8daudio katalog). Tidak ditambahkan sebagai fallback tanpa bukti sumber utama bermasalah |
 | (tidak ada di zip) | Chord | Paket ini TIDAK memuat scraper chord apa pun, jadi .chord tidak mendapat fallback dari kiriman ini; statusnya tetap seperti catatan matriks sapuan (chordtela dan chordindonesia memindah pencarian ke render klien) |
+
+## Repo RYO-YAMADA-MD kiriman user 2026-11-05 (audit penuh di docs/RYO-AUDIT.md)
+
+620 berkas plugin diaudit satu per satu; matriks lengkap, klasifikasi, dan alasan tiap berkas ada di docs/RYO-AUDIT.md. Lisensi repo tidak jelas untuk penyalinan, jadi semua yang diambil ditulis ulang gaya KANA dari perilakunya saja. Yang diambil:
+
+| Sumber RYO | Keputusan |
+|---|---|
+| downloader/gitclone.js (zipball api.github.com) | Diambil: ditulis ulang jadi src/scrapers/download/gitclone.js + plugin .gitclone. Probe VM: ZIP asli magic PK |
+| tools/uguu.js + tourl2.js (uguu.se) | Diambil: src/scrapers/tools/upload.js + plugin .upload. Probe VM: unggah membalas URL d.uguu.se yang bisa diunduh balik (HTTP 200). litterbox.catbox.moe sebagai calon cadangan TIDAK terjangkau dari VM (HTTP 000), tidak dimasukkan rantai |
+| sticker/emojistick.js (Noto Emoji) | Diambil dengan ganti sumber: URL pola RYO (raw.githubusercontent googlefonts/noto-emoji) terbukti 404 dari VM; KANA memakai fonts.gstatic.com Noto (utama) + Twemoji jsdelivr (cadangan), keduanya PNG asli terverifikasi. src/services/emoji-image.js + plugin .emojistick |
+| group/pinpesan.js (pin pesan) | Diambil: src/services/pin-message.js + plugin .pinpesan/.unpinpesan memakai content.pin yang didukung jalur kirim library 1.4.7; terverifikasi tes perilaku handler (payload pin persis), vonis live menunggu jendela chat utama |
+| downloader/image-wallpaper.js (wallpaperflare) | Diambil: scrape ditulis ulang tanpa cookie analitik statis versi RYO. src/scrapers/search/wallpaper.js + plugin .wallpaper. Probe VM: 10 hasil, gambar JPEG asli magic ffd8 |
+| downloader/ytmp3v2.js (api-faa.my.id ytmp3) | Diambil sebagai FALLBACK unduh audio YouTube di src/scrapers/youtube/youtube.js (bukan perintah baru). Probe VM: judul asli + mp3 3,61 MB magic ID3 |
+| downloader/ig3.js, anime/komiku.js (api.nexray.eu.cc) | DITOLAK sebagai sumber: ig3 membalas 500/403 dan komiku 404 (endpoint mati) saat diprobe dari VM; rantai .ig dan .komik KANA sudah punya sumber hidup terverifikasi |
+| downloader/blibili.js (bilibili.tv) | DEFER: gateway playurl membalas kode 10015001 (batasan wilayah) untuk semua video uji dari VM; jalur penuh tidak bisa dibuktikan |
+| tools/removevocal.js (aivocalremover.com) | DITOLAK: memakai token statis layanan hasil ekstrak aplikasi web pihak ketiga di dalam kode (pola fastdl/animein) |
+| tools/am.js, ccgen, rvo, bypass, sfl, nik, cekrek, stalk/wa, maker/fake*, nsfw/*, panel/*, dan 41 berkas tolak lain | DITOLAK: bypass premium, generator kartu, view-once, stalking non-publik, bukti palsu, NSFW, panel jualan; rincian per berkas di docs/RYO-AUDIT.md |
