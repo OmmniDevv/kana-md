@@ -4,7 +4,7 @@
 import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "addrpg",
-  alias: [],
+  alias: ["mulai"],
   category: "rpg",
   description: { id: "Daftarkan profil RPG: nama petualang tersimpan + modal awal 250 koin sekali saja", en: "Register your RPG profile: adventurer name stored + a one-time 250 coin starter" },
   usage: ".addrpg [nama]",

@@ -1,57 +1,50 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama MODE="info"
+// hanya membalas ringkasan saldo + flavor. Sekarang menampilkan data nyata
+// spesifik namanya dari inventaris profil (item data.js + harga jualnya).
+import { getProfile } from '../../src/services/user-service.js'
+import { ITEM_MAP } from '../../src/rpg/data.js'
 
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "buah",
-  alias: ["listbuah"],
-  category: "rpg",
-  description: { id: "Fitur buah versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD buah feature, rewritten in KANA style" },
-  usage: ".buah",
-  example: ".buah",
+  name: 'buah',
+  alias: [],
+  category: 'rpg',
+  description: { id: 'Stok buah nyata dari inventarismu, lengkap dengan harga jualnya', en: 'Your real fruit stock from your inventory, with sell prices' },
+  usage: '.buah',
+  example: '.buah',
   cooldown: 5,
 }
 
+export const ITEMS_SHOWN = ["buah"]
+
 export const i18n = {
   id: {
-    "buah": {
-      done: "╭─❏ ⚔️ 「 *BUAH* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BUAH* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    buah: {
+      empty: '╭─❏ 🍎 「 *BUAH* 」\n┊ Buahmu habis. Panen dari .berkebon atau .berladang dulu yaa~\n╰━━━━━━━',
+      list: '╭─❏ 🍎 「 *BUAH* 」\n┊ {list}\n┊ Total nilai jual: *{total} koin* (jual pakai .sellall)\n╰━━━━━━━',
     },
   },
   en: {
-    "buah": {
-      done: "╭─❏ ⚔️ 「 *BUAH* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BUAH* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
+    buah: {
+      empty: '╭─❏ 🍎 「 *FRUIT* 」\n┊ You have no fruit. Harvest from .berkebon or .berladang first~\n╰━━━━━━━',
+      list: '╭─❏ 🍎 「 *FRUIT* 」\n┊ {list}\n┊ Total sell value: *{total} coins* (sell with .sellall)\n╰━━━━━━━',
     },
   },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur buah buat profil petualanganmu~", en: "Here is the buah summary for your adventure profile~" }
-export const test = { input: '.buah', expect: /buah|koin|coin/i }
+export const test = { input: '.buah', expect: /buahmu habis|total nilai jual|no fruit|total sell value/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('buah.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('buah'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('buah.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('buah.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('buah.btnAgain'), id: '.buah' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('buah.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('buah.btnAgain'), id: '.buah' }], textFallback: body })
+  const inv = profile.inventory ?? {}
+  const rows = ITEMS_SHOWN.filter((id) => (inv[id] ?? 0) > 0)
+  if (!rows.length) return ctx.reply(ctx.t('buah.empty'))
+  let total = 0
+  const list = rows.map((id) => {
+    const def = ITEM_MAP[id]
+    const nm = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : id
+    const price = def?.price ?? 0
+    total += price * inv[id]
+    return (def?.emoji ?? '•') + ' ' + nm + ' x' + inv[id] + ' (@' + price + ')'
+  }).join('\n┊ ')
+  return ctx.reply(ctx.t('buah.list', { list, total }))
 }

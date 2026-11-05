@@ -1,57 +1,78 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama MODE="info"
+// membalas ringkasan generik. Sekarang toko pet nyata yang terhubung ke
+// mesin pet dan toko: katalog pet dari PETS (adopsi lewat petAdopt),
+// makanan pet dibeli lewat buyItem dengan harga SHOP, dan status pet
+// milikmu ditampilkan.
+import { getProfile } from '../../src/services/user-service.js'
+import { petAdopt, buyItem } from '../../src/rpg/engine.js'
+import { PETS, SHOP_MAP, ITEM_MAP } from '../../src/rpg/data.js'
 
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "petshop",
+  name: 'petshop',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur petshop versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD petshop feature, rewritten in KANA style" },
-  usage: ".petshop",
-  example: ".petshop",
+  category: 'rpg',
+  description: { id: 'Toko pet nyata: adopsi pet dan beli makanan pet, terhubung ke profilmu', en: 'A real pet shop: adopt pets and buy pet food, connected to your profile' },
+  usage: '.petshop | .petshop adopsi <jenis> | .petshop beli [jumlah]',
+  example: '.petshop adopsi kucing',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "petshop": {
-      done: "╭─❏ ⚔️ 「 *PETSHOP* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *PETSHOP* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    petshop: {
+      list: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ Pet yang bisa diadopsi (gratis, satu dulu): {pets}\n┊ Makanan pet: *{foodPrice} koin* (stokmu {food})\n┊ Pet kamu: *{mine}*\n┊ Adopsi: .petshop adopsi <jenis> | Beli makanan: .petshop beli [jumlah]\n╰━━━━━━━',
+      adopted: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ Yayy, kamu adopsi {emoji} *{name}* dari petshop! Rawat pakai .pet makan yaa~\n╰━━━━━━━',
+      hasPet: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ Kamu sudah punya pet *{name}*, satu dulu yaa~\n╰━━━━━━━',
+      unknownKind: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ Jenis *{kind}* tidak dijual di sini. Pilihan: {list}\n╰━━━━━━━',
+      bought: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ Kamu beli *{qty}x Makanan Pet* seharga *{cost} koin*. Stok makanan pet: *{food}*\n┊ Saldo: *{balance} koin*\n╰━━━━━━━',
+      poor: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ Koin kurang buat beli makanan pet (butuh *{cost} koin*)~\n╰━━━━━━━',
+      none: 'belum punya',
     },
   },
   en: {
-    "petshop": {
-      done: "╭─❏ ⚔️ 「 *PETSHOP* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *PETSHOP* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
+    petshop: {
+      list: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ Pets available for adoption (free, one at a time): {pets}\n┊ Pet food: *{foodPrice} coins* (you have {food})\n┊ Your pet: *{mine}*\n┊ Adopt: .petshop adopsi <kind> | Buy food: .petshop beli [qty]\n╰━━━━━━━',
+      adopted: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ Yayy, you adopted {emoji} *{name}* from the petshop! Feed it with .pet makan~\n╰━━━━━━━',
+      hasPet: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ You already have a pet *{name}*, one at a time~\n╰━━━━━━━',
+      unknownKind: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ Kind *{kind}* is not sold here. Choices: {list}\n╰━━━━━━━',
+      bought: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ You bought *{qty}x Pet Food* for *{cost} coins*. Pet food stock: *{food}*\n┊ Balance: *{balance} coins*\n╰━━━━━━━',
+      poor: '╭─❏ 🏪 「 *PETSHOP* 」\n┊ Not enough coins to buy pet food (needs *{cost} coins*)~\n╰━━━━━━━',
+      none: 'none yet',
     },
   },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur petshop buat profil petualanganmu~", en: "Here is the petshop summary for your adventure profile~" }
-export const test = { input: '.petshop', expect: /petshop|koin|coin/i }
+export const test = { input: '.petshop adopsi kucing', expect: /adopsi|adopted|sudah punya pet|already have a pet/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('petshop.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  const [sub, arg] = (ctx.text || '').trim().toLowerCase().split(/\s+/)
+  const foodPrice = SHOP_MAP.makananpet?.price ?? ITEM_MAP.makananpet.price
+  const food = (profile.inventory ?? {}).makananpet ?? 0
+  if (sub === 'adopsi' || sub === 'adopt') {
+    const res = await petAdopt(ctx.storage, ctx.senderDigits, arg)
+    if (res.ok) {
+      const def = PETS.find((p) => p.id === arg)
+      return ctx.reply(ctx.t('petshop.adopted', { emoji: def?.emoji ?? '🐾', name: res.pet.name }))
+    }
+    if (res.reason === 'has_pet') return ctx.reply(ctx.t('petshop.hasPet', { name: profile.pet?.name ?? '-' }))
+    const list = PETS.map((p) => p.id).join(', ')
+    return ctx.reply(ctx.t('petshop.unknownKind', { kind: arg ?? '-', list }))
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('petshop'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('petshop.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('petshop.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('petshop.btnAgain'), id: '.petshop' }], textFallback: body })
+  if (sub === 'beli' || sub === 'buy') {
+    const qty = Math.max(1, Math.floor(Number(arg) || 1))
+    const res = await buyItem(ctx.storage, ctx.senderDigits, 'makananpet', qty)
+    if (!res.ok) return ctx.reply(ctx.t('petshop.poor', { cost: foodPrice * qty }))
+    const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+    return ctx.reply(ctx.t('petshop.bought', {
+      qty: res.qty, cost: res.cost, food: (fresh.inventory ?? {}).makananpet ?? 0, balance: res.balance,
+    }))
   }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('petshop.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('petshop.btnAgain'), id: '.petshop' }], textFallback: body })
+  const pets = PETS.map((p) => p.emoji + ' ' + (ctx.lang === 'en' ? p.name.en : p.name.id) + ' (' + p.id + ')').join(', ')
+  return ctx.reply(ctx.t('petshop.list', {
+    pets,
+    foodPrice,
+    food,
+    mine: profile.pet ? profile.pet.name + ' lv' + (profile.pet.level ?? 1) : ctx.t('petshop.none'),
+  }))
 }

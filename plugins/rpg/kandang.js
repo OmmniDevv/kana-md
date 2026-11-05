@@ -1,57 +1,53 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama MODE="info"
+// membalas ringkasan generik. Sekarang kandang membaca pet nyata milikmu
+// (profile.pet dari engine petAdopt/petFeed) plus stok makanan pet.
+import { getProfile } from '../../src/services/user-service.js'
+import { PETS, PET_MAP } from '../../src/rpg/data.js'
 
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "kandang",
+  name: 'kandang',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur kandang versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD kandang feature, rewritten in KANA style" },
-  usage: ".kandang",
-  example: ".kandang",
+  category: 'rpg',
+  description: { id: 'Kandang pet nyata: pet yang kamu pelihara, level, XP, dan stok makanan pet', en: 'Your real pet pen: the pet you keep, its level, XP, and pet food stock' },
+  usage: '.kandang',
+  example: '.kandang',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "kandang": {
-      done: "╭─❏ ⚔️ 「 *KANDANG* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *KANDANG* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    kandang: {
+      empty: '╭─❏ 🐾 「 *KANDANG* 」\n┊ Kandangmu kosong, belum ada pet. Pilihan adopsi: {list}\n┊ Adopsi pakai .petshop adopsi <jenis> atau .pet adopsi <jenis>. Stok makanan pet: *{food}*\n╰━━━━━━━',
+      info: '╭─❏ 🐾 「 *KANDANG* 」\n┊ {emoji} *{name}* ({kind})\n┊ Level pet: *{level}* | XP pet: *{xp}*\n┊ Terakhir makan: *{fed}*\n┊ Stok makanan pet: *{food}* (kasih makan pakai .pet makan)\n╰━━━━━━━',
+      neverFed: 'belum pernah',
     },
   },
   en: {
-    "kandang": {
-      done: "╭─❏ ⚔️ 「 *KANDANG* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *KANDANG* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
+    kandang: {
+      empty: '╭─❏ 🐾 「 *PET PEN* 」\n┊ Your pen is empty, no pet yet. Adoption choices: {list}\n┊ Adopt with .petshop adopsi <kind> or .pet adopsi <kind>. Pet food stock: *{food}*\n╰━━━━━━━',
+      info: '╭─❏ 🐾 「 *PET PEN* 」\n┊ {emoji} *{name}* ({kind})\n┊ Pet level: *{level}* | Pet XP: *{xp}*\n┊ Last fed: *{fed}*\n┊ Pet food stock: *{food}* (feed with .pet makan)\n╰━━━━━━━',
+      neverFed: 'never',
     },
   },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur kandang buat profil petualanganmu~", en: "Here is the kandang summary for your adventure profile~" }
-export const test = { input: '.kandang', expect: /kandang|koin|coin/i }
+export const test = { input: '.kandang', expect: /kandangmu kosong|level pet|pen is empty|pet level/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('kandang.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  const food = (profile.inventory ?? {}).makananpet ?? 0
+  if (!profile.pet) {
+    const list = PETS.map((p) => p.emoji + ' ' + (ctx.lang === 'en' ? p.name.en : p.name.id) + ' (' + p.id + ')').join(', ')
+    return ctx.reply(ctx.t('kandang.empty', { list, food }))
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('kandang'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('kandang.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('kandang.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('kandang.btnAgain'), id: '.kandang' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('kandang.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('kandang.btnAgain'), id: '.kandang' }], textFallback: body })
+  const def = PET_MAP[profile.pet.kind]
+  return ctx.reply(ctx.t('kandang.info', {
+    emoji: def?.emoji ?? '🐾',
+    name: profile.pet.name,
+    kind: profile.pet.kind,
+    level: profile.pet.level ?? 1,
+    xp: profile.pet.xp ?? 0,
+    fed: profile.pet.fedAt ? String(profile.pet.fedAt).slice(0, 10) : ctx.t('kandang.neverFed'),
+    food,
+  }))
 }

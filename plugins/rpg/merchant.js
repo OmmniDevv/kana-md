@@ -1,57 +1,81 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama MODE="info"
+// membalas ringkasan generik. Sekarang merchant adalah pedagang keliling
+// nyata: dia MEMBELI barang dari tasmu 10 persen di atas harga jual biasa
+// (.merchant <item> [jumlah]); tanpa argumen dia menampilkan daftar barang
+// yang dia beli beserta harga merchantnya dari tasmu.
+import { getProfile, updateProfile } from '../../src/services/user-service.js'
+import { ITEM_MAP, JOB_MAP } from '../../src/rpg/data.js'
 
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+export const MERCHANT_BONUS = 10
+
 export const config = {
-  name: "merchant",
+  name: 'merchant',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur merchant versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD merchant feature, rewritten in KANA style" },
-  usage: ".merchant",
-  example: ".merchant",
+  category: 'rpg',
+  description: { id: 'Pedagang keliling: jual barang ke dia 10 persen lebih mahal dari harga biasa', en: 'Traveling merchant: sell items to him for 10 percent above the normal price' },
+  usage: '.merchant <item> [jumlah]',
+  example: '.merchant besi 2',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "merchant": {
-      done: "╭─❏ ⚔️ 「 *MERCHANT* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *MERCHANT* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    merchant: {
+      list: '╭─❏ 🧳 「 *MERCHANT* 」\n┊ Pedagang keliling membeli 10% lebih mahal. Barangmu yang dia mau:\n┊ {list}\n┊ Jual pakai .merchant <item> [jumlah]\n╰━━━━━━━',
+      empty: '╭─❏ 🧳 「 *MERCHANT* 」\n┊ Tasmu kosong, pedagang keliling tidak bisa beli apa apa. Kumpulkan barang dulu yaa~\n┊ Saldo: *{balance} koin*\n╰━━━━━━━',
+      done: '╭─❏ 🧳 「 *MERCHANT* 」\n┊ Terjual ke merchant: *{qty}x {item}* seharga *+{gain} koin* (harga merchant @{unit})\n┊ Saldo: *{balance} koin*\n╰━━━━━━━',
+      noItem: '╭─❏ 🧳 「 *MERCHANT* 」\n┊ Kamu tidak punya *{item}* sebanyak itu di tas. Punya kamu: *{have}*\n╰━━━━━━━',
+      unknown: '╭─❏ 🧳 「 *MERCHANT* 」\n┊ Item *{id}* tidak dikenal pedagang. Cek .inventory buat id barangmu\n╰━━━━━━━',
     },
   },
   en: {
-    "merchant": {
-      done: "╭─❏ ⚔️ 「 *MERCHANT* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *MERCHANT* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
+    merchant: {
+      list: '╭─❏ 🧳 「 *MERCHANT* 」\n┊ The traveling merchant buys 10% above normal. Your items he wants:\n┊ {list}\n┊ Sell with .merchant <item> [qty]\n╰━━━━━━━',
+      empty: '╭─❏ 🧳 「 *MERCHANT* 」\n┊ Your bag is empty, the traveling merchant cannot buy anything. Gather items first~\n┊ Balance: *{balance} coins*\n╰━━━━━━━',
+      done: '╭─❏ 🧳 「 *MERCHANT* 」\n┊ Sold to merchant: *{qty}x {item}* for *+{gain} coins* (merchant price @{unit})\n┊ Balance: *{balance} coins*\n╰━━━━━━━',
+      noItem: '╭─❏ 🧳 「 *MERCHANT* 」\n┊ You do not have that many *{item}* in your bag. You have: *{have}*\n╰━━━━━━━',
+      unknown: '╭─❏ 🧳 「 *MERCHANT* 」\n┊ The merchant does not know item *{id}*. Check .inventory for your item ids\n╰━━━━━━━',
     },
   },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur merchant buat profil petualanganmu~", en: "Here is the merchant summary for your adventure profile~" }
-export const test = { input: '.merchant', expect: /merchant|koin|coin/i }
+export const test = { input: '.merchant besi 1', expect: /terjual ke merchant|tidak punya|sold to merchant|do not have|tidak dikenal|does not know/i }
+
+export function merchantUnitPrice(itemId, profile) {
+  const item = ITEM_MAP[itemId]
+  if (!item) return 0
+  let unit = Math.floor(item.price * (1 + MERCHANT_BONUS / 100))
+  const job = JOB_MAP[profile?.job]
+  if (job && job.bonus.activity === 'sell') unit = Math.floor(unit * (1 + job.bonus.percent / 100))
+  return unit
+}
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('merchant.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  const inv = profile.inventory ?? {}
+  const [rawId, rawQty] = (ctx.text || '').trim().toLowerCase().split(/\s+/)
+  if (!rawId) {
+    const rows = Object.entries(inv).filter(([, q]) => q > 0)
+    if (!rows.length) return ctx.reply(ctx.t('merchant.empty', { balance: profile.balance ?? 0 }))
+    const list = rows.map(([id, q]) => {
+      const def = ITEM_MAP[id]
+      const nm = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : id
+      return (def?.emoji ?? '•') + ' ' + nm + ' x' + q + ' (@' + merchantUnitPrice(id, profile) + ')'
+    }).join('\n┊ ')
+    return ctx.reply(ctx.t('merchant.list', { list }))
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('merchant'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('merchant.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('merchant.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('merchant.btnAgain'), id: '.merchant' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('merchant.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('merchant.btnAgain'), id: '.merchant' }], textFallback: body })
+  const item = ITEM_MAP[rawId]
+  if (!item) return ctx.reply(ctx.t('merchant.unknown', { id: rawId }))
+  const qty = Math.max(1, Math.floor(Number(rawQty) || 1))
+  const have = inv[rawId] ?? 0
+  const nm = ctx.lang === 'en' ? item.name.en : item.name.id
+  if (have < qty) return ctx.reply(ctx.t('merchant.noItem', { item: nm, have }))
+  const unit = merchantUnitPrice(rawId, profile)
+  const gain = unit * qty
+  const nextInv = { ...inv }
+  nextInv[rawId] = have - qty
+  if (nextInv[rawId] <= 0) delete nextInv[rawId]
+  const balance = (profile.balance ?? 0) + gain
+  await updateProfile(ctx.storage, ctx.senderDigits, { inventory: nextInv, balance })
+  return ctx.reply(ctx.t('merchant.done', { qty, item: nm, gain, unit, balance }))
 }

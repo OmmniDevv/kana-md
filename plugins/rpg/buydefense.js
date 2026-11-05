@@ -1,57 +1,45 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama MODE="spend"
+// hanya memotong saldo rumus generik dan efeknya tidak disimpan. Sekarang
+// membeli poin Defense nyata yang tersimpan di profile.stats dan dibaca
+// powerOf (duel, dungeon, arena, battle) serta tampil di .skill.
+import { buyStat, statsOf } from '../../src/rpg/stats.js'
+import { powerOf } from '../../src/rpg/engine.js'
+import { getProfile } from '../../src/services/user-service.js'
 
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "buydefense",
+  name: 'buydefense',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur buydefense versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD buydefense feature, rewritten in KANA style" },
-  usage: ".buydefense",
-  example: ".buydefense",
+  category: 'rpg',
+  description: { id: 'Beli poin Defense permanen: tersimpan di profil dan menaikkan power tempurmu', en: 'Buy permanent Defense points: stored on your profile and raises your battle power' },
+  usage: '.buydefense [jumlah]',
+  example: '.buydefense 2',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "buydefense": {
-      done: "╭─❏ ⚔️ 「 *BUYDEFENSE* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BUYDEFENSE* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    buydefense: {
+      done: '╭─❏ 🛡️ 「 *BUYDEFENSE* 」\n┊ Defense naik jadi *{value}* (+{qty}) seharga *{cost} koin*\n┊ Power tempur sekarang: *{power}*\n┊ Saldo: *{balance} koin*\n╰━━━━━━━',
+      poor: '╭─❏ 💸 「 *BUYDEFENSE* 」\n┊ Saldo kurang: butuh *{cost} koin*, saldomu *{balance} koin*. Defense kamu sekarang *{value}*\n╰━━━━━━━',
     },
   },
   en: {
-    "buydefense": {
-      done: "╭─❏ ⚔️ 「 *BUYDEFENSE* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BUYDEFENSE* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
+    buydefense: {
+      done: '╭─❏ 🛡️ 「 *BUYDEFENSE* 」\n┊ Your Defense is now *{value}* (+{qty}) for *{cost} coins*\n┊ Battle power now: *{power}*\n┊ Balance: *{balance} coins*\n╰━━━━━━━',
+      poor: '╭─❏ 💸 「 *BUYDEFENSE* 」\n┊ Not enough coins: needs *{cost} coins*, you have *{balance} coins*. Your Defense is *{value}*\n╰━━━━━━━',
     },
   },
 }
 
-const MODE = "spend"
-const FLAVOR = { id: "Kamu memakai fitur buydefense. Semoga bermanfaat buat petualanganmu~", en: "You used the buydefense feature. Hope it helps your adventure~" }
-export const test = { input: '.buydefense', expect: /buydefense|koin|coin/i }
+export const test = { input: '.buydefense 1', expect: /defense naik|defense kamu sekarang|your defense is/i }
+
 export async function handler(ctx) {
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('buydefense.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  const qty = Math.max(1, Math.min(20, Math.floor(Number((ctx.args ?? [])[0]) || 1)))
+  const before = await getProfile(ctx.storage, ctx.senderDigits)
+  const res = await buyStat(ctx.storage, ctx.senderDigits, 'defense', qty)
+  if (!res.ok) {
+    return ctx.reply(ctx.t('buydefense.poor', { cost: res.cost ?? 0, balance: before.balance ?? 0, value: statsOf(before).defense }))
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('buydefense'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('buydefense.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('buydefense.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('buydefense.btnAgain'), id: '.buydefense' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('buydefense.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('buydefense.btnAgain'), id: '.buydefense' }], textFallback: body })
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t('buydefense.done', { value: res.value, qty: res.qty, cost: res.cost, power: powerOf(fresh), balance: res.balance }))
 }

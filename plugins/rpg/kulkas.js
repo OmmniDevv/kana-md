@@ -1,57 +1,50 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama MODE="info"
+// hanya membalas ringkasan saldo + flavor. Sekarang menampilkan data nyata
+// spesifik namanya dari inventaris profil (item data.js + harga jualnya).
+import { getProfile } from '../../src/services/user-service.js'
+import { ITEM_MAP } from '../../src/rpg/data.js'
 
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "kulkas",
+  name: 'kulkas',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur kulkas versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD kulkas feature, rewritten in KANA style" },
-  usage: ".kulkas",
-  example: ".kulkas",
+  category: 'rpg',
+  description: { id: 'Isi kulkas nyata: bahan makanan dan makanan jadi dari inventarismu', en: 'Real fridge contents: ingredients and cooked food from your inventory' },
+  usage: '.kulkas',
+  example: '.kulkas',
   cooldown: 5,
 }
 
+export const ITEMS_SHOWN = ["daging", "ikan", "ikanmas", "udang", "kepiting", "buah", "kue"]
+
 export const i18n = {
   id: {
-    "kulkas": {
-      done: "╭─❏ ⚔️ 「 *KULKAS* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *KULKAS* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    kulkas: {
+      empty: '╭─❏ 🧊 「 *KULKAS* 」\n┊ Kulkasmu kosong. Isi dari hasil buruan, pancingan, atau masak pakai .cook~\n╰━━━━━━━',
+      list: '╭─❏ 🧊 「 *KULKAS* 」\n┊ {list}\n┊ Total nilai jual: *{total} koin* (jual pakai .sellall)\n╰━━━━━━━',
     },
   },
   en: {
-    "kulkas": {
-      done: "╭─❏ ⚔️ 「 *KULKAS* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *KULKAS* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
+    kulkas: {
+      empty: '╭─❏ 🧊 「 *FRIDGE* 」\n┊ Your fridge is empty. Fill it from hunts, catches, or cook with .cook~\n╰━━━━━━━',
+      list: '╭─❏ 🧊 「 *FRIDGE* 」\n┊ {list}\n┊ Total sell value: *{total} coins* (sell with .sellall)\n╰━━━━━━━',
     },
   },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur kulkas buat profil petualanganmu~", en: "Here is the kulkas summary for your adventure profile~" }
-export const test = { input: '.kulkas', expect: /kulkas|koin|coin/i }
+export const test = { input: '.kulkas', expect: /kulkasmu kosong|total nilai jual|fridge is empty|total sell value/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('kulkas.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('kulkas'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('kulkas.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('kulkas.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('kulkas.btnAgain'), id: '.kulkas' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('kulkas.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('kulkas.btnAgain'), id: '.kulkas' }], textFallback: body })
+  const inv = profile.inventory ?? {}
+  const rows = ITEMS_SHOWN.filter((id) => (inv[id] ?? 0) > 0)
+  if (!rows.length) return ctx.reply(ctx.t('kulkas.empty'))
+  let total = 0
+  const list = rows.map((id) => {
+    const def = ITEM_MAP[id]
+    const nm = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : id
+    const price = def?.price ?? 0
+    total += price * inv[id]
+    return (def?.emoji ?? '•') + ' ' + nm + ' x' + inv[id] + ' (@' + price + ')'
+  }).join('\n┊ ')
+  return ctx.reply(ctx.t('kulkas.list', { list, total }))
 }

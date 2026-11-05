@@ -1,57 +1,50 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama MODE="info"
+// hanya membalas ringkasan saldo + flavor. Sekarang menampilkan data nyata
+// spesifik namanya dari inventaris profil (item data.js + harga jualnya).
+import { getProfile } from '../../src/services/user-service.js'
+import { ITEM_MAP } from '../../src/rpg/data.js'
 
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "kolam",
+  name: 'kolam',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur kolam versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD kolam feature, rewritten in KANA style" },
-  usage: ".kolam",
-  example: ".kolam",
+  category: 'rpg',
+  description: { id: 'Isi kolam nyata: hasil pancinganmu dari inventaris, lengkap harga jualnya', en: 'Real pond contents: your catches from your inventory, with sell prices' },
+  usage: '.kolam',
+  example: '.kolam',
   cooldown: 5,
 }
 
+export const ITEMS_SHOWN = ["ikan", "ikanmas", "udang", "kepiting", "ikanlegendaris"]
+
 export const i18n = {
   id: {
-    "kolam": {
-      done: "╭─❏ ⚔️ 「 *KOLAM* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *KOLAM* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    kolam: {
+      empty: '╭─❏ 🎣 「 *KOLAM* 」\n┊ Kolammu kosong, belum ada hasil pancingan. Mancing dulu pakai .mancing~\n╰━━━━━━━',
+      list: '╭─❏ 🎣 「 *KOLAM* 」\n┊ {list}\n┊ Total nilai jual: *{total} koin* (jual pakai .sellall)\n╰━━━━━━━',
     },
   },
   en: {
-    "kolam": {
-      done: "╭─❏ ⚔️ 「 *KOLAM* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *KOLAM* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
+    kolam: {
+      empty: '╭─❏ 🎣 「 *POND* 」\n┊ Your pond is empty, no catches yet. Go fishing with .mancing~\n╰━━━━━━━',
+      list: '╭─❏ 🎣 「 *POND* 」\n┊ {list}\n┊ Total sell value: *{total} coins* (sell with .sellall)\n╰━━━━━━━',
     },
   },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur kolam buat profil petualanganmu~", en: "Here is the kolam summary for your adventure profile~" }
-export const test = { input: '.kolam', expect: /kolam|koin|coin/i }
+export const test = { input: '.kolam', expect: /kolammu kosong|total nilai jual|pond is empty|total sell value/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('kolam.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('kolam'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('kolam.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('kolam.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('kolam.btnAgain'), id: '.kolam' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('kolam.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('kolam.btnAgain'), id: '.kolam' }], textFallback: body })
+  const inv = profile.inventory ?? {}
+  const rows = ITEMS_SHOWN.filter((id) => (inv[id] ?? 0) > 0)
+  if (!rows.length) return ctx.reply(ctx.t('kolam.empty'))
+  let total = 0
+  const list = rows.map((id) => {
+    const def = ITEM_MAP[id]
+    const nm = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : id
+    const price = def?.price ?? 0
+    total += price * inv[id]
+    return (def?.emoji ?? '•') + ' ' + nm + ' x' + inv[id] + ' (@' + price + ')'
+  }).join('\n┊ ')
+  return ctx.reply(ctx.t('kolam.list', { list, total }))
 }

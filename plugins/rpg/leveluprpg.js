@@ -1,57 +1,48 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama MODE="info"
+// cuma membalas ringkasan. Level di KANA dihitung dari XP, jadi perintah
+// ini sekarang MELAKUKAN klaim hadiah level yang belum diambil: tiap level
+// baru sejak klaim terakhir (profile.levelClaimed) memberi 100 x level
+// koin, tersimpan, dan hanya bisa diklaim sekali.
+import { getProfile, updateProfile, levelFromXp, xpForLevel } from '../../src/services/user-service.js'
 
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "leveluprpg",
+  name: 'leveluprpg',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur leveluprpg versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD leveluprpg feature, rewritten in KANA style" },
-  usage: ".leveluprpg",
-  example: ".leveluprpg",
+  category: 'rpg',
+  description: { id: 'Klaim hadiah level RPG yang belum diambil: 100 x level koin per level baru', en: 'Claim unclaimed RPG level rewards: 100 x level coins per new level' },
+  usage: '.leveluprpg',
+  example: '.leveluprpg',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "leveluprpg": {
-      done: "╭─❏ ⚔️ 「 *LEVELUPRPG* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *LEVELUPRPG* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    leveluprpg: {
+      done: '╭─❏ ⬆️ 「 *LEVEL UP RPG* 」\n┊ Selamat, kamu naik ke *level {level}*!\n┊ Hadiah klaim: *+{reward} koin* (dari level {from} ke {level})\n┊ Saldo: *{balance} koin*\n╰━━━━━━━',
+      none: '╭─❏ ⬆️ 「 *LEVEL UP RPG* 」\n┊ Belum ada level baru buat diklaim. Level kamu *{level}*, kurang *{remain} XP* lagi ke level {next}\n┊ Hadiah per level baru: 100 x level koin\n╰━━━━━━━',
     },
   },
   en: {
-    "leveluprpg": {
-      done: "╭─❏ ⚔️ 「 *LEVELUPRPG* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *LEVELUPRPG* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
+    leveluprpg: {
+      done: '╭─❏ ⬆️ 「 *RPG LEVEL UP* 」\n┊ Congrats, you reached *level {level}*!\n┊ Claimed reward: *+{reward} coins* (from level {from} to {level})\n┊ Balance: *{balance} coins*\n╰━━━━━━━',
+      none: '╭─❏ ⬆️ 「 *RPG LEVEL UP* 」\n┊ No new level to claim yet. You are *level {level}*, *{remain} XP* short of level {next}\n┊ Reward per new level: 100 x level coins\n╰━━━━━━━',
     },
   },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur leveluprpg buat profil petualanganmu~", en: "Here is the leveluprpg summary for your adventure profile~" }
-export const test = { input: '.leveluprpg', expect: /leveluprpg|koin|coin/i }
+export const test = { input: '.leveluprpg', expect: /hadiah klaim|belum ada level baru|claimed reward|no new level/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('leveluprpg.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  const level = levelFromXp(profile.xp ?? 0)
+  const claimed = Math.max(1, Math.floor(Number(profile.levelClaimed) || 1))
+  if (level <= claimed) {
+    const remain = Math.max(0, xpForLevel(level + 1) - (profile.xp ?? 0))
+    return ctx.reply(ctx.t('leveluprpg.none', { level, remain, next: level + 1 }))
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('leveluprpg'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('leveluprpg.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('leveluprpg.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('leveluprpg.btnAgain'), id: '.leveluprpg' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('leveluprpg.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('leveluprpg.btnAgain'), id: '.leveluprpg' }], textFallback: body })
+  let reward = 0
+  for (let l = claimed + 1; l <= level; l++) reward += 100 * l
+  const balance = (profile.balance ?? 0) + reward
+  await updateProfile(ctx.storage, ctx.senderDigits, { balance, levelClaimed: level })
+  return ctx.reply(ctx.t('leveluprpg.done', { level, reward, from: claimed, balance }))
 }

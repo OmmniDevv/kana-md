@@ -1,57 +1,46 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama MODE="spend"
+// memotong saldo tanpa efek tersimpan. Sekarang konversi nyata dua arah
+// dengan .buykoin: DM (diamond) disimpan di profile.dm. Kurs dinyatakan:
+// beli 1 DM = 1000 koin, jual 1 DM = 900 koin (lihat buykoin.js).
+import { getProfile, updateProfile } from '../../src/services/user-service.js'
 
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+export const DM_BUY_RATE = 1000
 export const config = {
-  name: "buydm",
-  alias: ["buyalldm"],
-  category: "rpg",
-  description: { id: "Fitur buydm versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD buydm feature, rewritten in KANA style" },
-  usage: ".buydm",
-  example: ".buydm",
+  name: 'buydm',
+  alias: [],
+  category: 'rpg',
+  description: { id: 'Beli DM (diamond) pakai koin: 1 DM = 1000 koin, tersimpan di profilmu', en: 'Buy DM (diamonds) with coins: 1 DM = 1000 coins, stored on your profile' },
+  usage: '.buydm [jumlah DM]',
+  example: '.buydm 2',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "buydm": {
-      done: "╭─❏ ⚔️ 「 *BUYDM* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BUYDM* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    buydm: {
+      done: '╭─❏ 💠 「 *BUYDM* 」\n┊ Kamu beli *{qty} DM* seharga *{cost} koin* (kurs 1 DM = 1000 koin)\n┊ DM kamu sekarang: *{dm} DM*\n┊ Saldo: *{balance} koin*\n┊ Jual lagi pakai .buykoin\n╰━━━━━━━',
+      poor: '╭─❏ 💸 「 *BUYDM* 」\n┊ Saldo kurang: *{qty} DM* butuh *{cost} koin*, saldomu *{balance} koin*. DM kamu sekarang *{dm} DM*\n╰━━━━━━━',
     },
   },
   en: {
-    "buydm": {
-      done: "╭─❏ ⚔️ 「 *BUYDM* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BUYDM* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
+    buydm: {
+      done: '╭─❏ 💠 「 *BUYDM* 」\n┊ You bought *{qty} DM* for *{cost} coins* (rate 1 DM = 1000 coins)\n┊ Your DM is now: *{dm} DM*\n┊ Balance: *{balance} coins*\n┊ Sell back with .buykoin\n╰━━━━━━━',
+      poor: '╭─❏ 💸 「 *BUYDM* 」\n┊ Not enough coins: *{qty} DM* needs *{cost} coins*, you have *{balance} coins*. Your DM is *{dm} DM*\n╰━━━━━━━',
     },
   },
 }
 
-const MODE = "spend"
-const FLAVOR = { id: "Kamu memakai fitur buydm. Semoga bermanfaat buat petualanganmu~", en: "You used the buydm feature. Hope it helps your adventure~" }
-export const test = { input: '.buydm', expect: /buydm|koin|coin/i }
+export const test = { input: '.buydm 1', expect: /dm kamu sekarang|saldo kurang|your dm is/i }
+
 export async function handler(ctx) {
+  const qty = Math.max(1, Math.min(100, Math.floor(Number((ctx.args ?? [])[0]) || 1)))
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('buydm.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  const cost = qty * DM_BUY_RATE
+  const dm = Math.max(0, Math.floor(Number(profile.dm) || 0))
+  if ((profile.balance ?? 0) < cost) {
+    return ctx.reply(ctx.t('buydm.poor', { qty, cost, balance: profile.balance ?? 0, dm }))
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('buydm'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('buydm.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('buydm.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('buydm.btnAgain'), id: '.buydm' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('buydm.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('buydm.btnAgain'), id: '.buydm' }], textFallback: body })
+  const balance = (profile.balance ?? 0) - cost
+  await updateProfile(ctx.storage, ctx.senderDigits, { balance, dm: dm + qty })
+  return ctx.reply(ctx.t('buydm.done', { qty, cost, dm: dm + qty, balance }))
 }

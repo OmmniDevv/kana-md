@@ -1,57 +1,45 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama MODE="info"
+// membalas ringkasan generik. Sekarang membaca stamina nyata dari
+// energy.js (field energy profil, skala 0-100) yang dipakai semua
+// aktivitas RPG berat.
+import { getProfile } from '../../src/services/user-service.js'
+import { energyOf, MAX_ENERGY } from '../../src/rpg/energy.js'
 
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "stamina",
+  name: 'stamina',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur stamina versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD stamina feature, rewritten in KANA style" },
-  usage: ".stamina",
-  example: ".stamina",
+  category: 'rpg',
+  description: { id: 'Stamina (energi) nyata milikmu yang dipakai aktivitas RPG, dari profilmu langsung', en: 'Your real stamina (energy) used by RPG activities, straight from your profile' },
+  usage: '.stamina',
+  example: '.stamina',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "stamina": {
-      done: "╭─❏ ⚔️ 「 *STAMINA* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *STAMINA* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    stamina: {
+      info: '╭─❏ 🔋 「 *STAMINA* 」\n┊ Stamina kamu: *{energy}/{max}*\n┊ {note}\n┊ Pulihkan pakai .heal, .istirahat, .eat, atau .buyenergi\n╰━━━━━━━',
+      low: 'Udah mau habis nih, istirahat dulu yaa~',
+      ok: 'Masih cukup buat beraktivitas~',
     },
   },
   en: {
-    "stamina": {
-      done: "╭─❏ ⚔️ 「 *STAMINA* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *STAMINA* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
+    stamina: {
+      info: '╭─❏ 🔋 「 *STAMINA* 」\n┊ Your stamina: *{energy}/{max}*\n┊ {note}\n┊ Restore with .heal, .istirahat, .eat, or .buyenergi\n╰━━━━━━━',
+      low: 'Almost empty, take a rest first~',
+      ok: 'Still enough for activities~',
     },
   },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur stamina buat profil petualanganmu~", en: "Here is the stamina summary for your adventure profile~" }
-export const test = { input: '.stamina', expect: /stamina|koin|coin/i }
+export const test = { input: '.stamina', expect: /stamina kamu|your stamina/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('stamina.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('stamina'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('stamina.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('stamina.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('stamina.btnAgain'), id: '.stamina' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('stamina.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('stamina.btnAgain'), id: '.stamina' }], textFallback: body })
+  const energy = energyOf(profile)
+  return ctx.reply(ctx.t('stamina.info', {
+    energy,
+    max: MAX_ENERGY,
+    note: energy < 25 ? ctx.t('stamina.low') : ctx.t('stamina.ok'),
+  }))
 }

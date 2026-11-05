@@ -1,57 +1,54 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama MODE="spend"
+// malah MENGURANGI saldo. Sekarang menjual SEMUA isi inventaris dengan
+// harga data.js lewat sellItem (termasuk bonus job pedagang), jadi saldo
+// BERTAMBAH dan inventaris kosong. Kanonis untuk .jualan (alias).
+import { getProfile } from '../../src/services/user-service.js'
+import { sellItem } from '../../src/rpg/engine.js'
+import { ITEM_MAP } from '../../src/rpg/data.js'
 
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "sellall",
-  alias: [],
-  category: "rpg",
-  description: { id: "Fitur sellall versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD sellall feature, rewritten in KANA style" },
-  usage: ".sellall",
-  example: ".sellall",
+  name: 'sellall',
+  alias: ['jualan'],
+  category: 'rpg',
+  description: { id: 'Jual semua isi tasmu sekaligus: saldo bertambah sesuai harga barang', en: 'Sell everything in your bag at once: balance grows by the item prices' },
+  usage: '.sellall',
+  example: '.sellall',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "sellall": {
-      done: "╭─❏ ⚔️ 「 *SELLALL* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *SELLALL* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    sellall: {
+      empty: '╭─❏ 🎒 「 *SELLALL* 」\n┊ Tasmu kosong, tidak ada yang bisa dijual. Kumpulkan dulu dari .tambang atau .mancing\n┊ Saldo: *{balance} koin*\n╰━━━━━━━',
+      done: '╭─❏ 💰 「 *SELLALL* 」\n┊ Semua barang terjual: {list}\n┊ Total dapat: *+{gain} koin*\n┊ Saldo sekarang: *{balance} koin*\n╰━━━━━━━',
     },
   },
   en: {
-    "sellall": {
-      done: "╭─❏ ⚔️ 「 *SELLALL* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *SELLALL* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
+    sellall: {
+      empty: '╭─❏ 🎒 「 *SELLALL* 」\n┊ Your bag is empty, nothing to sell. Gather first from .tambang or .mancing\n┊ Balance: *{balance} coins*\n╰━━━━━━━',
+      done: '╭─❏ 💰 「 *SELLALL* 」\n┊ Everything sold: {list}\n┊ Total gained: *+{gain} coins*\n┊ Balance now: *{balance} coins*\n╰━━━━━━━',
     },
   },
 }
 
-const MODE = "spend"
-const FLAVOR = { id: "Kamu memakai fitur sellall. Semoga bermanfaat buat petualanganmu~", en: "You used the sellall feature. Hope it helps your adventure~" }
-export const test = { input: '.sellall', expect: /sellall|koin|coin/i }
+export const test = { input: '.sellall', expect: /terjual|everything sold|tasmu kosong|bag is empty/i }
+
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('sellall.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  const entries = Object.entries(profile.inventory ?? {}).filter(([, q]) => q > 0)
+  if (!entries.length) return ctx.reply(ctx.t('sellall.empty', { balance: profile.balance ?? 0 }))
+  let gain = 0
+  let balance = profile.balance ?? 0
+  const parts = []
+  for (const [id, qty] of entries) {
+    const res = await sellItem(ctx.storage, ctx.senderDigits, id, qty)
+    if (res.ok) {
+      gain += res.gain
+      balance = res.balance
+      const def = ITEM_MAP[id]
+      const nm = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : id
+      parts.push(nm + ' x' + qty)
+    }
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('sellall'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('sellall.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('sellall.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('sellall.btnAgain'), id: '.sellall' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('sellall.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('sellall.btnAgain'), id: '.sellall' }], textFallback: body })
+  return ctx.reply(ctx.t('sellall.done', { list: parts.join(', '), gain, balance }))
 }
