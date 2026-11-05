@@ -6,13 +6,22 @@ import { t as translate } from '../i18n/index.js'
 import { say } from '../persona/moe.js'
 import { logger } from '../services/logger.js'
 import { sendButtons } from '../ui/buttons.js'
-import { buildFakeQuoted, cachedThumbnail, forwardedContextInfo, warmFakeThumbnail } from '../ui/fake-thumb.js'
+import {
+  buildFakeQuoted,
+  cachedContactThumbnail,
+  cachedThumbnail,
+  forwardedContextInfo,
+  warmFakeContactThumbnail,
+  warmFakeThumbnail,
+} from '../ui/fake-thumb.js'
 import * as users from '../services/user-service.js'
 import * as premiumSvc from '../services/premium.js'
 import * as limitSvc from '../services/limit.js'
 
 // Panaskan thumbnail untuk fake quoted ala _allfake.js Elaina sekali saja.
 warmFakeThumbnail(join(dirname(fileURLToPath(import.meta.url)), '../../assets/menu-banner.jpg'))
+// Foto fake kontak memakai asetnya sendiri, terpisah dari banner menu.
+warmFakeContactThumbnail(join(dirname(fileURLToPath(import.meta.url)), '../../assets/fake-contact.jpg'))
 
 export const PREFIXES = ['.', '!', '/', '#']
 
@@ -144,8 +153,14 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
     // fake: 'none' (quoted kembali ke pesan user apa adanya).
     const reply = (txt, opts = {}) => {
       const kind = opts.fake === undefined ? 'kontak' : opts.fake
+      // Fake kontak memakai foto kontak khusus; fake lain tetap memakai
+      // thumbnail banner menu.
+      const isKontak = typeof kind === 'string' && ['kontak', 'contact'].includes(kind.toLowerCase())
       const fake = kind
-        ? buildFakeQuoted(kind, { botName: process.env.BOT_NAME || 'KANA', thumbnail: cachedThumbnail() })
+        ? buildFakeQuoted(kind, {
+            botName: process.env.BOT_NAME || 'KANA',
+            thumbnail: isKontak ? cachedContactThumbnail() : cachedThumbnail(),
+          })
         : null
       const content = { text: txt, contextInfo: forwardedContextInfo() }
       return sock.sendMessage(chat, content, { quoted: fake ?? raw })

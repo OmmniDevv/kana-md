@@ -1,15 +1,29 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import jpeg from 'jpeg-js'
 import {
   FAKE_TROLI_TOKEN,
   buildFakeContactQuoted,
   buildFakeQuoted,
   buildFakeTroliQuoted,
+  cachedContactThumbnail,
   coverJpeg300,
   forwardedContextInfo,
   sendQuotedText,
+  vcardPhotoBlock,
+  warmFakeContactThumbnail,
 } from '../src/ui/fake-thumb.js'
+
+const CONTACT_PHOTO_PATH = join(dirname(fileURLToPath(import.meta.url)), '../assets/fake-contact.jpg')
+
+function vcardPhotoBytes(vcard) {
+  const unfolded = vcard.replace(/\n /g, '')
+  const m = unfolded.match(/PHOTO;ENCODING=b;TYPE=JPEG:([A-Za-z0-9+/=]+)/)
+  return m ? Buffer.from(m[1], 'base64') : null
+}
 
 function patternedJpeg(width, height, quality = 90) {
   const data = Buffer.alloc(width * height * 4)
@@ -129,4 +143,44 @@ test('buildFakeQuoted: keluarga fake _allfake terpetakan ke bentuk pesan yang be
   assert.equal(troli.message.orderMessage.itemCount, 12)
   assert.equal(buildFakeQuoted('none', {}), null)
   assert.equal(buildFakeQuoted('tidak-ada', {}), null)
+})
+
+test('vcardPhotoBlock: base64 dilipat per 75 karakter, baris lanjutan diawali spasi', () => {
+  const thumb = patternedJpeg(64, 64)
+  const lines = vcardPhotoBlock(thumb).split('\n')
+  assert.ok(lines[0].startsWith('PHOTO;ENCODING=b;TYPE=JPEG:'))
+  for (const line of lines) assert.ok(line.length <= 75, `baris ${line.length} karakter`)
+  for (const line of lines.slice(1)) assert.ok(line.startsWith(' '))
+  const b64 = lines
+    .map((line, i) => (i === 0 ? line.slice('PHOTO;ENCODING=b;TYPE=JPEG:'.length) : line.slice(1)))
+    .join('')
+  assert.ok(Buffer.from(b64, 'base64').equals(thumb))
+})
+
+test('foto kontak khusus: cache dari assets/fake-contact.jpg masuk jpegThumbnail dan PHOTO vCard', async () => {
+  const warmed = await warmFakeContactThumbnail(CONTACT_PHOTO_PATH)
+  assert.ok(Buffer.isBuffer(warmed))
+  const cached = cachedContactThumbnail()
+  assert.ok(Buffer.isBuffer(cached))
+  const decoded = jpeg.decode(cached, { useTArray: true })
+  assert.equal(decoded.width, 300)
+  assert.equal(decoded.height, 300)
+  // Cache adalah hasil coverJpeg300 dari aset di disk, bukan banner menu.
+  const onDisk = await readFile(CONTACT_PHOTO_PATH)
+  assert.ok(cached.equals(coverJpeg300(onDisk)))
+
+  // Pemanggil tanpa thumbnail (menu utama, tombol, referal, pipeline)
+  // otomatis memakai foto kontak khusus ini.
+  const quoted = buildFakeContactQuoted({ botName: 'KANA' })
+  assert.equal(quoted.message.contactMessage.jpegThumbnail, cached)
+  assert.match(quoted.message.contactMessage.vcard, /PHOTO;ENCODING=b;TYPE=JPEG:/)
+  assert.ok(vcardPhotoBytes(quoted.message.contactMessage.vcard).equals(cached))
+})
+
+test('buildFakeContactQuoted: thumbnail eksplisit menang atas cache foto kontak', async () => {
+  await warmFakeContactThumbnail(CONTACT_PHOTO_PATH)
+  const thumb = patternedJpeg(64, 64)
+  const quoted = buildFakeContactQuoted({ botName: 'KANA', thumbnail: thumb })
+  assert.equal(quoted.message.contactMessage.jpegThumbnail, thumb)
+  assert.ok(vcardPhotoBytes(quoted.message.contactMessage.vcard).equals(thumb))
 })

@@ -99,21 +99,73 @@ export function cachedThumbnail() {
   return Buffer.isBuffer(fakeThumbnailCache) ? fakeThumbnailCache : null
 }
 
+let contactThumbnailCache
+let contactThumbnailPromise = null
+
+// Panaskan cache foto fake kontak sekali di awal. Foto kontak memakai
+// aset khusus (assets/fake-contact.jpg), terpisah dari thumbnail banner
+// menu, karena header kutipan kontak yang dilihat owner adalah foto
+// profil kontak, bukan banner. Pemanggil sinkron sesudahnya memakai
+// cachedContactThumbnail(); selama belum siap, builder berjalan tanpa
+// foto dan tetap sah.
+export function warmFakeContactThumbnail(photoPath) {
+  if (!contactThumbnailPromise) {
+    contactThumbnailPromise = readFile(photoPath)
+      .then((raw) => {
+        contactThumbnailCache = coverJpeg300(raw)
+        return contactThumbnailCache
+      })
+      .catch(() => null)
+  }
+  return contactThumbnailPromise
+}
+
+export function cachedContactThumbnail() {
+  return Buffer.isBuffer(contactThumbnailCache) ? contactThumbnailCache : null
+}
+
 const fakeKey = () => ({
   fromMe: false,
   participant: '0@s.whatsapp.net',
   remoteJid: 'status@broadcast',
 })
 
+// Blok PHOTO vCard 3.0 dari buffer JPEG: base64 dilipat menjadi baris
+// fisik maksimal 75 karakter, baris lanjutan diawali satu spasi, sesuai
+// aturan lipat vCard.
+export function vcardPhotoBlock(jpegBuffer) {
+  const prefix = 'PHOTO;ENCODING=b;TYPE=JPEG:'
+  const b64 = jpegBuffer.toString('base64')
+  const lines = [prefix + b64.slice(0, 75 - prefix.length)]
+  for (let i = 75 - prefix.length; i < b64.length; i += 74) {
+    lines.push(` ${b64.slice(i, i + 74)}`)
+  }
+  return lines.join('\n')
+}
+
 // Fake quoted contactMessage ala menu Cantarella di SC owner.
 export function buildFakeContactQuoted({ botName = 'KANA', thumbnail = null } = {}) {
   const name = String(botName || 'KANA')
+  // Foto kontak: thumbnail eksplisit dari pemanggil menang; tanpa itu
+  // pakai cache foto kontak khusus supaya menu utama, kartu tombol, dan
+  // referal yang memanggil tanpa thumbnail ikut memakai foto yang sama.
+  const photo = Buffer.isBuffer(thumbnail) ? thumbnail : cachedContactThumbnail()
+  const vcardLines = [
+    'BEGIN:VCARD',
+    'VERSION:3.0',
+    `FN:${name}`,
+    'item1.TEL;waid=0:+0',
+  ]
+  // PHOTO di vCard memberi peluang ekstra bagi klien WhatsApp untuk
+  // merender foto kontak di header kutipan, di samping jpegThumbnail.
+  if (photo) vcardLines.push(vcardPhotoBlock(photo))
+  vcardLines.push('END:VCARD')
   const contactMessage = {
     displayName: name,
-    vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nitem1.TEL;waid=0:+0\nEND:VCARD`,
+    vcard: vcardLines.join('\n'),
     sendEphemeral: true,
   }
-  if (Buffer.isBuffer(thumbnail)) contactMessage.jpegThumbnail = thumbnail
+  if (photo) contactMessage.jpegThumbnail = photo
   return {
     key: {
       participant: '0@s.whatsapp.net',
