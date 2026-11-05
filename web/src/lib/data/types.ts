@@ -43,7 +43,7 @@ export interface BotStatus {
 }
 
 export interface DataAdapter {
-  mode: "supabase" | "demo";
+  mode: "supabase";
   getLoginRequest(phone: string): Promise<LoginRequestRecord | null>;
   putLoginRequest(phone: string, record: LoginRequestRecord): Promise<void>;
   deleteLoginRequest(phone: string): Promise<void>;

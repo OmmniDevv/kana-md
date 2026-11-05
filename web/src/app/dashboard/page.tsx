@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getSession } from "@/lib/session";
-import { getAdapter, isDemoMode } from "@/lib/data";
+import { getAdapter } from "@/lib/data";
 import type { BotStatus, UserProfile } from "@/lib/data";
 import { formatDateValue, levelFromXp, limitLeftToday, xpProgress } from "@/lib/profile";
 import { countCommands, getPlugins } from "@/lib/plugins";
@@ -23,7 +23,6 @@ export default async function DashboardPage() {
   if (!session) redirect("/login");
 
   const adapter = getAdapter();
-  const demo = isDemoMode();
 
   let profile: UserProfile | null = null;
   try {
@@ -148,10 +147,6 @@ export default async function DashboardPage() {
   return (
     <div className="bg-bgsoft">
       <div className="mx-auto w-full max-w-[1200px] px-6 py-12">
-        {demo ? (
-          <div className="mb-6 rounded-3xl border border-warn bg-warnbg p-4 text-center font-bold text-warn">MODE DEMO, data contoh. Halaman ini memakai data fiktif karena database belum terhubung.</div>
-        ) : null}
-
         <p className="text-xs font-bold uppercase tracking-[0.25em] text-fuchsia">{session.role === "owner" ? "Dashboard Owner" : "Dashboard Member"}</p>
 
         {!hasProfile ? (
