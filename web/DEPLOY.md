@@ -10,7 +10,6 @@ Folder ini adalah bundel dashboard web KANA (katalog plugin, login member, dashb
    - `KANA_DATABASE_URL`: connection string Postgres Supabase proyek kana-md (skema bot, tabel bot.kv).
    - `SESSION_SECRET`: string rahasia acak untuk menandatangani cookie sesi.
    - `OWNER_NUMBER`: nomor WhatsApp owner dalam format digit internasional, contoh 6281234567890.
-   - `DATA_MODE`: isi `supabase` untuk data asli, atau kosongkan untuk mode demo.
    - `GITHUB_TOKEN`: opsional, untuk menaikkan batas kuota GitHub API saat katalog membaca repo ini.
 4. Deploy. Vercel menjalankan `npm run build` lalu `next start` sesuai package.json di folder ini.
 5. Uji setelah deploy: halaman `/`, `/plugins`, `/plugins/main-ping`, dan `/login` harus menjawab 200, dan `/dashboard` tanpa sesi harus mengarah ke `/login`.
