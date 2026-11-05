@@ -5,7 +5,8 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'ig',
-  alias: ['igdl', 'instagram', 'instagramdl'],
+  limitGroup: 'download',
+  alias: ['igdl', 'instagram'],
   category: 'download',
   description: { id: 'Unduh foto atau video Instagram dari link', en: 'Download an Instagram photo or video from a link' },
   usage: '.ig <link instagram>',

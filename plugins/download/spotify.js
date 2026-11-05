@@ -6,7 +6,8 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'spotify',
-  alias: ['spot', 'spotifydl'],
+  limitGroup: 'download',
+  alias: ['spot'],
   category: 'download',
   description: { id: 'Cari lagu Spotify dan kirim audionya', en: 'Search Spotify and send the audio' },
   usage: '.spotify <judul lagu>',

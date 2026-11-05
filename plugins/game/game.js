@@ -7,6 +7,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'game',
+  premium: true,
   alias: [],
   category: 'game',
   description: { id: 'Mainkan satu game HTML, contoh .game hello', en: 'Play one HTML game, for example .game hello' },

@@ -2,6 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'removebg',
+  premium: true,
   alias: ['nobg', 'rmbg'],
   category: 'maker',
   description: { id: 'Hapus latar gambar (belum tersedia, dijelaskan jujur)', en: 'Remove image background (not available yet, honestly explained)' },

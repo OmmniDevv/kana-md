@@ -13,6 +13,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'vision',
+  premium: true,
   alias: ['lihatgambar', 'analisagambar'],
   category: 'ai',
   description: { id: 'Analisis gambar yang dikutip (butuh konfigurasi owner)', en: 'Analyze a quoted image (needs owner configuration)' },

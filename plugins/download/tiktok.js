@@ -5,7 +5,8 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'tiktok',
-  alias: ['tt', 'ttdl', 'tiktokdl'],
+  limitGroup: 'download',
+  alias: ['tt', 'ttdl'],
   category: 'download',
   description: { id: 'Unduh video atau slide TikTok tanpa watermark', en: 'Download a TikTok video or slideshow without watermark' },
   usage: '.tiktok <link tiktok>',

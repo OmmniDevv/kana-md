@@ -3,6 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'topgame',
+  premium: true,
   alias: ['topskor'],
   category: 'game',
   description: { id: 'Lihat leaderboard skor game', en: 'See the game score leaderboard' },

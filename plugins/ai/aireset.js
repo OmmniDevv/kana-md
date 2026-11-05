@@ -3,6 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'aireset',
+  premium: true,
   alias: ['resetai', 'lupaai'],
   category: 'ai',
   description: { id: 'Hapus memori percakapan AI kamu', en: 'Clear your AI conversation memory' },

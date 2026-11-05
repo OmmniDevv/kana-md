@@ -4,6 +4,7 @@ import { extractPixeldrainId, pixeldrainFileUrl, pixeldrainInfo } from '../../sr
 
 export const config = {
   name: 'pixeldrain',
+  limitGroup: 'download',
   alias: ['pd'],
   category: 'download',
   description: { id: 'Unduh berkas publik dari Pixeldrain', en: 'Download a public file from Pixeldrain' },

@@ -3,6 +3,7 @@ import { sendVideo, MAX_VIDEO_BYTES } from '../../src/ui/media.js'
 
 export const config = {
   name: 'ytmp4',
+  limitGroup: 'download',
   alias: ['ytvideo', 'ytv', 'youtubemp4', 'ytvhd'],
   category: 'download',
   description: { id: 'Unduh video YouTube sebagai mp4 dari link atau judul', en: 'Download a YouTube video as mp4 from a link or title' },

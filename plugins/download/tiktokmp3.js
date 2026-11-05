@@ -4,6 +4,7 @@ import { sendAudio, MAX_AUDIO_BYTES } from '../../src/ui/media.js'
 
 export const config = {
   name: 'tiktokmp3',
+  limitGroup: 'download',
   alias: ['ttmp3'],
   category: 'download',
   description: { id: 'Unduh audio musik dari link video TikTok', en: 'Download the music audio from a TikTok video link' },

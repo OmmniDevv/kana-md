@@ -4,7 +4,8 @@ import { sendDocument, MAX_DOCUMENT_BYTES } from '../../src/ui/media.js'
 
 export const config = {
   name: 'mediafire',
-  alias: ['mf', 'mediafiredl'],
+  limitGroup: 'download',
+  alias: ['mf'],
   category: 'download',
   description: { id: 'Unduh file dari link MediaFire', en: 'Download a file from a MediaFire link' },
   usage: '.mediafire <link mediafire>',

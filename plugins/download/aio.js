@@ -3,6 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'aio',
+  limitGroup: 'download',
   alias: ['allinone', 'dl', 'dla'],
   category: 'download',
   description: { id: 'Deteksi platform dari link lalu arahkan ke pengunduh yang tepat', en: 'Detect the platform of a link and route to the right downloader' },

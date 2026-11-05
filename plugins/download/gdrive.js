@@ -4,6 +4,7 @@ import { sendDocument, MAX_DOCUMENT_BYTES } from '../../src/ui/media.js'
 
 export const config = {
   name: 'gdrive',
+  limitGroup: 'download',
   alias: ['drive', 'googledrive'],
   category: 'download',
   description: { id: 'Unduh file dari link Google Drive publik', en: 'Download a file from a public Google Drive link' },

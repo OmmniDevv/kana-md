@@ -4,7 +4,8 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'aiimg',
-  alias: ['aiimage', 'buatgambar', 'text2img', 't2i', 'imggen', 'imagegen', 'txt2img', 'animeimg', 'fantasyimg', 'realimg', 'pixelimg'],
+  premium: true,
+  alias: ['aiimage', 'buatgambar', 't2i', 'imggen', 'imagegen', 'txt2img', 'animeimg', 'fantasyimg', 'realimg', 'pixelimg'],
   category: 'ai',
   description: { id: 'Buat gambar dari teks memakai AI (Pollinations)', en: 'Generate an image from text with AI (Pollinations)' },
   usage: '.aiimg <deskripsi gambar>',

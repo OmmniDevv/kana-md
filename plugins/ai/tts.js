@@ -8,7 +8,8 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'tts',
-  alias: ['suara', 'voice', 'tts2', 'ondoku', 'voiceondoku'],
+  premium: true,
+  alias: ['suara', 'voice', 'tts2', 'voiceondoku'],
   category: 'ai',
   description: { id: 'Ubah teks jadi pesan suara', en: 'Turn text into a voice note' },
   usage: '.tts <teks>',

@@ -3,6 +3,7 @@ import { sendAudio } from '../../src/ui/media.js'
 
 export const config = {
   name: 'soundcloud',
+  limitGroup: 'download',
   alias: ['sc', 'scdl'],
   category: 'download',
   description: { id: 'Unduh audio trek SoundCloud dari link trek', en: 'Download a SoundCloud track audio from a track link' },

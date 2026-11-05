@@ -5,7 +5,8 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'capcut',
-  alias: ['ccdl', 'capcutdl'],
+  limitGroup: 'download',
+  alias: ['ccdl'],
   category: 'download',
   description: { id: 'Unduh video template CapCut tanpa watermark dari link template', en: 'Download a CapCut template video without watermark from a template link' },
   usage: '.capcut <link capcut>',

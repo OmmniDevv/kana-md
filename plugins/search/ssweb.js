@@ -4,6 +4,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'ssweb',
+  premium: true,
   alias: ['screenshot', 'ss'],
   category: 'search',
   description: { id: 'Ambil screenshot halaman web', en: 'Take a screenshot of a web page' },

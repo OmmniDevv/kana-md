@@ -5,6 +5,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'ringkas',
+  premium: true,
   alias: ['rangkum', 'summarize'],
   category: 'ai',
   description: { id: 'Ringkas artikel dari URL atau teks panjang', en: 'Summarize an article from a URL or long text' },

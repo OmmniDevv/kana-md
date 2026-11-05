@@ -340,3 +340,17 @@ Keamanan fase grup: semua input uji adalah jalur validasi tanpa target (perintah
 ### Insiden infrastruktur jendela ABC
 
 VM mengalami replace sekitar 23:22 WIB: unit kana-bot.service hilang dari /etc/systemd/system dan bot tidak berjalan saat jendela dimulai (watchdog menahan diri karena kunci livetest). Jendela berjalan dalam keadaan service berhenti penuh. Di penutup misi unit ditulis ulang persis pola watchdog, daemon-reload, enable, start, dan koneksi final diverifikasi sebelum kunci livetest dihapus.
+
+## Sistem premium, sewa bot, dan limit harian (perintah owner 2026-11-05 11:12, koreksi 11:16)
+
+Unit: npm test 364/364 hijau penuh, termasuk 16 tes baru di test/premium.test.js (service premium/sewa, limit grup, gate pipeline, tanda menu, routing bridge). Registry memuat 426 plugin, 0 karantina. Dokumen resmi: docs/PREMIUM.md.
+
+Isi: service src/services/premium.js (namespace premium dan sewa_bot, durasi 7d/30d/2w/1y/permanen, perpanjangan menumpuk, kedaluwarsa malas) dan src/services/limit.js (namespace usage_limits per tanggal WIB). Gate terpusat di pipeline: premium sesudah gate admin, limit grup sesudah gate premium dan sebelum cooldown; plugin limitGroup melewati limit generik supaya tidak kena potong dua kali. Namespace premium, sewa_bot, dan usage_limits dirutekan lewat web-bridge REST Supabase supaya panel web dan bot berbagi data yang sama.
+
+Plugin baru: owner addprem, delprem, listprem, addsewa, delsewa, listsewa; user cekprem (plus sisa limit), ceksewa, infopremium (daftar dinamis dari registry). Aktivasi selalu manual oleh owner, tanpa payment gateway.
+
+Tanda: menu memberi akhiran 💎 untuk premium dan ⏳ untuk limit, legenda di menu utama, kategori, dan all. Katalog web menampilkan badge Premium dan Limit dari parser.
+
+Premium awal 14 plugin: ai, aiimg, aireset, ringkas, tts, vision, jadibot, stopjadibot, removebg, ssweb, ocr, game, hello, topgame. Jadibot bukan lagi owner-only (kategori user): sewa grup tidak membukanya, hanya premium personal atau sewa jadibot; stopjadibot tetap bisa dipakai pemegang sesi aktif walau premium berakhir, dan non-owner hanya bisa menghentikan sesinya sendiri. Tidak ditemukan sebagai plugin tersendiri: twitter, dailymotion, ephoto (dicatat di docs/PREMIUM.md, tidak dikarang).
+
+Koreksi owner 11:16 diterapkan: downloader berat dan upscale BUKAN premium, melainkan limitGroup. Download (aio, capcut, fb, gdrive, ig, mediafire, pixeldrain, soundcloud, spotify, tiktok, tiktokmp3, ytmp4): gratis 5 kali per hari, premium/sewa grup 50 kali, owner tanpa batas. Upscale (hd): gratis 3 kali, premium/sewa 20 kali. Reset tengah malam WIB, percobaan ditolak tidak menambah hitungan. Bukti gate penolakan user gratis dari tes unit pipeline (nomor owner selalu lolos gate, jadi penolakan tidak bisa dibuktikan dari chat owner); tes live Mode A untuk perintah info dan owner menyusul di jendela tes misi ini dan dicatat terpisah.

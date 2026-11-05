@@ -5,7 +5,8 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'fb',
-  alias: ['fbdl', 'facebook', 'facebookdl'],
+  limitGroup: 'download',
+  alias: ['fbdl', 'facebook'],
   category: 'download',
   description: { id: 'Unduh video atau reel Facebook dari link', en: 'Download a Facebook video or reel from a link' },
   usage: '.fb <link video facebook>',
