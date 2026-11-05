@@ -45,14 +45,20 @@ function decodeEntities(s) {
 }
 
 // Urai hasil dari HTML DuckDuckGo Lite menjadi daftar { title, url, snippet }.
+// Halaman lite memakai kutip tunggal dan href sebelum class, jadi
+// penguraian dua tahap: kumpulkan semua jangkar, saring yang berclass
+// result-link, lalu ambil href dari tag pembukanya.
 export function parseDdgLite(html, limit = 5) {
+  const src = String(html || '')
+  const snippetRe = /<td class=['"]result-snippet['"]>([\s\S]*?)<\/td>/g
+  const snippets = [...src.matchAll(snippetRe)].map((m) => decodeEntities(m[1]))
   const results = []
-  const linkRe = /<a[^>]+class="result-link"[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g
-  const snippetRe = /<td class="result-snippet">([\s\S]*?)<\/td>/g
-  const snippets = [...String(html || '').matchAll(snippetRe)].map((m) => decodeEntities(m[1]))
+  const anchorRe = /<a\b([^>]*)>([\s\S]*?)<\/a>/g
   let i = 0
-  for (const m of String(html || '').matchAll(linkRe)) {
-    let url = m[1]
+  for (const m of src.matchAll(anchorRe)) {
+    if (!/class=['"]result-link['"]/.test(m[1])) continue
+    const href = (m[1].match(/href=['"]([^'"]+)['"]/) || [])[1] || ''
+    let url = href
     try {
       const u = new URL(url.startsWith('//') ? 'https:' + url : url)
       const real = u.searchParams.get('uddg')

@@ -58,11 +58,16 @@ export function parseYtChannel(data, handle) {
   const name = meta?.title || findText(data.header || data, 'title')
   if (!name) return null
   const header = data.header || {}
+  // Struktur kini: header.pageHeaderRenderer menyimpan teks ringkas
+  // seperti "46.6M subscribers" dan "1.6K videos" di metadataParts.
+  const headerText = JSON.stringify(header)
+  const subsMatch = headerText.match(/([\d.,]+\s*[KMB]?)\s+subscribers/i)
+  const videosMatch = headerText.match(/([\d.,]+\s*[KMB]?)\s+videos/i)
   return {
     name,
     handle: meta?.vanityChannelUrl ? meta.vanityChannelUrl.split('/').pop() : handle,
-    subs: findText(header, 'subscriberCountText') || '-',
-    videos: findText(header, 'videoCountText') || '-',
+    subs: subsMatch ? subsMatch[1].replace(/\s+/g, '') : (findText(header, 'subscriberCountText') || '-'),
+    videos: videosMatch ? videosMatch[1].replace(/\s+/g, '') : (findText(header, 'videoCountText') || '-'),
     desc: String(meta?.description || '-').slice(0, 200),
   }
 }

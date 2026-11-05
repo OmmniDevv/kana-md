@@ -61,8 +61,9 @@ export function parseSchedule(html, limit = 20) {
   const rows = []
   $('table tr').each((_, tr) => {
     const cells = $(tr).find('td').map((__, td) => $(td).text().trim()).get()
-    if (cells.length >= 2 && /^\d{1,2}[:.]\d{2}$/.test(cells[0])) {
-      rows.push({ time: cells[0].replace('.', ':'), show: cells[1] })
+    const timeMatch = cells[0]?.match(/^(\d{1,2})[:.](\d{2})\s*(?:WIB)?$/i)
+    if (cells.length >= 2 && timeMatch && cells[1] && !/jadwaltv/i.test(cells[1])) {
+      rows.push({ time: `${timeMatch[1].padStart(2, '0')}:${timeMatch[2]}`, show: cells[1] })
     }
   })
   if (rows.length) return rows.slice(0, limit)
