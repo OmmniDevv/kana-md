@@ -1,81 +1,39 @@
-
+// Desimal ke biner, dihitung lokal.
 export const config = {
-  name: "dbinary",
-  alias: [],
-  category: "tools",
-  description: { id: "Decode binary menjadi teks", en: "KANA version of the Elaina-MD dbinary feature, rewritten in KANA style" },
-  usage: ".dbinary",
-  example: ".dbinary",
-  cooldown: 5,
+  name: 'dbinary',
+  alias: ['dec2bin', 'desimalkebiner'],
+  category: 'tools',
+  description: { id: 'Ubah angka desimal menjadi biner', en: 'Convert a decimal number to binary' },
+  usage: '.dbinary <angka>',
+  example: '.dbinary 255',
+  cooldown: 3,
 }
 
 export const i18n = {
   id: {
-    "dbinary": {
-      hint: "╭─❏ 🔍 「 *DBINARY* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.dbinary kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    dbinary: {
+      needInput: '╭─❏ 🔢 「 *KETIK ANGKANYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.dbinary 255*\n╰━━━━━━━',
+      out: '╭─❏ 🔢 「 *DESIMAL KE BINER* 」\n┊ ᴅᴇꜱɪᴍᴀʟ: *{dec}*\n┊ ʙɪɴᴇʀ: *{bin}*\n┊ ᴏᴋᴛᴀʟ: *{oct}* | ʜᴇx: *{hex}*\n╰━━━━━━━',
     },
   },
   en: {
-    "dbinary": {
-      hint: "╭─❏ 🔍 「 *DBINARY* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.dbinary keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    dbinary: {
+      needInput: '╭─❏ 🔢 「 *TYPE THE NUMBER* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.dbinary 255*\n╰━━━━━━━',
+      out: '╭─❏ 🔢 「 *DECIMAL TO BINARY* 」\n┊ ᴅᴇᴄɪᴍᴀʟ: *{dec}*\n┊ ʙɪɴᴀʀʏ: *{bin}*\n┊ ᴏᴄᴛᴀʟ: *{oct}* | ʜᴇx: *{hex}*\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.dbinary indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.dbinary 255', expect: /11111111/ }
+
+export function decToBin(text) {
+  const n = Number(String(text || '').trim())
+  if (!Number.isSafeInteger(n) || n < 0) return null
+  return { dec: n, bin: n.toString(2), oct: n.toString(8), hex: n.toString(16).toUpperCase() }
 }
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('dbinary.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('dbinary.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('dbinary.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('dbinary.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('dbinary.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('dbinary.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('dbinary.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('dbinary.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('dbinary.notfound', { q }))
-    return ctx.reply(ctx.t('dbinary.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('dbinary.fail', { message: err.message }))
-  }
+  const result = decToBin(ctx.text || '')
+  if (!result) return ctx.reply(ctx.t('dbinary.needInput'))
+  return ctx.reply(ctx.t('dbinary.out', result))
 }

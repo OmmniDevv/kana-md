@@ -1,81 +1,59 @@
-
+// Hitung jumlah kemenangan beruntun yang dibutuhkan untuk mencapai
+// target winrate Mobile Legends. Rumus lokal standar:
+// cari x terkecil sehingga (W + x) / (M + x) mencapai target.
 export const config = {
-  name: "hitungwrmlbb",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur hitungwrmlbb versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD hitungwrmlbb feature, rewritten in KANA style" },
-  usage: ".hitungwrmlbb",
-  example: ".hitungwrmlbb",
-  cooldown: 5,
+  name: 'hitungwrmlbb',
+  alias: ['wrml', 'hitungwr'],
+  category: 'tools',
+  description: { id: 'Hitung win beruntun yang dibutuhkan untuk target winrate MLBB', en: 'Calculate the win streak needed for an MLBB winrate target' },
+  usage: '.hitungwrmlbb <total match> <wr sekarang %> <target %>',
+  example: '.hitungwrmlbb 100 50 60',
+  cooldown: 3,
 }
 
 export const i18n = {
   id: {
-    "hitungwrmlbb": {
-      hint: "╭─❏ 🔍 「 *HITUNGWRMLBB* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.hitungwrmlbb kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    hitungwrmlbb: {
+      needInput: '╭─❏ 🎯 「 *FORMAT HITUNG WR* 」\n┊ ᴄᴏɴᴛᴏʜ: *.hitungwrmlbb 100 50 60*\n┊ ᴀʀɢᴜᴍᴇɴ: ᴛᴏᴛᴀʟ ᴍᴀᴛᴄʜ, ᴡʀ ꜱᴇᴋᴀʀᴀɴɢ (%), ᴛᴀʀɢᴇᴛ ᴡʀ (%)\n╰━━━━━━━',
+      reached: '╭─❏ 🎯 「 *SUDAH LEWAT TARGET* 」\n┊ ᴡʀ ᴋᴀᴍᴜ *{wr}%* dari *{m} match* (menang {w}).\n┊ ᴛᴀʀɢᴇᴛ *{t}%* sudah tercapai, pertahankan ya~\n╰━━━━━━━',
+      out: '╭─❏ 🎯 「 *HITUNG WR MLBB* 」\n┊ ᴛᴏᴛᴀʟ ᴍᴀᴛᴄʜ: *{m}* (menang {w}, wr {wr}%)\n┊ ᴛᴀʀɢᴇᴛ: *{t}%*\n┊ ᴋᴀᴍᴜ ʙᴜᴛᴜʜ *{x} win beruntun* tanpa kalah.\n┊ ꜱᴇᴛᴇʟᴀʜ ɪᴛᴜ: {m2} match, menang {w2}, wr {wr2}%\n╰━━━━━━━',
     },
   },
   en: {
-    "hitungwrmlbb": {
-      hint: "╭─❏ 🔍 「 *HITUNGWRMLBB* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.hitungwrmlbb keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    hitungwrmlbb: {
+      needInput: '╭─❏ 🎯 「 *WR CALCULATION FORMAT* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.hitungwrmlbb 100 50 60*\n┊ ᴀʀɢꜱ: ᴛᴏᴛᴀʟ ᴍᴀᴛᴄʜᴇꜱ, ᴄᴜʀʀᴇɴᴛ ᴡʀ (%), ᴛᴀʀɢᴇᴛ ᴡʀ (%)\n╰━━━━━━━',
+      reached: '╭─❏ 🎯 「 *TARGET ALREADY REACHED* 」\n┊ ʏᴏᴜʀ ᴡʀ ɪꜱ *{wr}%* from *{m} matches* ({w} wins).\n┊ ᴛʜᴇ *{t}%* target is already reached, keep it up~\n╰━━━━━━━',
+      out: '╭─❏ 🎯 「 *MLBB WR CALCULATION* 」\n┊ ᴛᴏᴛᴀʟ ᴍᴀᴛᴄʜᴇꜱ: *{m}* ({w} wins, wr {wr}%)\n┊ ᴛᴀʀɢᴇᴛ: *{t}%*\n┊ ʏᴏᴜ ɴᴇᴇᴅ *{x} straight wins*.\n┊ ᴀꜰᴛᴇʀ ᴛʜᴀᴛ: {m2} matches, {w2} wins, wr {wr2}%\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.hitungwrmlbb indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.hitungwrmlbb 100 50 60', expect: /25 win|25 straight/ }
+
+// Hitung win beruntun yang dibutuhkan; null bila input tidak valid.
+export function winsNeeded(matches, winrate, target) {
+  const m = Number(matches)
+  const wr = Number(winrate)
+  const t = Number(target)
+  if (!Number.isFinite(m) || !Number.isFinite(wr) || !Number.isFinite(t)) return null
+  if (m <= 0 || wr < 0 || wr > 100 || t <= 0 || t >= 100) return null
+  const wins = Math.round(m * wr / 100)
+  if (wr >= t) return { m, w: wins, wr, t, x: 0 }
+  const x = Math.ceil((t / 100 * m - wins) / (1 - t / 100))
+  return { m, w: wins, wr, t, x }
 }
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('hitungwrmlbb.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('hitungwrmlbb.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('hitungwrmlbb.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('hitungwrmlbb.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('hitungwrmlbb.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('hitungwrmlbb.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('hitungwrmlbb.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('hitungwrmlbb.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('hitungwrmlbb.notfound', { q }))
-    return ctx.reply(ctx.t('hitungwrmlbb.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('hitungwrmlbb.fail', { message: err.message }))
-  }
+  const parts = (ctx.text || '').trim().split(/\s+/)
+  const result = parts.length >= 3 ? winsNeeded(parts[0], parts[1], parts[2]) : null
+  if (!result) return ctx.reply(ctx.t('hitungwrmlbb.needInput'))
+  if (result.x === 0) return ctx.reply(ctx.t('hitungwrmlbb.reached', result))
+  const m2 = result.m + result.x
+  const w2 = result.w + result.x
+  return ctx.reply(ctx.t('hitungwrmlbb.out', {
+    ...result,
+    m2,
+    w2,
+    wr2: (w2 / m2 * 100).toFixed(2),
+  }))
 }

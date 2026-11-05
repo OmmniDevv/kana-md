@@ -1,81 +1,92 @@
-
+// Pindai ringkasan repo GitHub publik lewat API resmi GitHub:
+// bintang, fork, isu, bahasa utama, lisensi, ukuran, aktivitas.
 export const config = {
-  name: "scanrepo",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur scanrepo versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD scanrepo feature, rewritten in KANA style" },
-  usage: ".scanrepo",
-  example: ".scanrepo",
-  cooldown: 5,
+  name: 'scanrepo',
+  alias: ['reposcan', 'scanrepository'],
+  category: 'tools',
+  description: { id: 'Pindai info repo GitHub: bintang, fork, bahasa, lisensi', en: 'Scan a GitHub repo info: stars, forks, language, license' },
+  usage: '.scanrepo <owner/repo>',
+  example: '.scanrepo facebook/react',
+  cooldown: 10,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "scanrepo": {
-      hint: "╭─❏ 🔍 「 *SCANREPO* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.scanrepo kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    scanrepo: {
+      needRepo: '╭─❏ 🐙 「 *KETIK REPONNYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.scanrepo facebook/react* ᴀᴛᴀᴜ ʟɪɴᴋ ʀᴇᴘᴏɴʏᴀ.\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *REPO TIDAK KETEMU* 」\n┊ Mouu, repo *{repo}* tidak ketemu atau privat~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *SCAN GAGAL* 」\n┊ Mouu, scan reponya gagal: *{message}*\n╰━━━━━━━',
+      body: '╭─❏ 🐙 「 *{name}* 」\n┊ ᴏᴡɴᴇʀ: *{owner}*\n┊ ⭐ ʙɪɴᴛᴀɴɢ: *{stars}* | 🍴 ꜰᴏʀᴋ: *{forks}* | ❗ ɪꜱᴜ ᴛᴇʀʙᴜᴋᴀ: *{issues}*\n┊ 💻 ʙᴀʜᴀꜱᴀ: *{langs}*\n┊ ⚖️ ʟɪꜱᴇɴꜱɪ: *{license}* | 📦 ᴜᴋᴜʀᴀɴ: *{size}*\n┊ 🆕 ᴅɪʙᴜᴀᴛ: {created} | 🔄 ᴜᴘᴅᴀᴛᴇ: {updated}\n┊ ᴅᴇꜱᴋʀɪᴘꜱɪ: {desc}\n┊ 🔗 {url}\n╰━━━━━━━',
     },
   },
   en: {
-    "scanrepo": {
-      hint: "╭─❏ 🔍 「 *SCANREPO* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.scanrepo keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    scanrepo: {
+      needRepo: '╭─❏ 🐙 「 *TYPE THE REPO* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.scanrepo facebook/react* ᴏʀ ᴛʜᴇ ʀᴇᴘᴏ ʟɪɴᴋ.\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *REPO NOT FOUND* 」\n┊ Mouu, the repo *{repo}* was not found or is private~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *SCAN FAILED* 」\n┊ Mouu, the repo scan failed: *{message}*\n╰━━━━━━━',
+      body: '╭─❏ 🐙 「 *{name}* 」\n┊ ᴏᴡɴᴇʀ: *{owner}*\n┊ ⭐ ꜱᴛᴀʀꜱ: *{stars}* | 🍴 ꜰᴏʀᴋꜱ: *{forks}* | ❗ ᴏᴘᴇɴ ɪꜱꜱᴜᴇꜱ: *{issues}*\n┊ 💻 ʟᴀɴɢᴜᴀɢᴇꜱ: *{langs}*\n┊ ⚖️ ʟɪᴄᴇɴꜱᴇ: *{license}* | 📦 ꜱɪᴢᴇ: *{size}*\n┊ 🆕 ᴄʀᴇᴀᴛᴇᴅ: {created} | 🔄 ᴜᴘᴅᴀᴛᴇᴅ: {updated}\n┊ ᴅᴇꜱᴄʀɪᴘᴛɪᴏɴ: {desc}\n┊ 🔗 {url}\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.scanrepo indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
+export const test = { input: '.scanrepo facebook/react', expect: /react|Bintang|Stars/i }
+
+// Urai masukan menjadi { owner, repo }.
+export function parseRepoInput(text) {
+  const src = String(text || '').trim()
+  const fromUrl = src.match(/github\.com\/([\w.-]+)\/([\w.-]+)/)
+  if (fromUrl) return { owner: fromUrl[1], repo: fromUrl[2].replace(/\.git$/, '') }
+  const plain = src.match(/^([\w.-]+)\/([\w.-]+)$/)
+  if (plain) return { owner: plain[1], repo: plain[2] }
+  return null
+}
+
+async function ghGet(path) {
+  const res = await fetch(`https://api.github.com${path}`, {
+    signal: AbortSignal.timeout(20000),
+    headers: { accept: 'application/vnd.github+json', 'user-agent': 'KANA-Bot' },
+  })
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`GitHub HTTP ${res.status}`)
   return res.json()
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('scanrepo.hint'))
+
+export function formatSize(kb) {
+  if (kb >= 1024) return (kb / 1024).toFixed(1) + ' MB'
+  return kb + ' KB'
+}
+
+export async function handler(ctx, { api = ghGet } = {}) {
+  const parsed = parseRepoInput(ctx.text || '')
+  if (!parsed) return ctx.reply(ctx.t('scanrepo.needRepo'))
+  const slug = `${parsed.owner}/${parsed.repo}`
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('scanrepo.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('scanrepo.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('scanrepo.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('scanrepo.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('scanrepo.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('scanrepo.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
+    const repo = await api(`/repos/${slug}`)
+    if (!repo) return ctx.reply(ctx.t('scanrepo.notFound', { repo: slug }))
+    let langs = repo.language || '-'
     try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('scanrepo.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
+      const langData = await api(`/repos/${slug}/languages`)
+      if (langData) {
+        const top = Object.entries(langData).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k)
+        if (top.length) langs = top.join(', ')
       }
     } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('scanrepo.notfound', { q }))
-    return ctx.reply(ctx.t('scanrepo.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    return ctx.reply(ctx.t('scanrepo.body', {
+      name: repo.full_name,
+      owner: repo.owner?.login || parsed.owner,
+      stars: Number(repo.stargazers_count || 0).toLocaleString('id-ID'),
+      forks: Number(repo.forks_count || 0).toLocaleString('id-ID'),
+      issues: Number(repo.open_issues_count || 0).toLocaleString('id-ID'),
+      langs,
+      license: repo.license?.spdx_id || '-',
+      size: formatSize(Number(repo.size || 0)),
+      created: String(repo.created_at || '').slice(0, 10),
+      updated: String(repo.updated_at || '').slice(0, 10),
+      desc: repo.description || '-',
+      url: repo.html_url,
+    }))
   } catch (err) {
-    return ctx.reply(ctx.t('scanrepo.fail', { message: err.message }))
+    return ctx.reply(ctx.t('scanrepo.failed', { message: err.message }))
   }
 }

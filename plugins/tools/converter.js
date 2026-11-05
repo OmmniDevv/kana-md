@@ -1,81 +1,95 @@
-
+// Konverter satuan lokal: panjang, berat, suhu, data, waktu.
+// Semua faktor konversi dihitung di dalam bot, tanpa layanan luar.
 export const config = {
-  name: "converter",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur converter versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD converter feature, rewritten in KANA style" },
-  usage: ".converter",
-  example: ".converter",
-  cooldown: 5,
+  name: 'converter',
+  alias: ['konversi', 'convert'],
+  category: 'tools',
+  description: { id: 'Konversi satuan panjang, berat, suhu, data, dan waktu', en: 'Convert length, weight, temperature, data, and time units' },
+  usage: '.converter <angka> <satuan> ke <satuan>',
+  example: '.converter 5 km ke m',
+  cooldown: 3,
 }
 
 export const i18n = {
   id: {
-    "converter": {
-      hint: "╭─❏ 🔍 「 *CONVERTER* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.converter kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    converter: {
+      needInput: '╭─❏ 🔁 「 *FORMAT KONVERSI* 」\n┊ ᴄᴏɴᴛᴏʜ: *.converter 5 km ke m*\n┊ ꜱᴀᴛᴜᴀɴ: ᴋᴍ, ᴍ, ᴄᴍ, ᴍᴍ, ᴍɪ, ꜰᴛ, ɪɴ, ᴋɢ, ɢ, ᴛᴏɴ, ʟʙ, ᴏᴢ, ᴄ, ꜰ, ᴋ, ʙ, ᴋʙ, ᴍʙ, ɢʙ, ᴛʙ, ᴅᴇᴛɪᴋ, ᴍᴇɴɪᴛ, ᴊᴀᴍ, ʜᴀʀɪ\n╰━━━━━━━',
+      badUnit: '╭─❏ 🤔 「 *SATUAN TIDAK COCOK* 」\n┊ Satuan *{from}* dan *{to}* tidak bisa dikonversi (beda jenis atau tidak dikenal)~\n╰━━━━━━━',
+      out: '╭─❏ 🔁 「 *HASIL KONVERSI* 」\n┊ *{value} {from}* = *{result} {to}*\n╰━━━━━━━',
     },
   },
   en: {
-    "converter": {
-      hint: "╭─❏ 🔍 「 *CONVERTER* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.converter keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    converter: {
+      needInput: '╭─❏ 🔁 「 *CONVERSION FORMAT* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.converter 5 km to m*\n┊ ᴜɴɪᴛꜱ: ᴋᴍ, ᴍ, ᴄᴍ, ᴍᴍ, ᴍɪ, ꜰᴛ, ɪɴ, ᴋɢ, ɢ, ᴛᴏɴ, ʟʙ, ᴏᴢ, ᴄ, ꜰ, ᴋ, ʙ, ᴋʙ, ᴍʙ, ɢʙ, ᴛʙ, ꜱᴇᴄᴏɴᴅ, ᴍɪɴᴜᴛᴇ, ʜᴏᴜʀ, ᴅᴀʏ\n╰━━━━━━━',
+      badUnit: '╭─❏ 🤔 「 *UNITS DO NOT MATCH* 」\n┊ Units *{from}* and *{to}* cannot be converted (different kind or unknown)~\n╰━━━━━━━',
+      out: '╭─❏ 🔁 「 *CONVERSION RESULT* 」\n┊ *{value} {from}* = *{result} {to}*\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.converter indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.converter 5 km ke m', expect: /5000/ }
+
+const LINEAR = {
+  length: { mm: 0.001, cm: 0.01, m: 1, km: 1000, in: 0.0254, ft: 0.3048, yd: 0.9144, mi: 1609.344 },
+  weight: { mg: 0.000001, g: 0.001, kg: 1, ton: 1000, oz: 0.028349523125, lb: 0.45359237 },
+  data: { b: 1, kb: 1024, mb: 1024 ** 2, gb: 1024 ** 3, tb: 1024 ** 4 },
+  time: { detik: 1, second: 1, menit: 60, minute: 60, jam: 3600, hour: 3600, hari: 86400, day: 86400 },
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('converter.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('converter.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('converter.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('converter.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('converter.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('converter.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('converter.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('converter.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('converter.notfound', { q }))
-    return ctx.reply(ctx.t('converter.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('converter.fail', { message: err.message }))
+const UNIT_ALIAS = { meter: 'm', kilometer: 'km', gram: 'g', kilogram: 'kg', celsius: 'c', celcius: 'c', fahrenheit: 'f', kelvin: 'k', byte: 'b' }
+const TEMP_UNITS = new Set(['c', 'f', 'k'])
+
+function normalizeUnit(u) {
+  const raw = String(u || '').toLowerCase().replace(/°/g, '')
+  return UNIT_ALIAS[raw] || raw
+}
+
+function toCelsius(value, unit) {
+  if (unit === 'c') return value
+  if (unit === 'f') return (value - 32) * 5 / 9
+  return value - 273.15
+}
+function fromCelsius(value, unit) {
+  if (unit === 'c') return value
+  if (unit === 'f') return value * 9 / 5 + 32
+  return value + 273.15
+}
+
+// Konversi nilai antar satuan; null bila tidak kompatibel.
+export function convertUnits(value, fromRaw, toRaw) {
+  const from = normalizeUnit(fromRaw)
+  const to = normalizeUnit(toRaw)
+  if (TEMP_UNITS.has(from) && TEMP_UNITS.has(to)) return fromCelsius(toCelsius(value, from), to)
+  for (const group of Object.values(LINEAR)) {
+    if (from in group && to in group) return value * group[from] / group[to]
   }
+  return null
+}
+
+// Urai teks "5 km ke m" atau "100 c f".
+export function parseConvert(text) {
+  const m = String(text || '').trim().match(/^(-?[\d.,]+)\s*([a-zA-Z°]+)\s*(?:ke|to|->)?\s*([a-zA-Z°]+)$/)
+  if (!m) return null
+  const value = Number(m[1].replace(',', '.'))
+  if (!Number.isFinite(value)) return null
+  return { value, from: m[2], to: m[3] }
+}
+
+function fmt(n) {
+  if (Number.isInteger(n)) return n.toLocaleString('id-ID')
+  return Number(n.toFixed(6)).toLocaleString('id-ID', { maximumFractionDigits: 6 })
+}
+
+export async function handler(ctx) {
+  const parsed = parseConvert(ctx.text || '')
+  if (!parsed) return ctx.reply(ctx.t('converter.needInput'))
+  const result = convertUnits(parsed.value, parsed.from, parsed.to)
+  if (result === null) {
+    return ctx.reply(ctx.t('converter.badUnit', { from: parsed.from, to: parsed.to }))
+  }
+  return ctx.reply(ctx.t('converter.out', {
+    value: fmt(parsed.value),
+    from: normalizeUnit(parsed.from),
+    result: fmt(result),
+    to: normalizeUnit(parsed.to),
+  }))
 }

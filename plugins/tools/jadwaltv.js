@@ -1,81 +1,107 @@
+import * as cheerio from 'cheerio'
 
+// Jadwal acara TV Indonesia dari jadwaltv.net: tanpa argumen berarti
+// daftar channel; dengan nama channel berarti jadwal hari ini di
+// channel itu. Terverifikasi 2026-11-05 halaman utama dan per channel.
 export const config = {
-  name: "jadwaltv",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur jadwaltv versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD jadwaltv feature, rewritten in KANA style" },
-  usage: ".jadwaltv",
-  example: ".jadwaltv",
-  cooldown: 5,
+  name: 'jadwaltv',
+  alias: ['jadwaltivi', 'tvschedule'],
+  category: 'tools',
+  description: { id: 'Jadwal acara TV Indonesia hari ini per channel', en: 'Indonesian TV schedule for today per channel' },
+  usage: '.jadwaltv [nama channel]',
+  example: '.jadwaltv rcti',
+  cooldown: 10,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "jadwaltv": {
-      hint: "╭─❏ 🔍 「 *JADWALTV* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.jadwaltv kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    jadwaltv: {
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL JADWAL* 」\n┊ Mouu, gagal ambil jadwalnya: *{message}*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *CHANNEL TIDAK KETEMU* 」\n┊ Mouu, channel *{q}* tidak ketemu~\n┊ ᴋᴇᴛɪᴋ *.jadwaltv* ᴛᴀɴᴘᴀ ᴀʀɢᴜᴍᴇɴ ʙᴜᴀᴛ ᴅᴀꜰᴛᴀʀ ᴄʜᴀɴɴᴇʟɴʏᴀ.\n╰━━━━━━━',
+      listHeader: '╭─❏ 📺 「 *DAFTAR CHANNEL TV* 」\n┊ ᴋᴇᴛɪᴋ *.jadwaltv <nama>* ʙᴜᴀᴛ ᴊᴀᴅᴡᴀʟ ʜᴀʀɪ ɪɴɪ.',
+      chanItem: '┊ • {name}',
+      listFooter: '╰━━━━━━━',
+      schedHeader: '╭─❏ 📺 「 *JADWAL {channel} HARI INI* 」',
+      schedItem: '┊ 🕐 {time} WIB: *{show}*',
+      schedFooter: '╰━━━━━━━',
     },
   },
   en: {
-    "jadwaltv": {
-      hint: "╭─❏ 🔍 「 *JADWALTV* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.jadwaltv keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    jadwaltv: {
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH SCHEDULE* 」\n┊ Mouu, failed to fetch the schedule: *{message}*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *CHANNEL NOT FOUND* 」\n┊ Mouu, the channel *{q}* was not found~\n┊ ᴛʏᴘᴇ *.jadwaltv* ᴡɪᴛʜᴏᴜᴛ ᴀʀɢᴜᴍᴇɴᴛꜱ ꜰᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ʟɪꜱᴛ.\n╰━━━━━━━',
+      listHeader: '╭─❏ 📺 「 *TV CHANNEL LIST* 」\n┊ ᴛʏᴘᴇ *.jadwaltv <name>* ꜰᴏʀ ᴛᴏᴅᴀʏ ꜱᴄʜᴇᴅᴜʟᴇ.',
+      chanItem: '┊ • {name}',
+      listFooter: '╰━━━━━━━',
+      schedHeader: '╭─❏ 📺 「 *{channel} SCHEDULE TODAY* 」',
+      schedItem: '┊ 🕐 {time} WIB: *{show}*',
+      schedFooter: '╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.jadwaltv indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.jadwaltv rcti', expect: /JADWAL RCTI|RCTI/ }
+
+const CHANNELS = ['rcti', 'sctv', 'mnctv', 'indosiar', 'antv', 'transtv', 'trans7', 'gtv', 'tvone', 'metrotv', 'kompastv', 'net', 'rtv', 'inewstv', 'moji', 'mentari']
+
+// Urai daftar channel dari HTML jadwaltv.net.
+export function parseChannels(html) {
+  const found = new Set()
+  for (const m of String(html || '').matchAll(/jadwal-acara\/([a-z0-9]+)/gi)) {
+    const name = m[1].toLowerCase()
+    if (name.length >= 2 && name.length <= 12) found.add(name)
+  }
+  return [...found]
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('jadwaltv.hint'))
+
+// Urai baris jadwal (jam + acara) dari halaman channel.
+export function parseSchedule(html, limit = 20) {
+  const $ = cheerio.load(String(html || ''))
+  const rows = []
+  $('table tr').each((_, tr) => {
+    const cells = $(tr).find('td').map((__, td) => $(td).text().trim()).get()
+    if (cells.length >= 2 && /^\d{1,2}[:.]\d{2}$/.test(cells[0])) {
+      rows.push({ time: cells[0].replace('.', ':'), show: cells[1] })
+    }
+  })
+  if (rows.length) return rows.slice(0, limit)
+  const text = $('body').text().replace(/\s+/g, ' ')
+  const re = /(\d{1,2}:\d{2})\s+([A-Z][A-Za-z0-9 :&.,'!/-]{2,50})/g
+  for (const m of text.matchAll(re)) {
+    rows.push({ time: m[1], show: m[2].trim() })
+    if (rows.length >= limit) break
+  }
+  return rows
+}
+
+async function fetchHtml(url) {
+  const res = await fetch(url, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36' },
+  })
+  if (!res.ok) throw new Error(`jadwaltv HTTP ${res.status}`)
+  return res.text()
+}
+
+export async function handler(ctx, { fetchPage = fetchHtml } = {}) {
+  const q = (ctx.text || '').trim().toLowerCase().replace(/\s+/g, '')
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('jadwaltv.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
+    if (!q) {
+      const channels = parseChannels(await fetchPage('https://www.jadwaltv.net/'))
+      const list = channels.length ? channels : CHANNELS
+      const lines = [ctx.t('jadwaltv.listHeader')]
+      for (const name of list.slice(0, 30)) lines.push(ctx.t('jadwaltv.chanItem', { name: name.toUpperCase() }))
+      lines.push(ctx.t('jadwaltv.listFooter'))
+      return ctx.reply(lines.join('\n'))
     }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('jadwaltv.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('jadwaltv.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('jadwaltv.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('jadwaltv.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('jadwaltv.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('jadwaltv.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('jadwaltv.notfound', { q }))
-    return ctx.reply(ctx.t('jadwaltv.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    const rows = parseSchedule(await fetchPage(`https://www.jadwaltv.net/jadwal-acara/${encodeURIComponent(q)}`))
+    if (!rows.length) return ctx.reply(ctx.t('jadwaltv.notFound', { q }))
+    const lines = [ctx.t('jadwaltv.schedHeader', { channel: q.toUpperCase() })]
+    for (const row of rows) lines.push(ctx.t('jadwaltv.schedItem', row))
+    lines.push(ctx.t('jadwaltv.schedFooter'))
+    return ctx.reply(lines.join('\n'))
   } catch (err) {
-    return ctx.reply(ctx.t('jadwaltv.fail', { message: err.message }))
+    return ctx.reply(ctx.t('jadwaltv.failed', { message: err.message }))
   }
 }

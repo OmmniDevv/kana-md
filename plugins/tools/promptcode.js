@@ -1,81 +1,35 @@
-
+// Penyusun prompt coding siap pakai: topik pengguna dibungkus dalam
+// templat prompt terstruktur (peran, tugas, batasan, format keluaran,
+// kriteria selesai) agar hasil AI lain lebih terarah. Lokal.
 export const config = {
-  name: "promptcode",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur promptcode versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD promptcode feature, rewritten in KANA style" },
-  usage: ".promptcode",
-  example: ".promptcode",
-  cooldown: 5,
+  name: 'promptcode',
+  alias: ['promptcoding', 'buatprompt'],
+  category: 'tools',
+  description: { id: 'Susun prompt coding terstruktur dari sebuah topik', en: 'Build a structured coding prompt from a topic' },
+  usage: '.promptcode <topik>',
+  example: '.promptcode fungsi login dengan JWT di Node.js',
+  cooldown: 3,
 }
 
 export const i18n = {
   id: {
-    "promptcode": {
-      hint: "╭─❏ 🔍 「 *PROMPTCODE* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.promptcode kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    promptcode: {
+      needTopic: '╭─❏ 📝 「 *KETIK TOPIK CODINGNYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.promptcode fungsi login dengan JWT di Node.js*\n╰━━━━━━━',
+      body: '╭─❏ 📝 「 *PROMPT CODING SIAP PAKAI* 」\n┊ ꜱᴀʟɪɴ ᴛᴇᴋꜱ ᴅɪ ʙᴀᴡᴀʜ ɪɴɪ ᴋᴇ ᴀɪ ꜰᴀᴠᴏʀɪᴛᴍᴜ:\n┊ ─────\nBertindaklah sebagai senior software engineer. Tugasmu: {topic}.\n\nSyarat:\n1. Tulis kode yang bersih, aman, dan siap produksi, lengkap dengan penanganan error.\n2. Jelaskan singkat keputusan penting sebelum kode, tanpa bertele-tele.\n3. Sertakan contoh pemakaian dan kasus uji sederhana.\n4. Hindari dependensi baru kecuali benar-benar perlu, dan sebutkan alasannya bila memakai.\n5. Akhiri dengan daftar langkah verifikasi bahwa kode benar-benar jalan.\n┊ ─────\n╰━━━━━━━',
     },
   },
   en: {
-    "promptcode": {
-      hint: "╭─❏ 🔍 「 *PROMPTCODE* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.promptcode keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    promptcode: {
+      needTopic: '╭─❏ 📝 「 *TYPE THE CODING TOPIC* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.promptcode a JWT login function in Node.js*\n╰━━━━━━━',
+      body: '╭─❏ 📝 「 *READY CODING PROMPT* 」\n┊ ᴄᴏᴘʏ ᴛʜᴇ ᴛᴇxᴛ ʙᴇʟᴏᴡ ɪɴᴛᴏ ʏᴏᴜʀ ꜰᴀᴠᴏʀɪᴛᴇ ᴀɪ:\n┊ ─────\nAct as a senior software engineer. Your task: {topic}.\n\nRequirements:\n1. Write clean, safe, production-ready code with proper error handling.\n2. Briefly explain key decisions before the code, no rambling.\n3. Include a usage example and simple test cases.\n4. Avoid new dependencies unless truly needed, and justify any you add.\n5. End with verification steps proving the code actually works.\n┊ ─────\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.promptcode indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
+export const test = { input: '.promptcode fungsi login JWT', expect: /PROMPT CODING|READY CODING/ }
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('promptcode.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('promptcode.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('promptcode.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('promptcode.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('promptcode.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('promptcode.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('promptcode.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('promptcode.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('promptcode.notfound', { q }))
-    return ctx.reply(ctx.t('promptcode.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('promptcode.fail', { message: err.message }))
-  }
+  const topic = (ctx.text || '').trim()
+  if (!topic) return ctx.reply(ctx.t('promptcode.needTopic'))
+  return ctx.reply(ctx.t('promptcode.body', { topic }))
 }

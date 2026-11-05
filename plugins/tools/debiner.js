@@ -1,81 +1,40 @@
-
+// Biner ke desimal, dihitung lokal.
 export const config = {
-  name: "debiner",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur debiner versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD debiner feature, rewritten in KANA style" },
-  usage: ".debiner",
-  example: ".debiner",
-  cooldown: 5,
+  name: 'debiner',
+  alias: ['bin2dec', 'binerkedesimal'],
+  category: 'tools',
+  description: { id: 'Ubah angka biner menjadi desimal', en: 'Convert a binary number to decimal' },
+  usage: '.debiner <biner>',
+  example: '.debiner 11111111',
+  cooldown: 3,
 }
 
 export const i18n = {
   id: {
-    "debiner": {
-      hint: "╭─❏ 🔍 「 *DEBINER* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.debiner kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    debiner: {
+      needInput: '╭─❏ 🔢 「 *KETIK BINERNYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.debiner 11111111* (ʜᴀɴʏᴀ ᴀɴɢᴋᴀ 0 ᴅᴀɴ 1)\n╰━━━━━━━',
+      out: '╭─❏ 🔢 「 *BINER KE DESIMAL* 」\n┊ ʙɪɴᴇʀ: *{bin}*\n┊ ᴅᴇꜱɪᴍᴀʟ: *{dec}*\n┊ ᴏᴋᴛᴀʟ: *{oct}* | ʜᴇx: *{hex}*\n╰━━━━━━━',
     },
   },
   en: {
-    "debiner": {
-      hint: "╭─❏ 🔍 「 *DEBINER* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.debiner keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    debiner: {
+      needInput: '╭─❏ 🔢 「 *TYPE THE BINARY* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.debiner 11111111* (ᴏɴʟʏ 0 ᴀɴᴅ 1)\n╰━━━━━━━',
+      out: '╭─❏ 🔢 「 *BINARY TO DECIMAL* 」\n┊ ʙɪɴᴀʀʏ: *{bin}*\n┊ ᴅᴇᴄɪᴍᴀʟ: *{dec}*\n┊ ᴏᴄᴛᴀʟ: *{oct}* | ʜᴇx: *{hex}*\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.debiner indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.debiner 11111111', expect: /255/ }
+
+export function binToDec(text) {
+  const bin = String(text || '').trim().replace(/\s+/g, '')
+  if (!/^[01]{1,53}$/.test(bin)) return null
+  const dec = parseInt(bin, 2)
+  return { bin, dec, oct: dec.toString(8), hex: dec.toString(16).toUpperCase() }
 }
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('debiner.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('debiner.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('debiner.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('debiner.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('debiner.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('debiner.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('debiner.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('debiner.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('debiner.notfound', { q }))
-    return ctx.reply(ctx.t('debiner.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('debiner.fail', { message: err.message }))
-  }
+  const result = binToDec(ctx.text || '')
+  if (!result) return ctx.reply(ctx.t('debiner.needInput'))
+  return ctx.reply(ctx.t('debiner.out', result))
 }

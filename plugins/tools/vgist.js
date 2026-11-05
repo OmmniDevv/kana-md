@@ -1,81 +1,78 @@
-
+// Buat GitHub Gist publik lewat API resmi GitHub (api.github.com/gists).
+// API gist publik wajib token GitHub; token dibaca dari GITHUB_TOKEN
+// atau GH_TOKEN di env bot. Tanpa token, perintah membalas jujur bahwa
+// fitur menunggu token, bukan berpura-pura berhasil.
 export const config = {
-  name: "vgist",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur vgist versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD vgist feature, rewritten in KANA style" },
-  usage: ".vgist",
-  example: ".vgist",
-  cooldown: 5,
+  name: 'vgist',
+  alias: ['gist', 'creategist'],
+  category: 'tools',
+  description: { id: 'Buat GitHub Gist dari teks (butuh token GitHub di bot)', en: 'Create a GitHub Gist from text (needs a GitHub token on the bot)' },
+  usage: '.vgist <nama-berkas> <isi teks>',
+  example: '.vgist catatan.txt halo dunia',
+  cooldown: 15,
+  limit: 3,
 }
 
 export const i18n = {
   id: {
-    "vgist": {
-      hint: "╭─❏ 🔍 「 *VGIST* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.vgist kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    vgist: {
+      needInput: '╭─❏ 🐙 「 *FORMAT GIST* 」\n┊ ᴄᴏɴᴛᴏʜ: *.vgist catatan.txt halo dunia*\n┊ ᴛᴏᴋᴇɴ ᴘᴇʀᴛᴀᴍᴀ ᴊᴀᴅɪ ɴᴀᴍᴀ ʙᴇʀᴋᴀꜱ, ꜱɪꜱᴀɴʏᴀ ɪꜱɪ ɢɪꜱᴛ.\n╰━━━━━━━',
+      noToken: '╭─❏ 🔑 「 *BELUM ADA TOKEN GITHUB* 」\n┊ Mouu, API Gist GitHub wajib token dan bot belum punya *GITHUB_TOKEN* di konfigurasinya~\n┊ Minta owner pasang token dulu ya. Alternatif tanpa token: *.pastebin* buat paste teks.\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA buat gistnya dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL BUAT GIST* 」\n┊ Mouu, gagal buat gistnya: *{message}*\n╰━━━━━━━',
+      done: '╭─❏ 🐙 「 *GIST JADI* 」\n┊ ʙᴇʀᴋᴀꜱ: *{file}*\n┊ ɴɪʜ ᴛᴀᴜᴛᴀɴɴʏᴀ: {url}\n╰━━━━━━━',
     },
   },
   en: {
-    "vgist": {
-      hint: "╭─❏ 🔍 「 *VGIST* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.vgist keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    vgist: {
+      needInput: '╭─❏ 🐙 「 *GIST FORMAT* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.vgist notes.txt hello world*\n┊ ᴛʜᴇ ꜰɪʀꜱᴛ ᴛᴏᴋᴇɴ ʙᴇᴄᴏᴍᴇꜱ ᴛʜᴇ ꜰɪʟᴇ ɴᴀᴍᴇ, ᴛʜᴇ ʀᴇꜱᴛ ɪꜱ ᴛʜᴇ ᴄᴏɴᴛᴇɴᴛ.\n╰━━━━━━━',
+      noToken: '╭─❏ 🔑 「 *NO GITHUB TOKEN YET* 」\n┊ Mouu, the GitHub Gist API needs a token and the bot has no *GITHUB_TOKEN* configured~\n┊ Ask the owner to set one. Token-free alternative: *.pastebin* for text pastes.\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is creating the gist... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO CREATE GIST* 」\n┊ Mouu, failed to create the gist: *{message}*\n╰━━━━━━━',
+      done: '╭─❏ 🐙 「 *GIST READY* 」\n┊ ꜰɪʟᴇ: *{file}*\n┊ ʜᴇʀᴇ ɪꜱ ᴛʜᴇ ʟɪɴᴋ: {url}\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.vgist indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.vgist catatan.txt halo dari kana', expect: /GIST|TOKEN|GITHUB/ }
+
+// Urai "nama.txt isi teks" dari teks perintah.
+export function parseGistInput(text) {
+  const m = String(text || '').trim().match(/^(\S+\.\w{1,10})\s+([\s\S]+)$/)
+  if (!m) return null
+  return { file: m[1], content: m[2] }
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('vgist.hint'))
+
+async function createGist(token, file, content) {
+  const res = await fetch('https://api.github.com/gists', {
+    method: 'POST',
+    signal: AbortSignal.timeout(20000),
+    headers: {
+      authorization: `Bearer ${token}`,
+      accept: 'application/vnd.github+json',
+      'content-type': 'application/json',
+      'user-agent': 'KANA-Bot',
+    },
+    body: JSON.stringify({
+      description: 'Dibuat dari bot KANA',
+      public: true,
+      files: { [file]: { content } },
+    }),
+  })
+  if (!res.ok) throw new Error(`GitHub HTTP ${res.status}`)
+  const json = await res.json()
+  return json.html_url
+}
+
+export async function handler(ctx, { create = createGist, token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '' } = {}) {
+  const parsed = parseGistInput(ctx.text || '')
+  if (!parsed) return ctx.reply(ctx.t('vgist.needInput'))
+  if (!token) return ctx.reply(ctx.t('vgist.noToken'))
+  await ctx.reply(ctx.t('vgist.working', { mood: ctx.say('mikir') }))
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('vgist.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('vgist.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('vgist.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('vgist.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('vgist.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('vgist.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('vgist.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('vgist.notfound', { q }))
-    return ctx.reply(ctx.t('vgist.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    const url = await create(token, parsed.file, parsed.content)
+    return ctx.reply(ctx.t('vgist.done', { file: parsed.file, url }))
   } catch (err) {
-    return ctx.reply(ctx.t('vgist.fail', { message: err.message }))
+    return ctx.reply(ctx.t('vgist.failed', { message: err.message }))
   }
 }

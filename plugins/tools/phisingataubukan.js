@@ -1,81 +1,94 @@
-
+// Cek apakah sebuah URL termasuk daftar phishing publik OpenPhish
+// (openphish.com feed komunitas) plus heuristik lokal. Hasil AMAN
+// berarti tidak ditemukan di daftar dan tidak mencurigakan, bukan
+// jaminan mutlak.
 export const config = {
-  name: "phisingataubukan",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur phisingataubukan versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD phisingataubukan feature, rewritten in KANA style" },
-  usage: ".phisingataubukan",
-  example: ".phisingataubukan",
-  cooldown: 5,
+  name: 'phisingataubukan',
+  alias: ['cekphishing', 'cekphising', 'phishingcheck'],
+  category: 'tools',
+  description: { id: 'Cek apakah URL termasuk phishing (daftar OpenPhish + heuristik)', en: 'Check whether a URL is phishing (OpenPhish list + heuristics)' },
+  usage: '.phisingataubukan <url>',
+  example: '.phisingataubukan https://google.com',
+  cooldown: 10,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "phisingataubukan": {
-      hint: "╭─❏ 🔍 「 *PHISINGATAUBUKAN* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.phisingataubukan kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    phisingataubukan: {
+      needUrl: '╭─❏ 🛡️ 「 *KIRIM URL-NYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.phisingataubukan https://google.com*\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *CEK GAGAL* 」\n┊ Mouu, ceknya gagal: *{message}*\n╰━━━━━━━',
+      bad: '╭─❏ 🚨 「 *TERDETEKSI PHISHING* 」\n┊ ᴜʀʟ: {url}\n┊ ᴀʟᴀꜱᴀɴ: *{reasons}*\n┊ ᴊᴀɴɢᴀɴ ᴅɪʙᴜᴋᴀ, ᴊᴀɴɢᴀɴ ɪꜱɪ ᴅᴀᴛᴀ ᴀᴘᴀ ᴘᴜɴ ᴅɪ ꜱᴀɴᴀ.\n╰━━━━━━━',
+      warn: '╭─❏ ⚠️ 「 *MENCURIGAKAN* 」\n┊ ᴜʀʟ: {url}\n┊ ᴛᴀɴᴅᴀ: *{reasons}*\n┊ ᴛɪᴅᴀᴋ ᴀᴅᴀ ᴅɪ ᴅᴀꜰᴛᴀʀ ᴏᴘᴇɴᴘʜɪꜱʜ, ᴛᴀᴘɪ ᴛᴇᴛᴀᴘ ʜᴀᴛɪ ʜᴀᴛɪ ʏᴀ~\n╰━━━━━━━',
+      safe: '╭─❏ ✅ 「 *TIDAK TERDETEKSI PHISHING* 」\n┊ ᴜʀʟ: {url}\n┊ ᴛɪᴅᴀᴋ ᴀᴅᴀ ᴅɪ ᴅᴀꜰᴛᴀʀ ᴏᴘᴇɴᴘʜɪꜱʜ ᴅᴀɴ ʟᴏʟᴏꜱ ʜᴇᴜʀɪꜱᴛɪᴋ ᴋᴀɴᴀ.\n┊ ɪɴɪ ʙᴜᴋᴀɴ ᴊᴀᴍɪɴᴀɴ ᴍᴜᴛʟᴀᴋ; ᴛᴇᴛᴀᴘ ᴄᴇᴋ ᴅᴏᴍᴀɪɴ ʀᴇꜱᴍɪɴʏᴀ ʏᴀ~\n╰━━━━━━━',
     },
   },
   en: {
-    "phisingataubukan": {
-      hint: "╭─❏ 🔍 「 *PHISINGATAUBUKAN* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.phisingataubukan keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    phisingataubukan: {
+      needUrl: '╭─❏ 🛡️ 「 *SEND THE URL* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.phisingataubukan https://google.com*\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *CHECK FAILED* 」\n┊ Mouu, the check failed: *{message}*\n╰━━━━━━━',
+      bad: '╭─❏ 🚨 「 *PHISHING DETECTED* 」\n┊ ᴜʀʟ: {url}\n┊ ʀᴇᴀꜱᴏɴ: *{reasons}*\n┊ ᴅᴏ ɴᴏᴛ ᴏᴘᴇɴ ɪᴛ ᴀɴᴅ ɴᴇᴠᴇʀ ᴇɴᴛᴇʀ ᴀɴʏ ᴅᴀᴛᴀ ᴛʜᴇʀᴇ.\n╰━━━━━━━',
+      warn: '╭─❏ ⚠️ 「 *SUSPICIOUS* 」\n┊ ᴜʀʟ: {url}\n┊ ꜱɪɢɴꜱ: *{reasons}*\n┊ ɴᴏᴛ ᴏɴ ᴛʜᴇ ᴏᴘᴇɴᴘʜɪꜱʜ ʟɪꜱᴛ, ʙᴜᴛ ꜱᴛɪʟʟ ʙᴇ ᴄᴀʀᴇꜰᴜʟ~\n╰━━━━━━━',
+      safe: '╭─❏ ✅ 「 *NO PHISHING DETECTED* 」\n┊ ᴜʀʟ: {url}\n┊ ɴᴏᴛ ᴏɴ ᴛʜᴇ ᴏᴘᴇɴᴘʜɪꜱʜ ʟɪꜱᴛ ᴀɴᴅ ᴘᴀꜱꜱᴇᴅ ᴋᴀɴᴀ ʜᴇᴜʀɪꜱᴛɪᴄꜱ.\n┊ ɴᴏᴛ ᴀɴ ᴀʙꜱᴏʟᴜᴛᴇ ɢᴜᴀʀᴀɴᴛᴇᴇ; ꜱᴛɪʟʟ ᴠᴇʀɪꜰʏ ᴛʜᴇ ᴏꜰꜰɪᴄɪᴀʟ ᴅᴏᴍᴀɪɴ~\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.phisingataubukan indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('phisingataubukan.hint'))
+export const test = { input: '.phisingataubukan https://google.com', expect: /PHISHING|AMAN|TERDETEKSI/ }
+
+// Heuristik lokal atas URL.
+export function heuristicFlags(input) {
+  let url
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('phisingataubukan.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('phisingataubukan.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('phisingataubukan.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('phisingataubukan.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('phisingataubukan.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('phisingataubukan.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('phisingataubukan.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('phisingataubukan.notfound', { q }))
-    return ctx.reply(ctx.t('phisingataubukan.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('phisingataubukan.fail', { message: err.message }))
+    url = new URL(/^https?:\/\//i.test(input) ? input : 'https://' + input)
+  } catch { return null }
+  const flags = []
+  const host = url.hostname
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) flags.push('host berupa alamat IP')
+  if (host.startsWith('xn--') || host.split('.').some((p) => p.startsWith('xn--'))) flags.push('domain punycode')
+  if ((host.match(/-/g) || []).length >= 4) flags.push('banyak tanda hubung di domain')
+  if (host.split('.').length >= 5) flags.push('subdomain sangat dalam')
+  if (/\.(zip|mov|top|click|xyz|rest|gq|tk|ml|cf)$/i.test(host)) flags.push('TLD sering dipakai phishing')
+  if (/@/.test(input)) flags.push('ada karakter @ yang bisa menyamarkan host asli')
+  if (/(login|verify|secure|account|update|wallet|bonus|klaim|hadiah)/i.test(url.pathname) && flags.length) {
+    flags.push('jalur berbau kredensial/hadiah')
   }
+  return { url, host, flags }
+}
+
+let feedCache = { at: 0, set: new Set() }
+async function fetchFeed() {
+  if (Date.now() - feedCache.at < 10 * 60 * 1000 && feedCache.set.size) return feedCache.set
+  const res = await fetch('https://openphish.com/feed.txt', {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'KANA-Bot' },
+  })
+  if (!res.ok) throw new Error(`OpenPhish HTTP ${res.status}`)
+  const text = await res.text()
+  const set = new Set(text.split('\n').map((s) => s.trim().toLowerCase()).filter(Boolean))
+  feedCache = { at: Date.now(), set }
+  return set
+}
+
+export async function handler(ctx, { feed = fetchFeed } = {}) {
+  const input = (ctx.text || '').trim().split(/\s+/)[0]
+  if (!input || !input.includes('.')) return ctx.reply(ctx.t('phisingataubukan.needUrl'))
+  const check = heuristicFlags(input)
+  if (!check) return ctx.reply(ctx.t('phisingataubukan.needUrl'))
+  let listed = false
+  try {
+    const set = await feed()
+    const normalized = check.url.href.toLowerCase()
+    const variants = [normalized, normalized.replace(/\/$/, ''), normalized + '/', normalized.replace('https://', 'http://')]
+    listed = variants.some((v) => set.has(v))
+  } catch (err) {
+    return ctx.reply(ctx.t('phisingataubukan.failed', { message: err.message }))
+  }
+  if (listed) {
+    return ctx.reply(ctx.t('phisingataubukan.bad', { url: check.url.href, reasons: 'terdaftar di daftar phishing OpenPhish' }))
+  }
+  if (check.flags.length >= 2) {
+    return ctx.reply(ctx.t('phisingataubukan.warn', { url: check.url.href, reasons: check.flags.join(', ') }))
+  }
+  return ctx.reply(ctx.t('phisingataubukan.safe', { url: check.url.href }))
 }

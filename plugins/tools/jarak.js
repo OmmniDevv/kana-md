@@ -1,81 +1,78 @@
-
+// Hitung jarak garis lurus antara dua tempat: geocode keduanya lewat
+// OpenStreetMap Nominatim lalu hitung haversine secara lokal.
 export const config = {
-  name: "jarak",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur jarak versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD jarak feature, rewritten in KANA style" },
-  usage: ".jarak",
-  example: ".jarak",
-  cooldown: 5,
+  name: 'jarak',
+  alias: ['distance', 'hitungjarak'],
+  category: 'tools',
+  description: { id: 'Hitung jarak garis lurus antara dua tempat', en: 'Calculate the straight-line distance between two places' },
+  usage: '.jarak <tempat a> ke <tempat b>',
+  example: '.jarak jakarta ke bandung',
+  cooldown: 10,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "jarak": {
-      hint: "╭─❏ 🔍 「 *JARAK* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.jarak kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    jarak: {
+      needInput: '╭─❏ 📏 「 *FORMAT JARAK* 」\n┊ ᴄᴏɴᴛᴏʜ: *.jarak jakarta ke bandung*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *TEMPAT TIDAK KETEMU* 」\n┊ Mouu, salah satu tempatnya tidak ketemu: *{place}*\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL HITUNG* 」\n┊ Mouu, gagal hitung jaraknya: *{message}*\n╰━━━━━━━',
+      out: '╭─❏ 📏 「 *JARAK GARIS LURUS* 」\n┊ ᴅᴀʀɪ: *{a}*\n┊ ᴋᴇ: *{b}*\n┊ ᴊᴀʀᴀᴋ: *{km} km* ({mi} mil)\n┊ ᴋᴏᴏʀᴅɪɴᴀᴛ: {lat1}, {lon1} → {lat2}, {lon2}\n╰━━━━━━━',
     },
   },
   en: {
-    "jarak": {
-      hint: "╭─❏ 🔍 「 *JARAK* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.jarak keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    jarak: {
+      needInput: '╭─❏ 📏 「 *DISTANCE FORMAT* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.jarak jakarta to bandung*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *PLACE NOT FOUND* 」\n┊ Mouu, one of the places was not found: *{place}*\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *CALCULATION FAILED* 」\n┊ Mouu, failed to calculate the distance: *{message}*\n╰━━━━━━━',
+      out: '╭─❏ 📏 「 *STRAIGHT-LINE DISTANCE* 」\n┊ ꜰʀᴏᴍ: *{a}*\n┊ ᴛᴏ: *{b}*\n┊ ᴅɪꜱᴛᴀɴᴄᴇ: *{km} km* ({mi} miles)\n┊ ᴄᴏᴏʀᴅɪɴᴀᴛᴇꜱ: {lat1}, {lon1} → {lat2}, {lon2}\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.jarak indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.jarak jakarta ke bandung', expect: /km/ }
+
+// Jarak haversine dalam kilometer.
+export function haversineKm(lat1, lon1, lat2, lon2) {
+  const R = 6371
+  const rad = (d) => d * Math.PI / 180
+  const dLat = rad(lat2 - lat1)
+  const dLon = rad(lon2 - lon1)
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLon / 2) ** 2
+  return 2 * R * Math.asin(Math.sqrt(a))
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('jarak.hint'))
+
+async function geocode(place) {
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(place)}&format=json&limit=1`
+  const res = await fetch(url, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'KANA-Bot/1.0 (WhatsApp bot)', accept: 'application/json' },
+  })
+  if (!res.ok) throw new Error(`Nominatim HTTP ${res.status}`)
+  const json = await res.json()
+  if (!Array.isArray(json) || !json[0]) return null
+  return { name: json[0].display_name, lat: Number(json[0].lat), lon: Number(json[0].lon) }
+}
+
+export async function handler(ctx, { geo = geocode } = {}) {
+  const text = (ctx.text || '').trim()
+  const m = text.match(/^(.+?)\s+(?:ke|to)\s+(.+)$/i)
+  if (!m) return ctx.reply(ctx.t('jarak.needInput'))
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('jarak.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('jarak.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('jarak.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('jarak.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('jarak.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('jarak.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('jarak.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('jarak.notfound', { q }))
-    return ctx.reply(ctx.t('jarak.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    const a = await geo(m[1].trim())
+    if (!a) return ctx.reply(ctx.t('jarak.notFound', { place: m[1].trim() }))
+    const b = await geo(m[2].trim())
+    if (!b) return ctx.reply(ctx.t('jarak.notFound', { place: m[2].trim() }))
+    const km = haversineKm(a.lat, a.lon, b.lat, b.lon)
+    return ctx.reply(ctx.t('jarak.out', {
+      a: a.name.split(',').slice(0, 2).join(','),
+      b: b.name.split(',').slice(0, 2).join(','),
+      km: km.toFixed(1),
+      mi: (km * 0.621371).toFixed(1),
+      lat1: a.lat.toFixed(4), lon1: a.lon.toFixed(4),
+      lat2: b.lat.toFixed(4), lon2: b.lon.toFixed(4),
+    }))
   } catch (err) {
-    return ctx.reply(ctx.t('jarak.fail', { message: err.message }))
+    return ctx.reply(ctx.t('jarak.failed', { message: err.message }))
   }
 }

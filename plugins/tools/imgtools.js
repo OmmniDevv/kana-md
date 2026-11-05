@@ -1,81 +1,98 @@
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
+import { readFile, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import { withTempDir } from '../../src/scrapers/runner.js'
+import { sendImage } from '../../src/ui/media.js'
 
+const run = promisify(execFile)
+
+// Kotak alat gambar lokal berbasis ffmpeg: info dimensi, abu-abu,
+// blur, putar, flip, flop, dan negasi atas gambar yang dikirim/dikutip.
 export const config = {
-  name: "imgtools",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur imgtools versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD imgtools feature, rewritten in KANA style" },
-  usage: ".imgtools",
-  example: ".imgtools",
-  cooldown: 5,
+  name: 'imgtools',
+  alias: ['imagetools', 'editimg'],
+  category: 'tools',
+  description: { id: 'Alat gambar: info, abu-abu, blur, putar, flip, negasi (ffmpeg lokal)', en: 'Image tools: info, grayscale, blur, rotate, flip, negate (local ffmpeg)' },
+  usage: '.imgtools <info/abu/blur/putar/flip/flop/negasi>',
+  example: '.imgtools abu',
+  cooldown: 10,
+  limit: 3,
 }
 
 export const i18n = {
   id: {
-    "imgtools": {
-      hint: "╭─❏ 🔍 「 *IMGTOOLS* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.imgtools kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    imgtools: {
+      needMedia: '╭─❏ 🛠️ 「 *KIRIM ATAU KUTIP GAMBARNYA* 」\n┊ ᴄᴏɴᴛᴏʜ: ᴋɪʀɪᴍ ɢᴀᴍʙᴀʀ ᴅᴇɴɢᴀɴ ᴄᴀᴘᴛɪᴏɴ *.imgtools abu*\n┊ ᴏᴘꜱɪ: *info*, *abu*, *blur*, *putar*, *flip*, *flop*, *negasi*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA olah gambarnya dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL OLAH GAMBAR* 」\n┊ Mouu, gagal olah gambarnya: *{message}*\n╰━━━━━━━',
+      infoOut: '╭─❏ 🛠️ 「 *INFO GAMBAR* 」\n┊ ꜰᴏʀᴍᴀᴛ: *{codec}*\n┊ ᴅɪᴍᴇɴꜱɪ: *{w} x {h}*\n┊ ᴜᴋᴜʀᴀɴ: *{size}*\n╰━━━━━━━',
+      caption: '╭─❏ 🛠️ 「 *IMGTOOLS: {op}* 」\n╰━━━━━━━',
     },
   },
   en: {
-    "imgtools": {
-      hint: "╭─❏ 🔍 「 *IMGTOOLS* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.imgtools keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    imgtools: {
+      needMedia: '╭─❏ 🛠️ 「 *SEND OR QUOTE AN IMAGE* 」\n┊ ᴇxᴀᴍᴘʟᴇ: ꜱᴇɴᴅ ᴀɴ ɪᴍᴀɢᴇ ᴡɪᴛʜ ᴄᴀᴘᴛɪᴏɴ *.imgtools abu*\n┊ ᴏᴘᴛɪᴏɴꜱ: *info*, *abu* (gray), *blur*, *putar* (rotate), *flip*, *flop*, *negasi* (negate)\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is processing the image... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *IMAGE PROCESSING FAILED* 」\n┊ Mouu, failed to process the image: *{message}*\n╰━━━━━━━',
+      infoOut: '╭─❏ 🛠️ 「 *IMAGE INFO* 」\n┊ ꜰᴏʀᴍᴀᴛ: *{codec}*\n┊ ᴅɪᴍᴇɴꜱɪᴏɴꜱ: *{w} x {h}*\n┊ ꜱɪᴢᴇ: *{size}*\n╰━━━━━━━',
+      caption: '╭─❏ 🛠️ 「 *IMGTOOLS: {op}* 」\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.imgtools indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.imgtools abu', expect: /IMGTOOLS/ }
+
+const FILTERS = {
+  abu: 'hue=s=0',
+  grayscale: 'hue=s=0',
+  blur: 'boxblur=8:1',
+  putar: 'transpose=1',
+  rotate: 'transpose=1',
+  flip: 'vflip',
+  flop: 'hflip',
+  negasi: 'negate',
+  negate: 'negate',
 }
+
+// Info gambar lewat ffprobe.
+export async function probeImage(file) {
+  const { stdout } = await run('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height,codec_name', '-of', 'json', file], { timeout: 30000 })
+  const stream = JSON.parse(stdout)?.streams?.[0]
+  if (!stream) throw new Error('stream gambar tidak ditemukan')
+  return { codec: stream.codec_name, w: stream.width, h: stream.height }
+}
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('imgtools.hint'))
+  const op = (ctx.text || '').trim().toLowerCase().split(/\s+/)[0] || 'info'
+  let media
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('imgtools.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('imgtools.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('imgtools.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('imgtools.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('imgtools.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('imgtools.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('imgtools.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
+    media = await ctx.downloadMedia()
+  } catch {}
+  if (!media?.buffer) return ctx.reply(ctx.t('imgtools.needMedia'))
+  await ctx.reply(ctx.t('imgtools.working', { mood: ctx.say('mikir') }))
+  try {
+    const result = await withTempDir('kana-imgtools-', async (dir) => {
+      const input = join(dir, 'in.img')
+      await writeFile(input, media.buffer)
+      if (op === 'info') {
+        const info = await probeImage(input)
+        return { kind: 'info', info }
       }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('imgtools.notfound', { q }))
-    return ctx.reply(ctx.t('imgtools.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+      const filter = FILTERS[op] || FILTERS.abu
+      const output = join(dir, 'out.png')
+      await run('ffmpeg', ['-y', '-i', input, '-vf', filter, output], { timeout: 60000 })
+      return { kind: 'image', buffer: await readFile(output) }
+    })
+    if (result.kind === 'info') {
+      return ctx.reply(ctx.t('imgtools.infoOut', {
+        ...result.info,
+        size: (media.buffer.length / 1024).toFixed(1) + ' KB',
+      }))
+    }
+    await sendImage(ctx, result.buffer, { caption: ctx.t('imgtools.caption', { op }) })
+    return undefined
   } catch (err) {
-    return ctx.reply(ctx.t('imgtools.fail', { message: err.message }))
+    return ctx.reply(ctx.t('imgtools.failed', { message: err.message }))
   }
 }

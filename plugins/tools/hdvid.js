@@ -1,82 +1,69 @@
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
+import { readFile, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import { withTempDir } from '../../src/scrapers/runner.js'
+import { sendVideo, MAX_VIDEO_BYTES } from '../../src/ui/media.js'
 
+const run = promisify(execFile)
+
+// Naikkan resolusi video 2x secara lokal dengan ffmpeg (scale lanczos).
+// Bukan AI upscaler; ketajaman bertambah sebatas interpolasi.
 export const config = {
-  name: "hdvid",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur hdvid versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD hdvid feature, rewritten in KANA style" },
-  usage: ".hdvid",
-  example: ".hdvid",
-  cooldown: 5,
-  limitGroup: "upscale",
+  name: 'hdvid',
+  alias: ['hdvideo', 'upvid'],
+  category: 'tools',
+  description: { id: 'Naikkan resolusi video 2x dengan ffmpeg lokal', en: 'Upscale a video 2x with local ffmpeg' },
+  usage: '.hdvid',
+  example: '.hdvid',
+  cooldown: 30,
+  limit: 1,
 }
 
 export const i18n = {
   id: {
-    "hdvid": {
-      hint: "╭─❏ 🔍 「 *HDVID* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.hdvid kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    hdvid: {
+      needMedia: '╭─❏ 🎬 「 *KIRIM ATAU KUTIP VIDEONYA* 」\n┊ ᴄᴏɴᴛᴏʜ: ᴋɪʀɪᴍ ᴠɪᴅᴇᴏ ᴅᴇɴɢᴀɴ ᴄᴀᴘᴛɪᴏɴ *.hdvid*\n┊ ᴠɪᴅᴇᴏ ᴀᴋᴀɴ ᴅɪɴᴀɪᴋᴋᴀɴ ʀᴇꜱᴏʟᴜꜱɪɴʏᴀ 2x ᴘᴀᴋᴀɪ ꜰꜰᴍᴘᴇɢ.\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA naikkan resolusi videonya, agak lama ya... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL PROSES VIDEO* 」\n┊ Mouu, gagal proses videonya: *{message}*\n┊ ᴄᴏʙᴀ ᴠɪᴅᴇᴏ ʏᴀɴɢ ʟᴇʙɪʜ ᴘᴇɴᴅᴇᴋ ʏᴀ~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *HD VID (2x)* 」\n┊ ʀᴇꜱᴏʟᴜꜱɪ ᴅɪɴᴀɪᴋᴋᴀɴ 2x ᴅᴀʀɪ ᴀꜱʟɪɴʏᴀ~\n╰━━━━━━━',
     },
   },
   en: {
-    "hdvid": {
-      hint: "╭─❏ 🔍 「 *HDVID* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.hdvid keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    hdvid: {
+      needMedia: '╭─❏ 🎬 「 *SEND OR QUOTE A VIDEO* 」\n┊ ᴇxᴀᴍᴘʟᴇ: ꜱᴇɴᴅ ᴀ ᴠɪᴅᴇᴏ ᴡɪᴛʜ ᴄᴀᴘᴛɪᴏɴ *.hdvid*\n┊ ᴛʜᴇ ᴠɪᴅᴇᴏ ʀᴇꜱᴏʟᴜᴛɪᴏɴ ᴡɪʟʟ ʙᴇ ᴜᴘꜱᴄᴀʟᴇᴅ 2x ᴡɪᴛʜ ꜰꜰᴍᴘᴇɢ.\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is upscaling the video, this takes a while... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *VIDEO PROCESSING FAILED* 」\n┊ Mouu, failed to process the video: *{message}*\n┊ ᴛʀʏ ᴀ ꜱʜᴏʀᴛᴇʀ ᴠɪᴅᴇᴏ~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *HD VID (2x)* 」\n┊ ʀᴇꜱᴏʟᴜᴛɪᴏɴ ᴜᴘꜱᴄᴀʟᴇᴅ 2x ꜰʀᴏᴍ ᴛʜᴇ ᴏʀɪɢɪɴᴀʟ~\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.hdvid indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.hdvid', expect: /VIDEO|VID/ }
+
+export async function upscaleVideo(buffer) {
+  return withTempDir('kana-hdvid-', async (dir) => {
+    const input = join(dir, 'in.mp4')
+    const output = join(dir, 'out.mp4')
+    await writeFile(input, buffer)
+    await run('ffmpeg', ['-y', '-i', input, '-vf', 'scale=iw*2:ih*2:flags=lanczos', '-c:v', 'libx264', '-crf', '18', '-preset', 'veryfast', '-c:a', 'copy', '-movflags', '+faststart', output], { timeout: 600000 })
+    return readFile(output)
+  })
 }
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('hdvid.hint'))
+  let media
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('hdvid.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('hdvid.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('hdvid.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('hdvid.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('hdvid.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('hdvid.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('hdvid.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('hdvid.notfound', { q }))
-    return ctx.reply(ctx.t('hdvid.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    media = await ctx.downloadMedia()
+  } catch {}
+  if (!media?.buffer || media.kind !== 'video') return ctx.reply(ctx.t('hdvid.needMedia'))
+  if (media.buffer.length > MAX_VIDEO_BYTES) return ctx.reply(ctx.t('hdvid.failed', { message: 'video terlalu besar' }))
+  await ctx.reply(ctx.t('hdvid.working', { mood: ctx.say('mikir') }))
+  try {
+    const out = await upscaleVideo(media.buffer)
+    await sendVideo(ctx, out, { caption: ctx.t('hdvid.caption') })
+    return undefined
   } catch (err) {
-    return ctx.reply(ctx.t('hdvid.fail', { message: err.message }))
+    return ctx.reply(ctx.t('hdvid.failed', { message: err.message }))
   }
 }

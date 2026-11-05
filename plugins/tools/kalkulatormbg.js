@@ -1,81 +1,70 @@
-
+// Kalkulator dana MBG (Makan Bergizi Gratis) lokal, mengikuti niat
+// perintah aslinya: harga per porsi dan pengeluaran harian nasional
+// menjadi dasar hitungan porsi, biaya sekolah, dan durasi dana.
+export const HARGA_PORSI = 15000
+export const PENGELUARAN_PER_HARI = 319600000000
 export const config = {
-  name: "kalkulatormbg",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur kalkulatormbg versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD kalkulatormbg feature, rewritten in KANA style" },
-  usage: ".kalkulatormbg",
-  example: ".kalkulatormbg",
-  cooldown: 5,
+  name: 'kalkulatormbg',
+  alias: ['hitungmbg', 'mbg'],
+  category: 'tools',
+  description: { id: 'Kalkulator dana MBG: porsi, biaya per sekolah, durasi dana', en: 'MBG fund calculator: portions, per-school cost, fund duration' },
+  usage: '.kalkulatormbg [jumlah siswa | dana <nominal>]',
+  example: '.kalkulatormbg 500',
+  cooldown: 3,
 }
 
 export const i18n = {
   id: {
-    "kalkulatormbg": {
-      hint: "╭─❏ 🔍 「 *KALKULATORMBG* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.kalkulatormbg kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    kalkulatormbg: {
+      needInput: '╭─❏ 🍱 「 *FORMAT MBG* 」\n┊ *.kalkulatormbg* ringkasan nasional\n┊ *.kalkulatormbg 500* biaya untuk 500 siswa\n┊ *.kalkulatormbg dana 100000000* berapa porsi dari dana itu\n╰━━━━━━━',
+      summary: '╭─❏ 🍱 「 *KALKULATOR MBG* 」\n┊ ʜᴀʀɢᴀ ᴘᴇʀ ᴘᴏʀꜱɪ: *{harga}*\n┊ ᴘᴇɴɢᴇʟᴜᴀʀᴀɴ ɴᴀꜱɪᴏɴᴀʟ ᴘᴇʀ ʜᴀʀɪ: *{perhari}*\n┊ ꜱᴇᴛᴀʀᴀ: *{porsi} porsi per hari*\n╰━━━━━━━',
+      school: '╭─❏ 🍱 「 *MBG {siswa} SISWA* 」\n┊ ʜᴀʀɢᴀ ᴘᴇʀ ᴘᴏʀꜱɪ: *{harga}*\n┊ ʙɪᴀʏᴀ ᴘᴇʀ ʜᴀʀɪ: *{perhari}*\n┊ ʙɪᴀʏᴀ ᴘᴇʀ ʙᴜʟᴀɴ (22 ʜᴀʀɪ ꜱᴇᴋᴏʟᴀʜ): *{perbulan}*\n┊ ʙɪᴀʏᴀ ᴘᴇʀ ᴛᴀʜᴜɴ (220 ʜᴀʀɪ): *{pertahun}*\n╰━━━━━━━',
+      fund: '╭─❏ 🍱 「 *DANA MBG* 」\n┊ ᴅᴀɴᴀ: *{dana}*\n┊ ʜᴀʀɢᴀ ᴘᴇʀ ᴘᴏʀꜱɪ: *{harga}*\n┊ ᴊᴜᴍʟᴀʜ ᴘᴏʀꜱɪ: *{porsi} porsi*\n┊ ᴄᴜᴋᴜᴘ ᴜɴᴛᴜᴋ *{siswa} siswa selama 1 hari*\n╰━━━━━━━',
     },
   },
   en: {
-    "kalkulatormbg": {
-      hint: "╭─❏ 🔍 「 *KALKULATORMBG* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.kalkulatormbg keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    kalkulatormbg: {
+      needInput: '╭─❏ 🍱 「 *MBG FORMAT* 」\n┊ *.kalkulatormbg* national summary\n┊ *.kalkulatormbg 500* cost for 500 students\n┊ *.kalkulatormbg dana 100000000* portions from that fund\n╰━━━━━━━',
+      summary: '╭─❏ 🍱 「 *MBG CALCULATOR* 」\n┊ ᴘʀɪᴄᴇ ᴘᴇʀ ᴘᴏʀᴛɪᴏɴ: *{harga}*\n┊ ɴᴀᴛɪᴏɴᴀʟ ꜱᴘᴇɴᴅ ᴘᴇʀ ᴅᴀʏ: *{perhari}*\n┊ ᴇǫᴜᴀʟꜱ: *{porsi} portions per day*\n╰━━━━━━━',
+      school: '╭─❏ 🍱 「 *MBG {siswa} STUDENTS* 」\n┊ ᴘʀɪᴄᴇ ᴘᴇʀ ᴘᴏʀᴛɪᴏɴ: *{harga}*\n┊ ᴄᴏꜱᴛ ᴘᴇʀ ᴅᴀʏ: *{perhari}*\n┊ ᴄᴏꜱᴛ ᴘᴇʀ ᴍᴏɴᴛʜ (22 school days): *{perbulan}*\n┊ ᴄᴏꜱᴛ ᴘᴇʀ ʏᴇᴀʀ (220 days): *{pertahun}*\n╰━━━━━━━',
+      fund: '╭─❏ 🍱 「 *MBG FUND* 」\n┊ ꜰᴜɴᴅ: *{dana}*\n┊ ᴘʀɪᴄᴇ ᴘᴇʀ ᴘᴏʀᴛɪᴏɴ: *{harga}*\n┊ ᴘᴏʀᴛɪᴏɴꜱ: *{porsi} portions*\n┊ ᴇɴᴏᴜɢʜ ꜰᴏʀ *{siswa} students for 1 day*\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.kalkulatormbg indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.kalkulatormbg 500', expect: /7\.500\.000/ }
+
+export function rp(n) {
+  return 'Rp' + Math.round(n).toLocaleString('id-ID')
 }
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('kalkulatormbg.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('kalkulatormbg.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('kalkulatormbg.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('kalkulatormbg.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('kalkulatormbg.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('kalkulatormbg.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('kalkulatormbg.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('kalkulatormbg.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('kalkulatormbg.notfound', { q }))
-    return ctx.reply(ctx.t('kalkulatormbg.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('kalkulatormbg.fail', { message: err.message }))
+  const text = (ctx.text || '').trim()
+  const harga = rp(HARGA_PORSI)
+  if (!text) {
+    return ctx.reply(ctx.t('kalkulatormbg.summary', {
+      harga,
+      perhari: rp(PENGELUARAN_PER_HARI),
+      porsi: Math.floor(PENGELUARAN_PER_HARI / HARGA_PORSI).toLocaleString('id-ID'),
+    }))
   }
+  const fundMatch = text.match(/^dana\s+([\d.,]+)$/i)
+  if (fundMatch) {
+    const dana = Number(fundMatch[1].replace(/[.,](?=\d{3}\b)/g, '').replace(',', '.'))
+    if (!Number.isFinite(dana) || dana <= 0) return ctx.reply(ctx.t('kalkulatormbg.needInput'))
+    const porsi = Math.floor(dana / HARGA_PORSI)
+    return ctx.reply(ctx.t('kalkulatormbg.fund', {
+      dana: rp(dana), harga, porsi: porsi.toLocaleString('id-ID'), siswa: porsi.toLocaleString('id-ID'),
+    }))
+  }
+  const siswa = Number(text.replace(/[^\d]/g, ''))
+  if (!siswa || siswa <= 0) return ctx.reply(ctx.t('kalkulatormbg.needInput'))
+  const perhari = siswa * HARGA_PORSI
+  return ctx.reply(ctx.t('kalkulatormbg.school', {
+    siswa: siswa.toLocaleString('id-ID'),
+    harga,
+    perhari: rp(perhari),
+    perbulan: rp(perhari * 22),
+    pertahun: rp(perhari * 220),
+  }))
 }

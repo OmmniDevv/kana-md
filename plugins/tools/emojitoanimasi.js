@@ -1,81 +1,82 @@
+import { downloadBuffer } from '../../src/scrapers/runner.js'
+import { sendSticker } from '../maker/sticker.js'
 
+// Ubah emoji menjadi stiker animasi Noto Emoji resmi Google
+// (fonts.gstatic.com/s/e/notoemoji). Terverifikasi 2026-11-05: berkas
+// webp animasi menjawab dengan header RIFF WEBP ANIM.
 export const config = {
-  name: "emojitoanimasi",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur emojitoanimasi versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD emojitoanimasi feature, rewritten in KANA style" },
-  usage: ".emojitoanimasi",
-  example: ".emojitoanimasi",
-  cooldown: 5,
+  name: 'emojitoanimasi',
+  alias: ['emojianim', 'animemoji'],
+  category: 'tools',
+  description: { id: 'Ubah emoji menjadi stiker animasi Noto Emoji', en: 'Turn an emoji into an animated Noto Emoji sticker' },
+  usage: '.emojitoanimasi <emoji>',
+  example: '.emojitoanimasi 😀',
+  cooldown: 8,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "emojitoanimasi": {
-      hint: "╭─❏ 🔍 「 *EMOJITOANIMASI* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.emojitoanimasi kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    emojitoanimasi: {
+      needEmoji: '╭─❏ 😀 「 *KIRIM EMOJINYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.emojitoanimasi 😀*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *ANIMASI TIDAK TERSEDIA* 」\n┊ Mouu, emoji itu belum punya versi animasi Noto~\n┊ Coba emoji wajah atau hati yang umum ya.\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL ANIMASI* 」\n┊ Mouu, gagal ambil animasinya: *{message}*\n╰━━━━━━━',
+      caption: '╭─❏ 😀 「 *EMOJI ANIMASI* 」\n┊ ɴɪʜ ꜱᴛɪᴋᴇʀ ᴀɴɪᴍᴀꜱɪɴʏᴀ~\n╰━━━━━━━',
     },
   },
   en: {
-    "emojitoanimasi": {
-      hint: "╭─❏ 🔍 「 *EMOJITOANIMASI* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.emojitoanimasi keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    emojitoanimasi: {
+      needEmoji: '╭─❏ 😀 「 *SEND THE EMOJI* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.emojitoanimasi 😀*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *NO ANIMATION AVAILABLE* 」\n┊ Mouu, that emoji has no Noto animated version yet~\n┊ Try a common face or heart emoji.\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH* 」\n┊ Mouu, failed to fetch the animation: *{message}*\n╰━━━━━━━',
+      caption: '╭─❏ 😀 「 *ANIMATED EMOJI* 」\n┊ ʜᴇʀᴇ ɪꜱ ᴛʜᴇ ᴀɴɪᴍᴀᴛᴇᴅ ꜱᴛɪᴄᴋᴇʀ~\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.emojitoanimasi indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('emojitoanimasi.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('emojitoanimasi.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('emojitoanimasi.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('emojitoanimasi.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('emojitoanimasi.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('emojitoanimasi.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('emojitoanimasi.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('emojitoanimasi.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('emojitoanimasi.notfound', { q }))
-    return ctx.reply(ctx.t('emojitoanimasi.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('emojitoanimasi.fail', { message: err.message }))
+export const test = { input: '.emojitoanimasi 😀', expect: /EMOJI ANIMASI|ANIMATED EMOJI/ }
+
+// Bangun URL webp animasi Noto dari emoji pertama pada teks.
+export function notoAnimatedUrl(text) {
+  const chars = [...String(text || '').trim()]
+  if (!chars.length) return null
+  const emoji = chars[0] === '❤' || chars.length === 1 ? chars.join('') : chars[0]
+  const first = [...(emoji || '')]
+  if (!first.length) return null
+  // Noto memakai urutan codepoint heksadesimal digabung garis bawah,
+  // tanpa pemilih variasi FE0F.
+  const cps = []
+  for (const ch of String(text).trim()) {
+    const cp = ch.codePointAt(0).toString(16)
+    if (cp === 'fe0f') continue
+    cps.push(cp)
+    if (cps.length >= 8) break
   }
+  if (!cps.length) return null
+  return `https://fonts.gstatic.com/s/e/notoemoji/latest/${cps.join('_')}/512.webp`
+}
+
+export function isAnimatedWebp(buffer) {
+  return Buffer.isBuffer(buffer)
+    && buffer.length > 20
+    && buffer.toString('ascii', 0, 4) === 'RIFF'
+    && buffer.toString('ascii', 8, 12) === 'WEBP'
+}
+
+export async function handler(ctx) {
+  const url = notoAnimatedUrl(ctx.text || '')
+  if (!url) return ctx.reply(ctx.t('emojitoanimasi.needEmoji'))
+  let buffer
+  try {
+    ;({ buffer } = await downloadBuffer(url, { maxBytes: 4 * 1024 * 1024, timeout: 20000 }))
+  } catch {
+    return ctx.reply(ctx.t('emojitoanimasi.notFound'))
+  }
+  if (!isAnimatedWebp(buffer)) return ctx.reply(ctx.t('emojitoanimasi.notFound'))
+  try {
+    await sendSticker(ctx, buffer)
+  } catch (err) {
+    return ctx.reply(ctx.t('emojitoanimasi.failed', { message: err.message }))
+  }
+  return ctx.reply(ctx.t('emojitoanimasi.caption'))
 }

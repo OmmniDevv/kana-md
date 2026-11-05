@@ -1,81 +1,77 @@
-
+// Primbon Jawa lokal: hitung hari, pasaran, weton, dan neptu dari
+// tanggal lahir. Acuan: 1 Januari 1970 adalah Kamis Legi; siklus
+// pasaran 5 hari dan neptu memakai tabel pakem umum primbon.
 export const config = {
-  name: "primbon",
-  alias: [],
-  category: "tools",
-  description: { id: "Fitur primbon versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD primbon feature, rewritten in KANA style" },
-  usage: ".primbon",
-  example: ".primbon",
-  cooldown: 5,
+  name: 'primbon',
+  alias: ['weton', 'cekprimbon'],
+  category: 'tools',
+  description: { id: 'Hitung weton, pasaran, dan neptu dari tanggal lahir', en: 'Calculate Javanese weton, pasaran, and neptu from a birth date' },
+  usage: '.primbon <dd-mm-yyyy>',
+  example: '.primbon 17-08-1945',
+  cooldown: 3,
 }
 
 export const i18n = {
   id: {
-    "primbon": {
-      hint: "╭─❏ 🔍 「 *PRIMBON* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.primbon kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    primbon: {
+      needDate: '╭─❏ 🗓️ 「 *FORMAT TANGGAL LAHIR* 」\n┊ ᴄᴏɴᴛᴏʜ: *.primbon 17-08-1945*\n┊ ꜰᴏʀᴍᴀᴛ: ʜᴀʀɪ ʙᴜʟᴀɴ ᴛᴀʜᴜɴ ᴘᴀᴋᴀɪ ᴘᴇᴍɪꜱᴀʜ ɢᴀʀɪꜱ.\n╰━━━━━━━',
+      out: '╭─❏ 🗓️ 「 *PRIMBON JAWA* 」\n┊ ᴛᴀɴɢɢᴀʟ: *{date}*\n┊ ʜᴀʀɪ: *{day}* (neptu {dayNeptu})\n┊ ᴘᴀꜱᴀʀᴀɴ: *{pasaran}* (neptu {pasaranNeptu})\n┊ ᴡᴇᴛᴏɴ: *{day} {pasaran}*\n┊ ᴛᴏᴛᴀʟ ɴᴇᴘᴛᴜ: *{neptu}*\n┊ ᴡᴀᴛᴀᴋ ᴜᴍᴜᴍ: {trait}\n╰━━━━━━━',
     },
   },
   en: {
-    "primbon": {
-      hint: "╭─❏ 🔍 「 *PRIMBON* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.primbon keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    primbon: {
+      needDate: '╭─❏ 🗓️ 「 *BIRTH DATE FORMAT* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.primbon 17-08-1945*\n┊ ꜰᴏʀᴍᴀᴛ: ᴅᴀʏ ᴍᴏɴᴛʜ ʏᴇᴀʀ ꜱᴇᴘᴀʀᴀᴛᴇᴅ ʙʏ ᴅᴀꜱʜᴇꜱ.\n╰━━━━━━━',
+      out: '╭─❏ 🗓️ 「 *JAVANESE PRIMBON* 」\n┊ ᴅᴀᴛᴇ: *{date}*\n┊ ᴅᴀʏ: *{day}* (neptu {dayNeptu})\n┊ ᴘᴀꜱᴀʀᴀɴ: *{pasaran}* (neptu {pasaranNeptu})\n┊ ᴡᴇᴛᴏɴ: *{day} {pasaran}*\n┊ ᴛᴏᴛᴀʟ ɴᴇᴘᴛᴜ: *{neptu}*\n┊ ɢᴇɴᴇʀᴀʟ ᴛʀᴀɪᴛ: {trait}\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.primbon indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('primbon.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('primbon.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('primbon.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('primbon.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('primbon.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('primbon.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('primbon.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('primbon.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('primbon.notfound', { q }))
-    return ctx.reply(ctx.t('primbon.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('primbon.fail', { message: err.message }))
+export const test = { input: '.primbon 01-01-1970', expect: /Legi/ }
+
+const DAYS = [
+  { name: 'Minggu', neptu: 5 }, { name: 'Senin', neptu: 4 }, { name: 'Selasa', neptu: 3 },
+  { name: 'Rabu', neptu: 7 }, { name: 'Kamis', neptu: 8 }, { name: 'Jumat', neptu: 6 },
+  { name: 'Sabtu', neptu: 9 },
+]
+const PASARAN = [
+  { name: 'Legi', neptu: 5 }, { name: 'Pahing', neptu: 9 }, { name: 'Pon', neptu: 7 },
+  { name: 'Wage', neptu: 4 }, { name: 'Kliwon', neptu: 8 },
+]
+const TRAITS = [
+  [7, 'pendiam, tekun, dan setia pada pendirian'],
+  [9, 'periang, mudah bergaul, dan pandai bicara'],
+  [11, 'berjiwa pemimpin, tegas, dan bertanggung jawab'],
+  [13, 'kreatif, berwawasan luas, dan suka hal baru'],
+  [15, 'ambisius, pekerja keras, dan berani mengambil risiko'],
+  [18, 'bijaksana, berwibawa, dan disegani banyak orang'],
+]
+
+// Hitung weton dari string tanggal dd-mm-yyyy (UTC agar stabil).
+export function computeWeton(text) {
+  const m = String(text || '').trim().match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/)
+  if (!m) return null
+  const day = Number(m[1]); const month = Number(m[2]); const year = Number(m[3])
+  const date = new Date(Date.UTC(year, month - 1, day))
+  if (Number.isNaN(date.getTime()) || date.getUTCDate() !== day || date.getUTCMonth() !== month - 1) return null
+  const epoch = Date.UTC(1970, 0, 1)
+  const days = Math.round((date.getTime() - epoch) / 86400000)
+  const dayInfo = DAYS[date.getUTCDay()]
+  const pasaranInfo = PASARAN[((days % 5) + 5) % 5]
+  const neptu = dayInfo.neptu + pasaranInfo.neptu
+  const trait = (TRAITS.find(([limit]) => neptu <= limit) || TRAITS[TRAITS.length - 1])[1]
+  return {
+    date: `${m[1].padStart(2, '0')}-${m[2].padStart(2, '0')}-${m[3]}`,
+    day: dayInfo.name,
+    dayNeptu: dayInfo.neptu,
+    pasaran: pasaranInfo.name,
+    pasaranNeptu: pasaranInfo.neptu,
+    neptu,
+    trait,
   }
+}
+
+export async function handler(ctx) {
+  const result = computeWeton(ctx.text || '')
+  if (!result) return ctx.reply(ctx.t('primbon.needDate'))
+  return ctx.reply(ctx.t('primbon.out', result))
 }
