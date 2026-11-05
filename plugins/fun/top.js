@@ -1,3 +1,5 @@
+import { resolveGroupMembers } from '../../src/services/group-members.js'
+
 // Top grup: leaderboard iseng yang men-tag member acak untuk satu topik,
 // meniru mekanik fitur top Elaina-MD owner (acak peserta grup dari metadata,
 // tampilkan peringkat dengan mention beneran), diperluas ke 10 member
@@ -41,21 +43,16 @@ function digitsOf(jid) {
   return String(jid ?? '').split('@')[0].split(':')[0]
 }
 
-// Ambil JID peserta dari metadata grup (bentuk objek { id } atau string),
-// buang botnya sendiri. Murni, gampang dites.
+// Ambil JID peserta dari metadata grup, buang botnya sendiri. Murni,
+// gampang dites. Peserta WAJIB teresolve ke nomor telepon asli lewat
+// group-members: di grup mode LID field id berisi LID, dan versi lama
+// fungsi ini mencetak digit LID itu sebagai nomor (bug .top yang
+// dilaporkan user 2026-11-05). Peserta tanpa nomor teresolve dilewati.
 export function memberJids(participants, botJid) {
   const botDigits = digitsOf(botJid)
-  const seen = new Set()
-  const out = []
-  for (const p of participants ?? []) {
-    const jid = typeof p === 'string' ? p : p?.id
-    if (!jid || typeof jid !== 'string') continue
-    const digits = digitsOf(jid)
-    if (!digits || digits === botDigits || seen.has(digits)) continue
-    seen.add(digits)
-    out.push(`${digits}@s.whatsapp.net`)
-  }
-  return out
+  return resolveGroupMembers(participants).members
+    .map((m) => m.jid)
+    .filter((jid) => digitsOf(jid) !== botDigits)
 }
 
 // Acak Fisher-Yates dengan rng yang bisa disuntik buat tes, lalu ambil

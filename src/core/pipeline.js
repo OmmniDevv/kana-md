@@ -27,6 +27,15 @@ export const PREFIXES = ['.', '!', '/', '#']
 
 const digits = (s) => String(s ?? '').replace(/\D/g, '')
 
+// Digit identitas dari JID utuh: ambil bagian user sebelum "@" dan
+// sebelum ":" lebih dulu, baru ekstrak digit. Wajib untuk JID milik
+// koneksi sendiri (sock.user.id / sock.user.lid) karena format Baileys
+// membawa suffix perangkat, mis. "6285187605007:14@s.whatsapp.net";
+// digits() polos akan menempelkan deviceId ke nomor dan hasilnya
+// tidak pernah cocok dengan digit bersih peserta grup. Inilah akar
+// bug gerbang botAdmin yang selalu menolak (2026-11-05).
+export const jidUserDigits = (jid) => digits(String(jid ?? '').split('@')[0].split(':')[0])
+
 // Balasan tombol native flow (MB.Button quick_reply dkk.) tiba sebagai
 // interactiveResponseMessage dengan paramsJson berbentuk STRING JSON
 // (mis. '{"id":".menu download"}'), bukan objek. Parse dulu supaya id
@@ -104,7 +113,7 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
   // Cocokkan peserta grup dengan sekumpulan digit (JID/PN/LID bisa berbeda).
   function participantMatches(participant, digitSet) {
     const candidates = [participant?.id, participant?.phoneNumber, participant?.lid, participant?.jid]
-    return candidates.some((c) => c && digitSet.has(digits(c)))
+    return candidates.some((c) => c && digitSet.has(jidUserDigits(c)))
   }
 
   async function computeAdminFlags(sock, chat, senderDigitSet, botDigitSet) {
@@ -155,7 +164,7 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
     const senderDigitSet = new Set(senderDigits)
     const primaryDigits = senderDigits[0] || digits(chat)
     const isOwner = ownerDigits.some((o) => senderDigitSet.has(o))
-    const botDigits = new Set([digits(sock?.user?.id), digits(sock?.user?.lid)].filter(Boolean))
+    const botDigits = new Set([jidUserDigits(sock?.user?.id), jidUserDigits(sock?.user?.lid)].filter(Boolean))
 
     const lang = (await storage.get('users', `${primaryDigits}:lang`)) || defaultLang
     const t = (k, vars) => translate(lang, k, vars)

@@ -1,5 +1,6 @@
 import { renderShipCard } from '../../src/ui/ship-card.js'
 import { getProfile } from '../../src/services/user-service.js'
+import { resolveGroupMembers } from '../../src/services/group-members.js'
 
 // Ship: kartu canvas pasangan berisi dua foto profil dan persen
 // kecocokan, seperti ship Elaina-MD (khusus grup, dua orang yang
@@ -76,28 +77,42 @@ export async function fetchAvatarBuffer(ctx, jid) {
   }
 }
 
-async function displayName(ctx, jid) {
-  const digits = digitsOf(jid)
-  if (digits === digitsOf(ctx.sender)) return ctx.pushName || digits
+// Resolve satu target ship (mention bisa berbentuk LID) ke member grup:
+// JID nomor telepon untuk ambil foto profil, digit asli untuk caption,
+// dan nama tampilan dari metadata (notify). Tanpa metadata yang cocok,
+// JID PN dipakai apa adanya dan JID LID dibiarkan (foto profilnya akan
+// jatuh ke fallback inisial, bukan nomor palsu baru).
+export function resolveShipTarget(participants, jid) {
+  const member = resolveGroupMembers(participants).byDigits.get(digitsOf(jid))
+  if (member) return { jid: member.jid, digits: member.digits, name: member.name || '' }
+  return { jid, digits: digitsOf(jid), name: '' }
+}
+
+async function displayName(ctx, target) {
+  if (target.name) return target.name
+  if (target.digits === digitsOf(ctx.sender)) return ctx.pushName || target.digits
   try {
-    const profile = await getProfile(ctx.storage, digits)
-    return profile.name || profile.regName || digits
+    const profile = await getProfile(ctx.storage, target.digits)
+    return profile.name || profile.regName || target.digits
   } catch {
-    return digits
+    return target.digits
   }
 }
 
 export async function handler(ctx) {
   const pair = resolveShipPair(ctx)
   if (!pair) return ctx.reply(ctx.t('ship.hint'))
-  const [jid1, jid2] = pair
   const percent = pickPercent()
   try {
+    const meta = ctx.groupMetadata ?? (await ctx.getGroupMetadata().catch(() => null))
+    const participants = meta?.participants ?? []
+    const target1 = resolveShipTarget(participants, pair[0])
+    const target2 = resolveShipTarget(participants, pair[1])
     const [avatar1Buffer, avatar2Buffer, name1, name2] = await Promise.all([
-      fetchAvatarBuffer(ctx, jid1),
-      fetchAvatarBuffer(ctx, jid2),
-      displayName(ctx, jid1),
-      displayName(ctx, jid2),
+      fetchAvatarBuffer(ctx, target1.jid),
+      fetchAvatarBuffer(ctx, target2.jid),
+      displayName(ctx, target1),
+      displayName(ctx, target2),
     ])
     const image = await renderShipCard({
       name1,
@@ -108,8 +123,8 @@ export async function handler(ctx) {
       title: ctx.t('ship.cardTitle'),
     })
     const verdict = percent >= 70 ? ctx.t('ship.verdictHigh') : percent >= 40 ? ctx.t('ship.verdictMid') : ctx.t('ship.verdictLow')
-    const caption = ctx.t('ship.caption', { digits1: digitsOf(jid1), digits2: digitsOf(jid2), percent, verdict })
-    return ctx.sock.sendMessage(ctx.chat, { image, caption, mentions: [jid1, jid2] }, { quoted: ctx.raw })
+    const caption = ctx.t('ship.caption', { digits1: target1.digits, digits2: target2.digits, percent, verdict })
+    return ctx.sock.sendMessage(ctx.chat, { image, caption, mentions: [target1.jid, target2.jid] }, { quoted: ctx.raw })
   } catch (err) {
     return ctx.reply(ctx.t('ship.fail', { message: err.message }))
   }
