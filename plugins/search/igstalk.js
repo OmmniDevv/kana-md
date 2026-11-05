@@ -1,81 +1,89 @@
+// Stalk profil Instagram publik lewat Imginn (imginn.com), karena API
+// profil resmi Instagram membalas 429 dari VM bot. Terverifikasi
+// 2026-11-05 untuk @instagram: nama, bio, jumlah pos, pengikut, mengikuti.
+import { downloadBuffer } from '../../src/scrapers/runner.js'
+import { sendImage } from '../../src/ui/media.js'
 
 export const config = {
-  name: "igstalk",
-  alias: [],
-  category: "search",
-  description: { id: "Stalk akun Instagram", en: "KANA version of the Elaina-MD igstalk feature, rewritten in KANA style" },
-  usage: ".igstalk",
-  example: ".igstalk",
-  cooldown: 5,
+  name: 'igstalk',
+  alias: ['instagramstalk'],
+  category: 'search',
+  description: { id: 'Stalk profil Instagram publik: bio, pos, pengikut, mengikuti', en: 'Stalk a public Instagram profile: bio, posts, followers, following' },
+  usage: '.igstalk <username>',
+  example: '.igstalk instagram',
+  cooldown: 10,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "igstalk": {
-      hint: "╭─❏ 🔍 「 *IGSTALK* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.igstalk kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    igstalk: {
+      needUser: '╭─❏ 📸 「 *KETIK USERNAMENYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.igstalk instagram*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *AKUN TIDAK KETEMU* 」\n┊ Mouu, akun *@{user}* tidak ketemu atau privat~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL STALK* 」\n┊ Mouu, gagal ambil profilnya: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      body: '╭─❏ 📸 「 *@{user}* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴘᴏꜱ: *{posts}*\n┊ ᴘᴇɴɢɪᴋᴜᴛ: *{followers}*\n┊ ᴍᴇɴɢɪᴋᴜᴛɪ: *{following}*\n┊ ʙɪᴏ: {bio}\n┊ 🔗 https://instagram.com/{user}\n╰━━━━━━━',
     },
   },
   en: {
-    "igstalk": {
-      hint: "╭─❏ 🔍 「 *IGSTALK* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.igstalk keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    igstalk: {
+      needUser: '╭─❏ 📸 「 *TYPE THE USERNAME* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.igstalk instagram*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *ACCOUNT NOT FOUND* 」\n┊ Mouu, the account *@{user}* was not found or is private~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *STALK FAILED* 」\n┊ Mouu, failed to fetch the profile: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      body: '╭─❏ 📸 「 *@{user}* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴘᴏꜱᴛꜱ: *{posts}*\n┊ ꜰᴏʟʟᴏᴡᴇʀꜱ: *{followers}*\n┊ ꜰᴏʟʟᴏᴡɪɴɢ: *{following}*\n┊ ʙɪᴏ: {bio}\n┊ 🔗 https://instagram.com/{user}\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.igstalk indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('igstalk.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('igstalk.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('igstalk.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('igstalk.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('igstalk.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('igstalk.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('igstalk.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('igstalk.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('igstalk.notfound', { q }))
-    return ctx.reply(ctx.t('igstalk.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('igstalk.fail', { message: err.message }))
+export const test = { input: '.igstalk instagram', expect: /Followers|Pengikut|ᴘᴇɴɢɪᴋᴜᴛ/ }
+
+// Urai halaman profil Imginn menjadi data profil.
+export function parseImginnProfile(html, user) {
+  const src = String(html || '')
+  const pick = (re) => (src.match(re) || [])[1] || null
+  // Pola paling tak ambigu: meta description "686.3M Followers, 166
+  // Following, 449 Posts" milik profil yang dicari. Regex global biasa
+  // bisa tertukar dengan kartu akun saran di halaman yang sama.
+  const meta = src.match(/([\d.,]+[KM]?)\s*Followers,\s*([\d.,]+[KM]?)\s*Following,\s*([\d.,]+[KM]?)\s*Posts/i)
+  const followers = meta ? meta[1] : pick(/([\d.,]+[KM]?)\s*Followers/i)
+  if (!followers) return null
+  const decode = (v) => (v || '').replace(/&#38;|&amp;/g, '&')
+  return {
+    user,
+    name: (pick(/<h1[^>]*>([^<]+)<\/h1>/) || pick(/property="og:title" content="([^"]+)"/) || user).split('(')[0].trim(),
+    posts: meta ? meta[3] : (pick(/([\d.,]+[KM]?)\s*Posts/i) || '-'),
+    followers,
+    following: meta ? meta[2] : (pick(/([\d.,]+[KM]?)\s*Following/i) || '-'),
+    bio: (pick(/class="bio"[^>]*>([\s\S]{0,300}?)</) || pick(/property="og:description" content="([^"]+)"/) || '-').replace(/<[^>]+>/g, '').replace(/&apos;/g, "'").trim() || '-',
+    avatar: decode(pick(/property="og:image" content="([^"]+)"/)),
   }
+}
+
+async function fetchProfile(user) {
+  const res = await fetch(`https://imginn.com/${encodeURIComponent(user)}/`, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36' },
+  })
+  if (!res.ok) throw new Error(`Imginn HTTP ${res.status}`)
+  return res.text()
+}
+
+export async function handler(ctx, { fetchHtml = fetchProfile } = {}) {
+  const user = (ctx.text || '').trim().replace(/^@/, '').split(/\s+/)[0]
+  if (!user) return ctx.reply(ctx.t('igstalk.needUser'))
+  let profile
+  try {
+    profile = parseImginnProfile(await fetchHtml(user), user)
+  } catch (err) {
+    return ctx.reply(ctx.t('igstalk.failed', { message: err.message }))
+  }
+  if (!profile) return ctx.reply(ctx.t('igstalk.notFound', { user }))
+  const body = ctx.t('igstalk.body', profile)
+  if (profile.avatar) {
+    try {
+      const { buffer } = await downloadBuffer(profile.avatar, { maxBytes: 8 * 1024 * 1024, timeout: 20000 })
+      await sendImage(ctx, buffer, { caption: body })
+      return undefined
+    } catch {}
+  }
+  return ctx.reply(body)
 }

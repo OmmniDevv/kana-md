@@ -1,81 +1,68 @@
+import { searchImages } from '../../src/scrapers/search/gambar.js'
+import { downloadBuffer } from '../../src/scrapers/runner.js'
+import { sendImage, MAX_IMAGE_BYTES } from '../../src/ui/media.js'
 
 export const config = {
-  name: "gimage",
-  alias: [],
-  category: "download",
-  description: { id: "Mencari dan mendownload gambar dari Google", en: "KANA version of the Elaina-MD gimage feature, rewritten in KANA style" },
-  usage: ".gimage",
-  example: ".gimage",
-  cooldown: 5,
+  name: 'gimage',
+  alias: ['googleimage', 'carigambar'],
+  category: 'download',
+  description: { id: 'Cari gambar dari web dan kirim hasil teratasnya', en: 'Search images from the web and send the top results' },
+  usage: '.gimage <kata kunci>',
+  example: '.gimage kucing oren',
+  cooldown: 10,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "gimage": {
-      hint: "╭─❏ 🔍 「 *GIMAGE* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.gimage kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    gimage: {
+      needQuery: '╭─❏ 🖼️ 「 *KETIK KATA KUNCINYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.gimage kucing oren*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA cariin gambarnya dulu... {mood}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *TIDAK ADA HASIL* 」\n┊ Mouu, nggak ada gambar buat kata kunci itu. Coba kata lain ya~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian gambar gagal: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      caption: '╭─❏ 🖼️ 「 *GAMBAR: {query}* 」\n┊ ʜᴀꜱɪʟ {n} ᴅᴀʀɪ ᴘᴇɴᴄᴀʀɪᴀɴ ᴡᴇʙ (ʙɪɴɢ)\n╰━━━━━━━',
     },
   },
   en: {
-    "gimage": {
-      hint: "╭─❏ 🔍 「 *GIMAGE* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.gimage keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    gimage: {
+      needQuery: '╭─❏ 🖼️ 「 *TYPE THE KEYWORDS* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.gimage orange cat*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is looking for the images... {mood}\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *NO RESULTS* 」\n┊ Mouu, no images for those keywords. Try others~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *SEARCH FAILED* 」\n┊ Mouu, image search failed: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      caption: '╭─❏ 🖼️ 「 *IMAGE: {query}* 」\n┊ ʀᴇꜱᴜʟᴛ {n} ꜰʀᴏᴍ ᴡᴇʙ ꜱᴇᴀʀᴄʜ (ʙɪɴɢ)\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.gimage indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
+export const test = { input: '.gimage kucing', expect: /GAMBAR|IMAGE/ }
+
+const MAX_SEND = 4
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('gimage.hint'))
+  const query = (ctx.text || '').trim()
+  if (!query) return ctx.reply(ctx.t('gimage.needQuery'))
+  await ctx.reply(ctx.t('gimage.working', { mood: ctx.say('mikir') }))
+  let search
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('gimage.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('gimage.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('gimage.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('gimage.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('gimage.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('gimage.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('gimage.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('gimage.notfound', { q }))
-    return ctx.reply(ctx.t('gimage.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    search = await searchImages(query, { limit: 8 })
   } catch (err) {
-    return ctx.reply(ctx.t('gimage.fail', { message: err.message }))
+    return ctx.reply(ctx.t('gimage.failed', { message: err.message }))
   }
+  const urls = (search.results || []).filter(Boolean)
+  if (!urls.length) return ctx.reply(ctx.t('gimage.notFound'))
+  let sent = 0
+  for (const url of urls) {
+    if (sent >= MAX_SEND) break
+    try {
+      const { buffer } = await downloadBuffer(url, { maxBytes: MAX_IMAGE_BYTES, timeout: 30000 })
+      await sendImage(ctx, buffer, {
+        caption: sent === 0 ? ctx.t('gimage.caption', { query, n: urls.length }) : undefined,
+      })
+      sent += 1
+    } catch {
+      // Lewati gambar yang gagal diunduh, lanjut ke hasil berikutnya.
+    }
+  }
+  if (!sent) return ctx.reply(ctx.t('gimage.failed', { message: 'semua gambar gagal diunduh' }))
+  return undefined
 }

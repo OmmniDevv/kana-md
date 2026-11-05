@@ -1,81 +1,78 @@
+import { downloadBuffer } from '../../src/scrapers/runner.js'
+import { sendAudio } from '../../src/ui/media.js'
 
+// Cari dan putar efek suara meme dari MyInstants (myinstants.com,
+// publik tanpa kunci). Terverifikasi 2026-11-05: halaman pencarian
+// memuat daftar instant dengan judul dan berkas mp3.
 export const config = {
-  name: "soundmeme2",
-  alias: [],
-  category: "search",
-  description: { id: "Fitur soundmeme2 versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD soundmeme2 feature, rewritten in KANA style" },
-  usage: ".soundmeme2",
-  example: ".soundmeme2",
-  cooldown: 5,
+  name: 'soundmeme2',
+  alias: ['meme2', 'soundeffect'],
+  category: 'search',
+  description: { id: 'Cari dan putar efek suara meme (MyInstants)', en: 'Search and play meme sound effects (MyInstants)' },
+  usage: '.soundmeme2 <kata kunci>',
+  example: '.soundmeme2 bruh',
+  cooldown: 10,
+  limit: 5,
+  limitGroup: 'download',
 }
 
 export const i18n = {
   id: {
-    "soundmeme2": {
-      hint: "╭─❏ 🔍 「 *SOUNDMEME2* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.soundmeme2 kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    soundmeme2: {
+      needQuery: '╭─❏ 🔊 「 *KETIK KATA KUNCINYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.soundmeme2 bruh*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *SUARA TIDAK KETEMU* 」\n┊ Mouu, efek suara itu nggak ketemu di MyInstants~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL PUTAR* 」\n┊ Mouu, gagal putar efek suaranya: *{message}*\n╰━━━━━━━',
+      caption: '╭─❏ 🔊 「 *SOUND MEME* 」\n┊ 🎵 *{title}*\n┊ 🔗 https://www.myinstants.com\n╰━━━━━━━',
     },
   },
   en: {
-    "soundmeme2": {
-      hint: "╭─❏ 🔍 「 *SOUNDMEME2* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.soundmeme2 keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    soundmeme2: {
+      needQuery: '╭─❏ 🔊 「 *TYPE THE KEYWORDS* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.soundmeme2 bruh*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *SOUND NOT FOUND* 」\n┊ Mouu, that sound effect was not found on MyInstants~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO PLAY* 」\n┊ Mouu, failed to play the sound effect: *{message}*\n╰━━━━━━━',
+      caption: '╭─❏ 🔊 「 *SOUND MEME* 」\n┊ 🎵 *{title}*\n┊ 🔗 https://www.myinstants.com\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.soundmeme2 indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.soundmeme2 bruh', expect: /SOUND MEME|bruh/i }
+
+// Urai halaman pencarian MyInstants menjadi daftar { title, path }.
+export function parseInstants(html, limit = 5) {
+  const out = []
+  const re = /play\('(\/media\/sounds\/[^']+\.mp3)',\s*'[^']*',\s*'([^']+)'\)/g
+  for (const m of String(html || '').matchAll(re)) {
+    out.push({ path: m[1], title: m[2].replace(/\\'/g, "'") })
+    if (out.length >= limit) break
+  }
+  return out
 }
-export async function handler(ctx) {
+
+async function searchInstants(query) {
+  const res = await fetch(`https://www.myinstants.com/en/search/?name=${encodeURIComponent(query)}`, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36' },
+  })
+  if (!res.ok) throw new Error(`MyInstants HTTP ${res.status}`)
+  return res.text()
+}
+
+export async function handler(ctx, { search = searchInstants } = {}) {
   const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('soundmeme2.hint'))
+  if (!q) return ctx.reply(ctx.t('soundmeme2.needQuery'))
+  let items
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('soundmeme2.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('soundmeme2.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('soundmeme2.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('soundmeme2.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('soundmeme2.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('soundmeme2.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('soundmeme2.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('soundmeme2.notfound', { q }))
-    return ctx.reply(ctx.t('soundmeme2.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    items = parseInstants(await search(q))
   } catch (err) {
-    return ctx.reply(ctx.t('soundmeme2.fail', { message: err.message }))
+    return ctx.reply(ctx.t('soundmeme2.failed', { message: err.message }))
+  }
+  if (!items.length) return ctx.reply(ctx.t('soundmeme2.notFound'))
+  const first = items[0]
+  try {
+    const { buffer } = await downloadBuffer(`https://www.myinstants.com${first.path}`, { maxBytes: 16 * 1024 * 1024, timeout: 30000 })
+    await sendAudio(ctx, buffer, { title: first.title, mimetype: 'audio/mpeg' })
+    return ctx.reply(ctx.t('soundmeme2.caption', { title: first.title }))
+  } catch (err) {
+    return ctx.reply(ctx.t('soundmeme2.failed', { message: err.message }))
   }
 }

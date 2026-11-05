@@ -1,81 +1,93 @@
-
+// Pencarian web lewat DuckDuckGo Lite (lite.duckduckgo.com, tanpa
+// kunci). Endpoint html.duckduckgo.com terblokir bot-check dari VM,
+// varian lite menjawab hasil asli; terverifikasi 2026-11-05.
 export const config = {
-  name: "google",
-  alias: [],
-  category: "search",
-  description: { id: "Fitur google versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD google feature, rewritten in KANA style" },
-  usage: ".google",
-  example: ".google",
-  cooldown: 5,
+  name: 'google',
+  alias: ['searchweb', 'websearch'],
+  category: 'search',
+  description: { id: 'Cari apa pun di web dan tampilkan daftar hasilnya', en: 'Search anything on the web and show the result list' },
+  usage: '.google <kata kunci>',
+  example: '.google presiden indonesia',
+  cooldown: 8,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "google": {
-      hint: "╭─❏ 🔍 「 *GOOGLE* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.google kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    google: {
+      needQuery: '╭─❏ 🔍 「 *KETIK KATA KUNCINYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.google presiden indonesia*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *TIDAK ADA HASIL* 」\n┊ Mouu, nggak ada hasil buat kata kunci itu. Coba kata lain ya~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian web gagal: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      header: '╭─❏ 🔍 「 *HASIL WEB: {q}* 」',
+      item: '┊ {n}. *{title}*\n┊ {snippet}\n┊ {url}',
+      footer: '╰━━━━━━━',
     },
   },
   en: {
-    "google": {
-      hint: "╭─❏ 🔍 「 *GOOGLE* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.google keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    google: {
+      needQuery: '╭─❏ 🔍 「 *TYPE THE KEYWORDS* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.google indonesia president*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *NO RESULTS* 」\n┊ Mouu, no results for those keywords. Try others~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *SEARCH FAILED* 」\n┊ Mouu, web search failed: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      header: '╭─❏ 🔍 「 *WEB RESULTS: {q}* 」',
+      item: '┊ {n}. *{title}*\n┊ {snippet}\n┊ {url}',
+      footer: '╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.google kucing', expect: /.+/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.google presiden indonesia', expect: /HASIL WEB|WEB RESULTS/ }
+
+function decodeEntities(s) {
+  return String(s || '')
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/<[^>]+>/g, '')
+    .trim()
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('google.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('google.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('google.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('google.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('google.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('google.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('google.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
+
+// Urai hasil dari HTML DuckDuckGo Lite menjadi daftar { title, url, snippet }.
+export function parseDdgLite(html, limit = 5) {
+  const results = []
+  const linkRe = /<a[^>]+class="result-link"[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g
+  const snippetRe = /<td class="result-snippet">([\s\S]*?)<\/td>/g
+  const snippets = [...String(html || '').matchAll(snippetRe)].map((m) => decodeEntities(m[1]))
+  let i = 0
+  for (const m of String(html || '').matchAll(linkRe)) {
+    let url = m[1]
     try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('google.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
+      const u = new URL(url.startsWith('//') ? 'https:' + url : url)
+      const real = u.searchParams.get('uddg')
+      if (real) url = real
     } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('google.notfound', { q }))
-    return ctx.reply(ctx.t('google.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('google.fail', { message: err.message }))
+    results.push({ title: decodeEntities(m[2]), url, snippet: snippets[i] || '' })
+    i += 1
+    if (results.length >= limit) break
   }
+  return results.filter((r) => r.title && r.url)
+}
+
+async function searchWeb(query) {
+  const res = await fetch(`https://lite.duckduckgo.com/lite/?q=${encodeURIComponent(query)}`, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36' },
+  })
+  if (!res.ok) throw new Error(`DuckDuckGo HTTP ${res.status}`)
+  return res.text()
+}
+
+export async function handler(ctx, { search = searchWeb } = {}) {
+  const q = (ctx.text || '').trim()
+  if (!q) return ctx.reply(ctx.t('google.needQuery'))
+  let results
+  try {
+    results = parseDdgLite(await search(q))
+  } catch (err) {
+    return ctx.reply(ctx.t('google.failed', { message: err.message }))
+  }
+  if (!results.length) return ctx.reply(ctx.t('google.notFound'))
+  const lines = [ctx.t('google.header', { q })]
+  results.forEach((r, i) => {
+    lines.push(ctx.t('google.item', { n: i + 1, title: r.title, snippet: r.snippet.slice(0, 140) || '-', url: r.url }))
+  })
+  lines.push(ctx.t('google.footer'))
+  return ctx.reply(lines.join('\n'))
 }

@@ -1,81 +1,92 @@
-
+// Stalk channel YouTube publik dari halaman channel resminya. Data
+// tertanam di ytInitialData (nama channel, subscriber, jumlah video);
+// terverifikasi 2026-11-05 untuk @YouTube.
 export const config = {
-  name: "ytstalk",
-  alias: [],
-  category: "search",
-  description: { id: "Stalk channel YouTube", en: "KANA version of the Elaina-MD ytstalk feature, rewritten in KANA style" },
-  usage: ".ytstalk",
-  example: ".ytstalk",
-  cooldown: 5,
+  name: 'ytstalk',
+  alias: ['ytchannel', 'stalkyt'],
+  category: 'search',
+  description: { id: 'Stalk channel YouTube: subscriber, jumlah video, deskripsi', en: 'Stalk a YouTube channel: subscribers, video count, description' },
+  usage: '.ytstalk <@handle atau link channel>',
+  example: '.ytstalk @YouTube',
+  cooldown: 10,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "ytstalk": {
-      hint: "╭─❏ 🔍 「 *YTSTALK* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.ytstalk kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    ytstalk: {
+      needUser: '╭─❏ ▶️ 「 *KETIK HANDLE CHANNELNYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.ytstalk @YouTube*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *CHANNEL TIDAK KETEMU* 」\n┊ Mouu, channel *{user}* tidak ketemu~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL STALK* 」\n┊ Mouu, gagal ambil data channelnya: *{message}*\n╰━━━━━━━',
+      body: '╭─❏ ▶️ 「 *{name}* 」\n┊ ʜᴀɴᴅʟᴇ: *{handle}*\n┊ ꜱᴜʙꜱᴄʀɪʙᴇʀ: *{subs}*\n┊ ᴠɪᴅᴇᴏ: *{videos}*\n┊ ᴅᴇꜱᴋʀɪᴘꜱɪ: {desc}\n╰━━━━━━━',
     },
   },
   en: {
-    "ytstalk": {
-      hint: "╭─❏ 🔍 「 *YTSTALK* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.ytstalk keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    ytstalk: {
+      needUser: '╭─❏ ▶️ 「 *TYPE THE CHANNEL HANDLE* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.ytstalk @YouTube*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *CHANNEL NOT FOUND* 」\n┊ Mouu, the channel *{user}* was not found~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *STALK FAILED* 」\n┊ Mouu, failed to fetch the channel: *{message}*\n╰━━━━━━━',
+      body: '╭─❏ ▶️ 「 *{name}* 」\n┊ ʜᴀɴᴅʟᴇ: *{handle}*\n┊ ꜱᴜʙꜱᴄʀɪʙᴇʀꜱ: *{subs}*\n┊ ᴠɪᴅᴇᴏꜱ: *{videos}*\n┊ ᴅᴇꜱᴄʀɪᴘᴛɪᴏɴ: {desc}\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.ytstalk indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.ytstalk @YouTube', expect: /YouTube/ }
+
+// Ekstrak ytInitialData dari HTML channel.
+export function extractYtInitialData(html) {
+  const m = String(html || '').match(/var ytInitialData = (\{[\s\S]*?\});<\/script>/)
+  if (!m) return null
+  try { return JSON.parse(m[1]) } catch { return null }
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('ytstalk.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('ytstalk.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('ytstalk.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('ytstalk.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('ytstalk.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('ytstalk.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('ytstalk.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('ytstalk.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('ytstalk.notfound', { q }))
-    return ctx.reply(ctx.t('ytstalk.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('ytstalk.fail', { message: err.message }))
+
+// Cari nilai teks pertama untuk kunci tertentu secara rekursif (dangkal).
+function findText(obj, key, depth = 0) {
+  if (!obj || typeof obj !== 'object' || depth > 8) return null
+  if (obj[key]?.simpleText) return obj[key].simpleText
+  if (obj[key]?.runs) return obj[key].runs.map((r) => r.text).join('')
+  for (const value of Object.values(obj)) {
+    const found = findText(value, key, depth + 1)
+    if (found) return found
   }
+  return null
+}
+
+export function parseYtChannel(data, handle) {
+  if (!data) return null
+  const meta = data.metadata?.channelMetadataRenderer
+  const name = meta?.title || findText(data.header || data, 'title')
+  if (!name) return null
+  const header = data.header || {}
+  return {
+    name,
+    handle: meta?.vanityChannelUrl ? meta.vanityChannelUrl.split('/').pop() : handle,
+    subs: findText(header, 'subscriberCountText') || '-',
+    videos: findText(header, 'videoCountText') || '-',
+    desc: String(meta?.description || '-').slice(0, 200),
+  }
+}
+
+async function fetchChannel(handle) {
+  const path = handle.startsWith('@') ? handle : `@${handle}`
+  const res = await fetch(`https://www.youtube.com/${encodeURIComponent(path)}`, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36', 'accept-language': 'en-US' },
+  })
+  if (!res.ok) throw new Error(`YouTube HTTP ${res.status}`)
+  return res.text()
+}
+
+export async function handler(ctx, { fetchHtml = fetchChannel } = {}) {
+  const raw = (ctx.text || '').trim().split(/\s+/)[0]
+  const handle = raw.replace(/^https?:\/\/(www\.)?youtube\.com\//, '')
+  if (!handle) return ctx.reply(ctx.t('ytstalk.needUser'))
+  let profile
+  try {
+    profile = parseYtChannel(extractYtInitialData(await fetchHtml(handle)), handle)
+  } catch (err) {
+    return ctx.reply(ctx.t('ytstalk.failed', { message: err.message }))
+  }
+  if (!profile) return ctx.reply(ctx.t('ytstalk.notFound', { user: handle }))
+  return ctx.reply(ctx.t('ytstalk.body', profile))
 }

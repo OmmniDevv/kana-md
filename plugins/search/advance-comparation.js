@@ -1,81 +1,93 @@
-
+// Bandingkan dua paket npm secara langsung: versi terbaru, unduhan
+// mingguan, lisensi, dan deskripsi dari registry resmi npm.
 export const config = {
-  name: "advance-comparation",
-  alias: [],
-  category: "search",
-  description: { id: "Fitur advance-comparation versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD advance-comparation feature, rewritten in KANA style" },
-  usage: ".advance-comparation",
-  example: ".advance-comparation",
-  cooldown: 5,
+  name: 'advance-comparation',
+  alias: ['compare', 'bandingkan', 'npmcompare'],
+  category: 'search',
+  description: { id: 'Bandingkan dua paket npm: versi, unduhan, lisensi', en: 'Compare two npm packages: version, downloads, license' },
+  usage: '.advance-comparation <paket a> vs <paket b>',
+  example: '.advance-comparation express vs fastify',
+  cooldown: 10,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "advance-comparation": {
-      hint: "╭─❏ 🔍 「 *ADVANCE-COMPARATION* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.advance-comparation kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    'advance-comparation': {
+      needInput: '╭─❏ ⚖️ 「 *FORMAT PERBANDINGAN* 」\n┊ ᴄᴏɴᴛᴏʜ: *.advance-comparation express vs fastify*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *PAKET TIDAK KETEMU* 」\n┊ Mouu, paket *{pkg}* tidak ketemu di registry npm~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *PERBANDINGAN GAGAL* 」\n┊ Mouu, gagal bandingkan paketnya: *{message}*\n╰━━━━━━━',
+      body: '╭─❏ ⚖️ 「 *{a} vs {b}* 」\n┊ 📦 *{a}*\n┊ ᴠᴇʀꜱɪ: *{av}* | ⬇️ ᴜɴᴅᴜʜ/ᴍɪɴɢɢᴜ: *{ad}*\n┊ ʟɪꜱᴇɴꜱɪ: *{al}* | {adesc}\n┊ ─────\n┊ 📦 *{b}*\n┊ ᴠᴇʀꜱɪ: *{bv}* | ⬇️ ᴜɴᴅᴜʜ/ᴍɪɴɢɢᴜ: *{bd}*\n┊ ʟɪꜱᴇɴꜱɪ: *{bl}* | {bdesc}\n┊ ─────\n┊ 🏆 ʟᴇʙɪʜ ᴘᴏᴘᴜʟᴇʀ ᴍɪɴɢɢᴜ ɪɴɪ: *{winner}*\n╰━━━━━━━',
     },
   },
   en: {
-    "advance-comparation": {
-      hint: "╭─❏ 🔍 「 *ADVANCE-COMPARATION* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.advance-comparation keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    'advance-comparation': {
+      needInput: '╭─❏ ⚖️ 「 *COMPARISON FORMAT* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.advance-comparation express vs fastify*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *PACKAGE NOT FOUND* 」\n┊ Mouu, the package *{pkg}* was not found in the npm registry~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *COMPARISON FAILED* 」\n┊ Mouu, failed to compare the packages: *{message}*\n╰━━━━━━━',
+      body: '╭─❏ ⚖️ 「 *{a} vs {b}* 」\n┊ 📦 *{a}*\n┊ ᴠᴇʀꜱɪᴏɴ: *{av}* | ⬇️ ᴅᴏᴡɴʟᴏᴀᴅꜱ/ᴡᴇᴇᴋ: *{ad}*\n┊ ʟɪᴄᴇɴꜱᴇ: *{al}* | {adesc}\n┊ ─────\n┊ 📦 *{b}*\n┊ ᴠᴇʀꜱɪᴏɴ: *{bv}* | ⬇️ ᴅᴏᴡɴʟᴏᴀᴅꜱ/ᴡᴇᴇᴋ: *{bd}*\n┊ ʟɪᴄᴇɴꜱᴇ: *{bl}* | {bdesc}\n┊ ─────\n┊ 🏆 ᴍᴏʀᴇ ᴘᴏᴘᴜʟᴀʀ ᴛʜɪꜱ ᴡᴇᴇᴋ: *{winner}*\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.advance-comparation indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.advance-comparation express vs fastify', expect: /express|fastify/i }
+
+// Urai dua nama paket dari teks perintah.
+export function parsePair(text) {
+  const src = String(text || '').trim().toLowerCase()
+  const vs = src.match(/^(@?[\w./-]+)\s+(?:vs|versus)\s+(@?[\w./-]+)$/)
+  if (vs) return [vs[1], vs[2]]
+  const two = src.match(/^(@?[\w./-]+)\s+(@?[\w./-]+)$/)
+  if (two) return [two[1], two[2]]
+  return null
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('advance-comparation.hint'))
+
+async function fetchPackage(pkg) {
+  const encoded = pkg.startsWith('@') ? pkg.replace('/', '%2f') : encodeURIComponent(pkg)
+  const metaRes = await fetch(`https://registry.npmjs.org/${encoded}`, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'KANA-Bot', accept: 'application/json' },
+  })
+  if (metaRes.status === 404) return null
+  if (!metaRes.ok) throw new Error(`npm HTTP ${metaRes.status}`)
+  const meta = await metaRes.json()
+  const latest = meta['dist-tags']?.latest
+  const versionInfo = latest ? meta.versions?.[latest] : null
+  let downloads = 0
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('advance-comparation.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('advance-comparation.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('advance-comparation.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('advance-comparation.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('advance-comparation.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('advance-comparation.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('advance-comparation.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('advance-comparation.notfound', { q }))
-    return ctx.reply(ctx.t('advance-comparation.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('advance-comparation.fail', { message: err.message }))
+    const dlRes = await fetch(`https://api.npmjs.org/downloads/point/last-week/${encoded}`, {
+      signal: AbortSignal.timeout(15000),
+      headers: { 'user-agent': 'KANA-Bot', accept: 'application/json' },
+    })
+    if (dlRes.ok) downloads = (await dlRes.json())?.downloads ?? 0
+  } catch {}
+  return {
+    name: meta.name || pkg,
+    version: latest || '-',
+    license: versionInfo?.license || meta.license || '-',
+    desc: String(versionInfo?.description || meta.description || '-').slice(0, 90),
+    downloads,
   }
+}
+
+export async function handler(ctx, { fetchPkg = fetchPackage } = {}) {
+  const pair = parsePair(ctx.text || '')
+  if (!pair) return ctx.reply(ctx.t('advance-comparation.needInput'))
+  let a
+  let b
+  try {
+    a = await fetchPkg(pair[0])
+    if (!a) return ctx.reply(ctx.t('advance-comparation.notFound', { pkg: pair[0] }))
+    b = await fetchPkg(pair[1])
+    if (!b) return ctx.reply(ctx.t('advance-comparation.notFound', { pkg: pair[1] }))
+  } catch (err) {
+    return ctx.reply(ctx.t('advance-comparation.failed', { message: err.message }))
+  }
+  const fmt = (n) => Number(n).toLocaleString('id-ID')
+  return ctx.reply(ctx.t('advance-comparation.body', {
+    a: a.name, b: b.name,
+    av: a.version, ad: fmt(a.downloads), al: a.license, adesc: a.desc,
+    bv: b.version, bd: fmt(b.downloads), bl: b.license, bdesc: b.desc,
+    winner: a.downloads === b.downloads ? 'seri' : (a.downloads > b.downloads ? a.name : b.name),
+  }))
 }

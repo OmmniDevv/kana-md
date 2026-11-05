@@ -1,81 +1,67 @@
+import { getSongData } from '../../src/scrapers/spotify/metadata.js'
 
+// Cari info lagu (judul, artis, album, tahun) plus lirik bila tersedia.
+// Sumber: metadata iTunes/Spotify sehat yang juga dipakai fitur Spotify.
 export const config = {
-  name: "searchthatsong",
-  alias: [],
-  category: "search",
-  description: { id: "Fitur searchthatsong versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD searchthatsong feature, rewritten in KANA style" },
-  usage: ".searchthatsong",
-  example: ".searchthatsong",
-  cooldown: 5,
+  name: 'searchthatsong',
+  alias: ['thatsong', 'carilagu'],
+  category: 'search',
+  description: { id: 'Cari info lagu dan liriknya dari judul atau nama artis', en: 'Find song info and lyrics from a title or artist name' },
+  usage: '.searchthatsong <judul lagu>',
+  example: '.searchthatsong Tulus Sepatu',
+  cooldown: 10,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "searchthatsong": {
-      hint: "╭─❏ 🔍 「 *SEARCHTHATSONG* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.searchthatsong kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    searchthatsong: {
+      needQuery: '╭─❏ 🎵 「 *KETIK JUDUL LAGUNYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.searchthatsong Tulus Sepatu*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *LAGU TIDAK KETEMU* 」\n┊ Mouu, lagu itu nggak ketemu. Coba judul plus nama artisnya ya~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian lagunya gagal: *{message}*\n╰━━━━━━━',
+      header: '╭─❏ 🎵 「 *{title}* 」\n┊ ᴀʀᴛɪꜱ: *{artist}*\n┊ ᴀʟʙᴜᴍ: *{album}*\n┊ ʀɪʟɪꜱ: *{year}*\n┊ ─────',
+      lyrics: '┊ *ʟɪʀɪᴋ:*\n┊ {lyrics}',
+      noLyrics: '┊ ʟɪʀɪᴋ ʙᴇʟᴜᴍ ᴛᴇʀꜱᴇᴅɪᴀ ʙᴜᴀᴛ ʟᴀɢᴜ ɪɴɪ~',
+      footer: '╰━━━━━━━',
     },
   },
   en: {
-    "searchthatsong": {
-      hint: "╭─❏ 🔍 「 *SEARCHTHATSONG* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.searchthatsong keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    searchthatsong: {
+      needQuery: '╭─❏ 🎵 「 *TYPE THE SONG TITLE* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.searchthatsong Tulus Sepatu*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *SONG NOT FOUND* 」\n┊ Mouu, that song was not found. Try the title plus the artist~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *SEARCH FAILED* 」\n┊ Mouu, song search failed: *{message}*\n╰━━━━━━━',
+      header: '╭─❏ 🎵 「 *{title}* 」\n┊ ᴀʀᴛɪꜱᴛ: *{artist}*\n┊ ᴀʟʙᴜᴍ: *{album}*\n┊ ʀᴇʟᴇᴀꜱᴇ: *{year}*\n┊ ─────',
+      lyrics: '┊ *ʟʏʀɪᴄꜱ:*\n┊ {lyrics}',
+      noLyrics: '┊ ʟʏʀɪᴄꜱ ᴀʀᴇ ɴᴏᴛ ᴀᴠᴀɪʟᴀʙʟᴇ ꜰᴏʀ ᴛʜɪꜱ ꜱᴏɴɢ ʏᴇᴛ~',
+      footer: '╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.searchthatsong indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
-export async function handler(ctx) {
+export const test = { input: '.searchthatsong Tulus Sepatu', expect: /Tulus|Sepatu/ }
+
+export async function handler(ctx, { fetchSong = getSongData } = {}) {
   const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('searchthatsong.hint'))
+  if (!q) return ctx.reply(ctx.t('searchthatsong.needQuery'))
+  let data
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('searchthatsong.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('searchthatsong.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('searchthatsong.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('searchthatsong.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('searchthatsong.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('searchthatsong.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('searchthatsong.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('searchthatsong.notfound', { q }))
-    return ctx.reply(ctx.t('searchthatsong.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    data = await fetchSong(q, { withLyrics: true })
   } catch (err) {
-    return ctx.reply(ctx.t('searchthatsong.fail', { message: err.message }))
+    return ctx.reply(ctx.t('searchthatsong.failed', { message: err.message }))
   }
+  if (!data?.title) return ctx.reply(ctx.t('searchthatsong.notFound'))
+  const lines = [ctx.t('searchthatsong.header', {
+    title: data.title,
+    artist: data.artist || '-',
+    album: data.album || '-',
+    year: data.releaseDate ? String(data.releaseDate).slice(0, 4) : '-',
+  })]
+  if (data.lyrics) {
+    const lyrics = String(data.lyrics).split('\n').slice(0, 24).join('\n┊ ')
+    lines.push(ctx.t('searchthatsong.lyrics', { lyrics }))
+  } else {
+    lines.push(ctx.t('searchthatsong.noLyrics'))
+  }
+  lines.push(ctx.t('searchthatsong.footer'))
+  return ctx.reply(lines.join('\n'))
 }

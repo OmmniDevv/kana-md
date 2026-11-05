@@ -1,81 +1,66 @@
+import { pinterestSearch } from '../../src/scrapers/pinterest/pinterest.js'
+import { downloadBuffer } from '../../src/scrapers/runner.js'
+import { sendImage, MAX_IMAGE_BYTES } from '../../src/ui/media.js'
 
+// Kirim pap (foto) dari Pinterest sesuai kategori: cewe, cowo, atau
+// femboy. Satu hasil acak dari pencarian potret yang aman dan publik.
 export const config = {
-  name: "pap",
+  name: 'pap',
   alias: [],
-  category: "search",
-  description: { id: "Fitur pap versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD pap feature, rewritten in KANA style" },
-  usage: ".pap",
-  example: ".pap",
-  cooldown: 5,
+  category: 'search',
+  description: { id: 'Minta pap foto dari Pinterest: pap cewe, pap cowo, pap femboy', en: 'Ask for a photo from Pinterest: pap cewe, pap cowo, pap femboy' },
+  usage: '.pap <cewe/cowo/femboy>',
+  example: '.pap cewe',
+  cooldown: 10,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "pap": {
-      hint: "╭─❏ 🔍 「 *PAP* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.pap kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    pap: {
+      needKind: '╭─❏ 🖼️ 「 *PILIH KATEGORINYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.pap cewe* | *.pap cowo* | *.pap femboy*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *PAP TIDAK KETEMU* 」\n┊ Mouu, lagi nggak ada pap buat kategori itu~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL PAP* 」\n┊ Mouu, gagal ambil pap-nya: *{message}*\n╰━━━━━━━',
+      caption: '╭─❏ 🖼️ 「 *PAP {kind}* 」\n┊ ɴɪʜ ᴘᴀᴘɴʏᴀ, ᴅᴀʀɪ ᴘɪɴᴛᴇʀᴇꜱᴛ~\n╰━━━━━━━',
     },
   },
   en: {
-    "pap": {
-      hint: "╭─❏ 🔍 「 *PAP* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.pap keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    pap: {
+      needKind: '╭─❏ 🖼️ 「 *PICK A CATEGORY* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.pap cewe* | *.pap cowo* | *.pap femboy*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *NO PHOTO FOUND* 」\n┊ Mouu, no photo for that category right now~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH* 」\n┊ Mouu, failed to fetch the photo: *{message}*\n╰━━━━━━━',
+      caption: '╭─❏ 🖼️ 「 *PAP {kind}* 」\n┊ ʜᴇʀᴇ ɪᴛ ɪꜱ, ꜰʀᴏᴍ ᴘɪɴᴛᴇʀᴇꜱᴛ~\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.pap indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.pap cewe', expect: /PAP/i }
+
+const QUERIES = {
+  cewe: 'beautiful woman portrait photography aesthetic',
+  cowo: 'handsome man portrait photography aesthetic',
+  femboy: 'soft aesthetic portrait fashion',
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('pap.hint'))
+
+export async function handler(ctx, { search = pinterestSearch } = {}) {
+  const kind = (ctx.text || '').trim().toLowerCase()
+  const query = QUERIES[kind]
+  if (!query) return ctx.reply(ctx.t('pap.needKind'))
+  let pins
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('pap.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('pap.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('pap.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('pap.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('pap.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('pap.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('pap.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('pap.notfound', { q }))
-    return ctx.reply(ctx.t('pap.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    pins = await search(query, { limit: 15 })
   } catch (err) {
-    return ctx.reply(ctx.t('pap.fail', { message: err.message }))
+    return ctx.reply(ctx.t('pap.failed', { message: err.message }))
   }
+  const images = (pins || []).map((p) => p.image).filter(Boolean)
+  if (!images.length) return ctx.reply(ctx.t('pap.notFound'))
+  for (let tries = 0; tries < 3; tries += 1) {
+    const url = images[Math.floor(Math.random() * images.length)]
+    try {
+      const { buffer } = await downloadBuffer(url, { maxBytes: MAX_IMAGE_BYTES, timeout: 30000 })
+      await sendImage(ctx, buffer, { caption: ctx.t('pap.caption', { kind: kind.toUpperCase() }) })
+      return undefined
+    } catch {}
+  }
+  return ctx.reply(ctx.t('pap.failed', { message: 'gambar gagal diunduh' }))
 }

@@ -1,81 +1,77 @@
-
+// Cari tempat lewat OpenStreetMap Nominatim (gratis tanpa kunci),
+// hasil ditampilkan dengan tautan Apple Maps untuk titik teratas.
 export const config = {
-  name: "applemaps",
-  alias: [],
-  category: "search",
-  description: { id: "Fitur applemaps versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD applemaps feature, rewritten in KANA style" },
-  usage: ".applemaps",
-  example: ".applemaps",
-  cooldown: 5,
+  name: 'applemaps',
+  alias: ['maps', 'applemap', 'carilokasi'],
+  category: 'search',
+  description: { id: 'Cari lokasi dan detail tempat, lengkap dengan tautan Apple Maps', en: 'Search for a place and its details, with an Apple Maps link' },
+  usage: '.applemaps <nama tempat>',
+  example: '.applemaps Monas Jakarta',
+  cooldown: 8,
+  limit: 5,
 }
 
 export const i18n = {
   id: {
-    "applemaps": {
-      hint: "╭─❏ 🔍 「 *APPLEMAPS* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.applemaps kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    applemaps: {
+      needQuery: '╭─❏ 🗺️ 「 *KETIK NAMA TEMPATNYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.applemaps Monas Jakarta*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *TEMPAT TIDAK KETEMU* 」\n┊ Mouu, tempat *{q}* tidak ketemu. Coba nama yang lebih spesifik ya~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      header: '╭─❏ 🗺️ 「 *HASIL: {q}* 」',
+      item: '┊ {n}. *{name}*\n┊ {address}\n┊ 📍 {lat}, {lon}',
+      footer: '┊ 🍎 ᴀᴘᴘʟᴇ ᴍᴀᴘꜱ: {link}\n╰━━━━━━━',
     },
   },
   en: {
-    "applemaps": {
-      hint: "╭─❏ 🔍 「 *APPLEMAPS* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.applemaps keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    applemaps: {
+      needQuery: '╭─❏ 🗺️ 「 *TYPE THE PLACE NAME* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.applemaps Eiffel Tower*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *PLACE NOT FOUND* 」\n┊ Mouu, the place *{q}* was not found. Try a more specific name~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      header: '╭─❏ 🗺️ 「 *RESULTS: {q}* 」',
+      item: '┊ {n}. *{name}*\n┊ {address}\n┊ 📍 {lat}, {lon}',
+      footer: '┊ 🍎 ᴀᴘᴘʟᴇ ᴍᴀᴘꜱ: {link}\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.applemaps indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
+export const test = { input: '.applemaps Monas Jakarta', expect: /Monas|APPLE MAPS/i }
+
+export function parseNominatim(json, limit = 5) {
+  if (!Array.isArray(json)) return []
+  return json.slice(0, limit).map((row) => ({
+    name: row.name || String(row.display_name || '').split(',')[0] || '-',
+    address: row.display_name || '-',
+    lat: row.lat,
+    lon: row.lon,
+    type: row.type || '',
+  })).filter((row) => row.lat && row.lon)
+}
+
+async function searchPlaces(query) {
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&addressdetails=0`
+  const res = await fetch(url, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'KANA-Bot/1.0 (WhatsApp bot)', accept: 'application/json' },
+  })
+  if (!res.ok) throw new Error(`Nominatim HTTP ${res.status}`)
   return res.json()
 }
-export async function handler(ctx) {
+
+export async function handler(ctx, { search = searchPlaces } = {}) {
   const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('applemaps.hint'))
+  if (!q) return ctx.reply(ctx.t('applemaps.needQuery'))
+  let places
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('applemaps.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('applemaps.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('applemaps.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('applemaps.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('applemaps.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('applemaps.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('applemaps.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('applemaps.notfound', { q }))
-    return ctx.reply(ctx.t('applemaps.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    places = parseNominatim(await search(q))
   } catch (err) {
-    return ctx.reply(ctx.t('applemaps.fail', { message: err.message }))
+    return ctx.reply(ctx.t('applemaps.failed', { message: err.message }))
   }
+  if (!places.length) return ctx.reply(ctx.t('applemaps.notFound', { q }))
+  const lines = [ctx.t('applemaps.header', { q })]
+  places.forEach((p, i) => {
+    lines.push(ctx.t('applemaps.item', { n: i + 1, name: p.name, address: p.address, lat: p.lat, lon: p.lon }))
+  })
+  const top = places[0]
+  lines.push(ctx.t('applemaps.footer', { link: `https://maps.apple.com/?ll=${top.lat},${top.lon}&q=${encodeURIComponent(top.name)}` }))
+  return ctx.reply(lines.join('\n'))
 }

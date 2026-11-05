@@ -1,81 +1,63 @@
+import { downloadAudio, playSong } from '../../src/scrapers/youtube/youtube.js'
+import { isYouTubeUrl } from '../../src/scrapers/download/ytmp4.js'
+import { sendAudio, MAX_AUDIO_BYTES } from '../../src/ui/media.js'
 
 export const config = {
-  name: "yta",
-  alias: ["ytvdl"],
-  category: "download",
-  description: { id: "Fitur yta versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD yta feature, rewritten in KANA style" },
-  usage: ".yta",
-  example: ".yta",
-  cooldown: 5,
+  name: 'yta',
+  alias: ['ytvdl'],
+  category: 'download',
+  description: { id: 'Unduh audio MP3 YouTube dari link atau judul lagu', en: 'Download YouTube MP3 audio from a link or a song title' },
+  usage: '.yta <link youtube atau judul>',
+  example: '.yta Tulus Sepatu',
+  cooldown: 20,
+  limit: 3,
+  limitGroup: 'download',
 }
 
 export const i18n = {
   id: {
-    "yta": {
-      hint: "╭─❏ 🔍 「 *YTA* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.yta kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    yta: {
+      needQuery: '╭─❏ 🔗 「 *KIRIM LINK ATAU JUDUL* 」\n┊ ᴄᴏɴᴛᴏʜ: *.yta Tulus Sepatu*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA unduhin audionya dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL UNDUH AUDIO* 」\n┊ Mouu, gagal unduh audionya: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *AUDIO KEGEDEAN* 」\n┊ Aduh, audionya kegedean buat dikirim lewat WhatsApp (di atas *64 MB*).\n┊ Coba lagu yang lebih pendek ya~\n╰━━━━━━━',
+      caption: '╭─❏ 🎵 「 *YOUTUBE AUDIO* 」\n┊ ᴊᴜᴅᴜʟ: *{title}*\n┊ ᴅᴜʀᴀꜱɪ: *{duration}*\n╰━━━━━━━',
     },
   },
   en: {
-    "yta": {
-      hint: "╭─❏ 🔍 「 *YTA* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.yta keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    yta: {
+      needQuery: '╭─❏ 🔗 「 *SEND A LINK OR TITLE* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.yta Tulus Sepatu*\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is downloading the audio... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO DOWNLOAD AUDIO* 」\n┊ Mouu, failed to download the audio: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *AUDIO TOO BIG* 」\n┊ Oops, the audio is too big to send over WhatsApp (over *64 MB*).\n┊ Try a shorter song~\n╰━━━━━━━',
+      caption: '╭─❏ 🎵 「 *YOUTUBE AUDIO* 」\n┊ ᴛɪᴛʟᴇ: *{title}*\n┊ ᴅᴜʀᴀᴛɪᴏɴ: *{duration}*\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.yta indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
+export const test = { input: '.yta https://www.youtube.com/watch?v=jNQXAC9IVRw', expect: /Me at the zoo/i }
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('yta.hint'))
+  const input = (ctx.text || '').trim()
+  if (!input) return ctx.reply(ctx.t('yta.needQuery'))
+  await ctx.reply(ctx.t('yta.working', { mood: ctx.say('mikir') }))
+  let result
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('yta.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('yta.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('yta.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('yta.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('yta.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('yta.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('yta.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('yta.notfound', { q }))
-    return ctx.reply(ctx.t('yta.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    result = isYouTubeUrl(input)
+      ? await downloadAudio(input, { maxBytes: MAX_AUDIO_BYTES })
+      : await playSong(input, { maxBytes: MAX_AUDIO_BYTES })
   } catch (err) {
-    return ctx.reply(ctx.t('yta.fail', { message: err.message }))
+    if (err.code === 'TOO_BIG') return ctx.reply(ctx.t('yta.tooBig'))
+    return ctx.reply(ctx.t('yta.failed', { message: err.message }))
   }
+  const title = result.info?.title || result.selected?.title || 'audio'
+  await sendAudio(ctx, result.buffer, {
+    title,
+    performer: result.info?.artist || result.selected?.artist || '',
+    mimetype: result.mimeType,
+  })
+  return ctx.reply(ctx.t('yta.caption', {
+    title,
+    duration: result.info?.durationText || result.selected?.durationText || '-',
+  }))
 }

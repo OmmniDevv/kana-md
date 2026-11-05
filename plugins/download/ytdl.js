@@ -1,81 +1,84 @@
+import { downloadAudio, playSong } from '../../src/scrapers/youtube/youtube.js'
+import { isYouTubeUrl } from '../../src/scrapers/download/ytmp4.js'
+import { downloadVideoByUrlOrQuery } from '../../src/scrapers/download/ytmp4.js'
+import { sendAudio, sendVideo, MAX_AUDIO_BYTES, MAX_VIDEO_BYTES } from '../../src/ui/media.js'
 
+// Pengunduh YouTube serbaguna: bawaan video MP4, tambahkan kata "mp3"
+// atau "audio" di akhir untuk mengambil audionya saja.
 export const config = {
-  name: "ytdl",
-  alias: ["youtubedl", "youtubedownload", "youtubeaudio", "youtubevideo", "ytmp4hd"],
-  category: "download",
-  description: { id: "Fitur ytdl versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD ytdl feature, rewritten in KANA style" },
-  usage: ".ytdl",
-  example: ".ytdl",
-  cooldown: 5,
+  name: 'ytdl',
+  alias: ['youtubedl', 'youtubedownload', 'youtubeaudio', 'youtubevideo', 'ytmp4hd'],
+  category: 'download',
+  description: { id: 'Unduh video atau audio YouTube dari link atau judul (tambah kata mp3 untuk audio)', en: 'Download a YouTube video or audio from a link or title (add the word mp3 for audio)' },
+  usage: '.ytdl <link youtube atau judul> [mp3]',
+  example: '.ytdl https://youtu.be/xxxx',
+  cooldown: 20,
+  limit: 3,
+  limitGroup: 'download',
 }
 
 export const i18n = {
   id: {
-    "ytdl": {
-      hint: "╭─❏ 🔍 「 *YTDL* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.ytdl kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    ytdl: {
+      needQuery: '╭─❏ 🔗 「 *KIRIM LINK ATAU JUDUL* 」\n┊ ᴄᴏɴᴛᴏʜ: *.ytdl https://youtu.be/...*\n┊ ᴍᴀᴜ ᴀᴜᴅɪᴏ? ᴛᴀᴍʙᴀʜ ᴋᴀᴛᴀ *mp3* ᴅɪ ᴀᴋʜɪʀ.\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA unduhin medianya dulu... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL UNDUH* 」\n┊ Mouu, gagal unduh medianya: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *MEDIA KEGEDEAN* 」\n┊ Aduh, medianya kegedean buat dikirim lewat WhatsApp (di atas *64 MB*).\n┊ Coba yang lebih pendek ya~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *YOUTUBE {mode}* 」\n┊ ᴊᴜᴅᴜʟ: *{title}*\n┊ ᴅᴜʀᴀꜱɪ: *{duration}*\n╰━━━━━━━',
     },
   },
   en: {
-    "ytdl": {
-      hint: "╭─❏ 🔍 「 *YTDL* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.ytdl keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    ytdl: {
+      needQuery: '╭─❏ 🔗 「 *SEND A LINK OR TITLE* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.ytdl https://youtu.be/...*\n┊ ᴡᴀɴᴛ ᴀᴜᴅɪᴏ? ᴀᴅᴅ ᴛʜᴇ ᴡᴏʀᴅ *mp3* ᴀᴛ ᴛʜᴇ ᴇɴᴅ.\n╰━━━━━━━',
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is downloading the media... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *DOWNLOAD FAILED* 」\n┊ Mouu, failed to download the media: *{message}*\n┊ Try again later~\n╰━━━━━━━',
+      tooBig: '╭─❏ 🙈 「 *MEDIA TOO BIG* 」\n┊ Oops, the media is too big to send over WhatsApp (over *64 MB*).\n┊ Try something shorter~\n╰━━━━━━━',
+      caption: '╭─❏ 🎬 「 *YOUTUBE {mode}* 」\n┊ ᴛɪᴛʟᴇ: *{title}*\n┊ ᴅᴜʀᴀᴛɪᴏɴ: *{duration}*\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.ytdl indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.ytdl https://www.youtube.com/watch?v=jNQXAC9IVRw', expect: /Me at the zoo/i }
+
+// Pisahkan penanda mode audio dari kueri unduhan.
+export function splitMode(text) {
+  const m = String(text || '').match(/^(.*?)[\s,]+(mp3|audio)\s*$/i)
+  if (m && m[1].trim()) return { query: m[1].trim(), audio: true }
+  return { query: String(text || '').trim(), audio: false }
 }
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('ytdl.hint'))
+  const { query, audio } = splitMode(ctx.text || '')
+  if (!query) return ctx.reply(ctx.t('ytdl.needQuery'))
+  await ctx.reply(ctx.t('ytdl.working', { mood: ctx.say('mikir') }))
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('ytdl.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
+    if (audio) {
+      const result = isYouTubeUrl(query)
+        ? await downloadAudio(query, { maxBytes: MAX_AUDIO_BYTES })
+        : await playSong(query, { maxBytes: MAX_AUDIO_BYTES })
+      const title = result.info?.title || result.selected?.title || 'audio'
+      await sendAudio(ctx, result.buffer, {
+        title,
+        performer: result.info?.artist || result.selected?.artist || '',
+        mimetype: result.mimeType,
+      })
+      return ctx.reply(ctx.t('ytdl.caption', {
+        mode: 'AUDIO',
+        title,
+        duration: result.info?.durationText || result.selected?.durationText || '-',
+      }))
     }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('ytdl.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('ytdl.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('ytdl.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('ytdl.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('ytdl.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('ytdl.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('ytdl.notfound', { q }))
-    return ctx.reply(ctx.t('ytdl.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    const result = await downloadVideoByUrlOrQuery(query, { maxBytes: MAX_VIDEO_BYTES })
+    await sendVideo(ctx, result.buffer, {
+      caption: ctx.t('ytdl.caption', {
+        mode: 'MP4',
+        title: result.info.title || '-',
+        duration: result.info.durationText || '-',
+      }),
+    })
+    return undefined
   } catch (err) {
-    return ctx.reply(ctx.t('ytdl.fail', { message: err.message }))
+    if (err.code === 'TOO_BIG') return ctx.reply(ctx.t('ytdl.tooBig'))
+    return ctx.reply(ctx.t('ytdl.failed', { message: err.message }))
   }
 }

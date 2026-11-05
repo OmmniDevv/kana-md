@@ -1,81 +1,104 @@
+import { downloadBuffer } from '../../src/scrapers/runner.js'
+import { toStickerWebp } from '../../src/services/sticker.js'
+import { sendSticker } from '../maker/sticker.js'
 
+// Cari paket stiker WhatsApp di GetStickerPack (getstickerpack.com,
+// publik tanpa kunci) dan kirim beberapa stiker dari paket teratas.
 export const config = {
-  name: "stikerwa",
-  alias: [],
-  category: "search",
-  description: { id: "Cari sticker WhatsApp", en: "KANA version of the Elaina-MD stikerwa feature, rewritten in KANA style" },
-  usage: ".stikerwa",
-  example: ".stikerwa",
-  cooldown: 5,
+  name: 'stikerwa',
+  alias: ['stickerwa', 'caristiker'],
+  category: 'search',
+  description: { id: 'Cari paket stiker WhatsApp dan kirim stikernya', en: 'Search WhatsApp sticker packs and send their stickers' },
+  usage: '.stikerwa <kata kunci>',
+  example: '.stikerwa kucing',
+  cooldown: 15,
+  limit: 3,
 }
 
 export const i18n = {
   id: {
-    "stikerwa": {
-      hint: "╭─❏ 🔍 「 *STIKERWA* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.stikerwa kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    stikerwa: {
+      needQuery: '╭─❏ 🧩 「 *KETIK KATA KUNCINYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.stikerwa kucing*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *PAKET TIDAK KETEMU* 」\n┊ Mouu, nggak ada paket stiker buat kata kunci itu~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL STIKER* 」\n┊ Mouu, gagal ambil stikernya: *{message}*\n╰━━━━━━━',
+      caption: '╭─❏ 🧩 「 *PAKET STIKER* 」\n┊ ɴᴀᴍᴀ ᴘᴀᴋᴇᴛ: *{name}*\n┊ 🔗 {link}\n╰━━━━━━━',
     },
   },
   en: {
-    "stikerwa": {
-      hint: "╭─❏ 🔍 「 *STIKERWA* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.stikerwa keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    stikerwa: {
+      needQuery: '╭─❏ 🧩 「 *TYPE THE KEYWORDS* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.stikerwa cat*\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *PACK NOT FOUND* 」\n┊ Mouu, no sticker pack for those keywords~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH STICKERS* 」\n┊ Mouu, failed to fetch the stickers: *{message}*\n╰━━━━━━━',
+      caption: '╭─❏ 🧩 「 *STICKER PACK* 」\n┊ ᴘᴀᴄᴋ ɴᴀᴍᴇ: *{name}*\n┊ 🔗 {link}\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.stikerwa indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.stikerwa kucing', expect: /PAKET STIKER|STICKER PACK/ }
+
+// Urai halaman pencarian menjadi daftar paket { slug, name }.
+export function parsePackSearch(html, limit = 5) {
+  const out = []
+  const seen = new Set()
+  const re = /href="\/stickers\/([a-z0-9-]+)"[^>]*>([^<]{2,60})</gi
+  for (const m of String(html || '').matchAll(re)) {
+    if (seen.has(m[1])) continue
+    seen.add(m[1])
+    out.push({ slug: m[1], name: m[2].trim() })
+    if (out.length >= limit) break
+  }
+  return out
 }
-export async function handler(ctx) {
+
+// Urai halaman paket menjadi URL gambar stiker.
+export function parsePackImages(html, limit = 8) {
+  const out = []
+  const seen = new Set()
+  const re = /https?:\/\/[^"'\s)]+\.(?:webp|png)(?:\?[^"'\s)]*)?/gi
+  for (const m of String(html || '').matchAll(re)) {
+    const url = m[0]
+    if (!/(sticker|uploads|storage|pack)/i.test(url)) continue
+    if (/(logo|icon|avatar|banner)/i.test(url)) continue
+    if (seen.has(url)) continue
+    seen.add(url)
+    out.push(url)
+    if (out.length >= limit) break
+  }
+  return out
+}
+
+async function fetchHtml(url) {
+  const res = await fetch(url, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36' },
+  })
+  if (!res.ok) throw new Error(`GetStickerPack HTTP ${res.status}`)
+  return res.text()
+}
+
+export async function handler(ctx, { fetchPage = fetchHtml } = {}) {
   const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('stikerwa.hint'))
+  if (!q) return ctx.reply(ctx.t('stikerwa.needQuery'))
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('stikerwa.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
+    const packs = parsePackSearch(await fetchPage(`https://getstickerpack.com/stickers?search=${encodeURIComponent(q)}`))
+    if (!packs.length) return ctx.reply(ctx.t('stikerwa.notFound'))
+    const pack = packs[0]
+    const images = parsePackImages(await fetchPage(`https://getstickerpack.com/stickers/${pack.slug}`))
+    if (!images.length) return ctx.reply(ctx.t('stikerwa.notFound'))
+    await ctx.reply(ctx.t('stikerwa.caption', { name: pack.name, link: `https://getstickerpack.com/stickers/${pack.slug}` }))
+    let sent = 0
+    for (const url of images) {
+      if (sent >= 5) break
+      try {
+        const { buffer } = await downloadBuffer(url, { maxBytes: 8 * 1024 * 1024, timeout: 30000 })
+        const webp = await toStickerWebp(buffer)
+        await sendSticker(ctx, webp)
+        sent += 1
+      } catch {}
     }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('stikerwa.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('stikerwa.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('stikerwa.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('stikerwa.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('stikerwa.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('stikerwa.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('stikerwa.notfound', { q }))
-    return ctx.reply(ctx.t('stikerwa.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    if (!sent) return ctx.reply(ctx.t('stikerwa.failed', { message: 'stiker gagal dikonversi' }))
+    return undefined
   } catch (err) {
-    return ctx.reply(ctx.t('stikerwa.fail', { message: err.message }))
+    return ctx.reply(ctx.t('stikerwa.failed', { message: err.message }))
   }
 }
