@@ -25,10 +25,16 @@ export const i18n = {
 export const test = { input: '.intro', expect: /perkenalan|introduction/i }
 
 export function renderIntro(template, { nama, nomor, grup }) {
+  // Ejaan Inggris dirender juga: template yang tersimpan di grup bisa
+  // memakai {name} (kasus "Halo {name}, selamat datang di grup" tampil
+  // mentah di Grup KANA), bukan cuma {nama} {nomor} {grup}.
   return String(template)
     .replaceAll('{nama}', nama)
+    .replaceAll('{name}', nama)
     .replaceAll('{nomor}', nomor)
+    .replaceAll('{number}', nomor)
     .replaceAll('{grup}', grup)
+    .replaceAll('{group}', grup)
 }
 
 export async function handler(ctx) {

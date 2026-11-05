@@ -1,6 +1,7 @@
 
 import { getGroupSettings, updateGroupSettings } from '../../src/services/group-service.js'
 import { getGroupText, resetGroupText } from '../../src/services/group-settings.js'
+import { resolveGroupMembers } from '../../src/services/group-members.js'
 export const config = {
   name: "listmember",
   alias: [],
@@ -40,7 +41,12 @@ export async function handler(ctx) {
     const meta = ctx.groupMetadata ?? (await ctx.getGroupMetadata())
     if (ACTION === 'id') return say('ID grup ini: *' + ctx.chat + '*\n┊ Nama: *' + (meta?.subject || '-') + '*\n┊ Member: *' + (meta?.participants?.length ?? 0) + '*')
     if (ACTION === 'members') {
-      const lines = (meta?.participants || []).slice(0, 40).map((x, i) => (i + 1) + '. *' + (x.id || '').split('@')[0] + '*' + (x.admin ? ' (admin)' : '')).join('\n┊ ')
+      // Resolusi nomor telepon asli lewat phoneNumber metadata: di grup
+      // mode LID, id peserta berisi LID dan tidak boleh tercetak mentah
+      // sebagai nomor (kasus daftar member Grup KANA 2026-11-05).
+      // Peserta yang tidak teresolve dilewati, bukan ditampilkan palsu.
+      const { members } = resolveGroupMembers(meta?.participants || [])
+      const lines = members.slice(0, 40).map((m, i) => (i + 1) + '. *' + m.digits + '*' + (m.participant?.admin ? ' (admin)' : '')).join('\n┊ ')
       return say('Member grup *' + (meta?.subject || '') + '*:\n┊ ' + (lines || '-'))
     }
     if (ACTION === 'warns') {

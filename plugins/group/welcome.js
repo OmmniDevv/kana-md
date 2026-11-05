@@ -5,6 +5,7 @@ import { getGroupSettings, updateGroupSettings } from '../../src/services/group-
 import { getGroupText } from '../../src/services/group-settings.js'
 import { renderTemplate } from '../../src/config/templates.js'
 import { digitsOf } from '../../src/services/guard-rules.js'
+import { resolveGroupMembers } from '../../src/services/group-members.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
 
@@ -54,24 +55,70 @@ export async function handler(ctx) {
   await ctx.reply(ctx.t('welcome.changed', { state: ctx.t(arg === 'on' ? 'welcome.on' : 'welcome.off'), mood: ctx.say('senang') }))
 }
 
+// Semua digit identitas satu peserta (id, phoneNumber, lid, jid), supaya
+// peserta berbentuk LID tetap bisa dicocokkan ke member bernomor asli.
+function identityDigits(participant) {
+  if (!participant) return []
+  if (typeof participant === 'string') return [digitsOf(participant)].filter(Boolean)
+  return [participant.id, participant.phoneNumber, participant.lid, participant.jid]
+    .map((v) => digitsOf(v))
+    .filter(Boolean)
+}
+
 export async function onParticipantsUpdate(ctx) {
   if (ctx.action !== 'add' && ctx.action !== 'remove') return
   const settings = await getGroupSettings(ctx.storage, ctx.chat)
   if (ctx.action === 'add' && !settings.welcome) return
   if (ctx.action === 'remove' && !settings.goodbye) return
-  let groupName = ctx.chat
-  let meta = null
-  try {
-    meta = await ctx.getGroupMetadata()
-    if (meta?.subject) groupName = meta.subject
-  } catch {}
-  const count = Array.isArray(meta?.participants) ? meta.participants.length : 0
   const isAdd = ctx.action === 'add'
+  // Metadata segar langsung dari sock. ctx.getGroupMetadata memakai cache
+  // 60 detik: member yang baru dikeluarkan masih ikut terhitung di sana
+  // (kasus goodbye menulis "sisa 3 member" padahal harusnya 2).
+  let meta = null
+  try { meta = await ctx.sock.groupMetadata(ctx.chat) } catch {}
+  if (!meta) {
+    try { meta = await ctx.getGroupMetadata() } catch {}
+  }
+  let groupName = ctx.chat
+  if (meta?.subject) groupName = meta.subject
+  const freshParticipants = Array.isArray(meta?.participants) ? meta.participants : []
+  // Peta resolusi LID ke nomor telepon asli (field phoneNumber metadata).
+  // Untuk remove, peserta yang dikeluarkan bisa sudah hilang dari metadata
+  // segar; lengkapi dari metadata tercache yang masih memuatnya.
+  const { byDigits } = resolveGroupMembers(freshParticipants)
+  if (!isAdd) {
+    try {
+      const cached = await ctx.getGroupMetadata()
+      const extra = resolveGroupMembers(cached?.participants ?? []).byDigits
+      for (const [d, m] of extra) if (!byDigits.has(d)) byDigits.set(d, m)
+    } catch {}
+  }
+  // Hitungan dari metadata segar, disesuaikan dengan aksinya: remove
+  // mengurangi target yang masih tercatat, add menambah target yang
+  // belum tercatat, supaya angka tidak basi mengikuti cache.
+  const present = new Set()
+  for (const p of freshParticipants) for (const d of identityDigits(p)) present.add(d)
+  let count = freshParticipants.length
+  for (const participant of ctx.participants ?? []) {
+    const seen = identityDigits(participant).some((d) => present.has(d))
+    if (isAdd && !seen) count += 1
+    if (!isAdd && seen) count -= 1
+  }
+  if (count < 0) count = 0
   const kind = isAdd ? 'welcome' : 'goodbye'
   const template = await getGroupText(ctx.storage, ctx.chat, kind)
   for (const participant of ctx.participants ?? []) {
-    const jid = typeof participant === 'string' ? participant : participant?.id || String(participant)
-    const digits = digitsOf(jid)
+    const rawJid = typeof participant === 'string' ? participant : participant?.id || String(participant)
+    const member = identityDigits(participant).map((d) => byDigits.get(d)).find(Boolean) ?? null
+    const ownPhone =
+      participant && typeof participant === 'object' && participant.phoneNumber
+        ? digitsOf(participant.phoneNumber)
+        : rawJid.endsWith('@s.whatsapp.net')
+          ? digitsOf(rawJid)
+          : ''
+    const digits = member?.digits || ownPhone || digitsOf(rawJid)
+    const name = member?.name || digits
+    const mentionJid = member?.jid || (digits ? `${digits}@s.whatsapp.net` : rawJid)
     const rendered = renderTemplate(template, {
       user: isAdd ? `@${digits}` : digits,
       group: groupName,
@@ -80,7 +127,7 @@ export async function onParticipantsUpdate(ctx) {
     const caption =
       rendered.trim() ||
       ctx.t(isAdd ? 'welcome.hello' : 'welcome.bye', {
-        digits, group: groupName, name: digits, mood: ctx.say(isAdd ? 'senang' : 'pamit'),
+        digits, group: groupName, name, mood: ctx.say(isAdd ? 'senang' : 'pamit'),
       })
     const textFallback =
       rendered.trim() ||
@@ -92,9 +139,9 @@ export async function onParticipantsUpdate(ctx) {
     try { image = await readFile(join(here, '../../assets', file)) } catch { image = null }
     try {
       if (image) {
-        await ctx.sock.sendMessage(ctx.chat, { image, caption, ...(isAdd ? { mentions: [jid] } : {}) })
+        await ctx.sock.sendMessage(ctx.chat, { image, caption, ...(isAdd ? { mentions: [mentionJid] } : {}) })
       } else if (isAdd) {
-        await ctx.sendText(textFallback, [jid])
+        await ctx.sendText(textFallback, [mentionJid])
       } else {
         await ctx.sendText(textFallback)
       }
