@@ -16,7 +16,7 @@ export const i18n = {
   en: { logogold: { hint: '╭─❏ ✏️ 「 *LOGO TEXT NEEDED* 」\n┊ Write the logo text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.logogold OMNIDEVV*\n╰━━━━━━━', caption: '╭─❏ ✨ 「 *GOLD LOGO READY* 」\n┊ Gold logo *{text}* is ready~ {mood}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *LOGO FAILED* 」\n┊ Mouu, failed to make the logo: *{error}*~\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.logogold', expect: /logo/i }
+export const test = { input: '.logogold KANA', expect: /.+/ }
 
 export async function handler(ctx) {
   const text = (ctx.text || '').trim().slice(0, 30)

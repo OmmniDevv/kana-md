@@ -15,7 +15,7 @@ export const i18n = {
   en: { setdesc: { usage: '╭─❏ ✏️ 「 *WHERE IS THE NEW DESCRIPTION?* 」\n┊ Write the new group description~\n╰━━━━━━━', ok: '╭─❏ ✅ 「 *DESCRIPTION CHANGED* 」\n┊ Got it~ group description has been changed~\n╰━━━━━━━ {mood}', fail: '╭─❏ ⚠️ 「 *FAILED TO CHANGE DESCRIPTION* 」\n┊ Failed to change group description: {error}\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.setdesc', expect: /grup|group/i }
+export const test = { input: '.setdesc Grup seru untuk belajar dan berbagi', expect: /grup|group/i }
 
 export async function handler(ctx) {
   const desc = ctx.text.trim()

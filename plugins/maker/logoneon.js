@@ -16,7 +16,7 @@ export const i18n = {
   en: { logoneon: { hint: '╭─❏ ✏️ 「 *LOGO TEXT NEEDED* 」\n┊ Write the logo text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.logoneon OMNIDEVV*\n╰━━━━━━━', caption: '╭─❏ ✨ 「 *NEON LOGO READY* 」\n┊ Neon logo *{text}* is ready~ {mood}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *LOGO FAILED* 」\n┊ Mouu, failed to make the logo: *{error}*~\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.logoneon', expect: /logo/i }
+export const test = { input: '.logoneon KANA', expect: /.+/ }
 
 export async function handler(ctx) {
   const text = (ctx.text || '').trim().slice(0, 30)

@@ -22,7 +22,7 @@ export const i18n = {
   en: { mengapa: { hint: '╭─❏ 🌌 「 *WHY* 」\n┊ Ask a full question please~\n┊ Example: *.mengapa did they not reply*\n╰━━━━━━━', body: '╭─❏ 🌌 「 *KANA ANSWER* 」\n┊ {answer}\n╰━━━━━━━ {mood}' } },
 }
 
-export const test = { input: '.mengapa', expect: /tanya|ask/i }
+export const test = { input: '.mengapa dia tidak membalas chatku', expect: /JAWABAN KANA|KANA ANSWER/ }
 
 export async function handler(ctx) {
   if (!(ctx.text || '').trim()) return ctx.reply(ctx.t('mengapa.hint'))

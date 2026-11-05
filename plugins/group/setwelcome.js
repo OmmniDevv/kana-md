@@ -42,7 +42,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.setwelcome', expect: /welcome|grup|group/i }
+export const test = { input: '.setwelcome', expect: /selamat datang|welcome/i }
 
 const MAX_LENGTH = 500
 

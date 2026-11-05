@@ -49,7 +49,7 @@ export const i18n = {
 
 export const stateKey = (digits) => `bj:${digits}`
 
-export const test = { input: '.blackjack', expect: /bet/i }
+export const test = { input: '.blackjack 100', expect: /Blackjack dimulai|BLACKJACK NATURAL|Dealer/ }
 
 export async function handler(ctx) {
   const existing = await ctx.storage.get('kv', stateKey(ctx.senderDigits))

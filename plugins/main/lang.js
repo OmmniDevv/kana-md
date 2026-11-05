@@ -28,7 +28,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.lang', expect: /bahasa/i }
+export const test = { input: '.lang id', expect: /BAHASA DIGANTI|LANGUAGE CHANGED/ }
 
 export async function handler(ctx) {
   const target = ctx.args[0]?.toLowerCase()

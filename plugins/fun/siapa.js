@@ -27,7 +27,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.siapa', expect: /tanya|ask/i }
+export const test = { input: '.siapa yang paling rajin di grup ini', expect: /Jawabannya|The answer is/ }
 
 export async function handler(ctx) {
   if (!(ctx.text || '').trim()) return ctx.reply(ctx.t('siapa.hint'))

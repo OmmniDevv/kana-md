@@ -64,7 +64,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.slot', expect: /bet/i }
+export const test = { input: '.slot 100', expect: /JACKPOT TRIPLE|Dapet sepasang|belum beruntung|not lucky yet/ }
 
 export async function handler(ctx) {
   const bet = Number(ctx.args[0])

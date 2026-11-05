@@ -34,7 +34,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.sisaumur', expect: /umur|age/i }
+export const test = { input: '.sisaumur 17', expect: /BERCANDA|JOKE/ }
 
 export async function handler(ctx) {
   const age = parseInt(ctx.text || '', 10)

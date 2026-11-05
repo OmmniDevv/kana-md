@@ -39,7 +39,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.jadwalgrup', expect: /grup|group/i }
+export const test = { input: '.jadwalgrup 21:00 06:00', expect: /grup|group/i }
 
 export async function handler(ctx) {
   const [a, b] = ctx.args

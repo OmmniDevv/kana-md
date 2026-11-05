@@ -17,7 +17,7 @@ export const i18n = {
   en: { ytcomment: { hint: '╭─❏ 💬 「 *YTCOMMENT FORMAT* 」\n┊ ꜰᴏʀᴍᴀᴛ: *.ytcomment <name> | <comment text>*\n┊ ᴇxᴀᴍᴘʟᴇ: *.ytcomment Malik | Great video!*\n╰━━━━━━━', caption: '╭─❏ 💬 「 *COMMENT CARD READY* 」\n┊ Your YouTube comment card is ready~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *CARD FAILED* 」\n┊ Mouu, failed to make the card: *{error}*~\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.ytcomment', expect: /ytcomment/i }
+export const test = { input: '.ytcomment Malik | Videonya keren banget, sangat membantu', expect: /KARTU KOMENTAR JADI|COMMENT CARD READY/ }
 
 export async function handler(ctx) {
   const raw = ctx.text || ''

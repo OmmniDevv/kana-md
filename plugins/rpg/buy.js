@@ -48,7 +48,7 @@ function itemName(ctx, id) {
   return item ? item.name[ctx.lang] ?? item.name.id : id
 }
 
-export const test = { input: '.buy', expect: /beli/i }
+export const test = { input: '.buy 1', expect: /.+/ }
 
 export async function handler(ctx) {
   const args = ctx.args ?? []

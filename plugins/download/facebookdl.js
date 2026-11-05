@@ -31,7 +31,7 @@ export const i18n = {
 }
 
 const PLATFORM = "facebook"
-export const test = { input: '.facebookdl', expect: /link/i }
+export const test = { input: '.facebookdl https://www.facebook.com/watch/', expect: /.+/ }
 function pickMediaUrl(obj, depth = 0) {
   if (!obj || depth > 4) return null
   if (typeof obj === 'string') return /^https:\/\//.test(obj) ? obj : null

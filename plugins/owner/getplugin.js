@@ -31,7 +31,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.getplugin', expect: /plugin/i }
+export const test = { input: '.getplugin fun/cekmood', expect: /cekmood/ }
 
 export function resolvePluginPath(input) {
   const clean = String(input || '').trim().replace(/\.js$/, '')

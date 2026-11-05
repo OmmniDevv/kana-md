@@ -18,7 +18,7 @@ export const i18n = {
   en: { add: { noTarget: '╭─❏ 📥 「 *WHO SHOULD BE ADDED?* 」\n┊ Write the number to add to the group~\n┊ ᴇxᴀᴍᴘʟᴇ: *.add 6281234567890*\n╰━━━━━━━', ok: '╭─❏ 🎉 「 *NEW MEMBER ARRIVED* 」\n┊ *@{digits}* has been added to the group~\n┊ Welcome~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *FAILED TO ADD* 」\n┊ *@{digits}*: {error}\n┊ Sometimes that number restricts group invites, try *.linkgrup* instead~\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.add', expect: /grup|group/i }
+export const test = { input: '.add 6285869074622', expect: /grup|group/i }
 
 export async function handler(ctx) {
   const numbers = ctx.args.map((a) => String(a).replace(/\D/g, '')).filter((d) => d.length >= 9 && d.length <= 15)

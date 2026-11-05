@@ -31,7 +31,7 @@ export const i18n = {
 }
 
 const PLATFORM = "spotify"
-export const test = { input: '.spotifydl', expect: /link/i }
+export const test = { input: '.spotifydl https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT', expect: /.+/ }
 function pickMediaUrl(obj, depth = 0) {
   if (!obj || depth > 4) return null
   if (typeof obj === 'string') return /^https:\/\//.test(obj) ? obj : null

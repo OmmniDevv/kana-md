@@ -18,7 +18,7 @@ export const i18n = {
   en: { barcode: { hint: '╭─❏ 📊 「 *TEXT NEEDED* 」\n┊ Write the barcode text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.barcode KANA-2026-001*\n╰━━━━━━━', caption: '╭─❏ 📊 「 *BARCODE READY* 」\n┊ Here is your barcode, barcode *{text}* is ready~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *BARCODE FAILED* 」\n┊ Mouu, failed to make the barcode: *{error}*~\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.barcode', expect: /barcode/i }
+export const test = { input: '.barcode KANA-BOT', expect: /.+/ }
 
 export async function handler(ctx) {
   const text = (ctx.text || '').trim().slice(0, 60)

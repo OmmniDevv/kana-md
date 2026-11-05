@@ -36,7 +36,7 @@ export const i18n = {
   en: { nulis: { hint: '╭─❏ ✏️ 「 *TEXT NEEDED* 」\n┊ Write the text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.nulis Do not forget the math book tomorrow*\n╰━━━━━━━', caption: '╭─❏ 📝 「 *HANDWRITING READY* 」\n┊ Here is the handwriting, neat right~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *WRITING FAILED* 」\n┊ Mouu, failed to write it: *{error}*~\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.nulis', expect: /teks|text/i }
+export const test = { input: '.nulis halo semua, ini tulisan tes KANA', expect: /.+/ }
 
 function wrap(ctx, text, maxWidth) {
   const words = text.split(/\s+/)

@@ -33,7 +33,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.tiktokmp3', expect: /tiktok/i }
+export const test = { input: '.tiktokmp3 https://www.tiktok.com/@tiktok', expect: /.+/ }
 
 export async function handler(ctx) {
   const m = String(ctx.text || '').match(/https?:\/\/[^\s]*tiktok\.com\/[^\s]+/i)

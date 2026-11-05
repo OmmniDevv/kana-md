@@ -35,7 +35,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.menfess', expect: /menfess/i }
+export const test = { input: '.menfess 6285869074622 | Halo, ini menfess uji dari KANA', expect: /MENFESS TERKIRIM|MENFESS SENT/ }
 
 export function parseMenfess(raw) {
   const sep = raw.indexOf('|')

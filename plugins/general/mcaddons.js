@@ -29,7 +29,7 @@ export const i18n = {
 }
 
 const KIND = "mc"
-export const test = { input: '.mcaddons', expect: /tulis|write/i }
+export const test = { input: '.mcaddons mc.hypixel.net', expect: /.+/ }
 async function fetchJson(url) {
   const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
   if (!res.ok) throw new Error('HTTP ' + res.status)

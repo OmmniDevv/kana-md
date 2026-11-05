@@ -18,7 +18,7 @@ export const i18n = {
   en: { promote: { noTarget: '╭─❏ ❓ 「 *WHO SHOULD BE PROMOTED?* 」\n┊ Mention the group member, reply to their message, or write their number~\n╰━━━━━━━', ok: '╭─❏ 👑 「 *NEW ADMIN* 」\n┊ Yayyy, *@{digits}* is now a group admin~\n┊ Congrats and good luck~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *FAILED TO PROMOTE* 」\n┊ *@{digits}*: {error}\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.promote', expect: /grup|group/i }
+export const test = { input: '.promote 6285869074622', expect: /grup|group/i }
 
 export async function handler(ctx) {
   const targets = resolveTargetJids(ctx)

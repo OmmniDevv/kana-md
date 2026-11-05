@@ -16,7 +16,7 @@ export const i18n = {
   en: { fakediscord: { hint: '╭─❏ 💬 「 *FAKEDISCORD FORMAT* 」\n┊ ꜰᴏʀᴍᴀᴛ: *.fakediscord <name> | <message text>*\n┊ ᴇxᴀᴍᴘʟᴇ: *.fakediscord Malik | We ship the new feature tomorrow*\n╰━━━━━━━', caption: '╭─❏ 💬 「 *DISCORD CARD READY* 」\n┊ Your meme Discord card is ready~\n╰━━━━━━━', fail: '╭─❏ 💦 「 *CARD FAILED* 」\n┊ Mouu, failed to make the card: *{error}*~\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.fakediscord', expect: /fakediscord/i }
+export const test = { input: '.fakediscord Malik | Besok kita rilis fitur baru', expect: /KARTU DISCORD JADI|DISCORD CARD READY/ }
 
 export async function handler(ctx) {
   const raw = ctx.text || ''

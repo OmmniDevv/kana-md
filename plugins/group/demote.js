@@ -18,7 +18,7 @@ export const i18n = {
   en: { demote: { noTarget: '╭─❏ ❓ 「 *WHO SHOULD BE DEMOTED?* 」\n┊ Mention the group admin, reply to their message, or write their number~\n╰━━━━━━━', ok: '╭─❏ 🌸 「 *DEMOTED* 」\n┊ *@{digits}* is now a regular member~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *FAILED TO DEMOTE* 」\n┊ *@{digits}*: {error}\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.demote', expect: /grup|group/i }
+export const test = { input: '.demote 6285869074622', expect: /grup|group/i }
 
 export async function handler(ctx) {
   const targets = resolveTargetJids(ctx)

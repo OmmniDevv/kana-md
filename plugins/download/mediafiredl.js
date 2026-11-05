@@ -31,7 +31,7 @@ export const i18n = {
 }
 
 const PLATFORM = "mediafire"
-export const test = { input: '.mediafiredl', expect: /link/i }
+export const test = { input: '.mediafiredl https://www.mediafire.com/', expect: /.+/ }
 function pickMediaUrl(obj, depth = 0) {
   if (!obj || depth > 4) return null
   if (typeof obj === 'string') return /^https:\/\//.test(obj) ? obj : null

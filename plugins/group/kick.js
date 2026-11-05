@@ -18,7 +18,7 @@ export const i18n = {
   en: { kick: { noTarget: '╭─❏ ❓ 「 *WHO SHOULD BE REMOVED?* 」\n┊ Mention the group member, reply to their message, or write their number~\n╰━━━━━━━', ok: '╭─❏ 👋 「 *MEMBER REMOVED* 」\n┊ *@{digits}* has been removed from the group~\n┊ Sorry, for the group order~\n╰━━━━━━━', fail: '╭─❏ ⚠️ 「 *FAILED TO REMOVE* 」\n┊ *@{digits}*: {error}\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.kick', expect: /grup|group/i }
+export const test = { input: '.kick 6285869074622', expect: /grup|group/i }
 
 export async function handler(ctx) {
   const targets = resolveTargetJids(ctx)

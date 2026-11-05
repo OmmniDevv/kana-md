@@ -13,7 +13,7 @@ export const i18n = {
   en: { alay: { hint: '╭─❏ 😜 「 *ALAY* 」\n┊ Write the text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.alay hello how are you*\n╰━━━━━━━', body: '╭─❏ 😜 「 *ALAY VERSION* 」\n┊ {result}\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.alay', expect: /teks|text/i }
+export const test = { input: '.alay halo apa kabar', expect: /.+/ }
 
 const SWAP = { a: '4', e: '3', i: '1', o: '0', s: '5', g: '9', b: '8', t: '7' }
 

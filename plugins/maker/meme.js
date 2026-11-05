@@ -79,7 +79,7 @@ async function drawMeme(source, top, bottom) {
   })
 }
 
-export const test = { input: '.meme', expect: /teks/i }
+export const test = { input: '.meme Ketika bug hilang sendiri | Pas dicek lagi malah muncul', expect: /MEME JADI|MEME READY/ }
 
 export async function handler(ctx) {
   const [topRaw, bottomRaw] = ctx.text.split('|').map((s) => (s ?? '').trim())

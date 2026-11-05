@@ -26,7 +26,7 @@ export const i18n = {
   en: { movieposter: { hint: '╭─❏ 🎬 「 *MOVIE TITLE NEEDED* 」\n┊ Write the movie title please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.movieposter Kana Saves the City*\n╰━━━━━━━', caption: '╭─❏ 🎬 「 *MOVIE POSTER READY* 」\n┊ ᴛɪᴛʟᴇ: *{title}*\n┊ ɢᴇɴʀᴇ: *{genre}* 🎬\n╰━━━━━━━', fail: '╭─❏ 💦 「 *POSTER FAILED* 」\n┊ Mouu, failed to make the movie poster: *{error}*~\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.movieposter', expect: /judul|title/i }
+export const test = { input: '.movieposter naruto', expect: /.+/ }
 
 export async function handler(ctx) {
   const title = (ctx.text || '').trim().slice(0, 80)

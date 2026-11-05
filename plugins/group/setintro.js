@@ -32,7 +32,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.setintro', expect: /intro/i }
+export const test = { input: '.setintro Halo {name}, selamat datang di grup', expect: /intro/i }
 
 export async function handler(ctx) {
   const arg = (ctx.text || '').trim()

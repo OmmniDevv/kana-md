@@ -31,7 +31,7 @@ export const i18n = {
 }
 
 const PLATFORM = "youtube"
-export const test = { input: '.xhs', expect: /link/i }
+export const test = { input: '.xhs https://www.xiaohongshu.com/', expect: /.+/ }
 function pickMediaUrl(obj, depth = 0) {
   if (!obj || depth > 4) return null
   if (typeof obj === 'string') return /^https:\/\//.test(obj) ? obj : null

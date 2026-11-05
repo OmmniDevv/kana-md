@@ -31,7 +31,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.coinflip', expect: /coinflip|koin/i }
+export const test = { input: '.coinflip angka 100', expect: /MENANG|KALAH|YOU WIN|YOU LOSE/ }
 
 export async function handler(ctx) {
   const [pickRaw, betRaw] = (ctx.text || '').trim().toLowerCase().split(/\s+/)

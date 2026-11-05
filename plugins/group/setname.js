@@ -15,7 +15,7 @@ export const i18n = {
   en: { setname: { usage: '╭─❏ ✏️ 「 *WHERE IS THE NEW NAME?* 」\n┊ Write the new group name~\n┊ ᴇxᴀᴍᴘʟᴇ: *.setname Study Group*\n╰━━━━━━━', ok: '╭─❏ ✅ 「 *GROUP NAME CHANGED* 」\n┊ Got it~ group name changed to *{name}*~\n╰━━━━━━━ {mood}', fail: '╭─❏ ⚠️ 「 *FAILED TO CHANGE NAME* 」\n┊ Failed to change group name: {error}\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.setname', expect: /grup|group/i }
+export const test = { input: '.setname Grup KANA', expect: /grup|group/i }
 
 export async function handler(ctx) {
   const name = ctx.text.trim()

@@ -42,7 +42,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.kecocokannama', expect: /nama|name/i }
+export const test = { input: '.kecocokannama Budi & Ani', expect: /\*Budi\* x \*Ani\*/ }
 
 export async function handler(ctx) {
   const raw = (ctx.text || '').trim()

@@ -34,7 +34,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.warn', expect: /grup|group/i }
+export const test = { input: '.warn 6285869074622', expect: /grup|group/i }
 
 export async function handler(ctx) {
   const targets = resolveTargetJids(ctx)

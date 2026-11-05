@@ -72,7 +72,7 @@ async function drawMeme(source, top, bottom) {
   })
 }
 
-export const test = { input: '.smeme', expect: /gambar/i }
+export const test = { input: '.smeme Halo semua | Apa kabar', expect: /BUTUH GAMBAR|NEED IMAGE/ }
 
 export async function handler(ctx) {
   const [topRaw, bottomRaw] = ctx.text.split('|').map((s) => (s ?? '').trim())

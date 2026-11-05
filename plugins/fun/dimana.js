@@ -22,7 +22,7 @@ export const i18n = {
   en: { dimana: { hint: '╭─❏ 📍 「 *WHERE* 」\n┊ Ask a full question please~\n┊ Example: *.dimana is my soulmate*\n╰━━━━━━━', body: '╭─❏ 📍 「 *KANA ANSWER* 」\n┊ {answer}\n╰━━━━━━━ {mood}' } },
 }
 
-export const test = { input: '.dimana', expect: /tanya|ask/i }
+export const test = { input: '.dimana kunciku yang hilang kemarin', expect: /JAWABAN KANA|KANA ANSWER/ }
 
 export async function handler(ctx) {
   if (!(ctx.text || '').trim()) return ctx.reply(ctx.t('dimana.hint'))

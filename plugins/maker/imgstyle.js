@@ -46,7 +46,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.imgstyle', expect: /anime/ }
+export const test = { input: '.imgstyle anime', expect: /PILIH GAYA|PICK A STYLE/ }
 
 const STYLE_ALIASES = { gray: 'abu', grey: 'abu', mirror: 'cermin', flip: 'cermin' }
 

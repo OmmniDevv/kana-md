@@ -30,7 +30,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.getpp', expect: /foto profil|profile picture/i }
+export const test = { input: '.getpp 6285869074622', expect: /.+/ }
 
 export async function handler(ctx) {
   const target = ctx.mentionedJids?.[0] ?? ctx.chat

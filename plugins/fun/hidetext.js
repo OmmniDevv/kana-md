@@ -22,7 +22,7 @@ export const i18n = {
   en: { hidetext: { hint: '╭─❏ 🙈 「 *HIDE TEXT* 」\n┊ Format: *.hidetext <cover text> | <secret text>*\n┊ Example: *.hidetext Hello everyone | this is the ending spoiler*\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.hidetext', expect: /sampul|cover/i }
+export const test = { input: '.hidetext Pengumuman penting | Besok kita libur', expect: /Pengumuman penting/ }
 
 export async function handler(ctx) {
   const raw = (ctx.text || '')

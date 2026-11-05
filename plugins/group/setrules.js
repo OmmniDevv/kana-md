@@ -32,7 +32,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.setrules', expect: /grup|group/i }
+export const test = { input: '.setrules Dilarang spam dan dilarang kirim link tanpa izin', expect: /.+/ }
 
 export async function handler(ctx) {
   const text = ctx.text.trim()

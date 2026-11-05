@@ -51,7 +51,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.daduvs', expect: /bet/i }
+export const test = { input: '.daduvs 100', expect: /Menang! Dadumu|Kalah nih|You win|You lose/ }
 
 export async function handler(ctx) {
   const bet = Number(ctx.args[0])

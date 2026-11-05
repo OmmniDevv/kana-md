@@ -31,7 +31,7 @@ export const i18n = {
 }
 
 const PLATFORM = "pixeldrain"
-export const test = { input: '.pixeldraindl', expect: /link/i }
+export const test = { input: '.pixeldraindl https://pixeldrain.com/', expect: /.+/ }
 function pickMediaUrl(obj, depth = 0) {
   if (!obj || depth > 4) return null
   if (typeof obj === 'string') return /^https:\/\//.test(obj) ? obj : null

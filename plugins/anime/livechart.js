@@ -49,7 +49,7 @@ function listBody(rows) {
   }).join('\n┊ ')
 }
 
-export const test = { input: '.livechart', expect: /tulis|write/i }
+export const test = { input: '.livechart musim fall 2026', expect: /ANIME FALL 2026/ }
 export async function handler(ctx) {
   const raw = (ctx.text || '').trim()
   if (!raw) return ctx.reply(ctx.t('livechart.hint'))

@@ -54,7 +54,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.sifatbisnis', expect: /nama|name/i }
+export const test = { input: '.sifatbisnis Malik', expect: /SIFAT BISNIS Malik|BUSINESS TRAITS OF Malik/ }
 
 export async function handler(ctx) {
   const name = (ctx.text || '').trim()

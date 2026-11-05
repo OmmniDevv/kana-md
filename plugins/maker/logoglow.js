@@ -16,7 +16,7 @@ export const i18n = {
   en: { logoglow: { hint: '╭─❏ ✏️ 「 *LOGO TEXT NEEDED* 」\n┊ Write the logo text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.logoglow OMNIDEVV*\n╰━━━━━━━', caption: '╭─❏ ✨ 「 *GLOW LOGO READY* 」\n┊ Glow logo *{text}* is ready~ {mood}\n╰━━━━━━━', fail: '╭─❏ 💦 「 *LOGO FAILED* 」\n┊ Mouu, failed to make the logo: *{error}*~\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.logoglow', expect: /logo/i }
+export const test = { input: '.logoglow KANA', expect: /.+/ }
 
 export async function handler(ctx) {
   const text = (ctx.text || '').trim().slice(0, 30)

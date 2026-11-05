@@ -28,7 +28,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.buatquote', expect: /kutipan|quote/i }
+export const test = { input: '.buatquote Tetap semangat, proses tidak mengkhianati hasil | Malik', expect: /KARTU KUTIPAN JADI|QUOTE CARD READY/ }
 
 export async function handler(ctx) {
   const raw = (ctx.text || '').trim()

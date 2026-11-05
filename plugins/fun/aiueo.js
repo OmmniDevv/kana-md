@@ -20,7 +20,7 @@ export const i18n = {
   en: { aiueo: { hint: '╭─❏ ✏️ 「 *AIUEO* 」\n┊ Write the vowel and the text please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.aiueo i good morning everyone*\n╰━━━━━━━', body: '╭─❏ ✏️ 「 *AIUEO* 」\n┊ {result}\n╰━━━━━━━' } },
 }
 
-export const test = { input: '.aiueo', expect: /vokal|vowel/i }
+export const test = { input: '.aiueo i selamat pagi semua', expect: /silimit pigi simii/ }
 
 export async function handler(ctx) {
   const raw = (ctx.text || '').trim()

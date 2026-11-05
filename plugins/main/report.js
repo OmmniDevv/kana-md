@@ -29,7 +29,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.report', expect: /laporan|report/i }
+export const test = { input: '.report Ada tombol menu yang tidak merespons saat ditekan', expect: /LAPORAN TERKIRIM|REPORT SENT/ }
 
 export async function handler(ctx) {
   const message = (ctx.text || '').trim()

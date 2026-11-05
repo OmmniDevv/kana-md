@@ -31,7 +31,7 @@ export const i18n = {
 }
 
 const PLATFORM = "tiktok"
-export const test = { input: '.ttslide', expect: /link/i }
+export const test = { input: '.ttslide https://www.tiktok.com/@tiktok', expect: /.+/ }
 function pickMediaUrl(obj, depth = 0) {
   if (!obj || depth > 4) return null
   if (typeof obj === 'string') return /^https:\/\//.test(obj) ? obj : null

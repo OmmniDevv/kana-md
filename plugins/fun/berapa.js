@@ -13,7 +13,7 @@ export const i18n = {
   en: { berapa: { hint: '╭─❏ 🔢 「 *HOW MANY* 」\n┊ Ask a full question please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.berapa how many times should I try*\n╰━━━━━━━', body: '╭─❏ 🔢 「 *HOW MANY* 」\n┊ ᴛʜᴇ ᴀɴꜱᴡᴇʀ: *{number}*\n┊ Just trust it, the universe rarely miscounts~\n╰━━━━━━━ {mood}' } },
 }
 
-export const test = { input: '.berapa', expect: /tanya|ask/i }
+export const test = { input: '.berapa kali aku harus mencoba sebelum berhasil', expect: /Percaya saja dulu|Just trust it/ }
 
 export async function handler(ctx) {
   if (!(ctx.text || '').trim()) return ctx.reply(ctx.t('berapa.hint'))

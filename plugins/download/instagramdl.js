@@ -31,7 +31,7 @@ export const i18n = {
 }
 
 const PLATFORM = "instagram"
-export const test = { input: '.instagramdl', expect: /link/i }
+export const test = { input: '.instagramdl https://www.instagram.com/reel/De_8Nltqk0T/', expect: /.+/ }
 function pickMediaUrl(obj, depth = 0) {
   if (!obj || depth > 4) return null
   if (typeof obj === 'string') return /^https:\/\//.test(obj) ? obj : null

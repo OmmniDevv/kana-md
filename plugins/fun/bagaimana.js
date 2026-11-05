@@ -22,7 +22,7 @@ export const i18n = {
   en: { bagaimana: { hint: '╭─❏ 🤔 「 *BAGAIMANA* 」\n┊ Ask a full question please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.bagaimana how to move on*\n╰━━━━━━━', body: '╭─❏ 🤔 「 *BAGAIMANA* 」\n┊ {answer}\n╰━━━━━━━ {mood}' } },
 }
 
-export const test = { input: '.bagaimana', expect: /tanya|ask/i }
+export const test = { input: '.bagaimana cara move on dari mantan', expect: /Caranya gampang|Dengan niat, doa|Pelan-pelan saja|Tanya orang yang sudah pernah|Pakai cara paling sederhana|Dengan berani gagal/ }
 
 export async function handler(ctx) {
   if (!(ctx.text || '').trim()) return ctx.reply(ctx.t('bagaimana.hint'))

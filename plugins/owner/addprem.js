@@ -59,7 +59,7 @@ export function parseAddpremArgs(ctx) {
   return { target, duration }
 }
 
-export const test = { input: '.addprem', expect: /premium/i }
+export const test = { input: '.addprem 6285869074622 7d', expect: /PREMIUM AKTIF|PREMIUM ACTIVE/ }
 
 export async function handler(ctx) {
   const { target, duration } = parseAddpremArgs(ctx)

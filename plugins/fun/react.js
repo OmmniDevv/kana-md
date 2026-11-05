@@ -15,7 +15,7 @@ export const i18n = {
   en: { react: { hint: '╭─❏ 🎭 「 *REACTION* 」\n┊ Reply to the message then write .react with an emoji please~ Example: reply to a message then .react ❤️\n╰━━━━━━━', done: '' } },
 }
 
-export const test = { input: '.react', expect: /balas|reply/i }
+export const test = { input: '.react 👍', expect: /balas|reply/i }
 
 const EMOJI_RE = /\p{Extended_Pictographic}/u
 

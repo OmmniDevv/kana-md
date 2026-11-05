@@ -42,7 +42,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.protect', expect: /grup|group/i }
+export const test = { input: '.protect antilink on', expect: /grup|group/i }
 
 export async function handler(ctx) {
   const [featureRaw, stateRaw] = ctx.args

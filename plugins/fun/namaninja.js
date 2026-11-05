@@ -13,7 +13,7 @@ export const i18n = {
   en: { namaninja: { hint: '╭─❏ 🥷 「 *NINJA NAME* 」\n┊ Write the name please~\n┊ Example: *.namaninja malik*\n╰━━━━━━━', body: '╭─❏ 🥷 「 *NINJA NAME* 」\n┊ ᴏʀɪɢɪɴᴀʟ ɴᴀᴍᴇ: *{name}*\n┊ ɴɪɴᴊᴀ ɴᴀᴍᴇ: *{result}*\n╰━━━━━━━ {mood}' } },
 }
 
-export const test = { input: '.namaninja', expect: /nama|name/i }
+export const test = { input: '.namaninja Malik', expect: /\*Malik\*/ }
 
 const MAP = {
   a: 'ka', b: 'zu', c: 'mi', d: 'te', e: 'ku', f: 'lu', g: 'ji', h: 'ri', i: 'ki', j: 'zu',

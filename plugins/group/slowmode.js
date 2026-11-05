@@ -40,7 +40,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.slowmode', expect: /slowmode/i }
+export const test = { input: '.slowmode 10', expect: /slowmode/i }
 
 const lastSent = new Map()
 const lastWarn = new Map()

@@ -70,7 +70,7 @@ function flat(obj, prefix = '', out = []) {
   return out
 }
 
-export const test = { input: '.aidetect', expect: /kirim|send|balas|reply/i }
+export const test = { input: '.aidetect https://picsum.photos/400/600.jpg', expect: /HASIL DETEKSI|DETECTION RESULT/ }
 export async function handler(ctx) {
   const url = ((ctx.text || '').match(/https?:\/\/[^\s]+/) || [])[0]
   let buffer = null

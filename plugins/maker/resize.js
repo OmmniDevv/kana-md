@@ -35,7 +35,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.resize', expect: /512x512/ }
+export const test = { input: '.resize 512x512', expect: /BUTUH GAMBAR DAN UKURAN|IMAGE AND SIZE NEEDED/ }
 
 export async function handler(ctx) {
   const match = (ctx.text || '').match(/(\d{2,4})\s*x\s*(\d{2,4})/)
