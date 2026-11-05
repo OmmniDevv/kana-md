@@ -9,7 +9,7 @@ import { fontSearch } from '../../src/scrapers/font/dafont.js'
 // dan tautan unduhnya, seperti dafontAnswerHandler di Elaina.
 export const config = {
   name: "dafont",
-  alias: ["daffont", "carifont"],
+  alias: ["daffont", "carifont", "nerdfont-ambil"],
   category: "search",
   description: { id: "Cari font di DaFont, balas nomor untuk gambar pratinjaunya", en: "Search fonts on DaFont, reply with a number for its preview image" },
   usage: ".dafont <nama font>",

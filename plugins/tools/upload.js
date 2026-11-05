@@ -4,6 +4,7 @@ import { MAX_DOCUMENT_BYTES } from '../../src/ui/media.js'
 
 export const config = {
   name: 'upload',
+  alias: ['tourl'],
   category: 'tools',
   description: { id: 'Unggah media yang dikirim atau dikutip jadi tautan publik uguu.se', en: 'Upload sent or quoted media into a public uguu.se link' },
   usage: '.upload',

@@ -2,7 +2,7 @@ import { translateText } from '../../src/scrapers/search/terjemah.js'
 
 export const config = {
   name: 'terjemah',
-  alias: ['tr', 'translate'],
+  alias: ['tr', 'translate', 'tran'],
   category: 'search',
   description: { id: 'Terjemahkan teks ke bahasa lain', en: 'Translate text to another language' },
   usage: '.tr <kode bahasa> <teks>',

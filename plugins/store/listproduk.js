@@ -1,7 +1,7 @@
 
 export const config = {
   name: "listproduk",
-  alias: [],
+  alias: ['market'],
   category: "store",
   description: { id: "Fitur listproduk versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD listproduk feature, rewritten in KANA style" },
   usage: ".listproduk",

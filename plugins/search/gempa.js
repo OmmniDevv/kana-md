@@ -5,7 +5,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'gempa',
-  alias: ['earthquake'],
+  alias: ['earthquake', 'bmkggempa'],
   category: 'search',
   description: { id: 'Info gempa terbaru dari BMKG, arg list untuk 5 terakhir', en: 'Latest earthquake info from BMKG, arg list for the last 5' },
   usage: '.gempa atau .gempa list',

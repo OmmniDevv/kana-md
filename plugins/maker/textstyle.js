@@ -1,7 +1,7 @@
 
 export const config = {
   name: 'textstyle',
-  alias: ['fancy', 'style'],
+  alias: ['fancy', 'style', 'styleteks'],
   category: 'maker',
   description: { id: 'Ubah teks jadi varian huruf unicode fancy', en: 'Turn text into fancy unicode letter variants' },
   usage: '.textstyle <teks>',

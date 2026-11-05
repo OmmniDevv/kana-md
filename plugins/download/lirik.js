@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'lirik',
-  alias: ['lyrics', 'lyric', 'lyricyt'],
+  alias: ['lyrics', 'lyric', 'lyricyt', 'lirikyt', 'liriklagu'],
   category: 'download',
   description: { id: 'Lihat lirik lagu dari judul atau link Spotify', en: 'See song lyrics from a title or a Spotify link' },
   usage: '.lirik <judul lagu> atau .lirik <link track spotify>',

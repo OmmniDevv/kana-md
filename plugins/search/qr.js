@@ -3,7 +3,7 @@ import { sendImage } from '../../src/ui/media.js'
 
 export const config = {
   name: 'qr',
-  alias: ['qrcode'],
+  alias: ['qrcode', 'txt2qr', 'texttoqr'],
   category: 'search',
   description: { id: 'Buat gambar QR code dari teks atau link', en: 'Generate a QR code image from text or a link' },
   usage: '.qr <teks atau link>',

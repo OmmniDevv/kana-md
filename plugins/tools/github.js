@@ -1,7 +1,7 @@
 
 export const config = {
   name: "github",
-  alias: ["gituser"],
+  alias: ["gituser", "githubstalk", "ghstalk"],
   category: "tools",
   description: { id: "Fitur github versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD github feature, rewritten in KANA style" },
   usage: ".github",
