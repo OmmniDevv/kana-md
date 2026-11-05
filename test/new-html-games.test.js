@@ -92,3 +92,24 @@ for (const { name, id } of NEW_GAMES) {
     assert.notEqual(data.response_id, mci.botMetadata.botResponseId)
   })
 }
+
+test('wordle: html memuat pembangun papan, keyboard, dan daftar kata bersih', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const html = await readFile(new URL('../games/wordle/index.html', import.meta.url), 'utf8')
+  for (const marker of ['buildBoard', 'buildKb', 'colorize', 'submitGuess', '__restart', "addEventListener('keydown'"]) {
+    assert.ok(html.includes(marker), `wordle: penanda hilang: ${marker}`)
+  }
+  assert.ok(html.includes("el('board')") || html.includes('boardEl'), 'wordle: papan tidak dirujuk')
+  assert.ok(html.includes('krow'), 'wordle: baris keyboard tidak dibangun')
+  const pick = (name) => {
+    const m = html.match(new RegExp(`var ${name}=\\('([^']+)'\\)`))
+    assert.ok(m, `wordle: daftar ${name} tidak ditemukan`)
+    return m[1].split(' ').filter(Boolean)
+  }
+  const answers = pick('ANSWERS')
+  const extra = pick('EXTRA')
+  assert.ok(answers.length >= 120, `wordle: jawaban hanya ${answers.length}, minimum 120`)
+  const all = [...answers, ...extra]
+  for (const w of all) assert.match(w, /^[a-z]{5}$/, `wordle: kata tidak valid: ${w}`)
+  assert.equal(new Set(all).size, all.length, 'wordle: ada kata duplikat di daftar')
+})

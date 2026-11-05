@@ -57,7 +57,101 @@ el('again').addEventListener('click',function(){el('over').style.display='none';
 <script>
 var STR={id:{t:'Wordle Kata',a:'Main Lagi',h:'Tebak kata Bahasa Indonesia 5 huruf dalam 6 percobaan. Hijau: huruf dan posisi benar. Kuning: huruf ada tapi salah posisi. Abu: huruf tidak ada.',turn:'Percobaan {n} dari 6',unknown:'Kata itu tidak ada di daftar, coba kata lain yaa',short:'Isi dulu 5 hurufnya~',win:'Yeay ketebak!',lose:'Yahh belum ketebak...',wordWas:'Katanya: {w}'},en:{t:'Wordle Word',a:'Play Again',h:'Guess the 5 letter Indonesian word in 6 tries. Green: right letter and spot. Yellow: letter exists, wrong spot. Gray: letter not in the word.',turn:'Try {n} of 6',unknown:'That word is not in the list, try another one',short:'Fill all 5 letters first~',win:'You got it!',lose:'Not this time...',wordWas:'The word was: {w}'}}[LANG];
 el('t').textContent=STR.t+' 🔤';el('how').textContent=STR.h;el('again').textContent=STR.a;document.querySelector('.osl').textContent=(LANG==='id'?'Skor':'Score')+':';
-var WORDS=('abadi abang abjad absah absen acara agama ajaib akrab aktif aktor alami alarm alibi alien ambil ampuh angin angka antar apung arang arena arsip asing atlet atlas aurat badan bagus bahan bakal bakar bakat bakso balap balas balik balok balon bambu bapak barat baris basah basmi batal batas batik batin batuk bawah bayam bayar beban bebas bedah belok belum benar benda benih beras berat beres besan besok betah beton betis biasa biaya bibir bibit bidan bidik bijak bikin bilah bilal bilas bilik bilur birah biru? bisa bisik bisu? bit? skip cabai cacat cadar cakap cakar calon canda candi candu capai catat catur cawan cegah cegat celik celup cemar cemas cendol cepat cerah cerai ceria ceruk cerut cetak cetus cicip cicak cicil cicir cicip dalam dalih dalil damai danau dapat dapur darat darah darat darih darurat? darus? datar datang datuk dauk? daun daur dawa? dawai dawam dawan dawar dawas dawat dawa? skip').split(' ');
+var ANSWERS=('abadi abang absah absen acara agama ajaib akrab aktif aktor alami alarm alibi ambil ampuh angin angka antar apung arang arena arsip asing atlet atlas aurat asasi asbak asbes asdos badan bagus bahan bakal bakar bakat bakso balap balas balik balok balon bambu bapak barat baris basah basmi batal batas batik batin batuk bawah bayam bayar beban bebas bedah belok belum benar benda benih beras berat beres besan besok betah beton betis biasa biaya bibir bibit bidan bidik bijak bikin bilah bilas bilik binal binar biner binti cabai cacat cadar cakap cakar calon canda candi candu capai catat catur cawan cegah celik celup cemar cemas cepat cerah cerai ceria ceruk cetak cetus cicip cicak cicil cicir cikal cikar cilik cilok dalam dalih damai danau dapat dapur darat darah dadar datar datuk dawai debat debit dedak delik delta demam demen denah derai derak deram deras derau deret derik derma desah desak desau desis detak detik detil dewan').split(' ');
+var EXTRA=('abjad abnus acian acuan').split(' ');
+var VALID={};ANSWERS.concat(EXTRA).forEach(function(w){VALID[w]=1});
+var ROWS=6,COLS=5,RANK={gray:0,yellow:1,green:2};
+var answer='',row=0,col=0,grid=[],keyState={},finished=false;
+var boardEl=el('board'),kbEl=el('kb');
+function setMsg(s){el('msg').textContent=s}
+function cellAt(r,c){return el('c'+r+'-'+c)}
+function buildBoard(){
+  boardEl.innerHTML='';
+  for(var r=0;r<ROWS;r++){
+    var rowEl=document.createElement('div');rowEl.className='wrow';
+    for(var c=0;c<COLS;c++){var cell=document.createElement('div');cell.className='cell';cell.id='c'+r+'-'+c;rowEl.appendChild(cell);}
+    boardEl.appendChild(rowEl);
+  }
+}
+function makeKey(id,label,cls){
+  var b=document.createElement('button');b.className='key'+(cls?' '+cls:'');b.id='k-'+id;b.textContent=label;
+  b.addEventListener('click',function(){press(id)});
+  return b;
+}
+function buildKb(){
+  kbEl.innerHTML='';
+  var rows=['qwertyuiop','asdfghjkl','zxcvbnm'];
+  rows.forEach(function(letters,ri){
+    var kr=document.createElement('div');kr.className='krow';
+    if(ri===2)kr.appendChild(makeKey('enter','ENTER','wide'));
+    letters.split('').forEach(function(ch){kr.appendChild(makeKey(ch,ch,''))});
+    if(ri===2)kr.appendChild(makeKey('back','⌫','wide'));
+    kbEl.appendChild(kr);
+  });
+}
+function paint(){
+  for(var c=0;c<COLS;c++){var cell=cellAt(row,c);cell.textContent=grid[row][c];cell.classList.toggle('fill',!!grid[row][c]);}
+}
+function deny(msg){
+  setMsg(msg);beep(140,.12);
+  var rowEl=boardEl.children[row];if(!rowEl)return;
+  rowEl.classList.remove('shake');void rowEl.offsetWidth;rowEl.classList.add('shake');
+}
+function press(k){
+  if(finished)return;
+  if(k==='enter'){submitGuess();return;}
+  if(k==='back'){if(col>0){col--;grid[row][col]='';paint();beep(220,.05);}return;}
+  if(/^[a-z]$/.test(k)&&col<COLS){grid[row][col]=k;col++;paint();beep(330,.05);}
+}
+document.addEventListener('keydown',function(e){
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  var k=(e.key||'').toLowerCase();
+  if(k==='enter')press('enter');
+  else if(k==='backspace')press('back');
+  else if(/^[a-z]$/.test(k))press(k);
+});
+function colorize(guess){
+  var res=['gray','gray','gray','gray','gray'],rest={},i;
+  for(i=0;i<COLS;i++){if(guess[i]===answer[i])res[i]='green';else rest[answer[i]]=(rest[answer[i]]||0)+1;}
+  for(i=0;i<COLS;i++){if(res[i]==='green')continue;if(rest[guess[i]]>0){res[i]='yellow';rest[guess[i]]--;}}
+  return res;
+}
+function submitGuess(){
+  if(col<COLS){deny(STR.short);return;}
+  var guess=grid[row].join('');
+  if(!VALID[guess]){deny(STR.unknown);return;}
+  var res=colorize(guess),c;
+  for(c=0;c<COLS;c++){
+    cellAt(row,c).classList.add(res[c]);
+    var ch=grid[row][c],prev=keyState[ch];
+    if(!prev||RANK[res[c]]>RANK[prev]){
+      keyState[ch]=res[c];
+      var kb=el('k-'+ch);if(kb){kb.classList.remove('green','yellow','gray');kb.classList.add(res[c]);}
+    }
+  }
+  beep(520,.07);
+  if(guess===answer){
+    finished=true;var sc=(7-(row+1))*100;
+    el('overT').textContent=STR.win;el('overWord').textContent=STR.wordWas.replace('{w}',answer.toUpperCase());
+    setTimeout(function(){gameOver(sc)},450);return;
+  }
+  row++;col=0;
+  if(row>=ROWS){
+    finished=true;
+    el('overT').textContent=STR.lose;el('overWord').textContent=STR.wordWas.replace('{w}',answer.toUpperCase());
+    setTimeout(function(){gameOver(0)},450);return;
+  }
+  setMsg(STR.turn.replace('{n}',row+1));
+}
+function start(){
+  answer=ANSWERS[Math.floor(Math.random()*ANSWERS.length)];
+  row=0;col=0;finished=false;grid=[];keyState={};
+  for(var r=0;r<ROWS;r++)grid.push(['','','','','']);
+  buildBoard();buildKb();
+  setMsg(STR.turn.replace('{n}',1));
+}
+window.__restart=start;
+start();
 </script>
 </body>
 </html>
