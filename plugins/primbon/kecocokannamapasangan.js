@@ -1,87 +1,79 @@
+import { sendButtons } from '../../src/ui/buttons.js'
+import { getKecocokanNama } from '../../src/scrapers/search/primbon.js'
 
+// Kecocokan nama pasangan primbon: sisi positif, sisi negatif, dan
+// catatan dua nama dari API primbon Siputzx, sama seperti padanan
+// Elaina-MD. Tidak ada lagi persen kecocokan karangan dari hash.
 export const config = {
-  name: "kecocokannamapasangan",
-  alias: [],
-  category: "primbon",
-  description: { id: "Cek kecocokan nama pasangan", en: "KANA version of the Elaina-MD kecocokannamapasangan feature, rewritten in KANA style" },
-  usage: ".kecocokannamapasangan",
-  example: ".kecocokannamapasangan",
+  name: 'kecocokannamapasangan',
+  alias: ['cocoknama', 'matchname'],
+  category: 'primbon',
+  description: { id: 'Cek kecocokan nama pasangan menurut data primbon', en: 'Check a couple name match from primbon data' },
+  usage: '.kecocokannamapasangan <nama1> <nama2>',
+  example: '.kecocokannamapasangan putu keyla',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "kecocokannamapasangan": {
-      body: "╭─❏ 🔮 「 *KECOCOKANNAMAPASANGAN* 」\n┊ {text}\n╰━━━━━━━",
-      hint: "╭─❏ 🔮 「 *KECOCOKANNAMAPASANGAN* 」\n┊ Tulis tanggal lahirnya yaa, contoh *.kecocokannamapasangan 2005-08-17*\n╰━━━━━━━",
-      znote: "Primbon dan ramalan di sini cuma buat seru seruan yaa, jangan dianggap serius~",
+    kecocokannamapasangan: {
+      usage: '╭─❏ 💕 「 *KECOCOKAN NAMA* 」\n┊ Tulis dua namanya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.kecocokannamapasangan putu keyla*\n╰━━━━━━━',
+      title: 'Kecocokan Nama Primbon',
+      result: '╭─❏ 💕 「 *KECOCOKAN NAMA PASANGAN* 」\n┊ 👤 *{namaAnda}*\n┊ 💑 *{namaPasangan}*\n┊\n┊ ✅ *ꜱɪꜱɪ ᴘᴏꜱɪᴛɪꜰ:*\n┊ {positif}\n┊\n┊ ❌ *ꜱɪꜱɪ ɴᴇɢᴀᴛɪꜰ:*\n┊ {negatif}\n┊\n┊ _{catatan}_\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *KECOCOKAN NAMA GAGAL* 」\n┊ Mouu, sumber data primbonnya lagi tidak bisa dihubungi: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      btnAgain: 'Pasangan Lain',
     },
   },
   en: {
-    "kecocokannamapasangan": {
-      body: "╭─❏ 🔮 「 *KECOCOKANNAMAPASANGAN* 」\n┊ {text}\n╰━━━━━━━",
-      hint: "╭─❏ 🔮 「 *KECOCOKANNAMAPASANGAN* 」\n┊ Write the birth date, for example *.kecocokannamapasangan 2005-08-17*\n╰━━━━━━━",
-      znote: "This primbon reading is just for fun, do not take it seriously~",
+    kecocokannamapasangan: {
+      usage: '╭─❏ 💕 「 *NAME MATCH* 」\n┊ Write both names first please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.kecocokannamapasangan putu keyla*\n╰━━━━━━━',
+      title: 'Primbon Name Match',
+      result: '╭─❏ 💕 「 *COUPLE NAME MATCH* 」\n┊ 👤 *{namaAnda}*\n┊ 💑 *{namaPasangan}*\n┊\n┊ ✅ *ᴘᴏꜱɪᴛɪᴠᴇ ꜱɪᴅᴇ:*\n┊ {positif}\n┊\n┊ ❌ *ɴᴇɢᴀᴛɪᴠᴇ ꜱɪᴅᴇ:*\n┊ {negatif}\n┊\n┊ _{catatan}_\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *NAME MATCH FAILED* 」\n┊ Mouu, the primbon data source cannot be reached: *{message}*\n┊ Try again later please~\n╰━━━━━━━',
+      btnAgain: 'Another Couple',
     },
   },
 }
 
-const MODE = "artinama"
-export const test = { input: '.kecocokannamapasangan', expect: /tanggal|primbon|birth/i }
-function hashStr(s) { let h = 7; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return h }
-const ZODIAC = [
-  ['Capricorn', 'Ambisius, sabar, dan pekerja keras.'],
-  ['Aquarius', 'Unik, visioner, dan suka kebebasan.'],
-  ['Pisces', 'Perasa, imajinatif, dan penuh empati.'],
-  ['Aries', 'Berani, energik, dan suka memimpin.'],
-  ['Taurus', 'Setia, tenang, dan suka kenyamanan.'],
-  ['Gemini', 'Cerdas, komunikatif, dan serba bisa.'],
-  ['Cancer', 'Penyayang, protektif, dan intuitif.'],
-  ['Leo', 'Percaya diri, hangat, dan suka jadi pusat perhatian.'],
-  ['Virgo', 'Teliti, rapi, dan perfeksionis.'],
-  ['Libra', 'Adil, diplomatis, dan cinta keindahan.'],
-  ['Scorpio', 'Intens, misterius, dan penuh tekad.'],
-  ['Sagittarius', 'Optimis, petualang, dan jujur.'],
-]
-const PASARAN = ['Legi', 'Pahing', 'Pon', 'Wage', 'Kliwon']
-const PASARAN_TRAIT = { Legi: 'manis tutur katanya dan mudah bergaul', Pahing: 'ambisius dan kuat pendiriannya', Pon: 'suka menonjol dan pandai bicara', Wage: 'setia dan tekun bekerja', Kliwon: 'bijaksana dan beruntung dalam rezeki' }
-const WETON_TRAIT = ['pekerja keras yang setia', 'pemikir yang tenang', 'periang dan mudah disukai', 'mandiri dan tegas', 'kreatif dan penuh ide', 'penyabar dan suka menolong', 'berani mengambil risiko']
+export const test = { input: '.kecocokannamapasangan putu keyla', expect: /kecocokan nama pasangan|couple name match/i }
+
+// Uraikan dua nama dari teks bebas: pemisah &, |, koma, atau kata "dan"
+// didahulukan; tanpa pemisah, dua token pertama ala Elaina yang dipakai.
+export function parsePasanganArgs(text) {
+  const raw = String(text || '').trim()
+  if (!raw) return null
+  const separated = raw.split(/\s*(?:&|\||,|\bdan\b|\bvs\b)\s*/i).map((s) => s.trim()).filter(Boolean)
+  if (separated.length >= 2) return { nama1: separated[0].slice(0, 40), nama2: separated[1].slice(0, 40) }
+  const tokens = raw.split(/\s+/).filter(Boolean)
+  if (tokens.length >= 2) return { nama1: tokens[0].slice(0, 40), nama2: tokens[1].slice(0, 40) }
+  return null
+}
+
+export function formatKecocokanNama(t, data) {
+  return t('kecocokannamapasangan.result', {
+    namaAnda: data.namaAnda,
+    namaPasangan: data.namaPasangan,
+    positif: data.positif,
+    negatif: data.negatif,
+    catatan: data.catatan,
+  })
+}
+
 export async function handler(ctx) {
-  const raw = (ctx.text || '').trim()
-  const m = raw.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/) || raw.match(/(\d{1,2})[-/](\d{1,2})[-/](\d{4})/)
-  if (MODE === 'zodiac' || MODE === 'weton') {
-    if (!m) return ctx.reply(ctx.t('kecocokannamapasangan.hint'))
-    const [y, mo, d] = m[3] && m[3].length === 4 ? [Number(m[3]), Number(m[2]), Number(m[1])] : [Number(m[1]), Number(m[2]), Number(m[3])]
-    const date = new Date(Date.UTC(y, mo - 1, d))
-    if (MODE === 'zodiac') {
-      const cutoffs = [19, 18, 20, 19, 20, 20, 22, 22, 22, 22, 21, 21]
-      const idx = (mo - 1 + (d >= cutoffs[mo - 1] ? 1 : 0)) % 12
-      const z = ZODIAC[idx]
-      return ctx.reply(ctx.t('kecocokannamapasangan.body', { text: 'Tanggal *' + d + '/' + mo + '/' + y + '* itu zodiaknya *' + z[0] + '*.\n┊ ' + z[1] + '\n┊ ' + ctx.t('kecocokannamapasangan.znote') }))
-    }
-    const days = Math.floor(date.getTime() / 86400000)
-    const pasaran = PASARAN[((days % 5) + 5) % 5]
-    const dayName = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][date.getUTCDay()]
-    return ctx.reply(ctx.t('kecocokannamapasangan.body', { text: 'Weton *' + d + '/' + mo + '/' + y + '*: *' + dayName + ' ' + pasaran + '*.\n┊ Menurut primbon, orang ' + dayName + ' ' + pasaran + ' itu ' + PASARAN_TRAIT[pasaran] + ', dan dikenal sebagai ' + WETON_TRAIT[hashStr(dayName + pasaran) % WETON_TRAIT.length] + '.\n┊ ' + ctx.t('kecocokannamapasangan.znote') }))
+  const input = parsePasanganArgs(ctx.text || (ctx.args || []).join(' '))
+  if (!input) return ctx.reply(ctx.t('kecocokannamapasangan.usage'))
+  let data
+  try {
+    data = await getKecocokanNama(input.nama1, input.nama2)
+  } catch (err) {
+    return ctx.reply(ctx.t('kecocokannamapasangan.fail', { message: err.message }))
   }
-  if (!raw) return ctx.reply(ctx.t('kecocokannamapasangan.hint'))
-  const h = hashStr(ctx.senderDigits + ':' + 'kecocokannamapasangan' + ':' + raw.toLowerCase())
-  const picks = {
-    artinama: ['nama yang membawa ketenangan dan rezeki yang stabil', 'nama yang kuat, cocok untuk pemimpin', 'nama yang lembut dan membawa keberuntungan dalam pertemanan', 'nama yang unik dan penuh semangat petualang'],
-    kecocokan: null,
-    nomerhoki: null,
-    tafsirmimpi: ['mimpi itu pertanda ada kabar baik yang mendekat', 'mimpi itu cerminan pikiranmu yang lagi capek, istirahat yaa', 'mimpi itu tanda peluang baru, siap siap saja', 'mimpi itu pengingat buat lebih hati hati sama keputusan minggu ini'],
-    sifatbisnis: ['cocok di bisnis kuliner dan jasa harian', 'cocok di bisnis kreatif dan konten', 'cocok di bisnis teknologi dan layanan online', 'cocok di bisnis perdagangan dan reseller'],
-    ramalanjodoh: ['jodohmu dekat, cirinya suka ketawa di momen serius', 'jodohmu datang dari lingkaran pertemanan lama', 'jodohmu tipe pekerja keras yang pendiam', 'jodohmu suka traveling dan kulineran'],
-    potensipenyakit: ['jaga pola tidur dan kurangi begadang yaa', 'perbanyak minum air dan gerak ringan', 'jaga pencernaan, jangan telat makan', 'istirahatkan mata dari layar sesekali'],
-  }
-  if (MODE === 'kecocokan') {
-    const score = 40 + (h % 61)
-    return ctx.reply(ctx.t('kecocokannamapasangan.body', { text: 'Kecocokan *' + raw + '* : *' + score + '%*\n┊ ' + (score >= 80 ? 'Serasi banget, pertahankan~' : score >= 60 ? 'Cukup serasi, komunikasinya dijaga yaa' : 'Perlu usaha ekstra, tapi bukan tidak mungkin~') + '\n┊ ' + ctx.t('kecocokannamapasangan.znote') }))
-  }
-  if (MODE === 'nomerhoki') {
-    return ctx.reply(ctx.t('kecocokannamapasangan.body', { text: 'Nomor hoki buat *' + raw + '* hari ini: *' + (h % 90 + 10) + '-' + (h % 900 + 100) + '*\n┊ ' + ctx.t('kecocokannamapasangan.znote') }))
-  }
-  const arr = picks[MODE] || picks.artinama
-  return ctx.reply(ctx.t('kecocokannamapasangan.body', { text: 'Buat *' + raw + '*: ' + arr[h % arr.length] + '.\n┊ ' + ctx.t('kecocokannamapasangan.znote') }))
+  const body = formatKecocokanNama(ctx.t, data)
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: ctx.t('kecocokannamapasangan.title'),
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: [{ text: ctx.t('kecocokannamapasangan.btnAgain'), id: '.kecocokannamapasangan' }],
+    textFallback: body,
+  })
 }

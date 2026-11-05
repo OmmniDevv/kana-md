@@ -1,6 +1,7 @@
-// Scraper primbon Siputzx: arti nama dan ramalan jodoh memakai data
-// weton asli dari API, sama seperti fitur primbon Elaina-MD. Bila API
-// ramalan sedang mati, ramalan jodoh dihitung lokal dengan metode
+// Scraper primbon Siputzx: arti nama, ramalan jodoh, nomor hoki, potensi
+// penyakit, zodiak, kecocokan nama pasangan, dan sifat usaha bisnis
+// memakai data asli dari API, sama seperti fitur primbon Elaina-MD. Bila
+// API ramalan sedang mati, ramalan jodoh dihitung lokal dengan metode
 // primbon beneran (neptu hari + neptu pasaran, kategori delapan) supaya
 // hasilnya tetap berbasis data tanggal, bukan persen generik.
 import { randomUserAgent, retry, withBreaker } from '../runner.js'
@@ -71,6 +72,215 @@ export async function getRamalanJodoh(input) {
       const json = await fetchJson(`${BASE}/ramalanjodoh?${params}`)
       const parsed = parseRamalanJodoh(json)
       if (!parsed) throw new Error('Siputzx tidak mengembalikan ramalan jodoh')
+      return parsed
+    })
+  )
+}
+
+export function parseNomorHoki(json) {
+  const d = json?.data
+  if (!json?.status || !d?.nomor || !d?.angka_bagua_shuzi || !d?.energi_positif?.details || !d?.energi_negatif?.details) return null
+  const ep = d.energi_positif.details
+  const en = d.energi_negatif.details
+  return {
+    nomor: String(d.nomor).trim(),
+    bagua: Number(d.angka_bagua_shuzi.value),
+    positif: {
+      total: Number(d.energi_positif.total),
+      kekayaan: Number(ep.kekayaan),
+      kesehatan: Number(ep.kesehatan),
+      cinta: Number(ep.cinta),
+      kestabilan: Number(ep.kestabilan),
+    },
+    negatif: {
+      total: Number(d.energi_negatif.total),
+      perselisihan: Number(en.perselisihan),
+      kehilangan: Number(en.kehilangan),
+      malapetaka: Number(en.malapetaka),
+      kehancuran: Number(en.kehancuran),
+    },
+    hoki: d.analisis?.status === true,
+  }
+}
+
+export async function getNomorHoki(nomor) {
+  const digits = String(nomor || '').replace(/\D/g, '')
+  if (!digits) throw new Error('Nomor wajib diisi')
+  return withBreaker('siputzx-primbon', () =>
+    retry(async () => {
+      const json = await fetchJson(`${BASE}/nomorhoki?phoneNumber=${encodeURIComponent(digits)}`)
+      const parsed = parseNomorHoki(json)
+      if (!parsed) throw new Error('Siputzx tidak mengembalikan nomor hoki')
+      return parsed
+    })
+  )
+}
+
+export function parsePotensiPenyakit(json) {
+  const d = json?.data
+  if (!json?.status || !d?.sektor || !d?.elemen) return null
+  return {
+    analisa: String(d.analisa || '').trim(),
+    sektor: String(d.sektor || '').trim(),
+    elemen: String(d.elemen || '').trim(),
+    catatan: String(d.catatan || '').trim(),
+  }
+}
+
+export async function getPotensiPenyakit(input) {
+  const params = new URLSearchParams({ tgl: String(input.tgl), bln: String(input.bln), thn: String(input.thn) })
+  return withBreaker('siputzx-primbon', () =>
+    retry(async () => {
+      const json = await fetchJson(`${BASE}/cek_potensi_penyakit?${params}`)
+      const parsed = parsePotensiPenyakit(json)
+      if (!parsed) throw new Error('Siputzx tidak mengembalikan potensi penyakit')
+      return parsed
+    })
+  )
+}
+
+// Label atribut di dalam string gabungan zodiak Siputzx. Pasangan muncul
+// dengan dua ejaan label ("Pasangan Zodiak:" di sebagian tanda,
+// "Pasangan Serasi:" di sebagian lain), nomor kadang cuma awalan angka
+// sebelum label pertama tanpa labelnya sendiri.
+const ZODIAK_LABELS = [
+  ['nomor', 'Nomor Keberuntungan:'],
+  ['aroma', 'Aroma Keberuntungan:'],
+  ['planet', 'Planet Yang Mengitari:'],
+  ['bunga', 'Bunga Keberuntungan:'],
+  ['warna', 'Warna Keberuntungan:'],
+  ['batu', 'Batu Keberuntungan:'],
+  ['elemen', 'Elemen Keberuntungan:'],
+  ['pasangan', 'Pasangan Zodiak:'],
+  ['pasangan', 'Pasangan Serasi:'],
+]
+
+// Uraikan string gabungan zodiak menjadi atribut terpisah. Nilai pasangan
+// di string aslinya menyambung langsung dengan paragraf deskripsi tanda
+// (kata pertama adalah nama pasangannya, sisanya deskripsi), jadi
+// pasangan dipotong di kata pertama dan sisanya jadi deskripsi.
+export function parseZodiakString(teks) {
+  const raw = String(teks || '').trim()
+  const out = { nomor: '', aroma: '', planet: '', bunga: '', warna: '', batu: '', elemen: '', pasangan: '', deskripsi: '' }
+  if (!raw) return out
+  const hits = []
+  for (const [key, label] of ZODIAK_LABELS) {
+    const idx = raw.indexOf(label)
+    if (idx >= 0) hits.push({ key, idx, end: idx + label.length })
+  }
+  hits.sort((a, b) => a.idx - b.idx)
+  if (!hits.length) return out
+  const prefix = raw.slice(0, hits[0].idx).trim()
+  if (/^[\d,\s.]+$/.test(prefix)) out.nomor = prefix.replace(/[\s.]+$/, '')
+  for (let i = 0; i < hits.length; i++) {
+    const seg = raw.slice(hits[i].end, i + 1 < hits.length ? hits[i + 1].idx : raw.length).trim()
+    if (hits[i].key === 'pasangan') {
+      const m = seg.match(/^(\S+)\s+([\s\S]+)$/)
+      if (m) {
+        out.pasangan = m[1].replace(/[.,]$/, '')
+        out.deskripsi = m[2].trim()
+      } else {
+        out.pasangan = seg.replace(/[.,]$/, '')
+      }
+    } else if (!out[hits[i].key]) {
+      out[hits[i].key] = seg
+    }
+  }
+  return out
+}
+
+export function parseZodiak(json) {
+  const d = json?.data
+  if (!json?.status || !d) return null
+  const mentah = String(d.zodiak || '').trim()
+  const parsed = parseZodiakString(mentah)
+  // Cadangan: versi API sekarang kadang menyertakan field terpisah juga.
+  // Field pasangannya tercemar paragraf deskripsi yang sama, jadi tetap
+  // dipotong di kata pertama seperti hasil uraian string.
+  const structured = {
+    nomor: String(d.nomor_keberuntungan || '').trim(),
+    aroma: String(d.aroma_keberuntungan || '').trim(),
+    planet: String(d.planet_yang_mengitari || '').trim(),
+    bunga: String(d.bunga_keberuntungan || '').trim(),
+    warna: String(d.warna_keberuntungan || '').trim(),
+    batu: String(d.batu_keberuntungan || '').trim(),
+    elemen: String(d.elemen_keberuntungan || '').trim(),
+  }
+  for (const [key, value] of Object.entries(structured)) {
+    if (value && !parsed[key]) parsed[key] = value
+  }
+  if (!parsed.pasangan && d.pasangan_zodiak) {
+    const seg = String(d.pasangan_zodiak).trim()
+    const m = seg.match(/^(\S+)\s+([\s\S]+)$/)
+    if (m) {
+      parsed.pasangan = m[1].replace(/[.,]$/, '')
+      if (!parsed.deskripsi) parsed.deskripsi = m[2].trim()
+    } else {
+      parsed.pasangan = seg
+    }
+  }
+  const lengkap = ['nomor', 'aroma', 'planet', 'bunga', 'warna', 'batu', 'elemen', 'pasangan'].every((k) => parsed[k])
+  if (!mentah && !lengkap) return null
+  return { ...parsed, lengkap, mentah }
+}
+
+export async function getZodiak(nama) {
+  const sign = String(nama || '').trim().toLowerCase()
+  if (!sign) throw new Error('Nama zodiak wajib diisi')
+  return withBreaker('siputzx-primbon', () =>
+    retry(async () => {
+      const json = await fetchJson(`${BASE}/zodiak?zodiak=${encodeURIComponent(sign)}`)
+      const parsed = parseZodiak(json)
+      if (!parsed) throw new Error('Siputzx tidak mengembalikan zodiak')
+      return parsed
+    })
+  )
+}
+
+export function parseKecocokanNama(json) {
+  const d = json?.data
+  if (!json?.status || !d?.nama_anda || !d?.nama_pasangan || !d?.sisi_positif || !d?.sisi_negatif) return null
+  return {
+    namaAnda: String(d.nama_anda).trim(),
+    namaPasangan: String(d.nama_pasangan).trim(),
+    positif: String(d.sisi_positif).trim(),
+    negatif: String(d.sisi_negatif).trim(),
+    catatan: String(d.catatan || '').trim(),
+  }
+}
+
+export async function getKecocokanNama(nama1, nama2) {
+  const first = String(nama1 || '').trim()
+  const second = String(nama2 || '').trim()
+  if (!first || !second) throw new Error('Dua nama wajib diisi')
+  const params = new URLSearchParams({ nama1: first, nama2: second })
+  return withBreaker('siputzx-primbon', () =>
+    retry(async () => {
+      const json = await fetchJson(`${BASE}/kecocokan_nama_pasangan?${params}`)
+      const parsed = parseKecocokanNama(json)
+      if (!parsed) throw new Error('Siputzx tidak mengembalikan kecocokan nama')
+      return parsed
+    })
+  )
+}
+
+export function parseSifatUsaha(json) {
+  const d = json?.data
+  if (!json?.status || !d?.hari_lahir || !d?.usaha) return null
+  return {
+    hariLahir: String(d.hari_lahir).trim(),
+    usaha: String(d.usaha).trim(),
+    catatan: String(d.catatan || '').trim(),
+  }
+}
+
+export async function getSifatUsaha(input) {
+  const params = new URLSearchParams({ tgl: String(input.tgl), bln: String(input.bln), thn: String(input.thn) })
+  return withBreaker('siputzx-primbon', () =>
+    retry(async () => {
+      const json = await fetchJson(`${BASE}/sifat_usaha_bisnis?${params}`)
+      const parsed = parseSifatUsaha(json)
+      if (!parsed) throw new Error('Siputzx tidak mengembalikan sifat usaha bisnis')
       return parsed
     })
   )

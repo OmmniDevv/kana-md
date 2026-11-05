@@ -1,87 +1,85 @@
+import { sendButtons } from '../../src/ui/buttons.js'
+import { getSifatUsaha, hitungWeton } from '../../src/scrapers/search/primbon.js'
 
+// Sifat usaha bisnis primbon: analisa usaha dari hari lahir tanggal
+// lahir lewat API primbon Siputzx, sama seperti padanan Elaina-MD.
+// Tidak ada lagi pilihan bisnis karangan dari hash tanggal.
 export const config = {
-  name: "sifatusahabisnis",
-  alias: [],
-  category: "primbon",
-  description: { id: "Cek sifat usaha/bisnis berdasarkan tanggal lahir", en: "KANA version of the Elaina-MD sifatusahabisnis feature, rewritten in KANA style" },
-  usage: ".sifatusahabisnis",
-  example: ".sifatusahabisnis",
+  name: 'sifatusahabisnis',
+  alias: ['usahabisnis'],
+  category: 'primbon',
+  description: { id: 'Cek sifat usaha bisnis dari tanggal lahir menurut data primbon', en: 'Check business nature from a birth date in primbon data' },
+  usage: '.sifatusahabisnis <tgl> <bln> <thn>',
+  example: '.sifatusahabisnis 1 1 2000',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "sifatusahabisnis": {
-      body: "╭─❏ 🔮 「 *SIFATUSAHABISNIS* 」\n┊ {text}\n╰━━━━━━━",
-      hint: "╭─❏ 🔮 「 *SIFATUSAHABISNIS* 」\n┊ Tulis tanggal lahirnya yaa, contoh *.sifatusahabisnis 2005-08-17*\n╰━━━━━━━",
-      znote: "Primbon dan ramalan di sini cuma buat seru seruan yaa, jangan dianggap serius~",
+    sifatusahabisnis: {
+      usage: '╭─❏ 💼 「 *SIFAT USAHA BISNIS* 」\n┊ Formatnya tanggal bulan tahun yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.sifatusahabisnis 1 1 2000*\n╰━━━━━━━',
+      badDate: '╭─❏ 💼 「 *SIFAT USAHA BISNIS* 」\n┊ Tanggal lahirnya tidak nyata nih, cek lagi yaa~\n╰━━━━━━━',
+      title: 'Sifat Usaha Bisnis Primbon',
+      result: '╭─❏ 💼 「 *SIFAT USAHA BISNIS PRIMBON* 」\n┊ ʟᴀʜɪʀ: *{hariLahir}*\n┊\n┊ 📊 *ᴀɴᴀʟɪꜱᴀ:*\n┊ {usaha}\n┊\n┊ _{catatan}_\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *SIFAT USAHA BISNIS GAGAL* 」\n┊ Mouu, sumber data primbonnya lagi tidak bisa dihubungi: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      btnAgain: 'Tanggal Lain',
     },
   },
   en: {
-    "sifatusahabisnis": {
-      body: "╭─❏ 🔮 「 *SIFATUSAHABISNIS* 」\n┊ {text}\n╰━━━━━━━",
-      hint: "╭─❏ 🔮 「 *SIFATUSAHABISNIS* 」\n┊ Write the birth date, for example *.sifatusahabisnis 2005-08-17*\n╰━━━━━━━",
-      znote: "This primbon reading is just for fun, do not take it seriously~",
+    sifatusahabisnis: {
+      usage: '╭─❏ 💼 「 *BUSINESS NATURE* 」\n┊ Format is day month year please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.sifatusahabisnis 1 1 2000*\n╰━━━━━━━',
+      badDate: '╭─❏ 💼 「 *BUSINESS NATURE* 」\n┊ That birth date is not a real date, please check again~\n╰━━━━━━━',
+      title: 'Primbon Business Nature',
+      result: '╭─❏ 💼 「 *PRIMBON BUSINESS NATURE* 」\n┊ ʙᴏʀɴ: *{hariLahir}*\n┊\n┊ 📊 *ᴀɴᴀʟʏꜱɪꜱ:*\n┊ {usaha}\n┊\n┊ _{catatan}_\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *BUSINESS NATURE FAILED* 」\n┊ Mouu, the primbon data source cannot be reached: *{message}*\n┊ Try again later please~\n╰━━━━━━━',
+      btnAgain: 'Another Date',
     },
   },
 }
 
-const MODE = "artinama"
-export const test = { input: '.sifatusahabisnis', expect: /tanggal|primbon|birth/i }
-function hashStr(s) { let h = 7; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return h }
-const ZODIAC = [
-  ['Capricorn', 'Ambisius, sabar, dan pekerja keras.'],
-  ['Aquarius', 'Unik, visioner, dan suka kebebasan.'],
-  ['Pisces', 'Perasa, imajinatif, dan penuh empati.'],
-  ['Aries', 'Berani, energik, dan suka memimpin.'],
-  ['Taurus', 'Setia, tenang, dan suka kenyamanan.'],
-  ['Gemini', 'Cerdas, komunikatif, dan serba bisa.'],
-  ['Cancer', 'Penyayang, protektif, dan intuitif.'],
-  ['Leo', 'Percaya diri, hangat, dan suka jadi pusat perhatian.'],
-  ['Virgo', 'Teliti, rapi, dan perfeksionis.'],
-  ['Libra', 'Adil, diplomatis, dan cinta keindahan.'],
-  ['Scorpio', 'Intens, misterius, dan penuh tekad.'],
-  ['Sagittarius', 'Optimis, petualang, dan jujur.'],
-]
-const PASARAN = ['Legi', 'Pahing', 'Pon', 'Wage', 'Kliwon']
-const PASARAN_TRAIT = { Legi: 'manis tutur katanya dan mudah bergaul', Pahing: 'ambisius dan kuat pendiriannya', Pon: 'suka menonjol dan pandai bicara', Wage: 'setia dan tekun bekerja', Kliwon: 'bijaksana dan beruntung dalam rezeki' }
-const WETON_TRAIT = ['pekerja keras yang setia', 'pemikir yang tenang', 'periang dan mudah disukai', 'mandiri dan tegas', 'kreatif dan penuh ide', 'penyabar dan suka menolong', 'berani mengambil risiko']
+export const test = { input: '.sifatusahabisnis 1 1 2000', expect: /sabtu legi/i }
+
+// Uraikan tiga token tanggal ala Elaina: tgl bln thn. Token tunggal
+// bertanda pisah (1-1-2000) juga diterima. Tanggal tidak nyata (31
+// Februari dan sejenisnya) ditandai invalidDate lewat hitungWeton.
+export function parseTanggalArgs(tokens) {
+  const args = (tokens ?? [])
+    .flatMap((v) => String(v).split(/[-/]/))
+    .map((v) => v.trim())
+    .filter(Boolean)
+  if (args.length < 3) return null
+  const [tgl, bln, thn] = args.slice(0, 3).map(Number)
+  const input = { tgl, bln, thn }
+  if (!Number.isInteger(tgl) || !Number.isInteger(bln) || !Number.isInteger(thn) || !hitungWeton(thn, bln, tgl)) {
+    return { ...input, invalidDate: true }
+  }
+  return input
+}
+
+export function formatSifatUsaha(t, data) {
+  return t('sifatusahabisnis.result', {
+    hariLahir: data.hariLahir,
+    usaha: data.usaha,
+    catatan: data.catatan,
+  })
+}
+
 export async function handler(ctx) {
-  const raw = (ctx.text || '').trim()
-  const m = raw.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/) || raw.match(/(\d{1,2})[-/](\d{1,2})[-/](\d{4})/)
-  if (MODE === 'zodiac' || MODE === 'weton') {
-    if (!m) return ctx.reply(ctx.t('sifatusahabisnis.hint'))
-    const [y, mo, d] = m[3] && m[3].length === 4 ? [Number(m[3]), Number(m[2]), Number(m[1])] : [Number(m[1]), Number(m[2]), Number(m[3])]
-    const date = new Date(Date.UTC(y, mo - 1, d))
-    if (MODE === 'zodiac') {
-      const cutoffs = [19, 18, 20, 19, 20, 20, 22, 22, 22, 22, 21, 21]
-      const idx = (mo - 1 + (d >= cutoffs[mo - 1] ? 1 : 0)) % 12
-      const z = ZODIAC[idx]
-      return ctx.reply(ctx.t('sifatusahabisnis.body', { text: 'Tanggal *' + d + '/' + mo + '/' + y + '* itu zodiaknya *' + z[0] + '*.\n┊ ' + z[1] + '\n┊ ' + ctx.t('sifatusahabisnis.znote') }))
-    }
-    const days = Math.floor(date.getTime() / 86400000)
-    const pasaran = PASARAN[((days % 5) + 5) % 5]
-    const dayName = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][date.getUTCDay()]
-    return ctx.reply(ctx.t('sifatusahabisnis.body', { text: 'Weton *' + d + '/' + mo + '/' + y + '*: *' + dayName + ' ' + pasaran + '*.\n┊ Menurut primbon, orang ' + dayName + ' ' + pasaran + ' itu ' + PASARAN_TRAIT[pasaran] + ', dan dikenal sebagai ' + WETON_TRAIT[hashStr(dayName + pasaran) % WETON_TRAIT.length] + '.\n┊ ' + ctx.t('sifatusahabisnis.znote') }))
+  const input = parseTanggalArgs(ctx.args?.length ? ctx.args : (ctx.text || '').split(/\s+/))
+  if (!input) return ctx.reply(ctx.t('sifatusahabisnis.usage'))
+  if (input.invalidDate) return ctx.reply(ctx.t('sifatusahabisnis.badDate'))
+  let data
+  try {
+    data = await getSifatUsaha(input)
+  } catch (err) {
+    return ctx.reply(ctx.t('sifatusahabisnis.fail', { message: err.message }))
   }
-  if (!raw) return ctx.reply(ctx.t('sifatusahabisnis.hint'))
-  const h = hashStr(ctx.senderDigits + ':' + 'sifatusahabisnis' + ':' + raw.toLowerCase())
-  const picks = {
-    artinama: ['nama yang membawa ketenangan dan rezeki yang stabil', 'nama yang kuat, cocok untuk pemimpin', 'nama yang lembut dan membawa keberuntungan dalam pertemanan', 'nama yang unik dan penuh semangat petualang'],
-    kecocokan: null,
-    nomerhoki: null,
-    tafsirmimpi: ['mimpi itu pertanda ada kabar baik yang mendekat', 'mimpi itu cerminan pikiranmu yang lagi capek, istirahat yaa', 'mimpi itu tanda peluang baru, siap siap saja', 'mimpi itu pengingat buat lebih hati hati sama keputusan minggu ini'],
-    sifatbisnis: ['cocok di bisnis kuliner dan jasa harian', 'cocok di bisnis kreatif dan konten', 'cocok di bisnis teknologi dan layanan online', 'cocok di bisnis perdagangan dan reseller'],
-    ramalanjodoh: ['jodohmu dekat, cirinya suka ketawa di momen serius', 'jodohmu datang dari lingkaran pertemanan lama', 'jodohmu tipe pekerja keras yang pendiam', 'jodohmu suka traveling dan kulineran'],
-    potensipenyakit: ['jaga pola tidur dan kurangi begadang yaa', 'perbanyak minum air dan gerak ringan', 'jaga pencernaan, jangan telat makan', 'istirahatkan mata dari layar sesekali'],
-  }
-  if (MODE === 'kecocokan') {
-    const score = 40 + (h % 61)
-    return ctx.reply(ctx.t('sifatusahabisnis.body', { text: 'Kecocokan *' + raw + '* : *' + score + '%*\n┊ ' + (score >= 80 ? 'Serasi banget, pertahankan~' : score >= 60 ? 'Cukup serasi, komunikasinya dijaga yaa' : 'Perlu usaha ekstra, tapi bukan tidak mungkin~') + '\n┊ ' + ctx.t('sifatusahabisnis.znote') }))
-  }
-  if (MODE === 'nomerhoki') {
-    return ctx.reply(ctx.t('sifatusahabisnis.body', { text: 'Nomor hoki buat *' + raw + '* hari ini: *' + (h % 90 + 10) + '-' + (h % 900 + 100) + '*\n┊ ' + ctx.t('sifatusahabisnis.znote') }))
-  }
-  const arr = picks[MODE] || picks.artinama
-  return ctx.reply(ctx.t('sifatusahabisnis.body', { text: 'Buat *' + raw + '*: ' + arr[h % arr.length] + '.\n┊ ' + ctx.t('sifatusahabisnis.znote') }))
+  const body = formatSifatUsaha(ctx.t, data)
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: ctx.t('sifatusahabisnis.title'),
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: [{ text: ctx.t('sifatusahabisnis.btnAgain'), id: '.sifatusahabisnis' }],
+    textFallback: body,
+  })
 }

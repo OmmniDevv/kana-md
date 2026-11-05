@@ -1,14 +1,94 @@
 import { sendButtons } from '../../src/ui/buttons.js'
+import { getZodiak } from '../../src/scrapers/search/primbon.js'
 
+// Zodiak primbon: atribut keberuntungan satu tanda dari API primbon
+// Siputzx, sama seperti padanan Elaina-MD. String gabungan dari API
+// diuraikan jadi atribut terpisah oleh parseZodiak di scraper; bila
+// uraiannya tidak lengkap, string aslinya ditampilkan apa adanya.
 export const config = {
   name: 'zodiak',
-  alias: ['zodiac'],
+  alias: ['horoscope', 'ramalan'],
   category: 'fun',
-  description: { id: 'Cek zodiak dari tanggal lahir plus sifat umumnya, untuk hiburan', en: 'Check your zodiac sign from your birth date plus general traits, for fun' },
-  usage: '╭─❏ ✨ 「 *ZODIAK* 」\n┊ .zodiak <DD-MM atau DD-MM-YYYY>\n╰━━━━━━━',
-  example: '.zodiak 17-08',
-  cooldown: 3,
+  description: { id: 'Cek atribut keberuntungan zodiak menurut data primbon', en: 'Check zodiac lucky attributes from primbon data' },
+  usage: '.zodiak <nama zodiak>',
+  example: '.zodiak aries',
+  cooldown: 5,
 }
+
+// Daftar nama sah ala Elaina. Ejaan API memakai "sagitarius" (satu t);
+// ejaan umum "sagittarius" diterima lalu dinormalkan ke ejaan API.
+export const VALID_ZODIAC = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagitarius', 'capricorn', 'aquarius', 'pisces']
+
+export function normalizeZodiacName(text) {
+  const name = String(text || '').trim().toLowerCase().split(/\s+/)[0] || ''
+  const canonical = name === 'sagittarius' ? 'sagitarius' : name
+  return VALID_ZODIAC.includes(canonical) ? canonical : null
+}
+
+export const i18n = {
+  id: {
+    zodiak: {
+      usage: '╭─❏ ⭐ 「 *ZODIAK* 」\n┊ Tulis nama zodiaknya yaa, pilihannya:\n┊ {list}\n┊ ᴄᴏɴᴛᴏʜ: *.zodiak aries*\n╰━━━━━━━',
+      title: 'Zodiak Primbon',
+      result: '╭─❏ ⭐ 「 *ZODIAK {nama}* 」\n┊ 🔢 ɴᴏᴍᴏʀ: *{nomor}*\n┊ 🌿 ᴀʀᴏᴍᴀ: {aroma}\n┊ 🪐 ᴘʟᴀɴᴇᴛ: {planet}\n┊ 🌸 ʙᴜɴɢᴀ: {bunga}\n┊ 🎨 ᴡᴀʀɴᴀ: {warna}\n┊ 💎 ʙᴀᴛᴜ: {batu}\n┊ 🔥 ᴇʟᴇᴍᴇɴ: {elemen}\n┊ 💕 ᴘᴀꜱᴀɴɢᴀɴ: {pasangan}\n┊\n┊ {deskripsi}\n╰━━━━━━━',
+      resultRaw: '╭─❏ ⭐ 「 *ZODIAK {nama}* 」\n┊ {mentah}\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *ZODIAK GAGAL* 」\n┊ Mouu, sumber data primbonnya lagi tidak bisa dihubungi: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
+      btnAgain: 'Zodiak Lain',
+    },
+  },
+  en: {
+    zodiak: {
+      usage: '╭─❏ ⭐ 「 *ZODIAC* 」\n┊ Write the zodiac name please, the choices are:\n┊ {list}\n┊ ᴇxᴀᴍᴘʟᴇ: *.zodiak aries*\n╰━━━━━━━',
+      title: 'Primbon Zodiac',
+      result: '╭─❏ ⭐ 「 *ZODIAC {nama}* 」\n┊ 🔢 ɴᴜᴍʙᴇʀꜱ: *{nomor}*\n┊ 🌿 ꜱᴄᴇɴᴛ: {aroma}\n┊ 🪐 ᴘʟᴀɴᴇᴛ: {planet}\n┊ 🌸 ꜰʟᴏᴡᴇʀ: {bunga}\n┊ 🎨 ᴄᴏʟᴏʀ: {warna}\n┊ 💎 ꜱᴛᴏɴᴇ: {batu}\n┊ 🔥 ᴇʟᴇᴍᴇɴᴛ: {elemen}\n┊ 💕 ᴍᴀᴛᴄʜ: {pasangan}\n┊\n┊ {deskripsi}\n╰━━━━━━━',
+      resultRaw: '╭─❏ ⭐ 「 *ZODIAC {nama}* 」\n┊ {mentah}\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *ZODIAC FAILED* 」\n┊ Mouu, the primbon data source cannot be reached: *{message}*\n┊ Try again later please~\n╰━━━━━━━',
+      btnAgain: 'Another Zodiac',
+    },
+  },
+}
+
+export const test = { input: '.zodiak aries', expect: /zodiak aries|zodiac aries/i }
+
+export function formatZodiak(t, nama, data) {
+  const label = nama.toUpperCase()
+  if (!data.lengkap) return t('zodiak.resultRaw', { nama: label, mentah: data.mentah })
+  return t('zodiak.result', {
+    nama: label,
+    nomor: data.nomor,
+    aroma: data.aroma,
+    planet: data.planet,
+    bunga: data.bunga,
+    warna: data.warna,
+    batu: data.batu,
+    elemen: data.elemen,
+    pasangan: data.pasangan,
+    deskripsi: data.deskripsi,
+  })
+}
+
+export async function handler(ctx) {
+  const nama = normalizeZodiacName(ctx.args?.[0] || ctx.text || '')
+  if (!nama) {
+    return ctx.reply(ctx.t('zodiak.usage', { list: VALID_ZODIAC.map((z) => `• ${z}`).join('\n┊ ') }))
+  }
+  let data
+  try {
+    data = await getZodiak(nama)
+  } catch (err) {
+    return ctx.reply(ctx.t('zodiak.fail', { message: err.message }))
+  }
+  const body = formatZodiak(ctx.t, nama, data)
+  return sendButtons(ctx.sock, ctx.chat, {
+    title: ctx.t('zodiak.title'),
+    body,
+    footer: ctx.t('menu.footer'),
+    replies: [{ text: ctx.t('zodiak.btnAgain'), id: '.zodiak' }],
+    textFallback: body,
+  })
+}
+
+/* -------- Helper tanggal lahir lama (murni, masih dipakai tes) -------- */
 
 // Tabel murni: [bulan mulai, hari mulai, kunci zodiak]. Urutan dari Capricorn
 // (yang membungkus pergantian tahun) memakai batas awal tiap tanda.
@@ -58,50 +138,4 @@ export function parseBirthDate(text) {
   const month = Number(m[2])
   if (!zodiacFor(day, month)) return null
   return { day, month, year: m[3] ? Number(m[3]) : null }
-}
-
-export const i18n = {
-  id: {
-    zodiak: {
-      usage: '╭─❏ ✨ 「 *ZODIAK* 」\n┊ Pakai: .zodiak <tanggal lahir>, contoh .zodiak 17-08 atau .zodiak 17-08-2008 yaa~\n╰━━━━━━━',
-      result: '╭─❏ ✨ 「 *ZODIAK KAMU ✨* 」\n┊ ᴛᴀɴɢɢᴀʟ: {date}\n┊ ᴢᴏᴅɪᴀᴋ: *{sign}*\n┊ ꜱɪꜰᴀᴛ ᴜᴍᴜᴍɴʏᴀ: {trait}\n┊ Kira-kira cocok tidak sama kamu? Ehehe~ {mood}\n┊ {disclaimer}\n╰━━━━━━━',
-      disclaimer: 'Catatan: ini cuma hiburan ringan dari KANA yaa, sifat orang tidak ditentukan tanggal lahir kok~',
-      againBtn: '✨ Cek Zodiak Lagi',
-      footer: 'Cek-cek hiburan KANA',
-    },
-  },
-  en: {
-    zodiak: {
-      usage: '╭─❏ ✨ 「 *ZODIAC* 」\n┊ Use: .zodiak <birth date>, for example .zodiak 17-08 or .zodiak 17-08-2008~\n╰━━━━━━━',
-      result: '╭─❏ ✨ 「 *YOUR ZODIAC ✨* 」\n┊ ᴅᴀᴛᴇ: {date}\n┊ ꜱɪɢɴ: *{sign}*\n┊ ɢᴇɴᴇʀᴀʟ ᴛʀᴀɪᴛꜱ: {trait}\n┊ Does it sound like you? Ehehe~ {mood}\n┊ {disclaimer}\n╰━━━━━━━',
-      disclaimer: 'Note: this is just light fun from KANA, a birth date does not define a person~',
-      againBtn: '✨ Check Zodiac Again',
-      footer: 'KANA fun checks',
-    },
-  },
-}
-
-export const test = { input: '.zodiak 17-08', expect: /zodiak/i }
-
-export async function handler(ctx) {
-  const parsed = parseBirthDate(ctx.text || ctx.args?.[0] || '')
-  if (!parsed) return ctx.reply(ctx.t('zodiak.usage'))
-  const sign = zodiacFor(parsed.day, parsed.month)
-  const date = `${String(parsed.day).padStart(2, '0')}-${String(parsed.month).padStart(2, '0')}${parsed.year ? `-${parsed.year}` : ''}`
-  const body = ctx.t('zodiak.result', {
-    date,
-    sign: sign.name,
-    trait: sign.trait[ctx.lang] ?? sign.trait.id,
-    mood: ctx.say('senang'),
-    disclaimer: ctx.t('zodiak.disclaimer'),
-  })
-  return sendButtons(ctx.sock, ctx.chat, {
-    title: 'KANA',
-    body,
-    footer: ctx.t('zodiak.footer'),
-    replies: [
-      { text: ctx.t('zodiak.againBtn'), id: '.zodiak' },
-    ],
-    textFallback: body,
-  })
 }
