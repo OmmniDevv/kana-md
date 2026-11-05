@@ -38,7 +38,7 @@ async function saveClan(ctx, clan) { await ctx.storage.set('kv', 'clan:' + clan.
 export async function handler(ctx) {
   const arg = (ctx.text || '').trim()
   const { profile, clan } = await myClan(ctx)
-  const say = (text) => ctx.reply(ctx.t('claninfo.body', { text }))
+  const say = (text, mentions) => ctx.reply(ctx.t('claninfo.body', { text }), mentions?.length ? { mentions } : undefined)
   if (ACTION === 'create') {
     if (clan) return say('Kamu sudah punya clan *' + clan.name + '*. Keluar dulu dengan .clanleave yaa~')
     if (!arg) return say('Tulis nama clannya yaa, contoh: .clancreate Naga Sakti')
@@ -72,8 +72,8 @@ export async function handler(ctx) {
   }
   if (ACTION === 'info' || ACTION === 'rank' || ACTION === 'level' || ACTION === 'xp' || ACTION === 'bank' || ACTION === 'report') {
     const level = Math.floor(Math.sqrt((clan.xp || 0) / 100)) + 1
-    const lines = ['Clan: *' + clan.name + '* (' + clan.id + ')', 'Leader: *' + clan.leader + '*', 'Member: *' + Object.keys(clan.members).length + '*', 'Level clan: *' + level + '* (XP ' + (clan.xp || 0) + ')', 'Kas clan: *' + (clan.bank || 0) + ' koin*', 'War: menang *' + (clan.warWins || 0) + '* / kalah *' + (clan.warLosses || 0) + '*', clan.desc ? 'Deskripsi: ' + clan.desc : 'Deskripsi: -'].join('\n┊ ')
-    return say(lines)
+    const lines = ['Clan: *' + clan.name + '* (' + clan.id + ')', 'Leader: *@' + clan.leader + '*', 'Member: *' + Object.keys(clan.members).length + '*', 'Level clan: *' + level + '* (XP ' + (clan.xp || 0) + ')', 'Kas clan: *' + (clan.bank || 0) + ' koin*', 'War: menang *' + (clan.warWins || 0) + '* / kalah *' + (clan.warLosses || 0) + '*', clan.desc ? 'Deskripsi: ' + clan.desc : 'Deskripsi: -'].join('\n┊ ')
+    return say(lines, [clan.leader + '@s.whatsapp.net'])
   }
   if (ACTION === 'members') {
     const lines = Object.entries(clan.members).map(([d, r], i) => (i + 1) + '. *' + d + '* (' + r + ')').join('\n┊ ')

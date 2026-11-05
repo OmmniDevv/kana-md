@@ -1,5 +1,6 @@
 import { getGroupSettings, updateGroupSettings } from '../../src/services/group-service.js'
 import { digitsOf, resolveTargetJids } from '../../src/services/guard-rules.js'
+import { resolveTargetsToPhone } from '../../src/services/group-members.js'
 
 export const config = {
   name: 'warnings',
@@ -46,7 +47,7 @@ export async function handler(ctx) {
     if (!ctx.isAdmin) return ctx.reply(ctx.t('warnings.resetDenied'))
     // isAdmin di ctx terisi bila gates membutuhkan; bila kosong, pipeline
     // dengan needsAdminInfo tidak dipakai di sini, jadi cek lewat metadata.
-    const targets = resolveTargetJids({ ...ctx, args: ctx.args.slice(1) })
+    const targets = await resolveTargetsToPhone(ctx, resolveTargetJids({ ...ctx, args: ctx.args.slice(1) }))
     if (!targets.length) return ctx.reply(ctx.t('warnings.resetNoTarget'))
     const digits = digitsOf(targets[0])
     const warns = { ...(settings.warns ?? {}) }
@@ -54,7 +55,7 @@ export async function handler(ctx) {
     await updateGroupSettings(ctx.storage, ctx.chat, { warns })
     return ctx.sock.sendMessage(ctx.chat, { text: ctx.t('warnings.reset', { digits }), mentions: [targets[0]] }, { quoted: ctx.raw })
   }
-  const targets = resolveTargetJids(ctx)
+  const targets = await resolveTargetsToPhone(ctx, resolveTargetJids(ctx))
   if (targets.length) {
     const digits = digitsOf(targets[0])
     const count = Number(settings.warns?.[digits]) || 0

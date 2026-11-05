@@ -1,4 +1,5 @@
 import { digitsOf, resolveTargetJids } from '../../src/services/guard-rules.js'
+import { resolveTargetsToPhone } from '../../src/services/group-members.js'
 
 export const config = {
   name: 'demote',
@@ -29,7 +30,7 @@ export function isForbiddenError(err) {
 export const test = { input: '.demote 6285869074622', expect: /grup|group/i }
 
 export async function handler(ctx) {
-  const targets = resolveTargetJids(ctx)
+  const targets = await resolveTargetsToPhone(ctx, resolveTargetJids(ctx))
   if (!targets.length) return ctx.reply(ctx.t('demote.noTarget'))
   for (const jid of targets) {
     const digits = digitsOf(jid)

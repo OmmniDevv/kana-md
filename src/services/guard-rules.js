@@ -108,11 +108,18 @@ export function resolveTargetJids(ctx) {
   for (const j of ctx.mentionedJids ?? []) if (j) jids.add(j)
   if (ctx.quoted?.sender) jids.add(ctx.quoted.sender)
   for (const arg of ctx.args ?? []) {
-    const d = String(arg).replace(/\D/g, '')
-    if (d.length >= 9 && d.length <= 15 && !String(arg).includes('@')) jids.add(`${d}@s.whatsapp.net`)
-    else if (String(arg).includes('@')) jids.add(String(arg))
+    const raw = String(arg).trim()
+    // Argumen yang memang JID utuh (nomor@s.whatsapp.net atau ...@lid) dipakai apa adanya.
+    if (/^\d{5,}@(s\.whatsapp\.net|lid)$/.test(raw)) { jids.add(raw); continue }
+    // Token mention "@6283..." dan nomor polos sama sama dipetakan ke JID nomor
+    // telepon. Dulu token mention ditelan mentah sebagai JID semu "@6283..."
+    // yang digitnya kosong, jadi konfirmasi aksi grup tampil "@" tanpa nama
+    // dan aksinya jalan dua kali untuk orang yang sama.
+    const d = raw.replace(/\D/g, '')
+    if (d.length >= 9 && d.length <= 15) jids.add(`${d}@s.whatsapp.net`)
   }
-  return [...jids]
+  // Kandidat tanpa digit sama sekali di bagian depan bukan target yang sah.
+  return [...jids].filter((j) => digitsOf(j))
 }
 
 export function digitsOf(jid) {

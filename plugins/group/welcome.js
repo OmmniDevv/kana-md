@@ -29,8 +29,8 @@ export const i18n = {
       usage: '╭─❏ 👋 「 *WELCOME GRUP* 」\n┊ Pakai: *.welcome on* atau *.welcome off* yaa~\n╰━━━━━━━',
       hello: '╭─❏ 🎉 「 *SELAMAT DATANG* 」\n┊ Halo halo *@{digits}*~\n┊ Selamat datang di *{group}*!\n┊ KANA seneng banget kamu gabung, jangan lupa baca rules grup yaa, semoga betah!\n╰━━━━━━━ {mood}',
       helloText: '╭─❏ 🎉 「 *SELAMAT DATANG* 」\n┊ Halo halo *@{digits}*~\n┊ Selamat datang di *{group}*, semoga betah yaa!\n╰━━━━━━━ {mood}',
-      bye: '╭─❏ 👋 「 *SAMPAI JUMPA* 」\n┊ Dadahh *{name} ({digits})*~\n┊ Makasih udah pernah main di *{group}*, semoga sukses selalu yaa, KANA bakal kangen~\n╰━━━━━━━ {mood}',
-      byeText: '╭─❏ 👋 「 *SAMPAI JUMPA* 」\n┊ Dadahh *{digits}*~\n┊ Makasih udah pernah gabung di *{group}*, semoga sukses selalu yaa~\n╰━━━━━━━ {mood}',
+      bye: '╭─❏ 👋 「 *SAMPAI JUMPA* 」\n┊ Dadahh *@{digits}*~\n┊ Makasih udah pernah main di *{group}*, semoga sukses selalu yaa, KANA bakal kangen~\n╰━━━━━━━ {mood}',
+      byeText: '╭─❏ 👋 「 *SAMPAI JUMPA* 」\n┊ Dadahh *@{digits}*~\n┊ Makasih udah pernah gabung di *{group}*, semoga sukses selalu yaa~\n╰━━━━━━━ {mood}',
     },
   },
   en: {
@@ -40,8 +40,8 @@ export const i18n = {
       usage: '╭─❏ 👋 「 *GROUP WELCOME* 」\n┊ Use: *.welcome on* or *.welcome off*~\n╰━━━━━━━',
       hello: '╭─❏ 🎉 「 *WELCOME* 」\n┊ Hello hello *@{digits}*~\n┊ Welcome to *{group}*!\n┊ KANA is so happy you joined, please read the group rules, hope you enjoy it here!\n╰━━━━━━━ {mood}',
       helloText: '╭─❏ 🎉 「 *WELCOME* 」\n┊ Hello hello *@{digits}*~\n┊ Welcome to *{group}*, hope you enjoy it here!\n╰━━━━━━━ {mood}',
-      bye: '╭─❏ 👋 「 *SEE YOU AGAIN* 」\n┊ Bye bye *{name} ({digits})*~\n┊ Thanks for being in *{group}*, wishing you success always, KANA will miss you~\n╰━━━━━━━ {mood}',
-      byeText: '╭─❏ 👋 「 *SEE YOU AGAIN* 」\n┊ Bye bye *{digits}*~\n┊ Thanks for joining *{group}*, wishing you success always~\n╰━━━━━━━ {mood}',
+      bye: '╭─❏ 👋 「 *SEE YOU AGAIN* 」\n┊ Bye bye *@{digits}*~\n┊ Thanks for being in *{group}*, wishing you success always, KANA will miss you~\n╰━━━━━━━ {mood}',
+      byeText: '╭─❏ 👋 「 *SEE YOU AGAIN* 」\n┊ Bye bye *@{digits}*~\n┊ Thanks for joining *{group}*, wishing you success always~\n╰━━━━━━━ {mood}',
     },
   },
 }
@@ -120,7 +120,10 @@ export async function onParticipantsUpdate(ctx) {
     const name = member?.name || digits
     const mentionJid = member?.jid || (digits ? `${digits}@s.whatsapp.net` : rawJid)
     const rendered = renderTemplate(template, {
-      user: isAdd ? `@${digits}` : digits,
+      // Welcome dan goodbye sama sama menyebut member sebagai @nomor
+      // dan kirimannya membawa mentions, supaya terender sebagai tag
+      // nama asli di WhatsApp, bukan angka polos.
+      user: `@${digits}`,
       group: groupName,
       count,
     })
@@ -139,11 +142,9 @@ export async function onParticipantsUpdate(ctx) {
     try { image = await readFile(join(here, '../../assets', file)) } catch { image = null }
     try {
       if (image) {
-        await ctx.sock.sendMessage(ctx.chat, { image, caption, ...(isAdd ? { mentions: [mentionJid] } : {}) })
-      } else if (isAdd) {
-        await ctx.sendText(textFallback, [mentionJid])
+        await ctx.sock.sendMessage(ctx.chat, { image, caption, mentions: [mentionJid] })
       } else {
-        await ctx.sendText(textFallback)
+        await ctx.sendText(textFallback, [mentionJid])
       }
     } catch {
       // Jangan jatuhkan hook karena satu kiriman gagal.

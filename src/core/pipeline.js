@@ -186,7 +186,15 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
             thumbnail: isKontak ? cachedContactThumbnail() : cachedThumbnail(),
           })
         : null
-      const content = { text: txt, contextInfo: forwardedContextInfo() }
+      // opts.mentions diteruskan ke pesan supaya plugin yang menyebut
+      // member (pola .add) benar benar terender sebagai tag @Nama di
+      // WhatsApp, bukan angka polos. Dulu opsi ini dibuang diam diam,
+      // jadi teks "@nomor" dari plugin tidak pernah jadi mention asli.
+      const content = {
+        text: txt,
+        contextInfo: forwardedContextInfo(),
+        ...(opts.mentions?.length ? { mentions: opts.mentions } : {}),
+      }
       return sock.sendMessage(chat, content, { quoted: fake ?? raw })
     }
     const quoted = getQuoted(raw.message)

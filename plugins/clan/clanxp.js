@@ -38,7 +38,7 @@ async function saveClan(ctx, clan) { await ctx.storage.set('kv', 'clan:' + clan.
 export async function handler(ctx) {
   const arg = (ctx.text || '').trim()
   const { profile, clan } = await myClan(ctx)
-  const say = (text) => ctx.reply(ctx.t('clanxp.body', { text }))
+  const say = (text, mentions) => ctx.reply(ctx.t('clanxp.body', { text }), mentions?.length ? { mentions } : undefined)
   if (ACTION === 'create') {
     if (clan) return say('Kamu sudah punya clan *' + clan.name + '*. Keluar dulu dengan .clanleave yaa~')
     if (!arg) return say('Tulis nama clannya yaa, contoh: .clancreate Naga Sakti')
@@ -77,9 +77,10 @@ export async function handler(ctx) {
       rows.push({ d, role, xp: p.xp || 0 })
     }
     rows.sort((a, b) => b.xp - a.xp)
-    const list = rows.slice(0, 10).map((r, i) => (i + 1) + '. *' + r.d + '* (' + r.role + ') - XP ' + r.xp).join('\n┊ ') || '-'
+    const top = rows.slice(0, 10)
+    const list = top.map((r, i) => (i + 1) + '. *@' + r.d + '* (' + r.role + ') - XP ' + r.xp).join('\n┊ ') || '-'
     const lines = ['XP clan *' + clan.name + '*: *' + (clan.xp || 0) + '* XP', 'Kontribusi member (XP pribadi):\n┊ ' + list].join('\n┊ ')
-    return say(lines)
+    return say(lines, top.map((r) => r.d + '@s.whatsapp.net'))
   }
   if (ACTION === 'info' || ACTION === 'rank' || ACTION === 'level' || ACTION === ACTION === 'bank' || ACTION === 'report') {
     const level = Math.floor(Math.sqrt((clan.xp || 0) / 100)) + 1

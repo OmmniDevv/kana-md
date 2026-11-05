@@ -1,5 +1,6 @@
 import { getGroupSettings, updateGroupSettings } from '../../src/services/group-service.js'
 import { applyWarnToSettings, digitsOf, resolveTargetJids } from '../../src/services/guard-rules.js'
+import { resolveTargetsToPhone } from '../../src/services/group-members.js'
 
 export const config = {
   name: 'warn',
@@ -37,7 +38,7 @@ export const i18n = {
 export const test = { input: '.warn 6285869074622', expect: /grup|group/i }
 
 export async function handler(ctx) {
-  const targets = resolveTargetJids(ctx)
+  const targets = await resolveTargetsToPhone(ctx, resolveTargetJids(ctx))
   if (!targets.length) return ctx.reply(ctx.t('warn.noTarget'))
   const jid = targets[0]
   const digits = digitsOf(jid)

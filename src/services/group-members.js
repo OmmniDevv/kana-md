@@ -57,3 +57,17 @@ export function resolveGroupMembers(participants) {
 export function resolveGroupMember(participants, jid) {
   return resolveGroupMembers(participants).byDigits.get(digitsOf(jid)) ?? null
 }
+
+// Petakan daftar JID target aksi grup ke JID nomor telepon memakai
+// metadata grup dari ctx. Target yang sudah PN dibiarkan apa adanya;
+// target berbentuk LID diganti nomor aslinya bila teresolve, supaya
+// teks konfirmasi dan array mentions selalu memakai JID nomor telepon
+// (mention LID tidak terender sebagai tag nama di WhatsApp).
+export async function resolveTargetsToPhone(ctx, jids) {
+  const list = [...(jids ?? [])]
+  if (!list.some((j) => String(j).endsWith('@lid'))) return list
+  let participants = []
+  try { participants = (await ctx.getGroupMetadata())?.participants ?? [] } catch { participants = [] }
+  if (!participants.length) return list
+  return list.map((j) => (String(j).endsWith('@lid') ? resolveGroupMember(participants, j)?.jid ?? j : j))
+}
