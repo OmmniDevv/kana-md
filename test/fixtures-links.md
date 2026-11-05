@@ -95,3 +95,11 @@ Harness Mode A hanya menyuntikkan pesan teks sintetis, jadi plugin yang butuh me
 | vision | Gambar kutipan |
 | quotly | Pesan teks kutipan; input teks pada kasus ujinya hanya memicu pengingat kutip dulu |
 | meme | Bisa jalan dari teks saja karena gambar kutipan bersifat opsional; kasus ujinya tidak diubah dalam paket ini |
+
+### Gelombang audit definisi test 2026-11-05
+
+Sesudah sapuan live dihentikan owner, semua definisi test plugin berargumen diaudit ulang. 56 definisi yang inputnya masih perintah polos diperbaiki dengan argumen asli dan expect penanda hasil substantif (bukan balasan petunjuk pemakaian), di antaranya: keluarga pertanyaan fun memakai pertanyaan asli, downloader dan pemeriksa media memakai URL asli (picsum.photos untuk aidetect dan nsfwcheck, sesuai contoh handler), perintah grup memakai argumen asli dengan expect gerbang grup, dan perintah owner yang aman (addprem ke nomor owner, getplugin ke path plugin nyata) memakai target asli.
+
+Penjaga otomatisnya adalah test/plugin-test-args-guard.test.js: perintah berargumen dengan kasus uji polos gagal validasi, kecuali 42 nama yang tercatat sebagai pengecualian berdokumentasi di file itu (keluarga cek bernama opsional, bentuk polos penampil status, media kutipan, perintah owner berdampak eksternal, dan pixeldrain di bawah).
+
+Pixeldrain belum punya link fixture terverifikasi: pencarian tidak menemukan link berkas publik yang bisa dibuktikan, dan unggah anonim lewat API Pixeldrain timeout dari VM pada 2026-11-05. Begitu ada link berkas Pixeldrain yang terverifikasi dari VM, definisinya wajib diganti ke link itu dan namanya dihapus dari daftar pengecualian penjaga.
