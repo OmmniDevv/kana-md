@@ -1,13 +1,14 @@
 import { KISAH_NABI } from '../../src/data/religi.js'
+import { getKisahFull, splitStory } from '../../src/scrapers/search/kisahnabi.js'
 import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'kisahnabi',
   alias: ['nabi'],
   category: 'fun',
-  description: { id: 'Kisah ringkas 25 nabi: daftar, acak, atau per nama nabi', en: 'Short stories of the 25 prophets: list, random, or by prophet name' },
+  description: { id: 'Kisah lengkap 25 nabi dari lahir sampai wafat: daftar, acak, atau per nama nabi', en: 'Full stories of the 25 prophets from birth to death: list, random, or by prophet name' },
   usage: '.kisahnabi [nama nabi | acak]',
-  example: '.kisahnabi yusuf',
+  example: '.kisahnabi muhammad',
   cooldown: 3,
 }
 
@@ -16,8 +17,13 @@ export const i18n = {
     kisahnabi: {
       title: 'Kisah Nabi',
       story: '╭─❏ 📖 「 *KISAH NABI {nama}* 」\n┊ {kisah}\n┊\n┊ Semoga bisa diambil hikmahnya yaa~\n╰━━━━━━━ {mood}',
+      partHead: '╭─❏ 📖 「 *KISAH NABI {nama}* 」\n┊ *Bagian {i} dari {n}*\n┊ {kisah}\n╰━━━━━━━',
+      partBody: '┊ *KISAH NABI {nama}, Bagian {i} dari {n}*\n┊ {kisah}',
+      partLast: '┊ *KISAH NABI {nama}, Bagian {i} dari {n}*\n┊ {kisah}\n┊\n┊ Semoga bisa diambil hikmahnya yaa~\n┊ Sumber kisah lengkap: {sumber}\n╰━━━━━━━ {mood}',
+      sourceWiki: 'Wikipedia bahasa Indonesia',
+      sourceLocal: 'ringkasan lokal KANA (sumber lengkap sedang tidak terjangkau)',
       listTitle: '╭─❏ 📖 「 *DAFTAR 25 NABI* 」\n',
-      listHint: '\n╰━━━━━━━\nPakai *.kisahnabi <nama>* untuk membaca kisahnya, contoh *.kisahnabi yusuf*~',
+      listHint: '\n╰━━━━━━━\nPakai *.kisahnabi <nama>* untuk membaca kisah lengkapnya, contoh *.kisahnabi muhammad*~',
       notFound: '╭─❏ 🔍 「 *NABI TIDAK KETEMU* 」\n┊ KANA tidak menemukan nabi bernama *"{q}"* di daftar 25 nabi.\n┊ Coba *.kisahnabi* untuk lihat daftarnya yaa~\n╰━━━━━━━',
       randomBtn: '🎲 Kisah Acak',
       listBtn: '📜 Daftar Nabi',
@@ -28,8 +34,13 @@ export const i18n = {
     kisahnabi: {
       title: 'Prophet Stories',
       story: '╭─❏ 📖 「 *STORY OF PROPHET {nama}* 」\n┊ {kisah}\n┊\n┊ May you take wisdom from it~\n╰━━━━━━━ {mood}',
+      partHead: '╭─❏ 📖 「 *STORY OF PROPHET {nama}* 」\n┊ *Part {i} of {n}*\n┊ {kisah}\n╰━━━━━━━',
+      partBody: '┊ *STORY OF PROPHET {nama}, Part {i} of {n}*\n┊ {kisah}',
+      partLast: '┊ *STORY OF PROPHET {nama}, Part {i} of {n}*\n┊ {kisah}\n┊\n┊ May you take wisdom from it~\n┊ Full story source: {sumber}\n╰━━━━━━━ {mood}',
+      sourceWiki: 'Indonesian Wikipedia',
+      sourceLocal: 'local KANA summary (full source unreachable)',
       listTitle: '╭─❏ 📖 「 *LIST OF 25 PROPHETS* 」\n',
-      listHint: '\n╰━━━━━━━\nUse *.kisahnabi <name>* to read the story, for example *.kisahnabi yusuf*~',
+      listHint: '\n╰━━━━━━━\nUse *.kisahnabi <name>* to read the full story, for example *.kisahnabi muhammad*~',
       notFound: '╭─❏ 🔍 「 *PROPHET NOT FOUND* 」\n┊ KANA could not find a prophet named *"{q}"* in the 25 prophets list.\n┊ Try *.kisahnabi* to see the list~\n╰━━━━━━━',
       randomBtn: '🎲 Random Story',
       listBtn: '📜 Prophet List',
@@ -38,7 +49,31 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.kisahnabi yusuf', expect: /yusuf/i }
+export const test = { input: '.kisahnabi muhammad', expect: /wafat/i }
+
+// Ejaan alternatif yang umum dipakai user ke nama baku di data lokal.
+const ALIASES = {
+  saleh: 'Shaleh',
+  ishak: 'Ishaq',
+  yakub: 'Yakub',
+  ayub: 'Ayyub',
+  zulkifli: 'Dzulkifli',
+  lut: 'Luth',
+  syuaib: 'Syuaib',
+  zakariya: 'Zakaria',
+  zakariyya: 'Zakaria',
+}
+
+export function findNabi(arg) {
+  const q = String(arg || '').trim().toLowerCase().replace(/['’]/g, '')
+  if (!q) return null
+  if (/^\d+$/.test(q)) return KISAH_NABI[Number(q) - 1] || null
+  const direct = KISAH_NABI.find((x) => x.nama.toLowerCase().replace(/['’]/g, '') === q)
+  if (direct) return direct
+  const aliasTarget = ALIASES[q]
+  if (aliasTarget) return KISAH_NABI.find((x) => x.nama === aliasTarget) || null
+  return null
+}
 
 export async function handler(ctx) {
   const arg = (ctx.text || '').trim().toLowerCase()
@@ -61,10 +96,8 @@ export async function handler(ctx) {
   let item
   if (arg === 'acak' || arg === 'random') {
     item = KISAH_NABI[Math.floor(Math.random() * KISAH_NABI.length)]
-  } else if (/^\d+$/.test(arg)) {
-    item = KISAH_NABI[Number(arg) - 1]
   } else {
-    item = KISAH_NABI.find((x) => x.nama.toLowerCase() === arg)
+    item = findNabi(arg)
   }
   if (!item) {
     const body = ctx.t('kisahnabi.notFound', { q: arg })
@@ -76,16 +109,39 @@ export async function handler(ctx) {
       textFallback: body,
     })
   }
-  const body = ctx.t('kisahnabi.story', {
-    nama: item.nama.toUpperCase(),
-    kisah: item.kisah,
-    mood: ctx.say('senang'),
-  })
-  return sendButtons(ctx.sock, ctx.chat, {
+
+  const full = await getKisahFull(item.nama)
+  const nama = item.nama.toUpperCase()
+  const chunks = splitStory(full.text, 3000)
+
+  // Kisah pendek (fallback lokal) cukup satu pesan berbingkai seperti dulu.
+  if (chunks.length === 1) {
+    const body = ctx.t('kisahnabi.story', { nama, kisah: chunks[0], mood: ctx.say('senang') })
+    return sendButtons(ctx.sock, ctx.chat, {
+      title: ctx.t('kisahnabi.title'),
+      body,
+      footer: ctx.t('menu.footer'),
+      replies,
+      textFallback: body,
+    })
+  }
+
+  // Kisah full: kirim berurutan berlabel bagian supaya tidak terpotong.
+  const sumber = full.source === 'wikipedia' ? ctx.t('kisahnabi.sourceWiki') : ctx.t('kisahnabi.sourceLocal')
+  const total = chunks.length
+  const head = ctx.t('kisahnabi.partHead', { nama, i: 1, n: total, kisah: chunks[0] })
+  await sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('kisahnabi.title'),
-    body,
+    body: head,
     footer: ctx.t('menu.footer'),
     replies,
-    textFallback: body,
+    textFallback: head,
   })
+  for (let i = 1; i < total; i += 1) {
+    const isLast = i === total - 1
+    const body = isLast
+      ? ctx.t('kisahnabi.partLast', { nama, i: i + 1, n: total, kisah: chunks[i], sumber, mood: ctx.say('senang') })
+      : ctx.t('kisahnabi.partBody', { nama, i: i + 1, n: total, kisah: chunks[i] })
+    await ctx.reply(body)
+  }
 }
