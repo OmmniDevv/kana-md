@@ -283,6 +283,26 @@ export const IMAGE_WORDS = [
 // Plugin tebak per topik tinggal memanggil startQuiz dengan nama topiknya.
 // Semua petunjuk ditulis sendiri untuk KANA.
 export const TEXT_SETS = {
+  tebakkata: [
+    { q: { id: 'Alat tulis berisi tinta yang dipakai menulis di kertas. Kata apa?', en: 'A writing tool filled with ink, used to write on paper. What word?' }, a: { id: 'Pena', en: 'Pen' }, accept: ['pen', 'bolpoin', 'pulpen'] },
+    { q: { id: 'Tempat menyimpan uang dan kartu yang dilipat dan dibawa di saku. Kata apa?', en: 'A folded pouch for money and cards, carried in a pocket. What word?' }, a: { id: 'Dompet', en: 'Wallet' } },
+    { q: { id: 'Benda yang dipakai di atas kepala untuk melindungi dari terik matahari. Kata apa?', en: 'Something worn on the head to protect from the sun. What word?' }, a: { id: 'Topi', en: 'Hat' }, accept: ['cap'] },
+    { q: { id: 'Cairan bening tanpa rasa yang diminum setiap hari supaya tidak haus. Kata apa?', en: 'A clear tasteless liquid drunk every day so you are not thirsty. What word?' }, a: { id: 'Air', en: 'Water' }, accept: ['air putih'] },
+    { q: { id: 'Alat elektronik genggam untuk menelepon, mengirim pesan, dan membuka internet. Kata apa?', en: 'A handheld electronic device for calls, messages, and the internet. What word?' }, a: { id: 'Ponsel', en: 'Cellphone' }, accept: ['hp', 'handphone', 'telepon genggam', 'smartphone'] },
+    { q: { id: 'Kendaraan roda dua yang bergerak dengan cara dikayuh memakai kaki. Kata apa?', en: 'A two-wheeled vehicle moved by pedaling with your feet. What word?' }, a: { id: 'Sepeda', en: 'Bicycle' }, accept: ['bike'] },
+    { q: { id: 'Benda lengket dan manis yang dihasilkan lebah dari nektar bunga. Kata apa?', en: 'A sticky sweet substance bees make from flower nectar. What word?' }, a: { id: 'Madu', en: 'Honey' } },
+    { q: { id: 'Alat dari dua bilah logam bersilangan untuk memotong kertas dan kain. Kata apa?', en: 'A tool of two crossed metal blades for cutting paper and cloth. What word?' }, a: { id: 'Gunting', en: 'Scissors' } },
+    { q: { id: 'Benda yang dibuka di atas kepala saat hujan supaya tubuh tidak basah. Kata apa?', en: 'Something opened above your head in the rain so you stay dry. What word?' }, a: { id: 'Payung', en: 'Umbrella' } },
+    { q: { id: 'Alat musik tiup dari bambu yang dimainkan dengan meniup lubangnya. Kata apa?', en: 'A bamboo wind instrument played by blowing into its holes. What word?' }, a: { id: 'Suling', en: 'Flute' } },
+    { q: { id: 'Benda kecil dari logam yang dimasukkan ke lubang pintu supaya bisa dikunci. Kata apa?', en: 'A small metal object inserted into a door hole to lock it. What word?' }, a: { id: 'Kunci', en: 'Key' }, accept: ['anak kunci'] },
+    { q: { id: 'Alat dari lidi atau ijuk bergagang untuk membersihkan lantai dari debu. Kata apa?', en: 'A handled tool of sticks or fibers for sweeping dust off the floor. What word?' }, a: { id: 'Sapu', en: 'Broom' } },
+    { q: { id: 'Benda berlensa yang dipakai di depan mata supaya bisa melihat dengan jelas. Kata apa?', en: 'A lensed object worn in front of the eyes to see clearly. What word?' }, a: { id: 'Kacamata', en: 'Glasses' }, accept: ['glasses'] },
+    { q: { id: 'Buah berkulit kuning yang dikupas dulu sebelum dimakan dan disukai monyet. Kata apa?', en: 'A yellow-skinned fruit you peel before eating, loved by monkeys. What word?' }, a: { id: 'Pisang', en: 'Banana' } },
+    { q: { id: 'Minuman hangat dari biji sangrai yang diseduh, terkenal bisa menahan kantuk. Kata apa?', en: 'A warm drink from roasted brewed beans, famous for keeping you awake. What word?' }, a: { id: 'Kopi', en: 'Coffee' } },
+    { q: { id: 'Alat tulis bertinta tebal untuk menulis di papan tulis putih. Kata apa?', en: 'A thick-inked writing tool for whiteboards. What word?' }, a: { id: 'Spidol', en: 'Marker' } },
+    { q: { id: 'Alat listrik yang mengembuskan udara panas untuk mengeringkan rambut. Kata apa?', en: 'An electric tool blowing hot air to dry hair. What word?' }, a: { id: 'Pengering Rambut', en: 'Hair Dryer' }, accept: ['hair dryer', 'hairdryer'] },
+    { q: { id: 'Kain yang dilingkarkan di leher supaya hangat saat udara dingin. Kata apa?', en: 'A cloth wrapped around the neck to stay warm in cold air. What word?' }, a: { id: 'Syal', en: 'Scarf' } },
+  ],
   tebakhewan: [
     { q: { id: 'Hewan ini bertelur, berparuh pipih, tidak bisa terbang, dan hidup berkoloni di Antarktika. Hewan apa?', en: 'This animal lays eggs, has a flat beak, cannot fly, and lives in colonies in Antarctica. What animal?' }, a: { id: 'Penguin', en: 'Penguin' } },
     { q: { id: 'Hewan ini lehernya sangat panjang supaya bisa makan daun di pohon yang tinggi. Hewan apa?', en: 'This animal has a very long neck to eat leaves from tall trees. What animal?' }, a: { id: 'Jerapah', en: 'Giraffe' } },
