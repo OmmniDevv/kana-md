@@ -12,9 +12,9 @@
 
 ![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20-339933?logo=node.js&logoColor=white)
 ![ESM](https://img.shields.io/badge/ESM-pure-F7DF1E?logo=javascript&logoColor=black)
-![Plugins](https://img.shields.io/badge/plugins-1408-00C853)
-![Categories](https://img.shields.io/badge/categories-38-8B5CF6)
-![Commands](https://img.shields.io/badge/commands-2002-D946EF)
+![Plugins](https://img.shields.io/badge/plugins-1282-00C853)
+![Categories](https://img.shields.io/badge/categories-37-8B5CF6)
+![Commands](https://img.shields.io/badge/commands-2106-D946EF)
 ![Status](https://img.shields.io/badge/status-under%20development-orange)
 ![License](https://img.shields.io/badge/license-MIT-brightgreen)
 
@@ -26,7 +26,7 @@
 
 | Plugins | Categories | Command names | Languages | Prefixes |
 |---:|---:|---:|---|---|
-| 1,408 | 38 | 2,002 | Indonesian, English | `.` `!` `/` `#` |
+| 1,282 | 37 | 2,106 | Indonesian, English | `.` `!` `/` `#` |
 
 ## Contents
 
@@ -64,7 +64,7 @@ Detailed feature status lives in [FEATURES.md](FEATURES.md), technical decisions
 ## Command catalog
 
 <details open>
-<summary><b>Full command catalog</b> (highlights per group; the bot menu and the <a href="https://kana.omnicorp.web.id/plugins">web catalog</a> list all 2,002 command names)</summary>
+<summary><b>Full command catalog</b> (highlights per group; the bot menu and the <a href="https://kana.omnicorp.web.id/plugins">web catalog</a> list all 2,106 command names)</summary>
 
 Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands, so tapping a button is the same as typing it.
 
@@ -344,7 +344,7 @@ Rules: every user-facing string goes through `ctx.t()` and the plugin `i18n` exp
 ```text
 kana-md/
 ├── src/          Core pipeline, services, scrapers, UI, i18n, persona, storage
-├── plugins/      1,408 plugins in 38 categories
+├── plugins/      1,282 plugins in 37 categories
 ├── web/          Bundled web dashboard (same source as the live site)
 ├── games/        HTML mini game assets
 ├── assets/       Official banners and mascot assets
@@ -388,7 +388,7 @@ MIT, see [LICENSE](LICENSE). Copyright (c) 2026 OmniDevv.
 
 | Plugin | Kategori | Nama perintah | Bahasa | Prefix |
 |---:|---:|---:|---|---|
-| 1.408 | 38 | 2.002 | Indonesia, Inggris | `.` `!` `/` `#` |
+| 1.282 | 37 | 2.106 | Indonesia, Inggris | `.` `!` `/` `#` |
 
 KANA adalah bot WhatsApp moe dengan persona Kana yang manis, hangat, dan playful. Dibangun di atas `@rexxhayanasi/elaina-baileys` versi 1.4.7 (di-pin exact), ESM murni, Node 20 ke atas. Semua string yang dilihat pengguna melewati sistem i18n (Indonesia dan Inggris), setiap fitur adalah plugin mandiri, dan navigasi tombol interaktif adalah aturan utama: keluaran fitur yang punya langkah lanjutan wajib disertai tombol plus fallback teks.
 
@@ -410,7 +410,7 @@ Status fitur terperinci ada di [FEATURES.md](FEATURES.md), keputusan teknis di [
 
 ## Katalog perintah
 
-Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sama, jadi menekan tombol sama dengan mengetik perintahnya. Daftar lengkap 2.002 nama perintah ada di menu bot dan [katalog web](https://kana.omnicorp.web.id/plugins).
+Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sama, jadi menekan tombol sama dengan mengetik perintahnya. Daftar lengkap 2.106 nama perintah ada di menu bot dan [katalog web](https://kana.omnicorp.web.id/plugins).
 
 ### Utama dan profil
 
@@ -686,7 +686,7 @@ Aturan: semua string yang dilihat pengguna wajib lewat `ctx.t()` dan ekspor `i18
 ```text
 kana-md/
 ├── src/          Pipeline inti, services, scrapers, UI, i18n, persona, storage
-├── plugins/      1.408 plugin dalam 38 kategori
+├── plugins/      1.282 plugin dalam 37 kategori
 ├── web/          Dashboard web terbundel (sumber sama dengan situs live)
 ├── games/        Aset mini game HTML
 ├── assets/       Banner dan aset maskot resmi
