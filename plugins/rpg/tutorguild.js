@@ -1,57 +1,28 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "tutorguild",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur tutorguild versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD tutorguild feature, rewritten in KANA style" },
+  description: { id: "Tutorial cara main guild KANA (teks panduan; semua perintahnya kini berfungsi nyata)", en: "Tutorial on playing KANA guilds (guide text; all its commands now really work)" },
   usage: ".tutorguild",
   example: ".tutorguild",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "tutorguild": {
-      done: "╭─❏ ⚔️ 「 *TUTORGUILD* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *TUTORGUILD* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "tutorguild": {
-      done: "╭─❏ ⚔️ 「 *TUTORGUILD* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *TUTORGUILD* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "tutorguild": {
+    "text": "╭─❏ 🏰 「 *TUTOR GUILD* 」\n┊ CARA MAIN GUILD KANA:\n┊ 1. Buat guild: .createguild <nama>\n┊ 2. Gabung: .joinguild <id> (daftar: .guildlist)\n┊ 3. Undang teman: .guildinvite <nomor>, dia terima pakai .guildaccept\n┊ 4. Atur staff: .guildpromote / .guilddemote (khusus pemilik)\n┊ 5. Serang guild lain: .attackguild (sekali sehari, hadiah masuk bank guild)\n┊ 6. Info guildmu: .guildinfo, keluar: .guildleave\n┊ Power guild = gabungan power semua member. Naikkan power pakai .skill, senjata dari .gunshop, dan pet.\n╰━━━━━━━"
+} },
+  en: { "tutorguild": {
+    "text": "╭─❏ 🏰 「 *GUILD TUTORIAL* 」\n┊ HOW TO PLAY KANA GUILDS:\n┊ 1. Create a guild: .createguild <name>\n┊ 2. Join: .joinguild <id> (list: .guildlist)\n┊ 3. Invite friends: .guildinvite <number>, they accept with .guildaccept\n┊ 4. Manage staff: .guildpromote / .guilddemote (owner only)\n┊ 5. Attack other guilds: .attackguild (once a day, rewards go to the guild bank)\n┊ 6. Your guild info: .guildinfo, leave: .guildleave\n┊ Guild power = combined power of all members. Raise it with .skill, weapons from .gunshop, and pets.\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur tutorguild buat profil petualanganmu~", en: "Here is the tutorguild summary for your adventure profile~" }
-export const test = { input: '.tutorguild', expect: /tutorguild|koin|coin/i }
+export const test = { input: ".tutorguild", expect: /tutor guild|guild tutorial|createguild/i }
 export async function handler(ctx) {
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('tutorguild.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('tutorguild'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('tutorguild.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('tutorguild.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('tutorguild.btnAgain'), id: '.tutorguild' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('tutorguild.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('tutorguild.btnAgain'), id: '.tutorguild' }], textFallback: body })
+
+  return ctx.reply(ctx.t('tutorguild.text'))
 }

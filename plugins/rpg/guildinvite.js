@@ -1,57 +1,58 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { createClan, joinClan, getClan, clanPower, clanWar } from '../../src/rpg/engine.js'
 export const config = {
   name: "guildinvite",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur guildinvite versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD guildinvite feature, rewritten in KANA style" },
-  usage: ".guildinvite",
-  example: ".guildinvite",
+  description: { id: "Undang pemain ke guildmu (pemilik/staff); undangan tersimpan dan menunggu jawaban", en: "Invite a player to your guild (owner/staff); the invitation is stored pending an answer" },
+  usage: ".guildinvite <target>",
+  example: ".guildinvite <target>",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "guildinvite": {
-      done: "╭─❏ ⚔️ 「 *GUILDINVITE* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDINVITE* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "guildinvite": {
-      done: "╭─❏ ⚔️ 「 *GUILDINVITE* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDINVITE* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "guildinvite": {
+    "none": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ Kamu belum punya guild. Buat pakai .createguild <nama> atau gabung pakai .joinguild <id>\n╰━━━━━━━",
+    "notStaff": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ Hanya pemilik dan staff guild yang bisa mengundang~\n╰━━━━━━━",
+    "noTarget": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ Undang siapa? Mention atau tulis nomornya: *.guildinvite 628XXXX*\n╰━━━━━━━",
+    "self": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ Kamu sudah di dalam guild ini~\n╰━━━━━━━",
+    "hasGuild": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ Target sudah punya guild lain~\n╰━━━━━━━",
+    "done": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ UNDANGAN TERKIRIM ke *{target}* buat gabung *{guild}*.\n┊ Dia bisa menerima pakai .guildaccept\n╰━━━━━━━"
+} },
+  en: { "guildinvite": {
+    "none": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ You have no guild yet. Create one with .createguild <name> or join with .joinguild <id>\n╰━━━━━━━",
+    "notStaff": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ Only the guild owner and staff can invite~\n╰━━━━━━━",
+    "noTarget": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ Invite whom? Mention or type the number: *.guildinvite 628XXXX*\n╰━━━━━━━",
+    "self": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ You are already in this guild~\n╰━━━━━━━",
+    "hasGuild": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ The target already has another guild~\n╰━━━━━━━",
+    "done": "╭─❏ 🏰 「 *GUILDINVITE* 」\n┊ INVITE SENT to *{target}* to join *{guild}*.\n┊ They can accept with .guildaccept\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur guildinvite buat profil petualanganmu~", en: "Here is the guildinvite summary for your adventure profile~" }
-export const test = { input: '.guildinvite', expect: /guildinvite|koin|coin/i }
+export const test = { input: ".guildinvite 6281234567890", expect: /undangan terkirim|invite sent|belum punya guild|no guild|pemilik dan staff/i }
 export async function handler(ctx) {
+
+  const targetDigits = (() => {
+    const mention = (ctx.mentionedJids ?? [])[0]
+    if (mention) return String(mention).split('@')[0].replace(/\D/g, '')
+    if (ctx.quoted?.sender) return String(ctx.quoted.sender).split('@')[0].replace(/\D/g, '')
+    const num = (ctx.args ?? []).map((a) => String(a).replace(/\D/g, '')).find((a) => a.length >= 9)
+    return num || ''
+  })()
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('guildinvite.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('guildinvite'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('guildinvite.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('guildinvite.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guildinvite.btnAgain'), id: '.guildinvite' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('guildinvite.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guildinvite.btnAgain'), id: '.guildinvite' }], textFallback: body })
+  const clan = await getClan(ctx.storage, profile.clanId)
+  if (!clan) return ctx.reply(ctx.t('guildinvite.none'))
+  const isStaff = clan.owner === ctx.senderDigits || (clan.roles ?? {})[ctx.senderDigits] === 'staff'
+  if (!isStaff) return ctx.reply(ctx.t('guildinvite.notStaff'))
+  if (!targetDigits) return ctx.reply(ctx.t('guildinvite.noTarget'))
+  if (targetDigits === ctx.senderDigits) return ctx.reply(ctx.t('guildinvite.self'))
+  const target = await getProfile(ctx.storage, targetDigits)
+  if (target.clanId) return ctx.reply(ctx.t('guildinvite.hasGuild'))
+  clan.invites = [...new Set([...(clan.invites ?? []), targetDigits])]
+  await ctx.storage.set('clans', clan.id, clan)
+  await updateProfile(ctx.storage, targetDigits, { guildInvite: clan.id })
+  return ctx.reply(ctx.t('guildinvite.done', { target: targetDigits, guild: clan.name }))
 }

@@ -1,57 +1,40 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "bansos",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur bansos versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD bansos feature, rewritten in KANA style" },
+  description: { id: "Bantuan sosial harian 400 koin, hanya untuk saldo di bawah 1.500", en: "Daily social aid of 400 coins, only for balances under 1,500" },
   usage: ".bansos",
   example: ".bansos",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "bansos": {
-      done: "╭─❏ ⚔️ 「 *BANSOS* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BANSOS* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "bansos": {
-      done: "╭─❏ ⚔️ 「 *BANSOS* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BANSOS* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "bansos": {
+    "done": "╭─❏ 🧺 「 *BANSOS* 」\n┊ Bantuan sosial cair: *+400 KOIN*. Semoga membantu yaa~\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
+    "rich": "╭─❏ 🧺 「 *BANSOS* 」\n┊ Saldomu *{balance} KOIN*, masih di atas ambang bansos (1.500). Bansos buat yang saldonya tipis dulu yaa~\n╰━━━━━━━",
+    "wait": "╭─❏ 🧺 「 *BANSOS* 」\n┊ Bansos hari ini sudah kamu ambil. Besok lagi~\n╰━━━━━━━"
+} },
+  en: { "bansos": {
+    "done": "╭─❏ 🧺 「 *SOCIAL AID* 」\n┊ Social aid disbursed: *+400 COINS*. Hope it helps~\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
+    "rich": "╭─❏ 🧺 「 *SOCIAL AID* 」\n┊ Your balance is *{balance} COINS*, above the aid threshold (1,500). Aid goes to thinner wallets first~\n╰━━━━━━━",
+    "wait": "╭─❏ 🧺 「 *SOCIAL AID* 」\n┊ You already took today's aid. Come back tomorrow~\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur bansos buat profil petualanganmu~", en: "Here is the bansos summary for your adventure profile~" }
-export const test = { input: '.bansos', expect: /bansos|koin|coin/i }
+export const test = { input: ".bansos", expect: /bantuan sosial cair|social aid disbursed|ambang bansos|aid threshold|sudah kamu ambil/i }
 export async function handler(ctx) {
+
+  const { wibDateString } = await import('../../src/services/user-service.js')
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('bansos.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('bansos'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('bansos.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('bansos.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('bansos.btnAgain'), id: '.bansos' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('bansos.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('bansos.btnAgain'), id: '.bansos' }], textFallback: body })
+  if ((profile.balance ?? 0) >= 1500) return ctx.reply(ctx.t('bansos.rich', { balance: profile.balance ?? 0 }))
+  const today = wibDateString()
+  if (profile.last_bansos === today) return ctx.reply(ctx.t('bansos.wait'))
+  await updateProfile(ctx.storage, ctx.senderDigits, { balance: (profile.balance ?? 0) + 400, last_bansos: today })
+  await addXp(ctx.storage, ctx.senderDigits, 5)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t('bansos.done', { balance: fresh.balance ?? 0 }))
 }

@@ -1,57 +1,38 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { createClan, joinClan, getClan, clanPower, clanWar } from '../../src/rpg/engine.js'
 export const config = {
   name: "guild",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur guild versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD guild feature, rewritten in KANA style" },
-  usage: ".guild",
-  example: ".guild",
+  description: { id: "Info ringkas guildmu dari data guild tersimpan", en: "Short info about your guild from stored guild data" },
+  usage: ".guild [id]",
+  example: ".guild [id]",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "guild": {
-      done: "╭─❏ ⚔️ 「 *GUILD* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILD* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "guild": {
-      done: "╭─❏ ⚔️ 「 *GUILD* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILD* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "guild": {
+    "none": "╭─❏ 🏰 「 *GUILD* 」\n┊ Kamu belum punya guild. Buat pakai .createguild <nama> atau gabung pakai .joinguild <id>\n╰━━━━━━━",
+    "info": "╭─❏ 🏰 「 *GUILD* 」\n┊ NAMA: *{guild}* (ID: {id})\n┊ PEMILIK: *{owner}*\n┊ MEMBER: *{members}* | BANK: *{bank} KOIN* | POWER: *{power}*\n┊ PERANMU: *{role}*\n╰━━━━━━━"
+} },
+  en: { "guild": {
+    "none": "╭─❏ 🏰 「 *GUILD* 」\n┊ You have no guild yet. Create one with .createguild <name> or join with .joinguild <id>\n╰━━━━━━━",
+    "info": "╭─❏ 🏰 「 *GUILD* 」\n┊ NAME: *{guild}* (ID: {id})\n┊ OWNER: *{owner}*\n┊ MEMBERS: *{members}* | BANK: *{bank} COINS* | POWER: *{power}*\n┊ YOUR ROLE: *{role}*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur guild buat profil petualanganmu~", en: "Here is the guild summary for your adventure profile~" }
-export const test = { input: '.guild', expect: /guild|koin|coin/i }
+export const test = { input: ".guild", expect: /nama:|name:|belum punya guild|no guild/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('guild.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('guild'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('guild.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('guild.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guild.btnAgain'), id: '.guild' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('guild.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guild.btnAgain'), id: '.guild' }], textFallback: body })
+  const argId = ((ctx.args ?? [])[0] || '').toLowerCase()
+  const clan = await getClan(ctx.storage, argId || profile.clanId)
+  if (!clan) return ctx.reply(ctx.t('guild.none'))
+  const power = await clanPower(ctx.storage, clan)
+  const role = clan.owner === ctx.senderDigits ? 'Pemilik' : ((clan.roles ?? {})[ctx.senderDigits] === 'staff' ? 'Staff' : ((clan.members ?? []).includes(ctx.senderDigits) ? 'Member' : '-'))
+  
+  return ctx.reply(ctx.t('guild.info', { guild: clan.name, id: clan.id, owner: clan.owner, members: (clan.members ?? []).length, bank: clan.bank ?? 0, power, role }))
 }

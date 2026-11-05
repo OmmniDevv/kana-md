@@ -1,57 +1,37 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "delexpired",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur delexpired versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD delexpired feature, rewritten in KANA style" },
+  description: { id: "Bersihkan cooldown kedaluwarsa dari profilmu sendiri", en: "Clean expired cooldowns from your own profile" },
   usage: ".delexpired",
   example: ".delexpired",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "delexpired": {
-      done: "╭─❏ ⚔️ 「 *DELEXPIRED* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *DELEXPIRED* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "delexpired": {
-      done: "╭─❏ ⚔️ 「 *DELEXPIRED* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *DELEXPIRED* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "delexpired": {
+    "done": "╭─❏ 🧹 「 *DELEXPIRED* 」\n┊ Beres: *{count} cooldown kedaluwarsa* dibersihkan dari profilmu.\n╰━━━━━━━"
+} },
+  en: { "delexpired": {
+    "done": "╭─❏ 🧹 「 *DELEXPIRED* 」\n┊ Done: *{count} eXpired cooldowns* cleaned from your profile.\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur delexpired buat profil petualanganmu~", en: "Here is the delexpired summary for your adventure profile~" }
-export const test = { input: '.delexpired', expect: /delexpired|koin|coin/i }
+export const test = { input: ".delexpired", expect: /cooldown kedaluwarsa|expired cooldowns/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('delexpired.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  const now = Date.now()
+  let cleared = 0
+  for (const key of Object.keys(profile)) {
+    const value = profile[key]
+    if (key === 'jailUntil' && typeof value === 'number' && value > 0 && value <= now) { profile.jailUntil = 0; cleared++ }
+    else if (key.startsWith('last_') && typeof value === 'number' && value > 0 && value <= now) { delete profile[key]; cleared++ }
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('delexpired'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('delexpired.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('delexpired.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('delexpired.btnAgain'), id: '.delexpired' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('delexpired.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('delexpired.btnAgain'), id: '.delexpired' }], textFallback: body })
+  if (cleared > 0) await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  return ctx.reply(ctx.t('delexpired.done', { count: cleared }))
 }

@@ -1,57 +1,49 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "berlatih",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur berlatih versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD berlatih feature, rewritten in KANA style" },
+  description: { id: "Berlatih: tukar 20 energi jadi XP besar", en: "Training: trade 20 energy for a big XP chunk" },
   usage: ".berlatih",
   example: ".berlatih",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "berlatih": {
-      done: "╭─❏ ⚔️ 「 *BERLATIH* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BERLATIH* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "berlatih": {
-      done: "╭─❏ ⚔️ 「 *BERLATIH* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BERLATIH* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "berlatih": {
+    "jailed": "╭─❏ 🚔 「 *BERLATIH* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
+    "wait": "╭─❏ ⏳ 「 *BERLATIH* 」\n┊ Istirahat dulu, coba lagi *{minutes} menit* lagi yaa~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *BERLATIH* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 🏋️ 「 *BERLATIH* 」\n┊ Latihanmu tuntas, otot dan refleks naik kelas.\n┊ XP LATIHAN: *+{Xp}* | LEVEL: *{level}*\n┊ ENERGI SISA: *{energy}*\n╰━━━━━━━"
+} },
+  en: { "berlatih": {
+    "jailed": "╭─❏ 🚔 「 *BERLATIH* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
+    "wait": "╭─❏ ⏳ 「 *BERLATIH* 」\n┊ Rest first, try again in *{minutes} minutes*~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *BERLATIH* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 🏋️ 「 *BERLATIH* 」\n┊ Your training is complete, muscles and refleXes leveled up.\n┊ TRAINING XP: *+{Xp}* | LEVEL: *{level}*\n┊ ENERGY LEFT: *{energy}*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur berlatih buat profil petualanganmu~", en: "Here is the berlatih summary for your adventure profile~" }
-export const test = { input: '.berlatih', expect: /berlatih|koin|coin/i }
+export const test = { input: ".berlatih", expect: /xp latihan|istirahat dulu|energi|training xp/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('berlatih.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('berlatih'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('berlatih.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('berlatih.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('berlatih.btnAgain'), id: '.berlatih' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('berlatih.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('berlatih.btnAgain'), id: '.berlatih' }], textFallback: body })
+  if (isJailed(profile)) return ctx.reply(ctx.t('berlatih.jailed', { minutes: jailMinutesLeft(profile) }))
+  const now = Date.now()
+  const last = Number(profile.last_berlatih) || 0
+  const cdMs = 30 * 60000
+  if (now - last < cdMs) return ctx.reply(ctx.t('berlatih.wait', { minutes: Math.ceil((cdMs - (now - last)) / 60000) }))
+  const energy = energyOf(profile)
+  if (energy < 20) return ctx.reply(ctx.t('berlatih.lowEnergy', { energy, need: 20 }))
+  profile.energy = energy - 20
+  profile.last_berlatih = now
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  const xp = 25 + Math.floor(Math.random() * (15))
+  const gain = await addXp(ctx.storage, ctx.senderDigits, xp)
+  return ctx.reply(ctx.t('berlatih.done', { xp, level: gain.level, energy: profile.energy }))
 }

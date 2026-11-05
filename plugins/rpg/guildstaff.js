@@ -1,57 +1,35 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { createClan, joinClan, getClan, clanPower, clanWar } from '../../src/rpg/engine.js'
 export const config = {
   name: "guildstaff",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur guildstaff versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD guildstaff feature, rewritten in KANA style" },
+  description: { id: "Daftar pemilik dan staff guildmu dari data guild tersimpan", en: "List of your guild owner and staff from stored guild data" },
   usage: ".guildstaff",
   example: ".guildstaff",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "guildstaff": {
-      done: "╭─❏ ⚔️ 「 *GUILDSTAFF* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDSTAFF* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "guildstaff": {
-      done: "╭─❏ ⚔️ 「 *GUILDSTAFF* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDSTAFF* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "guildstaff": {
+    "none": "╭─❏ 🏰 「 *GUILDSTAFF* 」\n┊ Kamu belum punya guild. Buat pakai .createguild <nama> atau gabung pakai .joinguild <id>\n╰━━━━━━━",
+    "info": "╭─❏ 🏰 「 *GUILDSTAFF* 」 *{guild}*\n┊ PEMILIK: *{owner}*\n┊ STAFF ({count}): {staff}\n╰━━━━━━━"
+} },
+  en: { "guildstaff": {
+    "none": "╭─❏ 🏰 「 *GUILDSTAFF* 」\n┊ You have no guild yet. Create one with .createguild <name> or join with .joinguild <id>\n╰━━━━━━━",
+    "info": "╭─❏ 🏰 「 *GUILDSTAFF* 」 *{guild}*\n┊ OWNER: *{owner}*\n┊ STAFF ({count}): {staff}\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur guildstaff buat profil petualanganmu~", en: "Here is the guildstaff summary for your adventure profile~" }
-export const test = { input: '.guildstaff', expect: /guildstaff|koin|coin/i }
+export const test = { input: ".guildstaff", expect: /guildstaff|belum punya guild|no guild/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('guildstaff.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('guildstaff'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('guildstaff.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('guildstaff.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guildstaff.btnAgain'), id: '.guildstaff' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('guildstaff.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guildstaff.btnAgain'), id: '.guildstaff' }], textFallback: body })
+  const clan = await getClan(ctx.storage, profile.clanId)
+  if (!clan) return ctx.reply(ctx.t('guildstaff.none'))
+  const staff = Object.entries(clan.roles ?? {}).filter(([, r]) => r === 'staff').map(([d]) => d)
+  return ctx.reply(ctx.t('guildstaff.info', { guild: clan.name, owner: clan.owner, staff: staff.length ? staff.join(', ') : '-', count: staff.length }))
 }

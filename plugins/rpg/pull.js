@@ -1,57 +1,53 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
+import { ITEM_MAP, MONSTERS } from '../../src/rpg/data.js'
 export const config = {
   name: "pull",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur pull versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD pull feature, rewritten in KANA style" },
+  description: { id: "Gacha pull 150 koin: satu item acak berbobot rarity masuk inventaris", en: "150 coin gacha pull: one rarity-weighted random item for your inventory" },
   usage: ".pull",
   example: ".pull",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "pull": {
-      done: "╭─❏ ⚔️ 「 *PULL* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *PULL* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "pull": {
-      done: "╭─❏ ⚔️ 「 *PULL* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *PULL* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "pull": {
+    "jailed": "╭─❏ 🚔 「 *PULL* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *PULL* 」\n┊ Saldo kamu *{balance} koin*, taruhan *{bet} koin* tidak cukup~\n╰━━━━━━━",
+    "done": "╭─❏ 🎁 「 *GACHA PULL* 」\n┊ Kamu menarik satu kapsul seharga 150 koin dan dapat: *{emoji} {item}*\n┊ Barang masuk inventaris. SALDO: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "pull": {
+    "jailed": "╭─❏ 🚔 「 *PULL* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *PULL* 」\n┊ Your balance is *{balance} coins*, a *{bet} coin* bet is not covered~\n╰━━━━━━━",
+    "done": "╭─❏ 🎁 「 *GACHA PULL* 」\n┊ You pulled one 150 coin capsule and got: *{emoji} {item}*\n┊ The item is in your inventory. BALANCE: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur pull buat profil petualanganmu~", en: "Here is the pull summary for your adventure profile~" }
-export const test = { input: '.pull', expect: /pull|koin|coin/i }
+export const test = { input: ".pull", expect: /kapsul|capsule|saldo/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('pull.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('pull'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('pull.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('pull.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('pull.btnAgain'), id: '.pull' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('pull.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('pull.btnAgain'), id: '.pull' }], textFallback: body })
+  if (isJailed(profile)) return ctx.reply(ctx.t('pull.jailed', { minutes: jailMinutesLeft(profile) }))
+  const cost = 150
+  if ((profile.balance ?? 0) < cost) return ctx.reply(ctx.t('pull.poor', { balance: profile.balance ?? 0, bet: cost }))
+  profile.balance = (profile.balance ?? 0) - cost
+  const pool = ['kristal', 'emas', 'besi', 'berlian', 'telurmisterius', 'ramuan', 'kain', 'tanduk']
+  const weights = [3, 6, 10, 1, 1, 8, 10, 5]
+  const total = weights.reduce((a, b) => a + b, 0)
+  let roll = Math.random() * total
+  let got = pool[pool.length - 1]
+  for (let i = 0; i < pool.length; i++) { roll -= weights[i]; if (roll <= 0) { got = pool[i]; break } }
+  profile.inventory = profile.inventory ?? {}
+  profile.inventory[got] = (profile.inventory[got] ?? 0) + 1
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  await addXp(ctx.storage, ctx.senderDigits, 5)
+  const def = ITEM_MAP[got]
+  const itemName = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : got
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t('pull.done', { item: itemName, emoji: def?.emoji ?? '🎁', balance: fresh.balance ?? 0 }))
 }

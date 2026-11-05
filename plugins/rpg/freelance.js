@@ -1,57 +1,58 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "freelance",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur freelance versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD freelance feature, rewritten in KANA style" },
+  description: { id: "Proyek freelance: upah lebih besar, cooldown lebih lama", en: "Freelance project: bigger pay, longer cooldown" },
   usage: ".freelance",
   example: ".freelance",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "freelance": {
-      done: "╭─❏ ⚔️ 「 *FREELANCE* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *FREELANCE* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "freelance": {
-      done: "╭─❏ ⚔️ 「 *FREELANCE* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *FREELANCE* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "freelance": {
+    "jailed": "╭─❏ 🚔 「 *FREELANCE* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
+    "wait": "╭─❏ ⏳ 「 *FREELANCE* 」\n┊ Istirahat dulu, coba lagi *{minutes} menit* lagi yaa~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *FREELANCE* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *FREELANCE* 」\n┊ Proyek freelance selesai dan klien membayar lunas.\n┊ UPAH: *+{coins} KOIN* | XP: *+{Xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n╰━━━━━━━",
+    "failed": "╭─❏ 😖 「 *FREELANCE* 」\n┊ Klien membatalkan proyek di tengah jalan~\n┊ ENERGI SISA: *{energy}*\n╰━━━━━━━"
+} },
+  en: { "freelance": {
+    "jailed": "╭─❏ 🚔 「 *FREELANCE* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
+    "wait": "╭─❏ ⏳ 「 *FREELANCE* 」\n┊ Rest first, try again in *{minutes} minutes*~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *FREELANCE* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *FREELANCE* 」\n┊ The freelance project is done and the client paid in full.\n┊ PAY: *+{coins} COINS* | XP: *+{Xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n╰━━━━━━━",
+    "failed": "╭─❏ 😖 「 *FREELANCE* 」\n┊ The client cancelled the project midway~\n┊ ENERGY LEFT: *{energy}*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur freelance buat profil petualanganmu~", en: "Here is the freelance summary for your adventure profile~" }
-export const test = { input: '.freelance', expect: /freelance|koin|coin/i }
+export const test = { input: ".freelance", expect: /upah|istirahat dulu|energi|dipenjara|pay|rest first/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('freelance.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  if (isJailed(profile)) return ctx.reply(ctx.t('freelance.jailed', { minutes: jailMinutesLeft(profile) }))
+  const now = Date.now()
+  const last = Number(profile.last_freelance) || 0
+  const cdMs = 45 * 60000
+  if (now - last < cdMs) return ctx.reply(ctx.t('freelance.wait', { minutes: Math.ceil((cdMs - (now - last)) / 60000) }))
+  const energy = energyOf(profile)
+  if (energy < 10) return ctx.reply(ctx.t('freelance.lowEnergy', { energy, need: 10 }))
+  profile.energy = energy - 10
+  profile.last_freelance = now
+  if (Math.random() < 0.15) {
+    await saveProfile(ctx.storage, ctx.senderDigits, profile)
+    return ctx.reply(ctx.t('freelance.failed', { energy: profile.energy }))
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('freelance'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('freelance.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('freelance.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('freelance.btnAgain'), id: '.freelance' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('freelance.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('freelance.btnAgain'), id: '.freelance' }], textFallback: body })
+  const coins = 100 + Math.floor(Math.random() * (120)) + levelFromXp(profile.xp ?? 0) * 4
+  profile.balance = (profile.balance ?? 0) + coins
+  
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  await addXp(ctx.storage, ctx.senderDigits, 12)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t('freelance.done', { coins, xp: 12, balance: fresh.balance ?? 0, energy: energyOf(fresh) }))
 }

@@ -1,57 +1,58 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "parkir",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur parkir versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD parkir feature, rewritten in KANA style" },
+  description: { id: "Jaga parkir: upah kecil tapi stabil", en: "Parking attendant: small but steady pay" },
   usage: ".parkir",
   example: ".parkir",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "parkir": {
-      done: "╭─❏ ⚔️ 「 *PARKIR* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *PARKIR* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "parkir": {
-      done: "╭─❏ ⚔️ 「 *PARKIR* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *PARKIR* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "parkir": {
+    "jailed": "╭─❏ 🚔 「 *PARKIR* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
+    "wait": "╭─❏ ⏳ 「 *PARKIR* 」\n┊ Istirahat dulu, coba lagi *{minutes} menit* lagi yaa~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *PARKIR* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *PARKIR* 」\n┊ Giliran jaga parkir selesai tanpa insiden.\n┊ UPAH: *+{coins} KOIN* | XP: *+{Xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n╰━━━━━━━",
+    "failed": "╭─❏ 😖 「 *PARKIR* 」\n┊ Ada kendaraan lecet, upahmu dipotong~\n┊ ENERGI SISA: *{energy}*\n╰━━━━━━━"
+} },
+  en: { "parkir": {
+    "jailed": "╭─❏ 🚔 「 *PARKIR* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
+    "wait": "╭─❏ ⏳ 「 *PARKIR* 」\n┊ Rest first, try again in *{minutes} minutes*~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *PARKIR* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *PARKIR* 」\n┊ Your parking shift ended without incidents.\n┊ PAY: *+{coins} COINS* | XP: *+{Xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n╰━━━━━━━",
+    "failed": "╭─❏ 😖 「 *PARKIR* 」\n┊ A vehicle got scratched, your pay was docked~\n┊ ENERGY LEFT: *{energy}*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur parkir buat profil petualanganmu~", en: "Here is the parkir summary for your adventure profile~" }
-export const test = { input: '.parkir', expect: /parkir|koin|coin/i }
+export const test = { input: ".parkir", expect: /upah|istirahat dulu|energi|dipenjara|pay|rest first/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('parkir.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  if (isJailed(profile)) return ctx.reply(ctx.t('parkir.jailed', { minutes: jailMinutesLeft(profile) }))
+  const now = Date.now()
+  const last = Number(profile.last_parkir) || 0
+  const cdMs = 20 * 60000
+  if (now - last < cdMs) return ctx.reply(ctx.t('parkir.wait', { minutes: Math.ceil((cdMs - (now - last)) / 60000) }))
+  const energy = energyOf(profile)
+  if (energy < 6) return ctx.reply(ctx.t('parkir.lowEnergy', { energy, need: 6 }))
+  profile.energy = energy - 6
+  profile.last_parkir = now
+  if (Math.random() < 0.05) {
+    await saveProfile(ctx.storage, ctx.senderDigits, profile)
+    return ctx.reply(ctx.t('parkir.failed', { energy: profile.energy }))
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('parkir'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('parkir.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('parkir.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('parkir.btnAgain'), id: '.parkir' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('parkir.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('parkir.btnAgain'), id: '.parkir' }], textFallback: body })
+  const coins = 50 + Math.floor(Math.random() * (60)) + levelFromXp(profile.xp ?? 0) * 4
+  profile.balance = (profile.balance ?? 0) + coins
+  
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  await addXp(ctx.storage, ctx.senderDigits, 7)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t('parkir.done', { coins, xp: 7, balance: fresh.balance ?? 0, energy: energyOf(fresh) }))
 }

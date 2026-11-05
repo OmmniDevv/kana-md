@@ -1,57 +1,37 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "absenmonthly",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur absenmonthly versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD absenmonthly feature, rewritten in KANA style" },
+  description: { id: "Absen bulanan: 10.000 koin dan 300 XP, sekali sebulan (tanggal WIB)", en: "Monthly check-in: 10,000 coins and 300 XP, once a month (WIB date)" },
   usage: ".absenmonthly",
   example: ".absenmonthly",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "absenmonthly": {
-      done: "╭─❏ ⚔️ 「 *ABSENMONTHLY* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *ABSENMONTHLY* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "absenmonthly": {
-      done: "╭─❏ ⚔️ 「 *ABSENMONTHLY* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *ABSENMONTHLY* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "absenmonthly": {
+    "done": "╭─❏ 📅 「 *ABSEN BULANAN* 」\n┊ Absen bulanan tercatat! Hadiah *+10.000 KOIN* dan *+300 XP*.\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
+    "wait": "╭─❏ 📅 「 *ABSEN BULANAN* 」\n┊ Bulan ini sudah absen. Bulan depan lagi yaa~\n╰━━━━━━━"
+} },
+  en: { "absenmonthly": {
+    "done": "╭─❏ 📅 「 *MONTHLY CHECK-IN* 」\n┊ Monthly check-in recorded! Reward *+10,000 COINS* and *+300 XP*.\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
+    "wait": "╭─❏ 📅 「 *MONTHLY CHECK-IN* 」\n┊ Already checked in this month. See you neXt month~\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur absenmonthly buat profil petualanganmu~", en: "Here is the absenmonthly summary for your adventure profile~" }
-export const test = { input: '.absenmonthly', expect: /absenmonthly|koin|coin/i }
+export const test = { input: ".absenmonthly", expect: /absen bulanan tercatat|monthly check-in recorded|sudah absen|already checked/i }
 export async function handler(ctx) {
+
+  const { wibDateString } = await import('../../src/services/user-service.js')
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('absenmonthly.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('absenmonthly'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('absenmonthly.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('absenmonthly.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('absenmonthly.btnAgain'), id: '.absenmonthly' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('absenmonthly.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('absenmonthly.btnAgain'), id: '.absenmonthly' }], textFallback: body })
+  const month = wibDateString().slice(0, 7)
+  if (profile.last_absenmonthly === month) return ctx.reply(ctx.t('absenmonthly.wait'))
+  await updateProfile(ctx.storage, ctx.senderDigits, { balance: (profile.balance ?? 0) + 10000, last_absenmonthly: month })
+  await addXp(ctx.storage, ctx.senderDigits, 300)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t('absenmonthly.done', { balance: fresh.balance ?? 0 }))
 }

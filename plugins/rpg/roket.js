@@ -1,57 +1,51 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "roket",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur roket versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD roket feature, rewritten in KANA style" },
-  usage: ".roket",
-  example: ".roket",
+  description: { id: "Roket crash: keluar otomatis di x1.8, roket bisa meledak sebelum itu", en: "Rocket crash: auto cash-out at x1.8, the rocket may explode before that" },
+  usage: ".roket [taruhan]",
+  example: ".roket [taruhan]",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "roket": {
-      done: "╭─❏ ⚔️ 「 *ROKET* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *ROKET* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "roket": {
-      done: "╭─❏ ⚔️ 「 *ROKET* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *ROKET* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "roket": {
+    "jailed": "╭─❏ 🚔 「 *ROKET* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *ROKET* 」\n┊ Saldo kamu *{balance} koin*, taruhan *{bet} koin* tidak cukup~\n╰━━━━━━━",
+    "badBet": "╭─❏ 🎲 「 *ROKET* 」\n┊ Taruhannya angka yaa, contoh: *.roket 100*\n╰━━━━━━━",
+    "win": "╭─❏ 🚀 「 *ROKET* 」\n┊ Roket meledak di *X{crash}*, kamu keluar di X1.8. MENANG!\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
+    "lose": "╭─❏ 🚀 「 *ROKET* 」\n┊ Roket meledak di *X{crash}* sebelum X1.8. Taruhan *{bet} koin* hangus~\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "roket": {
+    "jailed": "╭─❏ 🚔 「 *ROKET* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *ROKET* 」\n┊ Your balance is *{balance} coins*, a *{bet} coin* bet is not covered~\n╰━━━━━━━",
+    "badBet": "╭─❏ 🎲 「 *ROKET* 」\n┊ The bet must be a number, eXample: *.roket 100*\n╰━━━━━━━",
+    "win": "╭─❏ 🚀 「 *ROCKET* 」\n┊ The rocket crashed at *X{crash}*, you cashed out at X1.8. YOU WIN!\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
+    "lose": "╭─❏ 🚀 「 *ROCKET* 」\n┊ The rocket crashed at *X{crash}* before X1.8. Your *{bet} coin* bet burned~\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur roket buat profil petualanganmu~", en: "Here is the roket summary for your adventure profile~" }
-export const test = { input: '.roket', expect: /roket|koin|coin/i }
+export const test = { input: ".roket 50", expect: /roket meledak|rocket crashed|saldo/i }
 export async function handler(ctx) {
+
+  const bet = Math.floor(Number((ctx.args ?? [])[0]) || 50)
+  if (!Number.isFinite(bet) || bet <= 0) return ctx.reply(ctx.t('roket.badBet'))
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('roket.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('roket'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('roket.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('roket.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('roket.btnAgain'), id: '.roket' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('roket.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('roket.btnAgain'), id: '.roket' }], textFallback: body })
+  if (isJailed(profile)) return ctx.reply(ctx.t('roket.jailed', { minutes: jailMinutesLeft(profile) }))
+  if ((profile.balance ?? 0) < bet) return ctx.reply(ctx.t('roket.poor', { balance: profile.balance ?? 0, bet }))
+  const crash = Math.round((1 + Math.pow(Math.random(), 2) * 4) * 100) / 100
+  const cashAt = 1.8
+  const win = crash >= cashAt
+  const delta = win ? Math.floor(bet * 0.8) : -bet
+  profile.balance = (profile.balance ?? 0) + delta
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  await addXp(ctx.storage, ctx.senderDigits, 4)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t(win ? 'roket.win' : 'roket.lose', { crash, bet, balance: fresh.balance ?? 0 }))
 }

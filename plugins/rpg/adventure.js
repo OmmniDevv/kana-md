@@ -1,57 +1,51 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
+import { gather, runDungeon } from '../../src/rpg/engine.js'
+import { ITEM_MAP, MONSTERS } from '../../src/rpg/data.js'
 export const config = {
   name: "adventure",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur adventure versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD adventure feature, rewritten in KANA style" },
+  description: { id: "Petualangan dungeon 3 gelombang lewat mesin dungeon: monster, koin, drop item", en: "3-wave dungeon adventure via the dungeon engine: monsters, coins, item drops" },
   usage: ".adventure",
   example: ".adventure",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "adventure": {
-      done: "╭─❏ ⚔️ 「 *ADVENTURE* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *ADVENTURE* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "adventure": {
-      done: "╭─❏ ⚔️ 「 *ADVENTURE* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *ADVENTURE* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "adventure": {
+    "jailed": "╭─❏ 🚔 「 *ADVENTURE* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *ADVENTURE* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 🗺️ 「 *ADVENTURE* 」\n┊ Petualanganmu menembus gelombang demi gelombang.\n┊ {lines}\n┊ GELOMBANG BERSIH: *{waves}/3* | TOTAL: *+{coins} KOIN*\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
+    "wiped": "╭─❏ 💀 「 *ADVENTURE* 」\n┊ Gelombang pertama saja sudah menghabiskanmu. Perkuat power lewat .skill dan senjata~\n┊ POWER KAMU: *{power}* | SALDO: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "adventure": {
+    "jailed": "╭─❏ 🚔 「 *ADVENTURE* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *ADVENTURE* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 🗺️ 「 *ADVENTURE* 」\n┊ Your adventure pushed through wave after wave.\n┊ {lines}\n┊ WAVES CLEARED: *{waves}/3* | TOTAL: *+{coins} COINS*\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
+    "wiped": "╭─❏ 💀 「 *ADVENTURE* 」\n┊ The first wave already wiped you. Raise your power via .skill and weapons~\n┊ YOUR POWER: *{power}* | BALANCE: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur adventure buat profil petualanganmu~", en: "Here is the adventure summary for your adventure profile~" }
-export const test = { input: '.adventure', expect: /adventure|koin|coin/i }
+export const test = { input: ".adventure", expect: /gelombang|wave|power|energi/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('adventure.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('adventure'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('adventure.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('adventure.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('adventure.btnAgain'), id: '.adventure' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('adventure.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('adventure.btnAgain'), id: '.adventure' }], textFallback: body })
+  if (isJailed(profile)) return ctx.reply(ctx.t('adventure.jailed', { minutes: jailMinutesLeft(profile) }))
+  const energy = energyOf(profile)
+  if (energy < 20) return ctx.reply(ctx.t('adventure.lowEnergy', { energy, need: 20 }))
+  await updateProfile(ctx.storage, ctx.senderDigits, { energy: energy - 20 })
+  const run = await runDungeon(ctx.storage, ctx.senderDigits)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  if (run.cleared === 0) return ctx.reply(ctx.t('adventure.wiped', { power: run.power, balance: fresh.balance ?? 0 }))
+  const lines = run.rewards.map((r, i) => {
+    const def = MONSTERS.find((m) => m.id === r.monster)
+    const nm = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : r.monster
+    return 'Wave ' + (i + 1) + ': ' + nm + ' (+' + r.coins + (r.item ? ', drop ' + r.item : '') + ')'
+  }).join('\n┊ ')
+  return ctx.reply(ctx.t('adventure.done', { lines, waves: run.cleared, coins: run.totalCoins, balance: fresh.balance ?? 0 }))
 }

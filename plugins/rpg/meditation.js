@@ -1,57 +1,45 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { buyItem, sellItem, craftItem, petAdopt } from '../../src/rpg/engine.js'
+import { ITEM_MAP, SHOP_MAP, RECIPE_MAP, JOBS, PET_MAP } from '../../src/rpg/data.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "meditation",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur meditation versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD meditation feature, rewritten in KANA style" },
+  description: { id: "Meditasi: pulihkan 35 energi gratis, cooldown 30 menit", en: "Meditation: restore 35 energy for free, 30 minute cooldown" },
   usage: ".meditation",
   example: ".meditation",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "meditation": {
-      done: "╭─❏ ⚔️ 「 *MEDITATION* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *MEDITATION* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "meditation": {
-      done: "╭─❏ ⚔️ 「 *MEDITATION* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *MEDITATION* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "meditation": {
+    "wait": "╭─❏ ⏳ 「 *MEDITATION* 」\n┊ Istirahat dulu, coba lagi *{minutes} menit* lagi yaa~\n╰━━━━━━━",
+    "full": "╭─❏ 🧘 「 *MEDITATION* 」\n┊ Energimu sudah penuh, pikiranmu jernih~\n╰━━━━━━━",
+    "done": "╭─❏ 🧘 「 *MEDITATION* 」\n┊ Hening... energi pulih jadi *{energy}*. +5 XP ketenangan.\n╰━━━━━━━"
+} },
+  en: { "meditation": {
+    "wait": "╭─❏ ⏳ 「 *MEDITATION* 」\n┊ Rest first, try again in *{minutes} minutes*~\n╰━━━━━━━",
+    "full": "╭─❏ 🧘 「 *MEDITATION* 」\n┊ Your energy is already full, your mind is clear~\n╰━━━━━━━",
+    "done": "╭─❏ 🧘 「 *MEDITATION* 」\n┊ Silence... energy restored to *{energy}*. +5 calm XP.\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur meditation buat profil petualanganmu~", en: "Here is the meditation summary for your adventure profile~" }
-export const test = { input: '.meditation', expect: /meditation|koin|coin/i }
+export const test = { input: ".meditation", expect: /energi pulih|energy restored|penuh|istirahat/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('meditation.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('meditation'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('meditation.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('meditation.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('meditation.btnAgain'), id: '.meditation' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('meditation.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('meditation.btnAgain'), id: '.meditation' }], textFallback: body })
+  const now = Date.now()
+  const last = Number(profile.last_meditation) || 0
+  if (now - last < 1800000) return ctx.reply(ctx.t('meditation.wait', { minutes: Math.ceil((1800000 - (now - last)) / 60000) }))
+  const energy = energyOf(profile)
+  if (energy >= 100) return ctx.reply(ctx.t('meditation.full'))
+  const next = Math.min(100, energy + 35)
+  await updateProfile(ctx.storage, ctx.senderDigits, { energy: next, last_meditation: now })
+  await addXp(ctx.storage, ctx.senderDigits, 5)
+  return ctx.reply(ctx.t('meditation.done', { energy: next }))
 }

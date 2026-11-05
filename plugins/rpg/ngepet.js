@@ -1,57 +1,44 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "ngepet",
-  alias: ["ngefet"],
+  alias: [],
   category: "rpg",
-  description: { id: "Fitur ngepet versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD ngepet feature, rewritten in KANA style" },
+  description: { id: "Ngepet: petmu keliling membawa pulang koin per jam, besar sesuai level pet", en: "Ngepet: your pet roams and brings home coins hourly, scaled by pet level" },
   usage: ".ngepet",
   example: ".ngepet",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "ngepet": {
-      done: "╭─❏ ⚔️ 「 *NGEPET* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *NGEPET* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "ngepet": {
-      done: "╭─❏ ⚔️ 「 *NGEPET* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *NGEPET* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "ngepet": {
+    "noPet": "╭─❏ 👻 「 *NGEPET* 」\n┊ Ngepet butuh pet sebagai perantara. Adopsi dulu pakai .adopt~\n╰━━━━━━━",
+    "wait": "╭─❏ 👻 「 *NGEPET* 」\n┊ Petmu masih keliling, tunggu *{minutes} menit* lagi~\n╰━━━━━━━",
+    "done": "╭─❏ 👻 「 *NGEPET* 」\n┊ *{pet}* pulang membawa *+{coins} KOIN* hasil keliling semalam.\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "ngepet": {
+    "noPet": "╭─❏ 👻 「 *NGEPET* 」\n┊ Ngepet needs a pet as the earner. Adopt one with .adopt~\n╰━━━━━━━",
+    "wait": "╭─❏ 👻 「 *NGEPET* 」\n┊ Your pet is still out roaming, wait *{minutes} more minutes*~\n╰━━━━━━━",
+    "done": "╭─❏ 👻 「 *NGEPET* 」\n┊ *{pet}* came home carrying *+{coins} COINS* from last night's rounds.\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur ngepet buat profil petualanganmu~", en: "Here is the ngepet summary for your adventure profile~" }
-export const test = { input: '.ngepet', expect: /ngepet|koin|coin/i }
+export const test = { input: ".ngepet", expect: /membawa|carrying|butuh pet|needs a pet|masih keliling/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('ngepet.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('ngepet'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('ngepet.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('ngepet.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('ngepet.btnAgain'), id: '.ngepet' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('ngepet.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('ngepet.btnAgain'), id: '.ngepet' }], textFallback: body })
+  if (!profile.pet) return ctx.reply(ctx.t('ngepet.noPet'))
+  const now = Date.now()
+  const last = Number(profile.last_ngepet) || 0
+  const cdMs = 3600000
+  if (now - last < cdMs) return ctx.reply(ctx.t('ngepet.wait', { minutes: Math.ceil((cdMs - (now - last)) / 60000) }))
+  const level = profile.pet.level ?? 1
+  const coins = 30 + level * 20 + Math.floor(Math.random() * 60)
+  profile.balance = (profile.balance ?? 0) + coins
+  profile.last_ngepet = now
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  await addXp(ctx.storage, ctx.senderDigits, 5)
+  return ctx.reply(ctx.t('ngepet.done', { pet: profile.pet.name, coins, balance: profile.balance }))
 }

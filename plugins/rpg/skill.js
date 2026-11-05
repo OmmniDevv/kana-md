@@ -1,57 +1,40 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
 export const config = {
   name: "skill",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur skill versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD skill feature, rewritten in KANA style" },
+  description: { id: "Status skill nyata: level, pekerjaan, power tempur terhitung, pet, dan energi dari profilmu", en: "Real skill status: level, job, computed battle power, pet, and energy from your profile" },
   usage: ".skill",
   example: ".skill",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "skill": {
-      done: "╭─❏ ⚔️ 「 *SKILL* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *SKILL* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "skill": {
-      done: "╭─❏ ⚔️ 「 *SKILL* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *SKILL* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "skill": {
+    "info": "╭─❏ 📊 「 *SKILL & STATUS* 」\n┊ LEVEL: *{level}* (XP {Xp})\n┊ SKILL/PEKERJAAN: *{job}*\n┊ POWER TEMPUR: *{power}*\n┊ PET: *{pet}* | ENERGI: *{energy}*\n┊ Ganti skill pakai .selectskill\n╰━━━━━━━"
+} },
+  en: { "skill": {
+    "info": "╭─❏ 📊 「 *SKILL & STATUS* 」\n┊ LEVEL: *{level}* (XP {Xp})\n┊ SKILL/JOB: *{job}*\n┊ BATTLE POWER: *{power}*\n┊ PET: *{pet}* | ENERGY: *{energy}*\n┊ Change skills with .selectskill\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur skill buat profil petualanganmu~", en: "Here is the skill summary for your adventure profile~" }
-export const test = { input: '.skill', expect: /skill|koin|coin/i }
+export const test = { input: ".skill", expect: /skill & status|power tempur|battle power/i }
 export async function handler(ctx) {
+
+  const { JOB_MAP } = await import('../../src/rpg/data.js')
+  const { powerOf } = await import('../../src/rpg/engine.js')
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('skill.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('skill'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('skill.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('skill.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('skill.btnAgain'), id: '.skill' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('skill.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('skill.btnAgain'), id: '.skill' }], textFallback: body })
+  const job = JOB_MAP[profile.job]
+  return ctx.reply(ctx.t('skill.info', {
+    level: levelFromXp(profile.xp ?? 0),
+    xp: profile.xp ?? 0,
+    job: job ? (ctx.lang === 'en' ? job.name.en : job.name.id) : '-',
+    power: powerOf(profile),
+    pet: profile.pet ? profile.pet.name + ' lv' + (profile.pet.level ?? 1) : '-',
+    energy: energyOf(profile),
+  }))
 }

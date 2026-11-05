@@ -1,57 +1,39 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { createClan, joinClan, getClan, clanPower, clanWar } from '../../src/rpg/engine.js'
 export const config = {
   name: "guildinfoacc",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur guildinfoacc versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD guildinfoacc feature, rewritten in KANA style" },
+  description: { id: "Lihat detail undangan guild yang sedang menunggumu sebelum memutuskan", en: "See the details of the guild invitation waiting for you before deciding" },
   usage: ".guildinfoacc",
   example: ".guildinfoacc",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "guildinfoacc": {
-      done: "╭─❏ ⚔️ 「 *GUILDINFOACC* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDINFOACC* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "guildinfoacc": {
-      done: "╭─❏ ⚔️ 「 *GUILDINFOACC* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDINFOACC* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "guildinfoacc": {
+    "none": "╭─❏ 🏰 「 *UNDANGAN GUILD* 」\n┊ Tidak ada undangan guild yang menunggu buatmu~\n╰━━━━━━━",
+    "gone": "╭─❏ 🏰 「 *UNDANGAN GUILD* 」\n┊ Guild pengundang sudah tidak ada, undangan dibersihkan.\n╰━━━━━━━",
+    "info": "╭─❏ 🏰 「 *UNDANGAN GUILD* 」\n┊ Kamu diundang gabung *{guild}* (ID: {id})\n┊ PEMILIK: *{owner}* | MEMBER: *{members}* | POWER: *{power}*\n┊ Terima pakai .guildaccept, tolak pakai .guilddecline\n╰━━━━━━━"
+} },
+  en: { "guildinfoacc": {
+    "none": "╭─❏ 🏰 「 *GUILD INVITATION* 」\n┊ No guild invitation is waiting for you~\n╰━━━━━━━",
+    "gone": "╭─❏ 🏰 「 *GUILD INVITATION* 」\n┊ The inviting guild no longer eXists, the invitation was cleaned.\n╰━━━━━━━",
+    "info": "╭─❏ 🏰 「 *GUILD INVITATION* 」\n┊ You are invited to join *{guild}* (ID: {id})\n┊ OWNER: *{owner}* | MEMBERS: *{members}* | POWER: *{power}*\n┊ Accept with .guildaccept, decline with .guilddecline\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur guildinfoacc buat profil petualanganmu~", en: "Here is the guildinfoacc summary for your adventure profile~" }
-export const test = { input: '.guildinfoacc', expect: /guildinfoacc|koin|coin/i }
+export const test = { input: ".guildinfoacc", expect: /tidak ada undangan|no guild invitation|diundang gabung|invited to join/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('guildinfoacc.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('guildinfoacc'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('guildinfoacc.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('guildinfoacc.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guildinfoacc.btnAgain'), id: '.guildinfoacc' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('guildinfoacc.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guildinfoacc.btnAgain'), id: '.guildinfoacc' }], textFallback: body })
+  const inviteId = profile.guildInvite || ''
+  if (!inviteId) return ctx.reply(ctx.t('guildinfoacc.none'))
+  const clan = await getClan(ctx.storage, inviteId)
+  if (!clan) { await updateProfile(ctx.storage, ctx.senderDigits, { guildInvite: '' }); return ctx.reply(ctx.t('guildinfoacc.gone')) }
+  const power = await clanPower(ctx.storage, clan)
+  return ctx.reply(ctx.t('guildinfoacc.info', { guild: clan.name, id: clan.id, owner: clan.owner, members: (clan.members ?? []).length, power }))
 }

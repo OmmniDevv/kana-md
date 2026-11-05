@@ -1,57 +1,42 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "leaderboard-orang-miskin",
   alias: [],
   category: "economy",
-  description: { id: "Ranking orang paling miskin versi Rimuru 🗿💸", en: "KANA version of the Elaina-MD leaderboard-orang-miskin feature, rewritten in KANA style" },
+  description: { id: "Peringkat saldo koin terendah semua pemain dari data profil nyata", en: "Lowest coin balance ranking of all players from real profile data" },
   usage: ".leaderboard-orang-miskin",
   example: ".leaderboard-orang-miskin",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "leaderboard-orang-miskin": {
-      done: "╭─❏ ⚔️ 「 *LEADERBOARD-ORANG-MISKIN* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *LEADERBOARD-ORANG-MISKIN* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "leaderboard-orang-miskin": {
-      done: "╭─❏ ⚔️ 「 *LEADERBOARD-ORANG-MISKIN* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *LEADERBOARD-ORANG-MISKIN* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "leaderboard-orang-miskin": {
+    "empty": "╭─❏ 🏆 「 *LEADERBOARD ORANG MISKIN* 」\n┊ Belum ada data pemain~\n╰━━━━━━━",
+    "list": "╭─❏ 🏆 「 *LEADERBOARD ORANG MISKIN* 」\n┊ {list}\n╰━━━━━━━"
+} },
+  en: { "leaderboard-orang-miskin": {
+    "empty": "╭─❏ 🏆 「 *LEADERBOARD ORANG MISKIN* 」\n┊ No player data yet~\n╰━━━━━━━",
+    "list": "╭─❏ 🏆 「 *LEADERBOARD ORANG MISKIN* 」\n┊ {list}\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur leaderboard-orang-miskin buat profil petualanganmu~", en: "Here is the leaderboard-orang-miskin summary for your adventure profile~" }
-export const test = { input: '.leaderboard-orang-miskin', expect: /leaderboard-orang-miskin|koin|coin/i }
+export const test = { input: ".leaderboard-orang-miskin", expect: /koin, lv|belum ada data|no player data/i }
 export async function handler(ctx) {
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('leaderboard-orang-miskin.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+
+  let keys = []
+  try { keys = await ctx.storage.keys('users') } catch { keys = [] }
+  const rows = []
+  for (const key of keys) {
+    if (!/^\d+$/.test(key)) continue
+    const p = await getProfile(ctx.storage, key)
+    rows.push({ digits: key, name: p.regName || p.name || '', balance: p.balance ?? 0, level: levelFromXp(p.xp ?? 0) })
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('leaderboard-orang-miskin'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('leaderboard-orang-miskin.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('leaderboard-orang-miskin.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('leaderboard-orang-miskin.btnAgain'), id: '.leaderboard-orang-miskin' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('leaderboard-orang-miskin.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('leaderboard-orang-miskin.btnAgain'), id: '.leaderboard-orang-miskin' }], textFallback: body })
+  rows.sort((a, b) => a.balance - b.balance)
+  const top = rows.slice(0, 10)
+  if (!top.length) return ctx.reply(ctx.t('leaderboard-orang-miskin.empty'))
+  const list = top.map((r, i) => (i + 1) + '. ' + (r.name ? r.name + ' ' : '') + '(' + r.digits + ') : ' + r.balance + ' koin, lv' + r.level).join('\n┊ ')
+  return ctx.reply(ctx.t('leaderboard-orang-miskin.list', { list }))
 }

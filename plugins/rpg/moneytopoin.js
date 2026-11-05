@@ -1,57 +1,40 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "moneytopoin",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur moneytopoin versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD moneytopoin feature, rewritten in KANA style" },
-  usage: ".moneytopoin",
-  example: ".moneytopoin",
+  description: { id: "Tukar koin menjadi XP dengan kurs 10 koin = 1 XP", en: "Exchange coins into XP at 10 coins = 1 XP" },
+  usage: ".moneytopoin [jumlah]",
+  example: ".moneytopoin [jumlah]",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "moneytopoin": {
-      done: "╭─❏ ⚔️ 「 *MONEYTOPOIN* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *MONEYTOPOIN* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "moneytopoin": {
-      done: "╭─❏ ⚔️ 「 *MONEYTOPOIN* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *MONEYTOPOIN* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "moneytopoin": {
+    "done": "╭─❏ 🔄 「 *KOIN KE POIN* 」\n┊ *{amount} KOIN* ditukar jadi *+{Xp} XP* (kurs 10:1).\n┊ SALDO: *{balance} KOIN* | TOTAL XP: *{totalXp}*\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *KOIN KE POIN* 」\n┊ Saldomu *{balance} KOIN*, tidak cukup buat tukar *{amount}*~\n╰━━━━━━━",
+    "bad": "╭─❏ 🔄 「 *KOIN KE POIN* 」\n┊ Jumlah minimal 10 koin yaa: *.moneytopoin 100*\n╰━━━━━━━"
+} },
+  en: { "moneytopoin": {
+    "done": "╭─❏ 🔄 「 *COINS TO POINTS* 」\n┊ *{amount} COINS* eXchanged for *+{Xp} XP* (rate 10:1).\n┊ BALANCE: *{balance} COINS* | TOTAL XP: *{totalXp}*\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *COINS TO POINTS* 」\n┊ Your balance is *{balance} COINS*, not enough to eXchange *{amount}*~\n╰━━━━━━━",
+    "bad": "╭─❏ 🔄 「 *COINS TO POINTS* 」\n┊ Minimum amount is 10 coins: *.moneytopoin 100*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur moneytopoin buat profil petualanganmu~", en: "Here is the moneytopoin summary for your adventure profile~" }
-export const test = { input: '.moneytopoin', expect: /moneytopoin|koin|coin/i }
+export const test = { input: ".moneytopoin 100", expect: /ditukar|exchanged|saldo|balance/i }
 export async function handler(ctx) {
+
+  const amount = Math.floor(Number((ctx.args ?? [])[0]) || 100)
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('moneytopoin.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('moneytopoin'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('moneytopoin.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('moneytopoin.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('moneytopoin.btnAgain'), id: '.moneytopoin' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('moneytopoin.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('moneytopoin.btnAgain'), id: '.moneytopoin' }], textFallback: body })
+  if (!Number.isFinite(amount) || amount < 10) return ctx.reply(ctx.t('moneytopoin.bad'))
+  if ((profile.balance ?? 0) < amount) return ctx.reply(ctx.t('moneytopoin.poor', { balance: profile.balance ?? 0, amount }))
+  const xpGain = Math.floor(amount / 10)
+  await updateProfile(ctx.storage, ctx.senderDigits, { balance: (profile.balance ?? 0) - amount })
+  await addXp(ctx.storage, ctx.senderDigits, xpGain)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t('moneytopoin.done', { amount, xp: xpGain, balance: fresh.balance ?? 0, totalXp: fresh.xp ?? 0 }))
 }

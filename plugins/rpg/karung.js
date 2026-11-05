@@ -1,57 +1,46 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { buyItem, sellItem, craftItem, petAdopt } from '../../src/rpg/engine.js'
+import { ITEM_MAP, SHOP_MAP, RECIPE_MAP, JOBS, PET_MAP } from '../../src/rpg/data.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "karung",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur karung versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD karung feature, rewritten in KANA style" },
+  description: { id: "Isi karung (inventaris) nyata dengan harga jual tiap barang dan total nilainya", en: "Your real sack (inventory) contents with per-item sell prices and total value" },
   usage: ".karung",
   example: ".karung",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "karung": {
-      done: "╭─❏ ⚔️ 「 *KARUNG* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *KARUNG* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "karung": {
-      done: "╭─❏ ⚔️ 「 *KARUNG* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *KARUNG* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "karung": {
+    "empty": "╭─❏ 🎒 「 *KARUNG* 」\n┊ Karungmu kosong. Kumpulkan barang dari .tambang, .mancing, .berkebon~\n╰━━━━━━━",
+    "list": "╭─❏ 🎒 「 *KARUNG* 」\n┊ {list}\n┊ TOTAL NILAI JUAL: *{total} KOIN* (jual pakai .trading <item>)\n╰━━━━━━━"
+} },
+  en: { "karung": {
+    "empty": "╭─❏ 🎒 「 *SACK* 」\n┊ Your sack is empty. Gather items from .tambang, .mancing, .berkebon~\n╰━━━━━━━",
+    "list": "╭─❏ 🎒 「 *SACK* 」\n┊ {list}\n┊ TOTAL SELL VALUE: *{total} COINS* (sell with .trading <item>)\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur karung buat profil petualanganmu~", en: "Here is the karung summary for your adventure profile~" }
-export const test = { input: '.karung', expect: /karung|koin|coin/i }
+export const test = { input: ".karung", expect: /karungmu kosong|sack is empty|total nilai jual|total sell value/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('karung.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('karung'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('karung.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('karung.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('karung.btnAgain'), id: '.karung' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('karung.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('karung.btnAgain'), id: '.karung' }], textFallback: body })
+  const inv = profile.inventory ?? {}
+  const entries = Object.entries(inv).filter(([, q]) => q > 0)
+  if (!entries.length) return ctx.reply(ctx.t('karung.empty'))
+  let total = 0
+  const list = entries.map(([id, q]) => {
+    const def = ITEM_MAP[id]
+    const nm = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : id
+    const price = def?.price ?? 0
+    total += price * q
+    return (def?.emoji ?? '•') + ' ' + nm + ' x' + q + ' (@' + price + ')'
+  }).join('\n┊ ')
+  return ctx.reply(ctx.t('karung.list', { list, total }))
 }

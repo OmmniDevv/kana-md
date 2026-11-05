@@ -1,57 +1,51 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
+import { gather, runDungeon } from '../../src/rpg/engine.js'
+import { ITEM_MAP, MONSTERS } from '../../src/rpg/data.js'
 export const config = {
   name: "attacktitan",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur attacktitan versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD attacktitan feature, rewritten in KANA style" },
+  description: { id: "Serang titan: dijalankan sebagai dungeon 3 gelombang (bagian tubuh titan) lewat mesin dungeon", en: "Attack the titan: runs as a 3-wave dungeon (titan body parts) via the dungeon engine" },
   usage: ".attacktitan",
   example: ".attacktitan",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "attacktitan": {
-      done: "╭─❏ ⚔️ 「 *ATTACKTITAN* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *ATTACKTITAN* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "attacktitan": {
-      done: "╭─❏ ⚔️ 「 *ATTACKTITAN* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *ATTACKTITAN* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "attacktitan": {
+    "jailed": "╭─❏ 🚔 「 *ATTACKTITAN* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *ATTACKTITAN* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 🗺️ 「 *ATTACKTITAN* 」\n┊ Kamu mengiris bagian titan gelombang demi gelombang.\n┊ {lines}\n┊ GELOMBANG BERSIH: *{waves}/3* | TOTAL: *+{coins} KOIN*\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
+    "wiped": "╭─❏ 💀 「 *ATTACKTITAN* 」\n┊ Titan terlalu kuat, seranganmu mental. Naikkan power dulu~\n┊ POWER KAMU: *{power}* | SALDO: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "attacktitan": {
+    "jailed": "╭─❏ 🚔 「 *ATTACKTITAN* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *ATTACKTITAN* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 🗺️ 「 *ATTACKTITAN* 」\n┊ You sliced through the titan part after part, wave after wave.\n┊ {lines}\n┊ WAVES CLEARED: *{waves}/3* | TOTAL: *+{coins} COINS*\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
+    "wiped": "╭─❏ 💀 「 *ATTACKTITAN* 」\n┊ The titan is too strong, your attack bounced off. Raise your power first~\n┊ YOUR POWER: *{power}* | BALANCE: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur attacktitan buat profil petualanganmu~", en: "Here is the attacktitan summary for your adventure profile~" }
-export const test = { input: '.attacktitan', expect: /attacktitan|koin|coin/i }
+export const test = { input: ".attacktitan", expect: /gelombang|wave|power|energi/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('attacktitan.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('attacktitan'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('attacktitan.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('attacktitan.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('attacktitan.btnAgain'), id: '.attacktitan' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('attacktitan.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('attacktitan.btnAgain'), id: '.attacktitan' }], textFallback: body })
+  if (isJailed(profile)) return ctx.reply(ctx.t('attacktitan.jailed', { minutes: jailMinutesLeft(profile) }))
+  const energy = energyOf(profile)
+  if (energy < 25) return ctx.reply(ctx.t('attacktitan.lowEnergy', { energy, need: 25 }))
+  await updateProfile(ctx.storage, ctx.senderDigits, { energy: energy - 25 })
+  const run = await runDungeon(ctx.storage, ctx.senderDigits)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  if (run.cleared === 0) return ctx.reply(ctx.t('attacktitan.wiped', { power: run.power, balance: fresh.balance ?? 0 }))
+  const lines = run.rewards.map((r, i) => {
+    const def = MONSTERS.find((m) => m.id === r.monster)
+    const nm = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : r.monster
+    return 'Wave ' + (i + 1) + ': ' + nm + ' (+' + r.coins + (r.item ? ', drop ' + r.item : '') + ')'
+  }).join('\n┊ ')
+  return ctx.reply(ctx.t('attacktitan.done', { lines, waves: run.cleared, coins: run.totalCoins, balance: fresh.balance ?? 0 }))
 }

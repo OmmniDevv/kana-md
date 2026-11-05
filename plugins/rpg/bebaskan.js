@@ -1,57 +1,41 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft, sendToJail, fineAmount } from '../../src/rpg/crime.js'
 export const config = {
   name: "bebaskan",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur bebaskan versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD bebaskan feature, rewritten in KANA style" },
+  description: { id: "Bayar denda penjara (sesuai level) untuk bebas seketika", en: "Pay the jail fine (scales with level) to get out instantly" },
   usage: ".bebaskan",
   example: ".bebaskan",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "bebaskan": {
-      done: "╭─❏ ⚔️ 「 *BEBASKAN* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BEBASKAN* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "bebaskan": {
-      done: "╭─❏ ⚔️ 「 *BEBASKAN* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BEBASKAN* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "bebaskan": {
+    "free": "╭─❏ 🕊️ 「 *BEBASKAN* 」\n┊ Kamu memang lagi bebas, tidak ada yang perlu dibebaskan~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *BEBASKAN* 」\n┊ Dendanya *{fine} KOIN*, saldomu *{balance} KOIN*. Kurang~ Tunggu *{minutes} menit* atau kumpulkan koin dulu.\n╰━━━━━━━",
+    "done": "╭─❏ 🔓 「 *BEBASKAN* 」\n┊ DENDA TERBAYAR *{fine} KOIN*. Kamu bebas sekarang!\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "bebaskan": {
+    "free": "╭─❏ 🕊️ 「 *BEBASKAN* 」\n┊ You are already free, nothing to bail out~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *BEBASKAN* 」\n┊ The fine is *{fine} COINS*, your balance is *{balance} COINS*. Not enough~ Wait *{minutes} minutes* or earn coins first.\n╰━━━━━━━",
+    "done": "╭─❏ 🔓 「 *BEBASKAN* 」\n┊ FINE PAID *{fine} COINS*. You are free now!\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur bebaskan buat profil petualanganmu~", en: "Here is the bebaskan summary for your adventure profile~" }
-export const test = { input: '.bebaskan', expect: /bebaskan|koin|coin/i }
+export const test = { input: ".bebaskan", expect: /bebas|denda|fine|free/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('bebaskan.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('bebaskan'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('bebaskan.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('bebaskan.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('bebaskan.btnAgain'), id: '.bebaskan' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('bebaskan.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('bebaskan.btnAgain'), id: '.bebaskan' }], textFallback: body })
+  if (!isJailed(profile)) return ctx.reply(ctx.t('bebaskan.free'))
+  const fine = fineAmount(profile)
+  if ((profile.balance ?? 0) < fine) return ctx.reply(ctx.t('bebaskan.poor', { balance: profile.balance ?? 0, fine, minutes: jailMinutesLeft(profile) }))
+  profile.balance = (profile.balance ?? 0) - fine
+  profile.jailUntil = 0
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  return ctx.reply(ctx.t('bebaskan.done', { fine, balance: profile.balance }))
 }

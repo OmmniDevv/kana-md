@@ -1,57 +1,42 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft, sendToJail, fineAmount } from '../../src/rpg/crime.js'
 export const config = {
   name: "polisi",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur polisi versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD polisi feature, rewritten in KANA style" },
-  usage: ".polisi",
-  example: ".polisi",
+  description: { id: "Cek catatan penjara seseorang dari sistem penjara sungguhan", en: "Check someone's jail record from the real jail system" },
+  usage: ".polisi [target]",
+  example: ".polisi [target]",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "polisi": {
-      done: "╭─❏ ⚔️ 「 *POLISI* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *POLISI* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "polisi": {
-      done: "╭─❏ ⚔️ 「 *POLISI* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *POLISI* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "polisi": {
+    "clean": "╭─❏ 👮 「 *POLISI* 」\n┊ Catatan *{target}* bersih, tidak sedang dipenjara.\n╰━━━━━━━",
+    "jailed": "╭─❏ 👮 「 *POLISI* 」\n┊ *{target}* sedang dipenjara, sisa *{minutes} menit*.\n┊ Denda bebas: *{fine} KOIN* (bayar sendiri via .bebaskan)\n╰━━━━━━━"
+} },
+  en: { "polisi": {
+    "clean": "╭─❏ 👮 「 *POLISI* 」\n┊ *{target}* has a clean record, not jailed.\n╰━━━━━━━",
+    "jailed": "╭─❏ 👮 「 *POLISI* 」\n┊ *{target}* is jailed, *{minutes} minutes* left.\n┊ Bail fine: *{fine} COINS* (pay it themselves via .bebaskan)\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur polisi buat profil petualanganmu~", en: "Here is the polisi summary for your adventure profile~" }
-export const test = { input: '.polisi', expect: /polisi|koin|coin/i }
+export const test = { input: ".polisi", expect: /bersih|clean|dipenjara|jailed/i }
 export async function handler(ctx) {
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('polisi.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('polisi'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('polisi.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('polisi.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('polisi.btnAgain'), id: '.polisi' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('polisi.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('polisi.btnAgain'), id: '.polisi' }], textFallback: body })
+
+  const targetDigits = (() => {
+    const mention = (ctx.mentionedJids ?? [])[0]
+    if (mention) return String(mention).split('@')[0].replace(/\D/g, '')
+    if (ctx.quoted?.sender) return String(ctx.quoted.sender).split('@')[0].replace(/\D/g, '')
+    const num = (ctx.args ?? []).map((a) => String(a).replace(/\D/g, '')).find((a) => a.length >= 9)
+    return num || ''
+  })()
+  const who = targetDigits || ctx.senderDigits
+  const target = await getProfile(ctx.storage, who)
+  if (!isJailed(target)) return ctx.reply(ctx.t('polisi.clean', { target: who }))
+  return ctx.reply(ctx.t('polisi.jailed', { target: who, minutes: jailMinutesLeft(target), fine: fineAmount(target) }))
 }

@@ -1,57 +1,42 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { createClan, joinClan, getClan, clanPower, clanWar } from '../../src/rpg/engine.js'
 export const config = {
   name: "delguild",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur delguild versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD delguild feature, rewritten in KANA style" },
+  description: { id: "Bubarkan guild (khusus pemilik): semua member dikeluarkan, data guild dihapus", en: "Disband the guild (owner only): all members removed, guild data deleted" },
   usage: ".delguild",
   example: ".delguild",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "delguild": {
-      done: "╭─❏ ⚔️ 「 *DELGUILD* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *DELGUILD* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "delguild": {
-      done: "╭─❏ ⚔️ 「 *DELGUILD* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *DELGUILD* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "delguild": {
+    "none": "╭─❏ 🏰 「 *DELGUILD* 」\n┊ Kamu belum punya guild. Buat pakai .createguild <nama> atau gabung pakai .joinguild <id>\n╰━━━━━━━",
+    "notOwner": "╭─❏ 🏰 「 *DELGUILD* 」\n┊ Hanya pemilik guild yang bisa membubarkan guild~\n╰━━━━━━━",
+    "done": "╭─❏ 🏰 「 *DELGUILD* 」\n┊ Guild *{guild}* dibubarkan. Semua member dikeluarkan.\n╰━━━━━━━"
+} },
+  en: { "delguild": {
+    "none": "╭─❏ 🏰 「 *DELGUILD* 」\n┊ You have no guild yet. Create one with .createguild <name> or join with .joinguild <id>\n╰━━━━━━━",
+    "notOwner": "╭─❏ 🏰 「 *DELGUILD* 」\n┊ Only the guild owner can disband the guild~\n╰━━━━━━━",
+    "done": "╭─❏ 🏰 「 *DELGUILD* 」\n┊ Guild *{guild}* disbanded. All members were removed.\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur delguild buat profil petualanganmu~", en: "Here is the delguild summary for your adventure profile~" }
-export const test = { input: '.delguild', expect: /delguild|koin|coin/i }
+export const test = { input: ".delguild", expect: /dibubarkan|disbanded|pemilik guild|guild owner|belum punya guild/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('delguild.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  const clan = await getClan(ctx.storage, profile.clanId)
+  if (!clan) return ctx.reply(ctx.t('delguild.none'))
+  if (clan.owner !== ctx.senderDigits) return ctx.reply(ctx.t('delguild.notOwner'))
+  for (const member of clan.members ?? []) {
+    const p = await getProfile(ctx.storage, member)
+    if (p.clanId === clan.id) await updateProfile(ctx.storage, member, { clanId: '' })
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('delguild'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('delguild.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('delguild.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('delguild.btnAgain'), id: '.delguild' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('delguild.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('delguild.btnAgain'), id: '.delguild' }], textFallback: body })
+  await ctx.storage.delete('clans', clan.id)
+  return ctx.reply(ctx.t('delguild.done', { guild: clan.name }))
 }

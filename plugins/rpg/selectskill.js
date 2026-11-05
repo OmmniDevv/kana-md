@@ -1,57 +1,41 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "selectskill",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur selectskill versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD selectskill feature, rewritten in KANA style" },
-  usage: ".selectskill",
-  example: ".selectskill",
+  description: { id: "Pilih pekerjaan/skill dari daftar pekerjaan engine; bonusnya berlaku di aktivitas yang cocok", en: "Pick a job/skill from the engine job list; its bonus applies to matching activities" },
+  usage: ".selectskill [nama]",
+  example: ".selectskill [nama]",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "selectskill": {
-      done: "╭─❏ ⚔️ 「 *SELECTSKILL* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *SELECTSKILL* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "selectskill": {
-      done: "╭─❏ ⚔️ 「 *SELECTSKILL* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *SELECTSKILL* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "selectskill": {
+    "list": "╭─❏ 🛠️ 「 *PILIH SKILL* 」\n┊ DAFTAR PEKERJAAN/SKILL:\n┊ {list}\n┊ SKILL KAMU SEKARANG: *{current}*\n┊ PILIH: *.selectskill <nama>* (bonus sesuai aktivitasnya)\n╰━━━━━━━",
+    "unknown": "╭─❏ 🛠️ 「 *PILIH SKILL* 」\n┊ Skill *{item}* tidak ada~\n╰━━━━━━━",
+    "done": "╭─❏ 🛠️ 「 *PILIH SKILL* 」\n┊ Skill aktif sekarang: *{job}*. Bonusnya berlaku di aktivitas yang cocok!\n╰━━━━━━━"
+} },
+  en: { "selectskill": {
+    "list": "╭─❏ 🛠️ 「 *SELECT SKILL* 」\n┊ JOB/SKILL LIST:\n┊ {list}\n┊ YOUR CURRENT SKILL: *{current}*\n┊ PICK: *.selectskill <name>* (bonus applies to matching activities)\n╰━━━━━━━",
+    "unknown": "╭─❏ 🛠️ 「 *SELECT SKILL* 」\n┊ Skill *{item}* does not eXist~\n╰━━━━━━━",
+    "done": "╭─❏ 🛠️ 「 *SELECT SKILL* 」\n┊ Active skill now: *{job}*. Its bonus applies to matching activities!\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur selectskill buat profil petualanganmu~", en: "Here is the selectskill summary for your adventure profile~" }
-export const test = { input: '.selectskill', expect: /selectskill|koin|coin/i }
+export const test = { input: ".selectskill", expect: /daftar pekerjaan|job list|skill list|skill/i }
 export async function handler(ctx) {
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('selectskill.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+
+  const arg = ((ctx.args ?? [])[0] || '').toLowerCase()
+  const { JOB_MAP } = await import('../../src/rpg/data.js')
+  if (!arg) {
+    const profile = await getProfile(ctx.storage, ctx.senderDigits)
+    const list = JOBS.map((j) => '• ' + j.emoji + ' ' + j.id + ' : ' + (ctx.lang === 'en' ? j.name.en : j.name.id)).join('\n┊ ')
+    return ctx.reply(ctx.t('selectskill.list', { list, current: profile.job || '-' }))
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('selectskill'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('selectskill.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('selectskill.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('selectskill.btnAgain'), id: '.selectskill' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('selectskill.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('selectskill.btnAgain'), id: '.selectskill' }], textFallback: body })
+  if (!JOB_MAP[arg]) return ctx.reply(ctx.t('selectskill.unknown', { item: arg }))
+  await updateProfile(ctx.storage, ctx.senderDigits, { job: arg })
+  return ctx.reply(ctx.t('selectskill.done', { job: ctx.lang === 'en' ? JOB_MAP[arg].name.en : JOB_MAP[arg].name.id }))
 }

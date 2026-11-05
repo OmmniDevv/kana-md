@@ -1,57 +1,36 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "freelimit",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur freelimit versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD freelimit feature, rewritten in KANA style" },
+  description: { id: "Klaim +10 limit harian gratis, sekali sehari, masuk ke sistem limit sungguhan", en: "Claim +10 free daily limit, once a day, into the real limit system" },
   usage: ".freelimit",
   example: ".freelimit",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "freelimit": {
-      done: "╭─❏ ⚔️ 「 *FREELIMIT* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *FREELIMIT* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "freelimit": {
-      done: "╭─❏ ⚔️ 「 *FREELIMIT* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *FREELIMIT* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "freelimit": {
+    "done": "╭─❏ 🎁 「 *LIMIT GRATIS* 」\n┊ +10 limit hari ini masuk! Limit kamu sekarang *{left}*.\n╰━━━━━━━",
+    "wait": "╭─❏ 🎁 「 *LIMIT GRATIS* 」\n┊ Limit gratis hari ini sudah diambil. Limitmu sekarang *{left}*.\n╰━━━━━━━"
+} },
+  en: { "freelimit": {
+    "done": "╭─❏ 🎁 「 *FREE LIMIT* 」\n┊ +10 limit for today added! Your limit is now *{left}*.\n╰━━━━━━━",
+    "wait": "╭─❏ 🎁 「 *FREE LIMIT* 」\n┊ Today's free limit is already claimed. Your limit is now *{left}*.\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur freelimit buat profil petualanganmu~", en: "Here is the freelimit summary for your adventure profile~" }
-export const test = { input: '.freelimit', expect: /freelimit|koin|coin/i }
+export const test = { input: ".freelimit", expect: /limit gratis|free limit/i }
 export async function handler(ctx) {
+
+  const { wibDateString, limitState } = await import('../../src/services/user-service.js')
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('freelimit.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('freelimit'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('freelimit.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('freelimit.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('freelimit.btnAgain'), id: '.freelimit' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('freelimit.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('freelimit.btnAgain'), id: '.freelimit' }], textFallback: body })
+  const today = wibDateString()
+  if (profile.last_freelimit === today) return ctx.reply(ctx.t('freelimit.wait', { left: limitState(profile).left }))
+  const state = limitState(profile)
+  await updateProfile(ctx.storage, ctx.senderDigits, { limitDate: state.date, limitLeft: state.left + 10, last_freelimit: today })
+  return ctx.reply(ctx.t('freelimit.done', { left: state.left + 10 }))
 }

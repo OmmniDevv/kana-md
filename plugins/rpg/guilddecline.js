@@ -1,57 +1,40 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { createClan, joinClan, getClan, clanPower, clanWar } from '../../src/rpg/engine.js'
 export const config = {
   name: "guilddecline",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur guilddecline versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD guilddecline feature, rewritten in KANA style" },
+  description: { id: "Tolak undangan guild yang menunggumu; undangan terhapus dari kedua sisi", en: "Decline the guild invitation waiting for you; it is removed from both sides" },
   usage: ".guilddecline",
   example: ".guilddecline",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "guilddecline": {
-      done: "╭─❏ ⚔️ 「 *GUILDDECLINE* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDDECLINE* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "guilddecline": {
-      done: "╭─❏ ⚔️ 「 *GUILDDECLINE* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDDECLINE* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "guilddecline": {
+    "none": "╭─❏ 🏰 「 *GUILDDECLINE* 」\n┊ Tidak ada undangan guild yang menunggu buatmu~\n╰━━━━━━━",
+    "done": "╭─❏ 🏰 「 *GUILDDECLINE* 」\n┊ Undangan dari *{guild}* ditolak dan dihapus.\n╰━━━━━━━"
+} },
+  en: { "guilddecline": {
+    "none": "╭─❏ 🏰 「 *GUILDDECLINE* 」\n┊ No guild invitation is waiting for you~\n╰━━━━━━━",
+    "done": "╭─❏ 🏰 「 *GUILDDECLINE* 」\n┊ The invitation from *{guild}* was declined and removed.\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur guilddecline buat profil petualanganmu~", en: "Here is the guilddecline summary for your adventure profile~" }
-export const test = { input: '.guilddecline', expect: /guilddecline|koin|coin/i }
+export const test = { input: ".guilddecline", expect: /tidak ada undangan|no guild invitation|ditolak|declined/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('guilddecline.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+  const inviteId = profile.guildInvite || ''
+  if (!inviteId) return ctx.reply(ctx.t('guilddecline.none'))
+  const clan = await getClan(ctx.storage, inviteId)
+  if (clan) {
+    clan.invites = (clan.invites ?? []).filter((d) => d !== ctx.senderDigits)
+    await ctx.storage.set('clans', clan.id, clan)
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('guilddecline'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('guilddecline.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('guilddecline.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guilddecline.btnAgain'), id: '.guilddecline' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('guilddecline.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guilddecline.btnAgain'), id: '.guilddecline' }], textFallback: body })
+  await updateProfile(ctx.storage, ctx.senderDigits, { guildInvite: '' })
+  return ctx.reply(ctx.t('guilddecline.done', { guild: clan?.name ?? inviteId }))
 }

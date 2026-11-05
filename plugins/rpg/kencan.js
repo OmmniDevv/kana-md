@@ -1,57 +1,44 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "kencan",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur kencan versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD kencan feature, rewritten in KANA style" },
+  description: { id: "Kencan dengan pasanganmu: koin dan XP untuk berdua, cooldown 6 jam", en: "Date your partner: coins and XP for both, 6 hour cooldown" },
   usage: ".kencan",
   example: ".kencan",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "kencan": {
-      done: "╭─❏ ⚔️ 「 *KENCAN* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *KENCAN* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "kencan": {
-      done: "╭─❏ ⚔️ 「 *KENCAN* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *KENCAN* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "kencan": {
+    "single": "╭─❏ 💕 「 *KENCAN* 」\n┊ Kencan butuh pasangan. Lamar dulu pakai .marry~\n╰━━━━━━━",
+    "wait": "╭─❏ 💕 「 *KENCAN* 」\n┊ Baru kencan tadi. Pasanganmu butuh istirahat, coba *{hours} jam* lagi~\n╰━━━━━━━",
+    "done": "╭─❏ 💕 「 *KENCAN* 」\n┊ Kencan seru bareng *{partner}*! Momen manis bernilai *+{coins} KOIN* dan +10 XP buat kalian berdua.\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "kencan": {
+    "single": "╭─❏ 💕 「 *DATE* 」\n┊ Dating needs a partner. Propose first with .marry~\n╰━━━━━━━",
+    "wait": "╭─❏ 💕 「 *DATE* 」\n┊ You just had a date. Your partner needs rest, try again in *{hours} hours*~\n╰━━━━━━━",
+    "done": "╭─❏ 💕 「 *DATE* 」\n┊ A lovely date with *{partner}*! Sweet moments worth *+{coins} COINS* and +10 XP for both of you.\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur kencan buat profil petualanganmu~", en: "Here is the kencan summary for your adventure profile~" }
-export const test = { input: '.kencan', expect: /kencan|koin|coin/i }
+export const test = { input: ".kencan", expect: /kencan butuh pasangan|dating needs a partner|kencan seru|lovely date/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('kencan.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('kencan'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('kencan.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('kencan.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('kencan.btnAgain'), id: '.kencan' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('kencan.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('kencan.btnAgain'), id: '.kencan' }], textFallback: body })
+  if (!profile.partner) return ctx.reply(ctx.t('kencan.single'))
+  const now = Date.now()
+  const last = Number(profile.last_kencan) || 0
+  const cdMs = 6 * 3600000
+  if (now - last < cdMs) return ctx.reply(ctx.t('kencan.wait', { hours: Math.ceil((cdMs - (now - last)) / 3600000) }))
+  const coins = 50 + Math.floor(Math.random() * 100)
+  profile.balance = (profile.balance ?? 0) + coins
+  profile.last_kencan = now
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  await addXp(ctx.storage, profile.partner, 10)
+  const gain = await addXp(ctx.storage, ctx.senderDigits, 10)
+  return ctx.reply(ctx.t('kencan.done', { partner: profile.partner, coins, balance: gain.profile.balance ?? profile.balance }))
 }

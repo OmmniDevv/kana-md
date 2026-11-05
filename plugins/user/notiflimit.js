@@ -1,57 +1,37 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { limitState } from '../../src/services/user-service.js'
+import { buyItem } from '../../src/rpg/engine.js'
 export const config = {
   name: "notiflimit",
   alias: [],
   category: "user",
-  description: { id: "Fitur notiflimit versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD notiflimit feature, rewritten in KANA style" },
+  description: { id: "Nyalakan/matikan notifikasi limit harian; pilihan tersimpan di profilmu", en: "Toggle daily limit notifications; the choice is stored in your profile" },
   usage: ".notiflimit",
   example: ".notiflimit",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "notiflimit": {
-      done: "╭─❏ ⚔️ 「 *NOTIFLIMIT* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *NOTIFLIMIT* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "notiflimit": {
-      done: "╭─❏ ⚔️ 「 *NOTIFLIMIT* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *NOTIFLIMIT* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "notiflimit": {
+    "on": "╭─❏ 🔔 「 *NOTIF LIMIT* 」\n┊ Notifikasi limit *AKTIF*. Kamu akan diingatkan saat limit harianmu habis (sisa sekarang: *{left}*).\n┊ Matikan pakai .notiflimit lagi.\n╰━━━━━━━",
+    "off": "╭─❏ 🔕 「 *NOTIF LIMIT* 」\n┊ Notifikasi limit *MATI*. Sisa limitmu sekarang: *{left}*.\n┊ Nyalakan pakai .notiflimit lagi.\n╰━━━━━━━"
+} },
+  en: { "notiflimit": {
+    "on": "╭─❏ 🔔 「 *LIMIT NOTIF* 」\n┊ Limit notifications are *ON*. You will be reminded when your daily limit runs out (left now: *{left}*).\n┊ Turn it off with .notiflimit again.\n╰━━━━━━━",
+    "off": "╭─❏ 🔕 「 *LIMIT NOTIF* 」\n┊ Limit notifications are *OFF*. Your remaining limit: *{left}*.\n┊ Turn it on with .notiflimit again.\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur notiflimit buat profil petualanganmu~", en: "Here is the notiflimit summary for your adventure profile~" }
-export const test = { input: '.notiflimit', expect: /notiflimit|koin|coin/i }
+export const test = { input: ".notiflimit", expect: /notifikasi limit|limit notifications/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('notiflimit.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('notiflimit'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('notiflimit.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('notiflimit.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('notiflimit.btnAgain'), id: '.notiflimit' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('notiflimit.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('notiflimit.btnAgain'), id: '.notiflimit' }], textFallback: body })
+  const next = !profile.notifLimit
+  const state = limitState(profile)
+  await updateProfile(ctx.storage, ctx.senderDigits, { notifLimit: next })
+  return ctx.reply(ctx.t(next ? 'notiflimit.on' : 'notiflimit.off', { left: state.left }))
 }

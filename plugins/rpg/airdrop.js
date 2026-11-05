@@ -1,57 +1,33 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { claim } from '../../src/rpg/engine.js'
 export const config = {
   name: "airdrop",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur airdrop versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD airdrop feature, rewritten in KANA style" },
+  description: { id: "Airdrop per jam lewat mesin klaim: 100 koin dan 5 XP tiap jam", en: "Hourly airdrop via the claim engine: 100 coins and 5 XP every hour" },
   usage: ".airdrop",
   example: ".airdrop",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "airdrop": {
-      done: "╭─❏ ⚔️ 「 *AIRDROP* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *AIRDROP* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "airdrop": {
-      done: "╭─❏ ⚔️ 「 *AIRDROP* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *AIRDROP* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "airdrop": {
+    "done": "╭─❏ 🪂 「 *AIRDROP* 」\n┊ Airdrop jatuh tepat di lokasimu.\n┊ HADIAH: *+{coins} KOIN* | XP: *+{Xp}*\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
+    "wait": "╭─❏ ⏳ 「 *AIRDROP* 」\n┊ Sudah diambil. Kembali lagi sekitar *{hours} jam* lagi yaa~\n╰━━━━━━━"
+} },
+  en: { "airdrop": {
+    "done": "╭─❏ 🪂 「 *AIRDROP* 」\n┊ The airdrop landed right at your spot.\n┊ REWARD: *+{coins} COINS* | XP: *+{Xp}*\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
+    "wait": "╭─❏ ⏳ 「 *AIRDROP* 」\n┊ Already claimed. Come back in about *{hours} hours*~\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur airdrop buat profil petualanganmu~", en: "Here is the airdrop summary for your adventure profile~" }
-export const test = { input: '.airdrop', expect: /airdrop|koin|coin/i }
+export const test = { input: ".airdrop", expect: /hadiah|reward|sudah diambil|already claimed/i }
 export async function handler(ctx) {
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('airdrop.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('airdrop'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('airdrop.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('airdrop.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('airdrop.btnAgain'), id: '.airdrop' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('airdrop.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('airdrop.btnAgain'), id: '.airdrop' }], textFallback: body })
+
+  const result = await claim(ctx.storage, ctx.senderDigits, 'hourly')
+  if (!result.ok) return ctx.reply(ctx.t('airdrop.wait', { hours: Math.ceil((result.waitMs ?? 0) / 3600000) }))
+  return ctx.reply(ctx.t('airdrop.done', { coins: result.reward.coins, xp: result.reward.xp, balance: result.balance }))
 }

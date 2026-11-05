@@ -1,57 +1,39 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "pointomoney",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur pointomoney versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD pointomoney feature, rewritten in KANA style" },
-  usage: ".pointomoney",
-  example: ".pointomoney",
+  description: { id: "Tukar XP menjadi koin dengan kurs 1 XP = 5 koin (level ikut turun)", en: "Exchange XP into coins at 1 XP = 5 coins (your level drops too)" },
+  usage: ".pointomoney [jumlah]",
+  example: ".pointomoney [jumlah]",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "pointomoney": {
-      done: "╭─❏ ⚔️ 「 *POINTOMONEY* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *POINTOMONEY* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "pointomoney": {
-      done: "╭─❏ ⚔️ 「 *POINTOMONEY* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *POINTOMONEY* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "pointomoney": {
+    "done": "╭─❏ 🔄 「 *POIN KE KOIN* 」\n┊ *{amount} XP* ditukar jadi *+{coins} KOIN* (kurs 1:5). Levelmu ikut menyesuaikan~\n┊ SALDO: *{balance} KOIN* | SISA XP: *{totalXp}*\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *POIN KE KOIN* 」\n┊ XP kamu *{Xp}*, tidak cukup buat tukar *{amount}*~\n╰━━━━━━━",
+    "bad": "╭─❏ 🔄 「 *POIN KE KOIN* 」\n┊ Jumlah minimal 10 XP yaa: *.pointomoney 50*\n╰━━━━━━━"
+} },
+  en: { "pointomoney": {
+    "done": "╭─❏ 🔄 「 *POINTS TO COINS* 」\n┊ *{amount} XP* eXchanged for *+{coins} COINS* (rate 1:5). Your level adjusts accordingly~\n┊ BALANCE: *{balance} COINS* | XP LEFT: *{totalXp}*\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *POINTS TO COINS* 」\n┊ Your XP is *{Xp}*, not enough to eXchange *{amount}*~\n╰━━━━━━━",
+    "bad": "╭─❏ 🔄 「 *POINTS TO COINS* 」\n┊ Minimum amount is 10 XP: *.pointomoney 50*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur pointomoney buat profil petualanganmu~", en: "Here is the pointomoney summary for your adventure profile~" }
-export const test = { input: '.pointomoney', expect: /pointomoney|koin|coin/i }
+export const test = { input: ".pointomoney 50", expect: /ditukar|exchanged|saldo|balance|xp kamu/i }
 export async function handler(ctx) {
+
+  const amount = Math.floor(Number((ctx.args ?? [])[0]) || 50)
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('pointomoney.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('pointomoney'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('pointomoney.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('pointomoney.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('pointomoney.btnAgain'), id: '.pointomoney' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('pointomoney.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('pointomoney.btnAgain'), id: '.pointomoney' }], textFallback: body })
+  if (!Number.isFinite(amount) || amount < 10) return ctx.reply(ctx.t('pointomoney.bad'))
+  if ((profile.xp ?? 0) < amount) return ctx.reply(ctx.t('pointomoney.poor', { xp: profile.xp ?? 0, amount }))
+  const coins = amount * 5
+  await updateProfile(ctx.storage, ctx.senderDigits, { xp: (profile.xp ?? 0) - amount, balance: (profile.balance ?? 0) + coins })
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t('pointomoney.done', { amount, coins, balance: fresh.balance ?? 0, totalXp: fresh.xp ?? 0 }))
 }

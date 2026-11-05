@@ -1,57 +1,53 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { createClan, joinClan, getClan, clanPower, clanWar } from '../../src/rpg/engine.js'
 export const config = {
   name: "guilddemote",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur guilddemote versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD guilddemote feature, rewritten in KANA style" },
-  usage: ".guilddemote",
-  example: ".guilddemote",
+  description: { id: "Turunkan staff guild kembali jadi member (khusus pemilik)", en: "Demote a guild staff back to member (owner only)" },
+  usage: ".guilddemote <target>",
+  example: ".guilddemote <target>",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "guilddemote": {
-      done: "╭─❏ ⚔️ 「 *GUILDDEMOTE* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDDEMOTE* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "guilddemote": {
-      done: "╭─❏ ⚔️ 「 *GUILDDEMOTE* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDDEMOTE* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "guilddemote": {
+    "none": "╭─❏ 🏰 「 *GUILDDEMOTE* 」\n┊ Kamu belum punya guild. Buat pakai .createguild <nama> atau gabung pakai .joinguild <id>\n╰━━━━━━━",
+    "notOwner": "╭─❏ 🏰 「 *GUILDDEMOTE* 」\n┊ Hanya pemilik guild yang bisa mengatur staff~\n╰━━━━━━━",
+    "noTarget": "╭─❏ 🏰 「 *GUILDDEMOTE* 」\n┊ Targetnya siapa? Mention atau tulis nomornya~\n╰━━━━━━━",
+    "notMember": "╭─❏ 🏰 「 *GUILDDEMOTE* 」\n┊ Target bukan member guild ini~\n╰━━━━━━━",
+    "done": "╭─❏ 🏰 「 *GUILDDEMOTE* 」\n┊ *{target}* diturunkan dari staff guild *{guild}*.\n╰━━━━━━━"
+} },
+  en: { "guilddemote": {
+    "none": "╭─❏ 🏰 「 *GUILDDEMOTE* 」\n┊ You have no guild yet. Create one with .createguild <name> or join with .joinguild <id>\n╰━━━━━━━",
+    "notOwner": "╭─❏ 🏰 「 *GUILDDEMOTE* 」\n┊ Only the guild owner can manage staff~\n╰━━━━━━━",
+    "noTarget": "╭─❏ 🏰 「 *GUILDDEMOTE* 」\n┊ Who is the target? Mention or type the number~\n╰━━━━━━━",
+    "notMember": "╭─❏ 🏰 「 *GUILDDEMOTE* 」\n┊ The target is not a member of this guild~\n╰━━━━━━━",
+    "done": "╭─❏ 🏰 「 *GUILDDEMOTE* 」\n┊ *{target}* was demoted from staff of guild *{guild}*.\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur guilddemote buat profil petualanganmu~", en: "Here is the guilddemote summary for your adventure profile~" }
-export const test = { input: '.guilddemote', expect: /guilddemote|koin|coin/i }
+export const test = { input: ".guilddemote 6281234567890", expect: /belum punya guild|no guild|pemilik guild|guild owner|bukan member|not a member/i }
 export async function handler(ctx) {
+
+  const targetDigits = (() => {
+    const mention = (ctx.mentionedJids ?? [])[0]
+    if (mention) return String(mention).split('@')[0].replace(/\D/g, '')
+    if (ctx.quoted?.sender) return String(ctx.quoted.sender).split('@')[0].replace(/\D/g, '')
+    const num = (ctx.args ?? []).map((a) => String(a).replace(/\D/g, '')).find((a) => a.length >= 9)
+    return num || ''
+  })()
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('guilddemote.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('guilddemote'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('guilddemote.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('guilddemote.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guilddemote.btnAgain'), id: '.guilddemote' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('guilddemote.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guilddemote.btnAgain'), id: '.guilddemote' }], textFallback: body })
+  const clan = await getClan(ctx.storage, profile.clanId)
+  if (!clan) return ctx.reply(ctx.t('guilddemote.none'))
+  if (clan.owner !== ctx.senderDigits) return ctx.reply(ctx.t('guilddemote.notOwner'))
+  if (!targetDigits) return ctx.reply(ctx.t('guilddemote.noTarget'))
+  if (!(clan.members ?? []).includes(targetDigits)) return ctx.reply(ctx.t('guilddemote.notMember'))
+  clan.roles = clan.roles ?? {}
+  delete clan.roles[targetDigits]
+  await ctx.storage.set('clans', clan.id, clan)
+  return ctx.reply(ctx.t('guilddemote.done', { target: targetDigits, guild: clan.name }))
 }

@@ -1,3 +1,4 @@
+// DINONAKTIFKAN 2026-11-05 (perbaikan klaster RPG MODE="info"): Menjanjikan akun TikTok: tidak ada fondasi akun sosial di bot, dan membuat akun pihak ketiga bukan fungsi bot. Dinonaktifkan jujur pada perbaikan klaster RPG 2026-11-05.
 
 import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 import { sendButtons } from '../../src/ui/buttons.js'

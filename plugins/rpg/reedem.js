@@ -1,57 +1,44 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
 export const config = {
   name: "reedem",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur reedem versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD reedem feature, rewritten in KANA style" },
-  usage: ".reedem",
-  example: ".reedem",
+  description: { id: "Tukar kode redeem sungguhan: tiap kode hanya berlaku sekali per pemain", en: "Redeem real codes: each code works once per player" },
+  usage: ".reedem <kode>",
+  example: ".reedem <kode>",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "reedem": {
-      done: "╭─❏ ⚔️ 「 *REEDEM* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *REEDEM* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "reedem": {
-      done: "╭─❏ ⚔️ 「 *REEDEM* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *REEDEM* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "reedem": {
+    "usage": "╭─❏ 🎟️ 「 *REDEEM* 」\n┊ Tulis kodenya yaa: *.reedem <kode>*\n╰━━━━━━━",
+    "wrong": "╭─❏ 🎟️ 「 *REDEEM* 」\n┊ Kode *{code}* tidak dikenal~\n╰━━━━━━━",
+    "used": "╭─❏ 🎟️ 「 *REDEEM* 」\n┊ Kode *{code}* sudah pernah kamu pakai.\n╰━━━━━━━",
+    "done": "╭─❏ 🎟️ 「 *REDEEM* 」\n┊ Kode *{code}* valid! *+{reward} KOIN* masuk.\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "reedem": {
+    "usage": "╭─❏ 🎟️ 「 *REDEEM* 」\n┊ Type the code please: *.reedem <code>*\n╰━━━━━━━",
+    "wrong": "╭─❏ 🎟️ 「 *REDEEM* 」\n┊ Code *{code}* is not recognized~\n╰━━━━━━━",
+    "used": "╭─❏ 🎟️ 「 *REDEEM* 」\n┊ Code *{code}* was already used by you.\n╰━━━━━━━",
+    "done": "╭─❏ 🎟️ 「 *REDEEM* 」\n┊ Code *{code}* is valid! *+{reward} COINS* added.\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur reedem buat profil petualanganmu~", en: "Here is the reedem summary for your adventure profile~" }
-export const test = { input: '.reedem', expect: /reedem|koin|coin/i }
+export const test = { input: ".reedem KANA2026", expect: /valid|sudah pernah|tidak dikenal|valid!|already used/i }
 export async function handler(ctx) {
+
+  const code = ((ctx.args ?? [])[0] || '').toUpperCase()
+  const CODES = { KANA2026: 1000, RPGMULAI: 300 }
+  if (!code) return ctx.reply(ctx.t('reedem.usage'))
+  const reward = CODES[code]
+  if (!reward) return ctx.reply(ctx.t('reedem.wrong', { code }))
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('reedem.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('reedem'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('reedem.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('reedem.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('reedem.btnAgain'), id: '.reedem' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('reedem.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('reedem.btnAgain'), id: '.reedem' }], textFallback: body })
+  const field = 'redeemed_' + code.toLowerCase()
+  if (profile[field]) return ctx.reply(ctx.t('reedem.used', { code }))
+  await updateProfile(ctx.storage, ctx.senderDigits, { balance: (profile.balance ?? 0) + reward, [field]: true })
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t('reedem.done', { code, reward, balance: fresh.balance ?? 0 }))
 }

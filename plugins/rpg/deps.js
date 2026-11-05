@@ -1,57 +1,35 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { bankDeposit, bankWithdraw, sellItem, buyItem, craftItem, petAdopt } from '../../src/rpg/engine.js'
 export const config = {
   name: "deps",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur deps versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD deps feature, rewritten in KANA style" },
-  usage: ".deps",
-  example: ".deps",
+  description: { id: "Setor koin tunai ke bank RPG (saldo bank terpisah dan tersimpan)", en: "Deposit cash coins into the RPG bank (separate stored bank balance)" },
+  usage: ".deps [jumlah]",
+  example: ".deps [jumlah]",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "deps": {
-      done: "╭─❏ ⚔️ 「 *DEPS* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *DEPS* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "deps": {
-      done: "╭─❏ ⚔️ 「 *DEPS* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *DEPS* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "deps": {
+    "done": "╭─❏ 🏦 「 *DEPS* 」\n┊ Setor *{amount} KOIN* ke bank berhasil.\n┊ SALDO TUNAI: *{balance}* | BANK: *{bank}*\n╰━━━━━━━",
+    "fail": "╭─❏ 🏦 「 *DEPS* 」\n┊ Setoran gagal ({reason}). Cek saldo tunaimu~\n╰━━━━━━━"
+} },
+  en: { "deps": {
+    "done": "╭─❏ 🏦 「 *DEPS* 」\n┊ Deposited *{amount} COINS* to the bank.\n┊ CASH: *{balance}* | BANK: *{bank}*\n╰━━━━━━━",
+    "fail": "╭─❏ 🏦 「 *DEPS* 」\n┊ Deposit failed ({reason}). Check your cash~\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur deps buat profil petualanganmu~", en: "Here is the deps summary for your adventure profile~" }
-export const test = { input: '.deps', expect: /deps|koin|coin/i }
+export const test = { input: ".deps 100", expect: /setor|deposit|gagal|failed/i }
 export async function handler(ctx) {
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('deps.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('deps'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('deps.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('deps.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('deps.btnAgain'), id: '.deps' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('deps.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('deps.btnAgain'), id: '.deps' }], textFallback: body })
+
+  const raw = (ctx.args ?? [])[0]
+  const amount = raw ?? 'all'
+  const result = await bankDeposit(ctx.storage, ctx.senderDigits, amount)
+  if (!result.ok) return ctx.reply(ctx.t('deps.fail', { reason: result.reason }))
+  return ctx.reply(ctx.t('deps.done', { amount: result.amount, balance: result.balance, bank: result.bank }))
 }

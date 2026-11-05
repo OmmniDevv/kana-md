@@ -1,57 +1,56 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { buyItem, sellItem, craftItem, petAdopt } from '../../src/rpg/engine.js'
+import { ITEM_MAP, SHOP_MAP, RECIPE_MAP, JOBS, PET_MAP } from '../../src/rpg/data.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "blacksmith",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur blacksmith versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD blacksmith feature, rewritten in KANA style" },
-  usage: ".blacksmith",
-  example: ".blacksmith",
+  description: { id: "Pandai besi: tempa item dari bahan inventaris memakai resep engine sungguhan", en: "Blacksmith: forge items from inventory materials using real engine recipes" },
+  usage: ".blacksmith [resep]",
+  example: ".blacksmith [resep]",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "blacksmith": {
-      done: "╭─❏ ⚔️ 「 *BLACKSMITH* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BLACKSMITH* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "blacksmith": {
-      done: "╭─❏ ⚔️ 「 *BLACKSMITH* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BLACKSMITH* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "blacksmith": {
+    "list": "╭─❏ 🔨 「 *BLACKSMITH* 」\n┊ RESEP TEMPA:\n┊ {list}\n┊ TEMPA: *.blacksmith <nama>*\n╰━━━━━━━",
+    "missing": "╭─❏ 🔨 「 *BLACKSMITH* 」\n┊ Bahan kurang. Perlu: *{needs}*. Kumpulkan dari .tambang/.nebang~\n╰━━━━━━━",
+    "unknown": "╭─❏ 🔨 「 *BLACKSMITH* 」\n┊ Resep *{item}* tidak ada~\n╰━━━━━━━",
+    "done": "╭─❏ 🔨 「 *BLACKSMITH* 」\n┊ TEMPAAN JADI: *{item}* masuk inventaris!\n┊ INVENTARIS: {inv}\n╰━━━━━━━"
+} },
+  en: { "blacksmith": {
+    "list": "╭─❏ 🔨 「 *BLACKSMITH* 」\n┊ FORGE RECIPES:\n┊ {list}\n┊ FORGE: *.blacksmith <name>*\n╰━━━━━━━",
+    "missing": "╭─❏ 🔨 「 *BLACKSMITH* 」\n┊ Missing materials. Needs: *{needs}*. Gather them from .tambang/.nebang~\n╰━━━━━━━",
+    "unknown": "╭─❏ 🔨 「 *BLACKSMITH* 」\n┊ Recipe *{item}* does not eXist~\n╰━━━━━━━",
+    "done": "╭─❏ 🔨 「 *BLACKSMITH* 」\n┊ FORGED: *{item}* added to your inventory!\n┊ INVENTORY: {inv}\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur blacksmith buat profil petualanganmu~", en: "Here is the blacksmith summary for your adventure profile~" }
-export const test = { input: '.blacksmith', expect: /blacksmith|koin|coin/i }
+export const test = { input: ".blacksmith", expect: /resep tempa|forge recipes|blacksmith/i }
 export async function handler(ctx) {
+
+  const arg = ((ctx.args ?? [])[0] || '').toLowerCase()
+  if (!arg) {
+    const list = Object.values(RECIPE_MAP).map((r) => {
+      const needs = Object.entries(r.needs).map(([id, q]) => id + ' x' + q).join(', ')
+      return '• ' + r.id + ' (' + needs + ')'
+    }).join('\n┊ ')
+    return ctx.reply(ctx.t('blacksmith.list', { list }))
+  }
+  const result = await craftItem(ctx.storage, ctx.senderDigits, arg)
+  if (!result.ok) {
+    if (result.reason === 'missing_materials') {
+      const needs = Object.entries(result.needs).map(([id, q]) => id + ' x' + q).join(', ')
+      return ctx.reply(ctx.t('blacksmith.missing', { needs }))
+    }
+    return ctx.reply(ctx.t('blacksmith.unknown', { item: arg }))
+  }
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('blacksmith.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('blacksmith'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('blacksmith.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('blacksmith.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('blacksmith.btnAgain'), id: '.blacksmith' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('blacksmith.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('blacksmith.btnAgain'), id: '.blacksmith' }], textFallback: body })
+  const invList = Object.entries(profile.inventory ?? {}).map(([id, q]) => id + ' x' + q).join(', ') || '-'
+  return ctx.reply(ctx.t('blacksmith.done', { item: arg, inv: invList }))
 }

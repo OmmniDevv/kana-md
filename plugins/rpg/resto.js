@@ -1,57 +1,47 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { buyItem, sellItem, craftItem, petAdopt } from '../../src/rpg/engine.js'
+import { ITEM_MAP, SHOP_MAP, RECIPE_MAP, JOBS, PET_MAP } from '../../src/rpg/data.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "resto",
-  alias: ["restauran", "restoran"],
+  alias: [],
   category: "rpg",
-  description: { id: "Fitur resto versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD resto feature, rewritten in KANA style" },
-  usage: ".resto",
-  example: ".resto",
+  description: { id: "Resto: pesan makanan pet dan ramuan, tersimpan di inventaris lewat mesin beli engine", en: "Resto: order pet food and potions, stored in inventory via the engine buy system" },
+  usage: ".resto [item]",
+  example: ".resto [item]",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "resto": {
-      done: "╭─❏ ⚔️ 「 *RESTO* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *RESTO* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "resto": {
-      done: "╭─❏ ⚔️ 「 *RESTO* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *RESTO* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "resto": {
+    "list": "╭─❏ 🍽️ 「 *RESTO* 」\n┊ MENU HARI INI:\n┊ {list}\n┊ PESAN: *.resto <nama>* (tersimpan di inventaris, makan pakai .eat)\n╰━━━━━━━",
+    "unknown": "╭─❏ 🍽️ 「 *RESTO* 」\n┊ *{item}* tidak ada di menu~\n╰━━━━━━━",
+    "fail": "╭─❏ 🍽️ 「 *RESTO* 」\n┊ Pesanan gagal ({reason}). Harganya *{cost} KOIN*.\n╰━━━━━━━",
+    "done": "╭─❏ 🍽️ 「 *RESTO* 」\n┊ *{item}* tersaji! Tersimpan di inventaris seharga *{cost} KOIN*.\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "resto": {
+    "list": "╭─❏ 🍽️ 「 *RESTO* 」\n┊ TODAY'S MENU:\n┊ {list}\n┊ ORDER: *.resto <name>* (stored in inventory, eat with .eat)\n╰━━━━━━━",
+    "unknown": "╭─❏ 🍽️ 「 *RESTO* 」\n┊ *{item}* is not on the menu~\n╰━━━━━━━",
+    "fail": "╭─❏ 🍽️ 「 *RESTO* 」\n┊ Order failed ({reason}). It costs *{cost} COINS*.\n╰━━━━━━━",
+    "done": "╭─❏ 🍽️ 「 *RESTO* 」\n┊ *{item}* served! Stored in your inventory for *{cost} COINS*.\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur resto buat profil petualanganmu~", en: "Here is the resto summary for your adventure profile~" }
-export const test = { input: '.resto', expect: /resto|koin|coin/i }
+export const test = { input: ".resto", expect: /menu hari ini|today's menu|resto/i }
 export async function handler(ctx) {
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('resto.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
+
+  const ids = ['makananpet', 'ramuan']
+  const arg = ((ctx.args ?? [])[0] || '').toLowerCase()
+  if (!arg) {
+    const list = ids.map((id) => '• ' + (ITEM_MAP[id]?.emoji ?? '') + ' ' + id + ' : ' + SHOP_MAP[id].price + ' koin').join('\n┊ ')
+    return ctx.reply(ctx.t('resto.list', { list }))
   }
-  if (MODE === 'spend') {
-    const cost = 50 + (('resto'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('resto.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('resto.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('resto.btnAgain'), id: '.resto' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('resto.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('resto.btnAgain'), id: '.resto' }], textFallback: body })
+  if (!ids.includes(arg)) return ctx.reply(ctx.t('resto.unknown', { item: arg }))
+  const result = await buyItem(ctx.storage, ctx.senderDigits, arg, 1)
+  if (!result.ok) return ctx.reply(ctx.t('resto.fail', { reason: result.reason, cost: result.cost ?? SHOP_MAP[arg].price }))
+  return ctx.reply(ctx.t('resto.done', { item: arg, cost: result.cost, balance: result.balance }))
 }

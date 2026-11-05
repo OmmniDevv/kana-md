@@ -1,57 +1,49 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "casino",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur casino versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD casino feature, rewritten in KANA style" },
-  usage: ".casino",
-  example: ".casino",
+  description: { id: "Kasino sungguhan: pasang taruhan koin, peluang menang 45 persen, menang dapat dua kali taruhan", en: "Real casino: bet coins, 45 percent win chance, wins pay double the bet" },
+  usage: ".casino [taruhan]",
+  example: ".casino [taruhan]",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "casino": {
-      done: "╭─❏ ⚔️ 「 *CASINO* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *CASINO* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "casino": {
-      done: "╭─❏ ⚔️ 「 *CASINO* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *CASINO* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "casino": {
+    "jailed": "╭─❏ 🚔 「 *CASINO* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *CASINO* 」\n┊ Saldo kamu *{balance} koin*, taruhan *{bet} koin* tidak cukup~\n╰━━━━━━━",
+    "badBet": "╭─❏ 🎲 「 *CASINO* 」\n┊ Taruhannya angka yaa, contoh: *.casino 100*\n╰━━━━━━━",
+    "win": "╭─❏ 🎰 「 *CASINO* 」\n┊ MENANG! Taruhan *{bet} koin* berlipat jadi milikmu.\n┊ SALDO SEKARANG: *{balance} KOIN*\n╰━━━━━━━",
+    "lose": "╭─❏ 🎰 「 *CASINO* 」\n┊ KALAH~ Taruhan *{bet} koin* melayang ke bandar.\n┊ SALDO SEKARANG: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "casino": {
+    "jailed": "╭─❏ 🚔 「 *CASINO* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *CASINO* 」\n┊ Your balance is *{balance} coins*, a *{bet} coin* bet is not covered~\n╰━━━━━━━",
+    "badBet": "╭─❏ 🎲 「 *CASINO* 」\n┊ The bet must be a number, eXample: *.casino 100*\n╰━━━━━━━",
+    "win": "╭─❏ 🎰 「 *CASINO* 」\n┊ YOU WIN! Your *{bet} coin* bet doubled back to you.\n┊ BALANCE NOW: *{balance} COINS*\n╰━━━━━━━",
+    "lose": "╭─❏ 🎰 「 *CASINO* 」\n┊ YOU LOSE~ Your *{bet} coin* bet went to the house.\n┊ BALANCE NOW: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur casino buat profil petualanganmu~", en: "Here is the casino summary for your adventure profile~" }
-export const test = { input: '.casino', expect: /casino|koin|coin/i }
+export const test = { input: ".casino 50", expect: /menang|kalah|saldo|bet|win|lose/i }
 export async function handler(ctx) {
+
+  const bet = Math.floor(Number((ctx.args ?? [])[0]) || 50)
+  if (!Number.isFinite(bet) || bet <= 0) return ctx.reply(ctx.t('casino.badBet'))
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('casino.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('casino'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('casino.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('casino.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('casino.btnAgain'), id: '.casino' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('casino.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('casino.btnAgain'), id: '.casino' }], textFallback: body })
+  if (isJailed(profile)) return ctx.reply(ctx.t('casino.jailed', { minutes: jailMinutesLeft(profile) }))
+  if ((profile.balance ?? 0) < bet) return ctx.reply(ctx.t('casino.poor', { balance: profile.balance ?? 0, bet }))
+  profile.balance = (profile.balance ?? 0) - bet
+  const win = Math.random() < 0.45
+  if (win) profile.balance += bet * 2
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  await addXp(ctx.storage, ctx.senderDigits, 4)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t(win ? 'casino.win' : 'casino.lose', { bet, balance: fresh.balance ?? 0 }))
 }

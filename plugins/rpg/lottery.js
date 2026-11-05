@@ -1,57 +1,52 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "lottery",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur lottery versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD lottery feature, rewritten in KANA style" },
+  description: { id: "Lotere: tiket 100 koin, jackpot 5.000, hadiah kecil 150", en: "Lottery: 100 coin ticket, 5,000 jackpot, 150 small prize" },
   usage: ".lottery",
   example: ".lottery",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "lottery": {
-      done: "╭─❏ ⚔️ 「 *LOTTERY* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *LOTTERY* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "lottery": {
-      done: "╭─❏ ⚔️ 「 *LOTTERY* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *LOTTERY* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "lottery": {
+    "jailed": "╭─❏ 🚔 「 *LOTTERY* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *LOTTERY* 」\n┊ Saldo kamu *{balance} koin*, taruhan *{bet} koin* tidak cukup~\n╰━━━━━━━",
+    "jackpot": "╭─❏ 🎟️ 「 *LOTTERY* 」\n┊ JACKPOT!! Tiketmu tembus *+{prize} KOIN*\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
+    "small": "╭─❏ 🎟️ 「 *LOTTERY* 」\n┊ MENANG KECIL! *+{prize} KOIN* dari tiket 100 koin.\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
+    "lose": "╭─❏ 🎟️ 「 *LOTTERY* 」\n┊ BELUM BERUNTUNG~ Tiket 100 koin hangus.\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "lottery": {
+    "jailed": "╭─❏ 🚔 「 *LOTTERY* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *LOTTERY* 」\n┊ Your balance is *{balance} coins*, a *{bet} coin* bet is not covered~\n╰━━━━━━━",
+    "jackpot": "╭─❏ 🎟️ 「 *LOTTERY* 」\n┊ JACKPOT!! Your ticket hit *+{prize} COINS*\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
+    "small": "╭─❏ 🎟️ 「 *LOTTERY* 」\n┊ SMALL WIN! *+{prize} COINS* from a 100 coin ticket.\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
+    "lose": "╭─❏ 🎟️ 「 *LOTTERY* 」\n┊ NO LUCK~ The 100 coin ticket is gone.\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur lottery buat profil petualanganmu~", en: "Here is the lottery summary for your adventure profile~" }
-export const test = { input: '.lottery', expect: /lottery|koin|coin/i }
+export const test = { input: ".lottery", expect: /jackpot|menang kecil|belum beruntung|small win|saldo/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('lottery.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('lottery'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('lottery.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('lottery.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('lottery.btnAgain'), id: '.lottery' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('lottery.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('lottery.btnAgain'), id: '.lottery' }], textFallback: body })
+  if (isJailed(profile)) return ctx.reply(ctx.t('lottery.jailed', { minutes: jailMinutesLeft(profile) }))
+  const cost = 100
+  if ((profile.balance ?? 0) < cost) return ctx.reply(ctx.t('lottery.poor', { balance: profile.balance ?? 0, bet: cost }))
+  profile.balance = (profile.balance ?? 0) - cost
+  const roll = Math.random()
+  let key = 'lose'
+  let prize = 0
+  if (roll < 0.02) { prize = 5000; key = 'jackpot' }
+  else if (roll < 0.22) { prize = 150; key = 'small' }
+  profile.balance += prize
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  await addXp(ctx.storage, ctx.senderDigits, 3)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t('lottery.' + key, { prize, balance: fresh.balance ?? 0 }))
 }

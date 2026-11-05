@@ -1,57 +1,38 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { createClan, joinClan, getClan, clanPower, clanWar } from '../../src/rpg/engine.js'
 export const config = {
   name: "guildlistacc",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur guildlistacc versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD guildlistacc feature, rewritten in KANA style" },
+  description: { id: "Daftar undangan keluar guildmu yang masih menunggu jawaban", en: "List of your guild's outgoing invitations still waiting for an answer" },
   usage: ".guildlistacc",
   example: ".guildlistacc",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "guildlistacc": {
-      done: "╭─❏ ⚔️ 「 *GUILDLISTACC* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDLISTACC* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "guildlistacc": {
-      done: "╭─❏ ⚔️ 「 *GUILDLISTACC* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *GUILDLISTACC* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "guildlistacc": {
+    "none": "╭─❏ 🏰 「 *GUILDLISTACC* 」\n┊ Kamu belum punya guild. Buat pakai .createguild <nama> atau gabung pakai .joinguild <id>\n╰━━━━━━━",
+    "empty": "╭─❏ 🏰 「 *UNDANGAN KELUAR* 」\n┊ Guild *{guild}* belum mengundang siapa pun.\n╰━━━━━━━",
+    "list": "╭─❏ 🏰 「 *UNDANGAN KELUAR* 」 *{guild}* ({count})\n┊ Menunggu jawaban: {list}\n╰━━━━━━━"
+} },
+  en: { "guildlistacc": {
+    "none": "╭─❏ 🏰 「 *GUILDLISTACC* 」\n┊ You have no guild yet. Create one with .createguild <name> or join with .joinguild <id>\n╰━━━━━━━",
+    "empty": "╭─❏ 🏰 「 *OUTGOING INVITES* 」\n┊ Guild *{guild}* has not invited anyone yet.\n╰━━━━━━━",
+    "list": "╭─❏ 🏰 「 *OUTGOING INVITES* 」 *{guild}* ({count})\n┊ Waiting for an answer: {list}\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur guildlistacc buat profil petualanganmu~", en: "Here is the guildlistacc summary for your adventure profile~" }
-export const test = { input: '.guildlistacc', expect: /guildlistacc|koin|coin/i }
+export const test = { input: ".guildlistacc", expect: /belum punya guild|no guild|belum mengundang|has not invited|menunggu jawaban/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('guildlistacc.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('guildlistacc'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('guildlistacc.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('guildlistacc.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guildlistacc.btnAgain'), id: '.guildlistacc' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('guildlistacc.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guildlistacc.btnAgain'), id: '.guildlistacc' }], textFallback: body })
+  const clan = await getClan(ctx.storage, profile.clanId)
+  if (!clan) return ctx.reply(ctx.t('guildlistacc.none'))
+  const invites = clan.invites ?? []
+  if (!invites.length) return ctx.reply(ctx.t('guildlistacc.empty', { guild: clan.name }))
+  return ctx.reply(ctx.t('guildlistacc.list', { guild: clan.name, count: invites.length, list: invites.join(', ') }))
 }

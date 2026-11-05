@@ -1,57 +1,56 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
+import { gather, runDungeon } from '../../src/rpg/engine.js'
+import { ITEM_MAP, MONSTERS } from '../../src/rpg/data.js'
 export const config = {
   name: "tambang",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur tambang versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD tambang feature, rewritten in KANA style" },
+  description: { id: "Menambang sungguhan lewat mesin gather: batu, besi, emas masuk inventaris", en: "Real mining via the gather engine: stone, iron, gold go to your inventory" },
   usage: ".tambang",
   example: ".tambang",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "tambang": {
-      done: "╭─❏ ⚔️ 「 *TAMBANG* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *TAMBANG* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "tambang": {
-      done: "╭─❏ ⚔️ 「 *TAMBANG* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *TAMBANG* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "tambang": {
+    "jailed": "╭─❏ 🚔 「 *TAMBANG* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
+    "wait": "╭─❏ ⏳ 「 *TAMBANG* 」\n┊ Istirahat dulu, coba lagi *{minutes} menit* lagi yaa~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *TAMBANG* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 🎒 「 *TAMBANG* 」\n┊ Kamu keluar dari tambang membawa hasil.\n┊ HASIL: *{items}*\n┊ KOIN TAMBAHAN: *+{coins}* | SALDO: *{balance} KOIN*\n╰━━━━━━━",
+    "failed": "╭─❏ 🕸️ 「 *TAMBANG* 」\n┊ Lorongnya kosong, tidak ada yang bisa dibawa pulang~\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━"
+} },
+  en: { "tambang": {
+    "jailed": "╭─❏ 🚔 「 *TAMBANG* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
+    "wait": "╭─❏ ⏳ 「 *TAMBANG* 」\n┊ Rest first, try again in *{minutes} minutes*~\n╰━━━━━━━",
+    "lowEnergy": "╭─❏ 🔋 「 *TAMBANG* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
+    "done": "╭─❏ 🎒 「 *TAMBANG* 」\n┊ You came out of the mine carrying the haul.\n┊ HAUL: *{items}*\n┊ BONUS COINS: *+{coins}* | BALANCE: *{balance} COINS*\n╰━━━━━━━",
+    "failed": "╭─❏ 🕸️ 「 *TAMBANG* 」\n┊ The tunnel was empty, nothing to bring home~\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur tambang buat profil petualanganmu~", en: "Here is the tambang summary for your adventure profile~" }
-export const test = { input: '.tambang', expect: /tambang|koin|coin/i }
+export const test = { input: ".tambang", expect: /hasil|haul|lorongnya kosong|energi|istirahat/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('tambang.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('tambang'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('tambang.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('tambang.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('tambang.btnAgain'), id: '.tambang' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('tambang.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('tambang.btnAgain'), id: '.tambang' }], textFallback: body })
+  if (isJailed(profile)) return ctx.reply(ctx.t('tambang.jailed', { minutes: jailMinutesLeft(profile) }))
+  const now = Date.now()
+  const last = Number(profile.last_tambang) || 0
+  if (now - last < 60000) return ctx.reply(ctx.t('tambang.wait', { minutes: 1 }))
+  const energy = energyOf(profile)
+  if (energy < 15) return ctx.reply(ctx.t('tambang.lowEnergy', { energy, need: 15 }))
+  await updateProfile(ctx.storage, ctx.senderDigits, { energy: energy - 15, last_tambang: now })
+  const result = await gather(ctx.storage, ctx.senderDigits, 'mining')
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  if (result.failed) return ctx.reply(ctx.t('tambang.failed', { balance: fresh.balance ?? 0 }))
+  const list = result.items.map((it) => {
+    const def = ITEM_MAP[it.id]
+    const nm = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : it.id
+    return (def?.emoji ?? '•') + ' ' + nm + ' x' + it.qty
+  }).join(', ')
+  return ctx.reply(ctx.t('tambang.done', { items: list, coins: result.coins, balance: fresh.balance ?? 0 }))
 }

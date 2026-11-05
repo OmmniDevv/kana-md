@@ -1,57 +1,52 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "judidadu",
-  alias: ["judilama"],
+  alias: [],
   category: "rpg",
-  description: { id: "Fitur judidadu versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD judidadu feature, rewritten in KANA style" },
-  usage: ".judidadu",
-  example: ".judidadu",
+  description: { id: "Judi dadu besar/kecil: tebak jumlah dua dadu dengan taruhan koin", en: "Big/small dice betting: call the sum of two dice with a coin bet" },
+  usage: ".judidadu [taruhan] [besar/kecil]",
+  example: ".judidadu [taruhan] [besar/kecil]",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "judidadu": {
-      done: "╭─❏ ⚔️ 「 *JUDIDADU* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *JUDIDADU* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "judidadu": {
-      done: "╭─❏ ⚔️ 「 *JUDIDADU* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *JUDIDADU* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "judidadu": {
+    "jailed": "╭─❏ 🚔 「 *JUDIDADU* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *JUDIDADU* 」\n┊ Saldo kamu *{balance} koin*, taruhan *{bet} koin* tidak cukup~\n╰━━━━━━━",
+    "badBet": "╭─❏ 🎲 「 *JUDIDADU* 」\n┊ Taruhannya angka yaa, contoh: *.judidadu 100*\n╰━━━━━━━",
+    "win": "╭─❏ 🎲 「 *JUDI DADU* 」\n┊ DADU: *{d1} + {d2} = {sum}* (tebakanmu: {side})\n┊ MENANG! +{bet} KOIN | SALDO: *{balance}*\n╰━━━━━━━",
+    "lose": "╭─❏ 🎲 「 *JUDI DADU* 」\n┊ DADU: *{d1} + {d2} = {sum}* (tebakanmu: {side})\n┊ KALAH~ -{bet} KOIN | SALDO: *{balance}*\n╰━━━━━━━"
+} },
+  en: { "judidadu": {
+    "jailed": "╭─❏ 🚔 「 *JUDIDADU* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *JUDIDADU* 」\n┊ Your balance is *{balance} coins*, a *{bet} coin* bet is not covered~\n╰━━━━━━━",
+    "badBet": "╭─❏ 🎲 「 *JUDIDADU* 」\n┊ The bet must be a number, eXample: *.judidadu 100*\n╰━━━━━━━",
+    "win": "╭─❏ 🎲 「 *DICE BET* 」\n┊ DICE: *{d1} + {d2} = {sum}* (your call: {side})\n┊ YOU WIN! +{bet} COINS | BALANCE: *{balance}*\n╰━━━━━━━",
+    "lose": "╭─❏ 🎲 「 *DICE BET* 」\n┊ DICE: *{d1} + {d2} = {sum}* (your call: {side})\n┊ YOU LOSE~ -{bet} COINS | BALANCE: *{balance}*\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur judidadu buat profil petualanganmu~", en: "Here is the judidadu summary for your adventure profile~" }
-export const test = { input: '.judidadu', expect: /judidadu|koin|coin/i }
+export const test = { input: ".judidadu 50 besar", expect: /dadu:|dice:|menang|kalah|saldo kamu|your balance/i }
 export async function handler(ctx) {
+
+  const bet = Math.floor(Number((ctx.args ?? [])[0]) || 50)
+  if (!Number.isFinite(bet) || bet <= 0) return ctx.reply(ctx.t('judidadu.badBet'))
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('judidadu.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('judidadu'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('judidadu.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('judidadu.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('judidadu.btnAgain'), id: '.judidadu' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('judidadu.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('judidadu.btnAgain'), id: '.judidadu' }], textFallback: body })
+  if (isJailed(profile)) return ctx.reply(ctx.t('judidadu.jailed', { minutes: jailMinutesLeft(profile) }))
+  if ((profile.balance ?? 0) < bet) return ctx.reply(ctx.t('judidadu.poor', { balance: profile.balance ?? 0, bet }))
+  const side = ((ctx.args ?? [])[1] || 'besar').toLowerCase() === 'kecil' ? 'kecil' : 'besar'
+  const d1 = 1 + Math.floor(Math.random() * 6)
+  const d2 = 1 + Math.floor(Math.random() * 6)
+  const sum = d1 + d2
+  const win = sum === 7 ? false : (side === 'besar' ? sum > 7 : sum < 7)
+  profile.balance = (profile.balance ?? 0) + (win ? bet : -bet)
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  await addXp(ctx.storage, ctx.senderDigits, 4)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  return ctx.reply(ctx.t(win ? 'judidadu.win' : 'judidadu.lose', { d1, d2, sum, side, bet, balance: fresh.balance ?? 0 }))
 }

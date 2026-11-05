@@ -1,57 +1,48 @@
-
-import { getProfile, updateProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+// Perbaikan audit templat 2026-11-05: versi lama MODE="info" hanya membalas
+// ringkasan saldo + flavor tanpa mengubah state. Handler ini menjalankan
+// mekanik nyata memakai service RPG yang sama dengan fitur sehat.
+import { getProfile, updateProfile, saveProfile, addXp, levelFromXp } from '../../src/services/user-service.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { buyItem, sellItem, craftItem, petAdopt } from '../../src/rpg/engine.js'
+import { ITEM_MAP, SHOP_MAP, RECIPE_MAP, JOBS, PET_MAP } from '../../src/rpg/data.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
 export const config = {
   name: "breeding",
   alias: [],
   category: "rpg",
-  description: { id: "Fitur breeding versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD breeding feature, rewritten in KANA style" },
+  description: { id: "Breeding pet level 2+: menghasilkan 1 telur misterius per hari", en: "Breed a level 2+ pet: produces 1 mysterious egg per day" },
   usage: ".breeding",
   example: ".breeding",
   cooldown: 5,
 }
 
 export const i18n = {
-  id: {
-    "breeding": {
-      done: "╭─❏ ⚔️ 「 *BREEDING* 」\n┊ {flavor}\n┊ ᴋᴏɪɴ: *{coins}* | xᴘ: *+{xp}*\n┊ ꜱᴀʟᴅᴏ ꜱᴇᴋᴀʀᴀɴɢ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, butuh *{cost} koin* buat ini~\n┊ Kerja dulu yuk pakai *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BREEDING* 」\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Lagi",
-    },
-  },
-  en: {
-    "breeding": {
-      done: "╭─❏ ⚔️ 「 *BREEDING* 」\n┊ {flavor}\n┊ ᴄᴏɪɴꜱ: *{coins}* | xᴘ: *+{xp}*\n┊ ʙᴀʟᴀɴᴄᴇ ɴᴏᴡ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, this needs *{cost} coins*~\n┊ Work first with *.kerja*~\n╰━━━━━━━",
-      info: "╭─❏ ⚔️ 「 *BREEDING* 」\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n┊ ʟᴇᴠᴇʟ: *{level}* (xᴘ {xp})\n┊ {flavor}\n╰━━━━━━━",
-      btnAgain: "Again",
-    },
-  },
+  id: { "breeding": {
+    "noPet": "╭─❏ 🥚 「 *BREEDING* 」\n┊ Kamu belum punya pet buat diternak. .adopt dulu~\n╰━━━━━━━",
+    "young": "╭─❏ 🥚 「 *BREEDING* 」\n┊ Pet kamu baru level *{level}*, breeding butuh level 2+. Kasih makan petmu (.enchant juga menaikkan XP pet)~\n╰━━━━━━━",
+    "wait": "╭─❏ 🥚 「 *BREEDING* 」\n┊ Petmu masih pemulihan, coba *{hours} jam* lagi~\n╰━━━━━━━",
+    "done": "╭─❏ 🥚 「 *BREEDING* 」\n┊ *{pet}* menghasilkan 1 *Telur Misterius*! Masuk inventaris~\n╰━━━━━━━"
+} },
+  en: { "breeding": {
+    "noPet": "╭─❏ 🥚 「 *BREEDING* 」\n┊ You have no pet to breed yet. Use .adopt first~\n╰━━━━━━━",
+    "young": "╭─❏ 🥚 「 *BREEDING* 」\n┊ Your pet is only level *{level}*, breeding needs level 2+. Feed your pet (.enchant also raises pet XP)~\n╰━━━━━━━",
+    "wait": "╭─❏ 🥚 「 *BREEDING* 」\n┊ Your pet is still recovering, try again in *{hours} hours*~\n╰━━━━━━━",
+    "done": "╭─❏ 🥚 「 *BREEDING* 」\n┊ *{pet}* produced 1 *Mysterious Egg*! Added to your inventory~\n╰━━━━━━━"
+} },
 }
 
-const MODE = "info"
-const FLAVOR = { id: "Ini ringkasan fitur breeding buat profil petualanganmu~", en: "Here is the breeding summary for your adventure profile~" }
-export const test = { input: '.breeding', expect: /breeding|koin|coin/i }
+export const test = { input: ".breeding", expect: /breeding|telur misterius|mysterious egg|pet/i }
 export async function handler(ctx) {
+
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  const flavor = ctx.lang === 'en' ? FLAVOR.en : FLAVOR.id
-  if (MODE === 'info') {
-    return ctx.reply(ctx.t('breeding.info', { balance, level: levelFromXp(profile.xp ?? 0), xp: profile.xp ?? 0, flavor }))
-  }
-  if (MODE === 'spend') {
-    const cost = 50 + (('breeding'.length * 13) % 120)
-    if (balance < cost) return ctx.reply(ctx.t('breeding.poor', { balance, cost }))
-    await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance - cost })
-    const gain = await addXp(ctx.storage, ctx.senderDigits, 5)
-    const body = ctx.t('breeding.done', { flavor, coins: '-' + cost, xp: 5, balance: balance - cost })
-    return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('breeding.btnAgain'), id: '.breeding' }], textFallback: body })
-  }
-  const coins = 25 + Math.floor(Math.random() * 70) + levelFromXp(profile.xp ?? 0) * 4
-  const xp = 6 + Math.floor(Math.random() * 8)
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: balance + coins })
-  await addXp(ctx.storage, ctx.senderDigits, xp)
-  const body = ctx.t('breeding.done', { flavor, coins: '+' + coins, xp, balance: balance + coins })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('breeding.btnAgain'), id: '.breeding' }], textFallback: body })
+  if (!profile.pet) return ctx.reply(ctx.t('breeding.noPet'))
+  if ((profile.pet.level ?? 1) < 2) return ctx.reply(ctx.t('breeding.young', { level: profile.pet.level ?? 1 }))
+  const now = Date.now()
+  const last = Number(profile.last_breeding) || 0
+  if (now - last < 86400000) return ctx.reply(ctx.t('breeding.wait', { hours: Math.ceil((86400000 - (now - last)) / 3600000) }))
+  profile.inventory = profile.inventory ?? {}
+  profile.inventory.telurmisterius = (profile.inventory.telurmisterius ?? 0) + 1
+  profile.last_breeding = now
+  await saveProfile(ctx.storage, ctx.senderDigits, profile)
+  return ctx.reply(ctx.t('breeding.done', { pet: profile.pet.name }))
 }
