@@ -3,7 +3,7 @@ import { getProfile, saveProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'penjara',
-  alias: ['jail', 'statuspenjara', 'checkjail', 'jailstatus'],
+  alias: ['statuspenjara', 'jailstatus'],
   category: 'rpg',
   description: { id: 'Cek status penjara, bayar denda bebas (.penjara bebas), atau kabur (.penjara kabur)', en: 'Check jail status, pay the fine (.penjara bebas), or escape (.penjara kabur)' },
   usage: '.penjara [bebas|kabur]',

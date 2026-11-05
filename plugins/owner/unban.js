@@ -3,7 +3,7 @@ import { updateProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'unban',
-  alias: ['unbanchat'],
+  alias: [],
   category: 'owner',
   description: { id: 'Cabut ban satu nomor', en: 'Lift the ban of one number' },
   usage: '.unban <nomor>',

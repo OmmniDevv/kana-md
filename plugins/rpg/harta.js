@@ -3,7 +3,7 @@ import { ITEM_MAP } from '../../src/rpg/data.js'
 
 export const config = {
   name: 'harta',
-  alias: ['gali', 'treasure'],
+  alias: ['gali'],
   category: 'rpg',
   description: { id: 'Ekspedisi harta karun: bayar 100 koin, gali, dan lihat apa yang kamu dapat', en: 'Treasure expedition: pay 100 coins, dig, and see what you get' },
   usage: '.harta',

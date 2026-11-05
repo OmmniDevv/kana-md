@@ -4,7 +4,7 @@ import { getProfile, updateProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'job',
-  alias: ['pekerjaan', 'jobkerja', 'lamarkerja'],
+  alias: ['pekerjaan'],
   category: 'rpg',
   description: { id: 'Pekerjaan RPG dengan bonus aktivitas, pilih pakai .job pilih <id>', en: 'RPG job with activity bonuses, pick with .job pilih <id>' },
   usage: '.job | .job pilih <id>',

@@ -4,7 +4,7 @@ import { ITEM_MAP } from '../../src/rpg/data.js'
 
 export const config = {
   name: 'inventory',
-  alias: ['tas', 'inv'],
+  alias: ['tas'],
   category: 'rpg',
   description: { id: 'Lihat isi tas: item dan jumlahnya, plus harga jualnya', en: 'See your bag contents: items and amounts, plus sell prices' },
   usage: '.inventory',

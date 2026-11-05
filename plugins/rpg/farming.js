@@ -4,7 +4,7 @@ import { ITEM_MAP } from '../../src/rpg/data.js'
 
 export const config = {
   name: 'farming',
-  alias: ['tani', 'berkebon'],
+  alias: ['tani'],
   category: 'rpg',
   description: { id: 'Panen padi, sayur, buah, dan bunga di ladang', en: 'Harvest rice, vegetables, fruit, and flowers in the field' },
   usage: '.farming',

@@ -4,7 +4,7 @@ import { getProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'clan',
-  alias: ['guild', 'myguild', 'guildlist', 'createguild', 'joinguild'],
+  alias: [],
   category: 'rpg',
   description: { id: 'Clan RPG: buat clan, gabung clan, dan lihat info clan', en: 'RPG clan: create a clan, join a clan, and see clan info' },
   usage: '.clan | .clan buat <nama> | .clan gabung <id>',

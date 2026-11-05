@@ -4,7 +4,7 @@ import { ITEM_MAP } from '../../src/rpg/data.js'
 
 export const config = {
   name: 'fishing',
-  alias: ['mancing'],
+  alias: [],
   category: 'rpg',
   description: { id: 'Memancing ikan, udang, kepiting, siapa tahu ikan legendaris', en: 'Fish for fish, shrimp, crabs, maybe a legendary fish' },
   usage: '.fishing',

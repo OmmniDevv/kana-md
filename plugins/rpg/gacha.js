@@ -3,7 +3,7 @@ import { getProfile, updateProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'gacha',
-  alias: ['pull', 'pullall'],
+  alias: ['pullall'],
   category: 'rpg',
   description: { id: 'Putar gacha 100 koin untuk dapat item acak', en: 'Spin the 100 coin gacha for a random item' },
   usage: '.gacha',

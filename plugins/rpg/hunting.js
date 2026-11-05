@@ -4,7 +4,7 @@ import { ITEM_MAP } from '../../src/rpg/data.js'
 
 export const config = {
   name: 'hunting',
-  alias: ['buru', 'berburu', 'hunter'],
+  alias: ['buru'],
   category: 'rpg',
   description: { id: 'Berburu daging, kulit, dan tanduk di hutan', en: 'Hunt meat, leather, and horns in the forest' },
   usage: '.hunting',

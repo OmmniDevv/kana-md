@@ -3,7 +3,7 @@ import { clanWar } from '../../src/rpg/engine.js'
 
 export const config = {
   name: 'clanwar',
-  alias: ['perangclan', 'guildwar'],
+  alias: ['perangclan'],
   category: 'rpg',
   description: { id: 'Perang clan RPG harian: power clan kamu lawan clan lain', en: 'Daily RPG clan war: your clan power against another clan' },
   usage: '.clanwar',

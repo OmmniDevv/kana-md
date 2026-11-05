@@ -3,7 +3,7 @@ import { duel } from '../../src/rpg/engine.js'
 
 export const config = {
   name: 'duel',
-  alias: ['fight', 'bertarung'],
+  alias: ['bertarung'],
   category: 'rpg',
   description: { id: 'Duel RPG lawan pemain lain, pemenang merebut sampai 100 koin', en: 'RPG duel against another player, winner takes up to 100 coins' },
   usage: '.duel @tag | .duel <nomor>',

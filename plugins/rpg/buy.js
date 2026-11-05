@@ -4,7 +4,7 @@ import { ITEM_MAP } from '../../src/rpg/data.js'
 
 export const config = {
   name: 'buy',
-  alias: ['beli'],
+  alias: [],
   category: 'rpg',
   description: { id: 'Beli item di toko, atau jual item dari tas: .buy jual <item>', en: 'Buy items at the shop, or sell items from your bag: .buy jual <item>' },
   usage: '.buy <item> [jumlah] | .buy jual <item> [jumlah]',

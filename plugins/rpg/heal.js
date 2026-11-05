@@ -3,7 +3,7 @@ import { energyOf, restoreEnergy, MAX_ENERGY } from '../../src/rpg/energy.js'
 
 export const config = {
   name: 'heal',
-  alias: ['pulih', 'dokter'],
+  alias: ['pulih'],
   category: 'rpg',
   description: { id: 'Pulihkan energi RPG sampai penuh dengan bayar koin di penginapan', en: 'Restore RPG energy to full by paying coins at the inn' },
   usage: '.heal',

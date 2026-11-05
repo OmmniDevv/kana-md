@@ -4,7 +4,7 @@ import { getProfile } from '../../src/services/user-service.js'
 
 export const config = {
   name: 'shop',
-  alias: ['toko', 'buyattack', 'buydefense', 'buyspeed', 'buystrenght'],
+  alias: ['toko'],
   category: 'rpg',
   description: { id: 'Lihat barang yang dijual toko RPG dan harganya', en: 'See what the RPG shop sells and its prices' },
   usage: '.shop',

@@ -1,6 +1,6 @@
 export const config = {
   name: 'listgrup',
-  alias: ['daftargrup', 'listgroup', 'grouplist', 'listgc', 'groups'],
+  alias: ['daftargrup', 'listgroup', 'grouplist'],
   category: 'owner',
   description: { id: 'Daftar semua grup yang bot ikuti (owner)', en: 'List all groups the bot is in (owner)' },
   usage: '.listgrup',

@@ -3,7 +3,7 @@ import { smallCaps } from '../../src/config/templates.js'
 
 export const config = {
   name: 'dbstats',
-  alias: ['statserver'],
+  alias: [],
   category: 'owner',
   description: { id: 'Statistik storage per namespace', en: 'Storage statistics per namespace' },
   usage: '.dbstats',

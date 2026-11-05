@@ -4,7 +4,7 @@ import { ITEM_MAP } from '../../src/rpg/data.js'
 
 export const config = {
   name: 'makan',
-  alias: ['eat'],
+  alias: [],
   category: 'rpg',
   description: { id: 'Makan makanan dari tas untuk memulihkan energi', en: 'Eat food from your bag to restore energy' },
   usage: '.makan <id makanan>',
