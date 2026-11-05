@@ -1,87 +1,126 @@
+import { getRamalanJodoh, hitungWeton, ramalanWetonLokal } from '../../src/scrapers/search/primbon.js'
 
+// Ramalan jodoh primbon Jawa: format Elaina (nama dan tanggal lahir dua
+// orang), hasil weton + ramalan dari API primbon Siputzx. Bila API mati,
+// dihitung lokal dari neptu hari dan pasaran (metode primbon beneran),
+// ditandai jelas sebagai hitungan lokal.
 export const config = {
-  name: "ramalanjodoh",
+  name: 'ramalanjodoh',
   alias: [],
-  category: "primbon",
-  description: { id: "Ramalan jodoh berdasarkan primbon Jawa", en: "KANA version of the Elaina-MD ramalanjodoh feature, rewritten in KANA style" },
-  usage: ".ramalanjodoh",
-  example: ".ramalanjodoh",
+  category: 'primbon',
+  description: { id: 'Ramalan jodoh primbon Jawa dari weton dua orang', en: 'Javanese primbon match reading from two birth weton' },
+  usage: '.ramalanjodoh <nama1> <tgl1> <bln1> <thn1> <nama2> <tgl2> <bln2> <thn2>',
+  example: '.ramalanjodoh Putu 16 11 2007 Keyla 1 1 2008',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "ramalanjodoh": {
-      body: "╭─❏ 🔮 「 *RAMALANJODOH* 」\n┊ {text}\n╰━━━━━━━",
-      hint: "╭─❏ 🔮 「 *RAMALANJODOH* 」\n┊ Tulis tanggal lahirnya yaa, contoh *.ramalanjodoh 2005-08-17*\n╰━━━━━━━",
-      znote: "Primbon dan ramalan di sini cuma buat seru seruan yaa, jangan dianggap serius~",
+    ramalanjodoh: {
+      usage: '╭─❏ 💑 「 *RAMALAN JODOH* 」\n┊ Formatnya: *.ramalanjodoh nama1 tgl1 bln1 thn1 nama2 tgl2 bln2 thn2*\n┊ ᴄᴏɴᴛᴏʜ: *.ramalanjodoh Putu 16 11 2007 Keyla 1 1 2008*\n╰━━━━━━━',
+      badDate: '╭─❏ 💑 「 *RAMALAN JODOH* 」\n┊ Tanggal lahirnya ada yang tidak nyata nih, cek lagi yaa~\n╰━━━━━━━',
+      resultApi: '╭─❏ 💑 「 *RAMALAN JODOH PRIMBON* 」\n┊ 👤 *{name1}*\n┊ {lahir1}\n┊\n┊ 👤 *{name2}*\n┊ {lahir2}\n┊\n┊ 📜 *Hasil ramalan:*\n{hasil}\n┊\n┊ ⚠️ _{warning}_\n╰━━━━━━━',
+      resultLocal: '╭─❏ 💑 「 *RAMALAN JODOH PRIMBON* 」\n┊ Sumber API lagi mati, KANA hitung lokal dari neptu weton yaa~\n┊\n┊ 👤 *{name1}*: {weton1} (ɴᴇᴘᴛᴜ {neptu1})\n┊ 👤 *{name2}*: {weton2} (ɴᴇᴘᴛᴜ {neptu2})\n┊ ᴛᴏᴛᴀʟ ɴᴇᴘᴛᴜ: *{total}*\n┊ ᴋᴀᴛᴇɢᴏʀɪ: *{kategori}*\n┊\n┊ {arti}\n╰━━━━━━━\n{note}',
+      note: 'Ramalan primbon ini kepercayaan tradisi dan cuma buat hiburan yaa, jangan dianggap penentu nasib~',
+      fail: '╭─❏ 💦 「 *RAMALAN GAGAL* 」\n┊ Mouu, ramalannya gagal dibuat: *{message}*\n╰━━━━━━━',
+      meanings: {
+        Pegat: 'Pegat artinya rawan cekcok dan salah paham, sering dipicu urusan ekonomi atau pihak ketiga. Kuncinya komunikasi jujur dan jangan memendam masalah.',
+        Ratu: 'Ratu artinya pasangan yang disegani dan dihormati banyak orang. Hubungannya kuat, tapi hati-hati jangan sampai besar kepala.',
+        Jodoh: 'Jodoh artinya pasangan yang memang serasi: saling menerima kekurangan dan gampang menemukan jalan tengah.',
+        Topo: 'Topo artinya awal hubungan terasa berat dan penuh ujian, tetapi bila sabar melewatinya, ujungnya bahagia dan mapan.',
+        Tinari: 'Tinari artinya pasangan yang beruntung: hidupnya cenderung bahagia dan rezekinya gampang dicari.',
+        Padu: 'Padu artinya sering bertengkar untuk hal kecil, tetapi tidak sampai berpisah. Belajar mengalah jadi kunci.',
+        Sujanan: 'Sujanan artinya rawan godaan dan kecemburuan, termasuk risiko orang ketiga. Jaga kepercayaan dan batas pergaulan.',
+        Pesthi: 'Pesthi artinya pasangan yang rukun, tentram, dan damai sampai tua, jarang terlibat pertengkaran besar.',
+      },
     },
   },
   en: {
-    "ramalanjodoh": {
-      body: "╭─❏ 🔮 「 *RAMALANJODOH* 」\n┊ {text}\n╰━━━━━━━",
-      hint: "╭─❏ 🔮 「 *RAMALANJODOH* 」\n┊ Write the birth date, for example *.ramalanjodoh 2005-08-17*\n╰━━━━━━━",
-      znote: "This primbon reading is just for fun, do not take it seriously~",
+    ramalanjodoh: {
+      usage: '╭─❏ 💑 「 *MATCH READING* 」\n┊ Format: *.ramalanjodoh name1 d1 m1 y1 name2 d2 m2 y2*\n┊ ᴇxᴀᴍᴘʟᴇ: *.ramalanjodoh Putu 16 11 2007 Keyla 1 1 2008*\n╰━━━━━━━',
+      badDate: '╭─❏ 💑 「 *MATCH READING* 」\n┊ One of the birth dates is not a real date, please check again~\n╰━━━━━━━',
+      resultApi: '╭─❏ 💑 「 *PRIMBON MATCH READING* 」\n┊ 👤 *{name1}*\n┊ {lahir1}\n┊\n┊ 👤 *{name2}*\n┊ {lahir2}\n┊\n┊ 📜 *Reading result:*\n{hasil}\n┊\n┊ ⚠️ _{warning}_\n╰━━━━━━━',
+      resultLocal: '╭─❏ 💑 「 *PRIMBON MATCH READING* 」\n┊ The API source is down, so KANA calculated locally from weton neptu~\n┊\n┊ 👤 *{name1}*: {weton1} (ɴᴇᴘᴛᴜ {neptu1})\n┊ 👤 *{name2}*: {weton2} (ɴᴇᴘᴛᴜ {neptu2})\n┊ ᴛᴏᴛᴀʟ ɴᴇᴘᴛᴜ: *{total}*\n┊ ᴄᴀᴛᴇɢᴏʀʏ: *{kategori}*\n┊\n┊ {arti}\n╰━━━━━━━\n{note}',
+      note: 'This primbon reading is traditional belief and just for fun, not a fate decider~',
+      fail: '╭─❏ 💦 「 *READING FAILED* 」\n┊ Mouu, the reading failed: *{message}*\n╰━━━━━━━',
+      meanings: {
+        Pegat: 'Pegat means prone to quarrels and misunderstandings, often triggered by money matters or third parties. Honest communication is the key.',
+        Ratu: 'Ratu means a couple respected by many people. The bond is strong, just do not let pride take over.',
+        Jodoh: 'Jodoh means a genuinely matching couple: accepting each other flaws and easily finding middle ground.',
+        Topo: 'Topo means a heavy start full of trials, but patience leads to a happy and settled ending.',
+        Tinari: 'Tinari means a lucky couple: life tends to be happy and livelihood easy to find.',
+        Padu: 'Padu means frequent small quarrels that never lead to separation. Learning to yield is the key.',
+        Sujanan: 'Sujanan means prone to temptation and jealousy, including third party risks. Guard trust and social boundaries.',
+        Pesthi: 'Pesthi means a harmonious, peaceful couple until old age, rarely in big fights.',
+      },
     },
   },
 }
 
-const MODE = "ramalanjodoh"
-export const test = { input: '.ramalanjodoh', expect: /tanggal|primbon|birth/i }
-function hashStr(s) { let h = 7; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return h }
-const ZODIAC = [
-  ['Capricorn', 'Ambisius, sabar, dan pekerja keras.'],
-  ['Aquarius', 'Unik, visioner, dan suka kebebasan.'],
-  ['Pisces', 'Perasa, imajinatif, dan penuh empati.'],
-  ['Aries', 'Berani, energik, dan suka memimpin.'],
-  ['Taurus', 'Setia, tenang, dan suka kenyamanan.'],
-  ['Gemini', 'Cerdas, komunikatif, dan serba bisa.'],
-  ['Cancer', 'Penyayang, protektif, dan intuitif.'],
-  ['Leo', 'Percaya diri, hangat, dan suka jadi pusat perhatian.'],
-  ['Virgo', 'Teliti, rapi, dan perfeksionis.'],
-  ['Libra', 'Adil, diplomatis, dan cinta keindahan.'],
-  ['Scorpio', 'Intens, misterius, dan penuh tekad.'],
-  ['Sagittarius', 'Optimis, petualang, dan jujur.'],
-]
-const PASARAN = ['Legi', 'Pahing', 'Pon', 'Wage', 'Kliwon']
-const PASARAN_TRAIT = { Legi: 'manis tutur katanya dan mudah bergaul', Pahing: 'ambisius dan kuat pendiriannya', Pon: 'suka menonjol dan pandai bicara', Wage: 'setia dan tekun bekerja', Kliwon: 'bijaksana dan beruntung dalam rezeki' }
-const WETON_TRAIT = ['pekerja keras yang setia', 'pemikir yang tenang', 'periang dan mudah disukai', 'mandiri dan tegas', 'kreatif dan penuh ide', 'penyabar dan suka menolong', 'berani mengambil risiko']
+export const test = {
+  input: '.ramalanjodoh Putu 16 11 2007 Keyla 1 1 2008',
+  expect: /ramalan jodoh primbon|primbon match reading/i,
+}
+
+// Uraikan 8 token ala Elaina: nama1 tgl1 bln1 thn1 nama2 tgl2 bln2 thn2.
+// Mengembalikan null bila jumlah token kurang atau tanggal tidak nyata.
+export function parseRamalanArgs(tokens) {
+  const args = (tokens ?? []).map((v) => String(v).trim()).filter(Boolean)
+  if (args.length < 8) return null
+  const [nama1, tgl1, bln1, thn1, nama2, tgl2, bln2, thn2] = args.slice(0, 8)
+  const input = {
+    nama1,
+    tgl1: Number(tgl1),
+    bln1: Number(bln1),
+    thn1: Number(thn1),
+    nama2,
+    tgl2: Number(tgl2),
+    bln2: Number(bln2),
+    thn2: Number(thn2),
+  }
+  if (!hitungWeton(input.thn1, input.bln1, input.tgl1) || !hitungWeton(input.thn2, input.bln2, input.tgl2)) {
+    return { ...input, invalidDate: true }
+  }
+  return input
+}
+
+export function formatRamalanApi(t, data) {
+  const hasil = data.hasil.map((h, i) => `┊ ${i + 1}. ${h}`).join('\n')
+  return t('ramalanjodoh.resultApi', {
+    name1: data.first.nama,
+    lahir1: data.first.tanggalLahir,
+    name2: data.second.nama,
+    lahir2: data.second.tanggalLahir,
+    hasil,
+    warning: data.peringatan,
+  })
+}
+
+export function formatRamalanLokal(t, local) {
+  return t('ramalanjodoh.resultLocal', {
+    name1: local.first.nama,
+    weton1: local.first.weton,
+    neptu1: local.first.neptu,
+    name2: local.second.nama,
+    weton2: local.second.weton,
+    neptu2: local.second.neptu,
+    total: local.total,
+    kategori: local.kategori,
+    arti: t(`ramalanjodoh.meanings.${local.kategori}`),
+    note: t('ramalanjodoh.note'),
+  })
+}
+
 export async function handler(ctx) {
-  const raw = (ctx.text || '').trim()
-  const m = raw.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/) || raw.match(/(\d{1,2})[-/](\d{1,2})[-/](\d{4})/)
-  if (MODE === 'zodiac' || MODE === 'weton') {
-    if (!m) return ctx.reply(ctx.t('ramalanjodoh.hint'))
-    const [y, mo, d] = m[3] && m[3].length === 4 ? [Number(m[3]), Number(m[2]), Number(m[1])] : [Number(m[1]), Number(m[2]), Number(m[3])]
-    const date = new Date(Date.UTC(y, mo - 1, d))
-    if (MODE === 'zodiac') {
-      const cutoffs = [19, 18, 20, 19, 20, 20, 22, 22, 22, 22, 21, 21]
-      const idx = (mo - 1 + (d >= cutoffs[mo - 1] ? 1 : 0)) % 12
-      const z = ZODIAC[idx]
-      return ctx.reply(ctx.t('ramalanjodoh.body', { text: 'Tanggal *' + d + '/' + mo + '/' + y + '* itu zodiaknya *' + z[0] + '*.\n┊ ' + z[1] + '\n┊ ' + ctx.t('ramalanjodoh.znote') }))
-    }
-    const days = Math.floor(date.getTime() / 86400000)
-    const pasaran = PASARAN[((days % 5) + 5) % 5]
-    const dayName = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][date.getUTCDay()]
-    return ctx.reply(ctx.t('ramalanjodoh.body', { text: 'Weton *' + d + '/' + mo + '/' + y + '*: *' + dayName + ' ' + pasaran + '*.\n┊ Menurut primbon, orang ' + dayName + ' ' + pasaran + ' itu ' + PASARAN_TRAIT[pasaran] + ', dan dikenal sebagai ' + WETON_TRAIT[hashStr(dayName + pasaran) % WETON_TRAIT.length] + '.\n┊ ' + ctx.t('ramalanjodoh.znote') }))
+  const input = parseRamalanArgs(ctx.args?.length ? ctx.args : (ctx.text || '').split(/\s+/))
+  if (!input) return ctx.reply(ctx.t('ramalanjodoh.usage'))
+  if (input.invalidDate) return ctx.reply(ctx.t('ramalanjodoh.badDate'))
+  try {
+    const data = await getRamalanJodoh(input)
+    return ctx.reply(formatRamalanApi(ctx.t, data))
+  } catch {
+    const local = ramalanWetonLokal(input)
+    if (local) return ctx.reply(formatRamalanLokal(ctx.t, local))
+    return ctx.reply(ctx.t('ramalanjodoh.fail', { message: 'tanggal tidak valid' }))
   }
-  if (!raw) return ctx.reply(ctx.t('ramalanjodoh.hint'))
-  const h = hashStr(ctx.senderDigits + ':' + 'ramalanjodoh' + ':' + raw.toLowerCase())
-  const picks = {
-    artinama: ['nama yang membawa ketenangan dan rezeki yang stabil', 'nama yang kuat, cocok untuk pemimpin', 'nama yang lembut dan membawa keberuntungan dalam pertemanan', 'nama yang unik dan penuh semangat petualang'],
-    kecocokan: null,
-    nomerhoki: null,
-    tafsirmimpi: ['mimpi itu pertanda ada kabar baik yang mendekat', 'mimpi itu cerminan pikiranmu yang lagi capek, istirahat yaa', 'mimpi itu tanda peluang baru, siap siap saja', 'mimpi itu pengingat buat lebih hati hati sama keputusan minggu ini'],
-    sifatbisnis: ['cocok di bisnis kuliner dan jasa harian', 'cocok di bisnis kreatif dan konten', 'cocok di bisnis teknologi dan layanan online', 'cocok di bisnis perdagangan dan reseller'],
-    ramalanjodoh: ['jodohmu dekat, cirinya suka ketawa di momen serius', 'jodohmu datang dari lingkaran pertemanan lama', 'jodohmu tipe pekerja keras yang pendiam', 'jodohmu suka traveling dan kulineran'],
-    potensipenyakit: ['jaga pola tidur dan kurangi begadang yaa', 'perbanyak minum air dan gerak ringan', 'jaga pencernaan, jangan telat makan', 'istirahatkan mata dari layar sesekali'],
-  }
-  if (MODE === 'kecocokan') {
-    const score = 40 + (h % 61)
-    return ctx.reply(ctx.t('ramalanjodoh.body', { text: 'Kecocokan *' + raw + '* : *' + score + '%*\n┊ ' + (score >= 80 ? 'Serasi banget, pertahankan~' : score >= 60 ? 'Cukup serasi, komunikasinya dijaga yaa' : 'Perlu usaha ekstra, tapi bukan tidak mungkin~') + '\n┊ ' + ctx.t('ramalanjodoh.znote') }))
-  }
-  if (MODE === 'nomerhoki') {
-    return ctx.reply(ctx.t('ramalanjodoh.body', { text: 'Nomor hoki buat *' + raw + '* hari ini: *' + (h % 90 + 10) + '-' + (h % 900 + 100) + '*\n┊ ' + ctx.t('ramalanjodoh.znote') }))
-  }
-  const arr = picks[MODE] || picks.artinama
-  return ctx.reply(ctx.t('ramalanjodoh.body', { text: 'Buat *' + raw + '*: ' + arr[h % arr.length] + '.\n┊ ' + ctx.t('ramalanjodoh.znote') }))
 }

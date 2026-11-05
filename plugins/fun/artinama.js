@@ -1,95 +1,60 @@
 import { sendButtons } from '../../src/ui/buttons.js'
+import { getArtiNama } from '../../src/scrapers/search/primbon.js'
 
+// Arti nama primbon: data asli dari API primbon Siputzx (arti + catatan),
+// sama seperti padanan Elaina-MD. Tidak ada lagi sifat karangan dari hash.
 export const config = {
   name: 'artinama',
-  alias: [],
+  alias: ['namameaning', 'artinamaku'],
   category: 'fun',
-  description: { id: 'Baca arti nama versi seru-seruan dari KANA', en: 'Read the fun version of a name meaning from KANA' },
+  description: { id: 'Cek arti nama menurut data primbon', en: 'Check a name meaning from primbon data' },
   usage: '.artinama <nama>',
-  example: '.artinama Kana',
-  cooldown: 3,
-}
-
-// Hash deterministik kecil (duplikasi disengaja, sama seperti di cekmood,
-// supaya plugin tetap mandiri satu file).
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
+  example: '.artinama Budi',
+  cooldown: 5,
 }
 
 export const i18n = {
   id: {
     artinama: {
-      usage: '╭─❏ 🔤 「 *ARTI NAMA* 」\n┊ Tulis namanya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.artinama Kana*\n╰━━━━━━━',
-      title: 'Arti Nama 🔤',
-      result: '╭─❏ 🔤 「 *ARTI NAMA* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ᴀʀᴛɪɴʏᴀ ᴠᴇʀꜱɪ ᴋᴀɴᴀ: pembawa *{trait1}*, penjaga *{trait2}*, dan penebar *{trait3}*!\n╰━━━━━━━\n{disclaimer}',
-      disclaimer: 'Ini arti nama versi hiburan buatan KANA yaa, bukan arti bahasa resmi. Yang penting orangnya baik~ (≧▽≦)',
+      usage: '╭─❏ 🔤 「 *ARTI NAMA* 」\n┊ Tulis namanya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.artinama Budi*\n╰━━━━━━━',
+      title: 'Arti Nama Primbon',
+      result: '╭─❏ 🔤 「 *ARTI NAMA PRIMBON* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊\n┊ {arti}\n┊\n┊ _{note}_\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *ARTI NAMA GAGAL* 」\n┊ Mouu, sumber data primbonnya lagi tidak bisa dihubungi: *{message}*\n┊ Coba lagi nanti yaa~\n╰━━━━━━━',
       btnAgain: 'Nama Lain',
-      traits: [
-        'semangat pagi',
-        'tawa renyah',
-        'ide-ide liar',
-        'ketenangan',
-        'keberanian kecil',
-        'cerita seru',
-        'harapan baru',
-        'energi positif',
-        'kejutan manis',
-        'mimpi besar',
-        'kehangatan',
-        'rasa penasaran',
-      ],
     },
   },
   en: {
     artinama: {
-      usage: '╭─❏ 🔤 「 *NAME MEANING* 」\n┊ Write a name first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.artinama Kana*\n╰━━━━━━━',
-      title: 'Name Meaning 🔤',
-      result: '╭─❏ 🔤 「 *NAME MEANING* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ᴋᴀɴᴀ ᴠᴇʀꜱɪᴏɴ ᴍᴇᴀɴɪɴɢ: bringer of *{trait1}*, keeper of *{trait2}*, and spreader of *{trait3}*!\n╰━━━━━━━\n{disclaimer}',
-      disclaimer: 'This is a fun name meaning made by KANA, not an official language meaning. What matters is the person is kind~ (≧▽≦)',
+      usage: '╭─❏ 🔤 「 *NAME MEANING* 」\n┊ Write a name first please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.artinama Budi*\n╰━━━━━━━',
+      title: 'Primbon Name Meaning',
+      result: '╭─❏ 🔤 「 *PRIMBON NAME MEANING* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊\n┊ {arti}\n┊\n┊ _{note}_\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *NAME MEANING FAILED* 」\n┊ Mouu, the primbon data source cannot be reached: *{message}*\n┊ Try again later please~\n╰━━━━━━━',
       btnAgain: 'Another Name',
-      traits: [
-        'morning spirit',
-        'bright laughter',
-        'wild ideas',
-        'calmness',
-        'small bravery',
-        'fun stories',
-        'new hope',
-        'positive energy',
-        'sweet surprises',
-        'big dreams',
-        'warmth',
-        'curiosity',
-      ],
     },
   },
 }
 
-export const test = { input: '.artinama Kana', expect: /ARTI NAMA|NAME MEANING/i }
+export const test = { input: '.artinama Budi', expect: /arti nama primbon|primbon name meaning/i }
+
+export function formatArtiNama(t, data) {
+  return t('artinama.result', { name: data.nama, arti: data.arti, note: data.catatan })
+}
 
 export async function handler(ctx) {
-  const name = ctx.text.trim()
+  const name = (ctx.text || '').trim().slice(0, 60)
   if (!name) return ctx.reply(ctx.t('artinama.usage'))
-  const pool = i18n[ctx.lang]?.artinama?.traits ?? i18n.id.artinama.traits
-  const base = hashPercent(name.toLowerCase())
-  const pick = (offset) => pool[(base + offset * 5) % pool.length]
-  const body = ctx.t('artinama.result', {
-    name,
-    trait1: pick(0),
-    trait2: pick(1),
-    trait3: pick(2),
-    disclaimer: ctx.t('artinama.disclaimer'),
-  })
+  let data
+  try {
+    data = await getArtiNama(name)
+  } catch (err) {
+    return ctx.reply(ctx.t('artinama.fail', { message: err.message }))
+  }
+  const body = formatArtiNama(ctx.t, data)
   return sendButtons(ctx.sock, ctx.chat, {
     title: ctx.t('artinama.title'),
     body,
     footer: ctx.t('menu.footer'),
-    replies: [
-      { text: ctx.t('artinama.btnAgain'), id: '.artinama Kana' },
-    ],
+    replies: [{ text: ctx.t('artinama.btnAgain'), id: '.artinama' }],
     textFallback: body,
   })
 }
