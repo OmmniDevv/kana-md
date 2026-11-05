@@ -60,14 +60,31 @@ Pengguna (kategori user, gratis):
   sisa limit download serta upscale hari ini.
 - `.ceksewa`: di grup menampilkan status sewa grup itu; di DM
   menampilkan status sewa jadibot sendiri.
-- `.infopremium` (alias premium, sewa, sewabot): daftar fitur premium
-  bertanda 💎 per kategori yang dibaca dinamis dari registry, daftar
-  fitur limit ⏳ beserta kuotanya, penjelasan tiga jenis berbayar, dan
-  cara aktivasi manual lewat owner.
+- `.infopremium` (alias premium, sewa, sewabot): satu pesan gambar
+  QRIS (aset yang sama dengan `.donasi`) dengan caption berisi daftar
+  harga resmi di bawah, ringkasan jumlah fitur premium dari registry,
+  kuota limit ⏳, dan cara aktivasi. Bila gambar QRIS tidak bisa
+  dimuat, bot mengirim teks lengkap: daftar fitur premium bertanda 💎
+  per kategori dari registry, daftar fitur limit ⏳ beserta kuotanya,
+  penjelasan tiga jenis berbayar, daftar harga, dan cara aktivasi.
 
-Aktivasi selalu manual oleh owner. Tidak ada payment gateway di bot,
-tidak ada bukti pembayaran buatan, dan tidak ada harga yang dikarang di
-kode: urusan harga dibicarakan langsung dengan owner lewat WhatsApp.
+Aktivasi selalu manual oleh owner. Tidak ada payment gateway di bot
+dan tidak ada bukti pembayaran buatan. Harga tidak dikarang: daftar
+harga resmi dari owner (keputusan 2026-11-06) tercantum apa adanya di
+caption `.infopremium` dan di bab Daftar harga di bawah ini.
+
+## Daftar harga resmi (dari owner, 2026-11-06)
+
+- Premium personal: 7 hari Rp3.000, 30 hari Rp8.000, 90 hari
+  Rp20.000, permanen Rp50.000.
+- Sewa grup: 7 hari Rp2.000, 30 hari Rp5.000, 90 hari Rp12.000,
+  permanen Rp30.000. Sewa grup tidak termasuk jadibot.
+- Sewa jadibot: 7 hari Rp4.000, 30 hari Rp10.000, 90 hari Rp25.000,
+  permanen Rp65.000.
+
+Pembayaran lewat QRIS GoPay Merchant owner (gambar di `.infopremium`
+dan `.donasi`), lalu pembeli chat owner lewat WhatsApp untuk aktivasi
+manual.
 
 ## Aturan gate (src/core/pipeline.js)
 
