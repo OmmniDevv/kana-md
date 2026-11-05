@@ -354,3 +354,49 @@ Tanda: menu memberi akhiran 💎 untuk premium dan ⏳ untuk limit, legenda di m
 Premium awal 14 plugin: ai, aiimg, aireset, ringkas, tts, vision, jadibot, stopjadibot, removebg, ssweb, ocr, game, hello, topgame. Jadibot bukan lagi owner-only (kategori user): sewa grup tidak membukanya, hanya premium personal atau sewa jadibot; stopjadibot tetap bisa dipakai pemegang sesi aktif walau premium berakhir, dan non-owner hanya bisa menghentikan sesinya sendiri. Tidak ditemukan sebagai plugin tersendiri: twitter, dailymotion, ephoto (dicatat di docs/PREMIUM.md, tidak dikarang).
 
 Koreksi owner 11:16 diterapkan: downloader berat dan upscale BUKAN premium, melainkan limitGroup. Download (aio, capcut, fb, gdrive, ig, mediafire, pixeldrain, soundcloud, spotify, tiktok, tiktokmp3, ytmp4): gratis 5 kali per hari, premium/sewa grup 50 kali, owner tanpa batas. Upscale (hd): gratis 3 kali, premium/sewa 20 kali. Reset tengah malam WIB, percobaan ditolak tidak menambah hitungan. Bukti gate penolakan user gratis dari tes unit pipeline (nomor owner selalu lolos gate, jadi penolakan tidak bisa dibuktikan dari chat owner). Tes live Mode A jendela v3 dijalankan 2026-11-05: 10 perintah misi ini (addprem, delprem, listprem, addsewa, delsewa, listsewa, cekprem, ceksewa, infopremium, jadibot) terkirim 10/10 dengan 0 error ke chat owner, cek kesehatan akun lolos sebelum mulai, dan .jadibot dari nomor owner berhenti di usage (lolos gate premium, bukan pesan premium). Sesudah tes, service produksi dinyalakan lagi, aktif, tersambung tepat satu kali, dan kunci livetest terhapus. Vonis tampilan balasan tetap menunggu penilaian visual user di HP.
+
+## Ekspansi v2 + batch snippet user (2026-11-05)
+
+Ekspansi v2 selesai: nama utama 417 -> 1408 (alias 594, total 2002 nama,
+38 kategori), loader 0 karantina, suite 369/369 hijau, semua ter-push ke
+main (commit inti fc9d83e, batch plugin 0ffb92d, 3b4b4b8, 88e9522,
+aa15d6d, a045a31). Rincian audit dan status per kelompok ada di
+docs/EXPANSION-V2.md; keputusan kanonis/fallback di docs/DECISIONS.md
+bagian F; triase snippet di docs/SNIPPETS.md.
+
+Tes live Mode A (prosedur v3, DM owner) untuk batch snippet + sampel
+ekspansi: 24 uji terkirim, 0 error handler, semua menunggu vonis visual
+user di HP: edubrain, notrack, aidetect, livechart, clancreate, pinterest,
+tiktok, cekjodoh, pantun, zodiak, geometrydash, tebakanime, tetris, zikir,
+waifu18, addkoin, eval, listproduk, aiscan, deployhtml, grammarcheck,
+nsfwcheck, plagiarism, slopscan.
+
+Catatan jujur per item snippet:
+- .edubrain terverifikasi ujung ke ujung saat probe (jawaban asli).
+- .notrack: probe VM kena 429 dari sumber (rate limit); tes live terkirim
+  tanpa error handler, kualitas jawaban menunggu vonis visual.
+- .plagiarism dan .grammarcheck terverifikasi saat probe (skor + sumber /
+  nilai + saran asli). .aiscan: endpoint ai-scan membalas 404 dari layanan
+  aslinya saat probe, plugin menampilkan kegagalan secara jujur.
+- .nsfwcheck: probe Nyckel membalas 400 untuk URL contoh snippet dan
+  timeout pada percobaan berikutnya (jaringan VM); belum terverifikasi
+  ujung ke ujung.
+- .aidetect: probe ZeroGPT timeout jaringan VM; belum terverifikasi ujung
+  ke ujung, multipart dan validasi ukuran sesuai snippet.
+- .slopscan terverifikasi saat probe (skor 38, vonis, ringkasan, laporan).
+- .deployhtml terverifikasi penuh saat probe TANPA spoof IP: HTTP 200,
+  URL deployment asli diterbitkan deploysxc. Di tes live baru jalur
+  petunjuk (tanpa dokumen kutipan) yang teruji.
+- .livechart: plugin terdaftar dan tes live terkirim; parser mengikuti
+  struktur kartu LiveChart dari snippet.
+- Fallback .tiktok: tokgrab terverifikasi metadata asli saat probe;
+  unduhmedia merespons tetapi menolak URL pendek dari sumbernya. Rantai
+  sekarang tiklydown -> tikwm -> unduhmedia -> tokgrab.
+- Fallback .pinterest: POST BaseSearchResource berpaginasi jadi fallback
+  di belakang GET utama, hasil diperkaya (deskripsi, statistik, tautan).
+- Game HTML baru: geometrydash, pacman, fruitslot, supermario. Tiga
+  pertama punya plugin perintah sendiri kecuali fruitslot (tidak ada port
+  perintah bernama itu; gamenya masuk katalog dan dimainkan via .game).
+- Snippet antitoxic dan afk dilewati karena KANA sudah punya versi yang
+  lebih baik (lihat DECISIONS.md bagian F). Tiga snippet ditolak sebagai
+  batas keras/tidak aman, tercatat di SNIPPETS.md.

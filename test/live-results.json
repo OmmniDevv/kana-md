@@ -1,95 +1,207 @@
 {
-  "generatedAt": "2026-11-05T04:52:49.530Z",
+  "generatedAt": "2026-11-05T05:24:05.549Z",
   "mode": "A",
   "status": "completed",
   "catatan": "Mode A: pesan sintetis disuntikkan ke pipeline, balasan dikirim sungguhan ke chat uji. Harness tidak membaca balasan masuk, jadi kolom expect hanya panduan pencocokan visual user di HP, bukan vonis otomatis. Status sent berarti pesan sudah diserahkan ke pipeline.",
   "summary": {
-    "total": 10,
-    "sent": 10,
+    "total": 24,
+    "sent": 24,
     "error": 0,
-    "menungguKonfirmasiVisual": 10,
+    "menungguKonfirmasiVisual": 24,
     "lulusOtomatis": null,
     "catatan": "Mode A tidak menilai balasan. Status sent menunggu penilaian visual user di HP dengan panduan kolom expect."
   },
   "results": [
     {
       "chat": "6285869074622@s.whatsapp.net",
-      "input": ".addprem",
-      "expect": "/premium/i",
-      "plugin": "addprem",
-      "sentAt": "2026-11-05T04:52:20.694Z",
+      "input": ".aidetect",
+      "expect": "/kirim|send|balas|reply/i",
+      "plugin": "aidetect",
+      "sentAt": "2026-11-05T05:22:34.675Z",
       "status": "sent"
     },
     {
       "chat": "6285869074622@s.whatsapp.net",
-      "input": ".addsewa",
-      "expect": "/sewa|rent/i",
-      "plugin": "addsewa",
-      "sentAt": "2026-11-05T04:52:24.927Z",
+      "input": ".edubrain halo",
+      "expect": "/edubrain|mikir|thinking/i",
+      "plugin": "edubrain",
+      "sentAt": "2026-11-05T05:22:38.613Z",
       "status": "sent"
     },
     {
       "chat": "6285869074622@s.whatsapp.net",
-      "input": ".delprem",
-      "expect": "/premium/i",
-      "plugin": "delprem",
-      "sentAt": "2026-11-05T04:52:27.611Z",
+      "input": ".notrack halo",
+      "expect": "/notrack|mikir|thinking/i",
+      "plugin": "notrack",
+      "sentAt": "2026-11-05T05:22:43.462Z",
       "status": "sent"
     },
     {
       "chat": "6285869074622@s.whatsapp.net",
-      "input": ".delsewa",
-      "expect": "/sewa|rent/i",
-      "plugin": "delsewa",
-      "sentAt": "2026-11-05T04:52:30.717Z",
+      "input": ".livechart",
+      "expect": "/tulis|write/i",
+      "plugin": "livechart",
+      "sentAt": "2026-11-05T05:22:49.602Z",
       "status": "sent"
     },
     {
       "chat": "6285869074622@s.whatsapp.net",
-      "input": ".jadibot",
-      "expect": "/jadibot/i",
-      "plugin": "jadibot",
-      "sentAt": "2026-11-05T04:52:34.256Z",
+      "input": ".clancreate",
+      "expect": "/clan|🛡️/i",
+      "plugin": "clancreate",
+      "sentAt": "2026-11-05T05:22:51.671Z",
       "status": "sent"
     },
     {
       "chat": "6285869074622@s.whatsapp.net",
-      "input": ".listprem",
-      "expect": "/premium/i",
-      "plugin": "listprem",
-      "sentAt": "2026-11-05T04:52:36.649Z",
+      "input": ".pinterest kucing lucu",
+      "expect": "/kucing/i",
+      "plugin": "pinterest",
+      "sentAt": "2026-11-05T05:22:55.543Z",
       "status": "sent"
     },
     {
       "chat": "6285869074622@s.whatsapp.net",
-      "input": ".listsewa",
-      "expect": "/sewa|rent/i",
-      "plugin": "listsewa",
-      "sentAt": "2026-11-05T04:52:39.855Z",
+      "input": ".tiktok https://www.tiktok.com/@pojoksatu.id/video/7647074044960984340",
+      "expect": "/video|TikTok/i",
+      "plugin": "tiktok",
+      "sentAt": "2026-11-05T05:23:03.497Z",
       "status": "sent"
     },
     {
       "chat": "6285869074622@s.whatsapp.net",
-      "input": ".cekprem",
-      "expect": "/premium/i",
-      "plugin": "cekprem",
-      "sentAt": "2026-11-05T04:52:42.791Z",
+      "input": ".cekjodoh Budi & Sari",
+      "expect": "/cek jodoh|kecocokan/i",
+      "plugin": "cekjodoh",
+      "sentAt": "2026-11-05T05:23:20.618Z",
       "status": "sent"
     },
     {
       "chat": "6285869074622@s.whatsapp.net",
-      "input": ".ceksewa",
-      "expect": "/sewa|rent/i",
-      "plugin": "ceksewa",
-      "sentAt": "2026-11-05T04:52:46.708Z",
+      "input": ".pantun",
+      "expect": "/pantun/i",
+      "plugin": "pantun",
+      "sentAt": "2026-11-05T05:23:22.994Z",
       "status": "sent"
     },
     {
       "chat": "6285869074622@s.whatsapp.net",
-      "input": ".infopremium",
-      "expect": "/premium/i",
-      "plugin": "infopremium",
-      "sentAt": "2026-11-05T04:52:49.508Z",
+      "input": ".zodiak 17-08",
+      "expect": "/zodiak/i",
+      "plugin": "zodiak",
+      "sentAt": "2026-11-05T05:23:26.073Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".geometrydash",
+      "expect": "/game|main/i",
+      "plugin": "geometrydash",
+      "sentAt": "2026-11-05T05:23:28.592Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".tebakanime",
+      "expect": "/kuis|quiz/i",
+      "plugin": "tebakanime",
+      "sentAt": "2026-11-05T05:23:31.396Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".tetris",
+      "expect": "/game|main/i",
+      "plugin": "tetris",
+      "sentAt": "2026-11-05T05:23:33.713Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".zikir",
+      "expect": "/zikir/i",
+      "plugin": "zikir",
+      "sentAt": "2026-11-05T05:23:36.988Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".waifu18",
+      "expect": "/18/",
+      "plugin": "waifu18",
+      "sentAt": "2026-11-05T05:23:39.943Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".addkoin",
+      "expect": "/format/i",
+      "plugin": "addkoin",
+      "sentAt": "2026-11-05T05:23:43.840Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".eval",
+      "expect": "/owner/i",
+      "plugin": "eval",
+      "sentAt": "2026-11-05T05:23:46.005Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".listproduk",
+      "expect": "/toko|store/i",
+      "plugin": "listproduk",
+      "sentAt": "2026-11-05T05:23:49.523Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".aiscan",
+      "expect": "/tulis|write|tempel|paste/i",
+      "plugin": "aiscan",
+      "sentAt": "2026-11-05T05:23:52.108Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".deployhtml",
+      "expect": "/balas|reply/i",
+      "plugin": "deployhtml",
+      "sentAt": "2026-11-05T05:23:55.597Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".grammarcheck",
+      "expect": "/tulis|write/i",
+      "plugin": "grammarcheck",
+      "sentAt": "2026-11-05T05:23:58.507Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".nsfwcheck",
+      "expect": "/kirim|send|balas|reply/i",
+      "plugin": "nsfwcheck",
+      "sentAt": "2026-11-05T05:24:01.041Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".plagiarism",
+      "expect": "/tulis|write|tempel|paste/i",
+      "plugin": "plagiarism",
+      "sentAt": "2026-11-05T05:24:03.080Z",
+      "status": "sent"
+    },
+    {
+      "chat": "6285869074622@s.whatsapp.net",
+      "input": ".slopscan",
+      "expect": "/kirim|send/i",
+      "plugin": "slopscan",
+      "sentAt": "2026-11-05T05:24:05.535Z",
       "status": "sent"
     }
   ]
