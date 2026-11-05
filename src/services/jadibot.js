@@ -25,7 +25,8 @@
 //   pertama dari nama sesi di-uppercase ditambah padding 'KANA'. Kode
 //   yang benar-benar diminta ke WhatsApp tetap mengikuti alur
 //   connection.js; owner memasukkan kode yang tampil di log/chat.
-import { useMultiFileAuthState, usePostgresAuthState } from '@rexxhayanasi/elaina-baileys'
+import { usePostgresAuthState } from '@rexxhayanasi/elaina-baileys'
+import { createLocalAuthState, guardAuthState } from '../storage/index.js'
 import { createPipeline } from '../core/pipeline.js'
 import { startConnection as realStartConnection } from '../core/connection.js'
 import { logger } from './logger.js'
@@ -44,13 +45,17 @@ export function pairingCodeFor(name) {
   return (base + 'KANAKANA').slice(0, 8)
 }
 
-// Auth terpisah per sesi, mengikuti driver storage aktif.
+// Auth terpisah per sesi, mengikuti driver storage aktif. Keduanya lewat
+// guardAuthState (lewat createLocalAuthState untuk lokal) supaya jalur
+// loggedOut di connection.js beneran menghapus sesi jadibot juga;
+// useMultiFileAuthState bawaan library tidak menyediakan clearAuth.
 export async function createSessionAuth(storage, name, env = process.env) {
   if (storage?.driver === 'supabase') {
-    return usePostgresAuthState({ pool: storage.pool, session: `jadibot-${name}` })
+    const auth = await usePostgresAuthState({ pool: storage.pool, session: `jadibot-${name}` })
+    return guardAuthState(auth)
   }
   const base = env.LOCAL_DATA_DIR || '.dev-data'
-  return useMultiFileAuthState(`${base}/jadibot/${name}`)
+  return createLocalAuthState(`${base}/jadibot/${name}`)
 }
 
 function stopFromResult(result, sessionRef) {

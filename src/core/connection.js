@@ -93,7 +93,18 @@ export async function startConnection({ auth, botNumber, ownerNumber, botName = 
         if (statusCode === DisconnectReason.loggedOut) {
           stopped = true
           logger.error('Sesi loggedOut. Sesi dibersihkan, pairing ulang diperlukan.')
-          if (clearAuth) await clearAuth()
+          if (clearAuth) {
+            try {
+              await clearAuth()
+            } catch (err) {
+              logger.error({ err: err.message }, 'gagal membersihkan sesi sesudah loggedOut')
+            }
+          } else {
+            // Tanpa clearAuth, klaim "sesi dibersihkan" di atas tidak
+            // terjadi; catat apa adanya supaya tidak terulang insiden
+            // restart beruntun memakai creds mati (2026-11-06).
+            logger.error('clearAuth tidak tersedia untuk auth state ini; sesi TIDAK terhapus dari penyimpanan')
+          }
           return
         }
         if (stopped) return
