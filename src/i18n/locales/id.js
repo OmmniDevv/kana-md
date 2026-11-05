@@ -20,6 +20,16 @@ export default {
     registerAutoBtn: '✨ Daftar Otomatis',
     registerHowBtn: '📖 Cara Daftar',
   },
+  premium: {
+    denied: '╭─❏ 💎 「 *FITUR PREMIUM* 」\n┊ Ehh, fitur *.{feature}* ini khusus premium nih~ 💎\n┊ ꜱᴛᴀᴛᴜꜱ ᴋᴀᴍᴜ: *{status}*\n┊ Buat dapetin premium atau sewa bot, hubungi owner KANA yaa:\n┊ *{owner}* ( {link} )\n┊ Aktivasinya manual sama owner, jadi tinggal chat aja~ {mood}\n╰━━━━━━━',
+    statusFree: 'belum premium',
+    statusExpired: 'premium sudah berakhir',
+    btnCheck: 'Cek Premium',
+    btnInfo: 'Info Premium',
+    limitOut: '╭─❏ ⏳ 「 *LIMIT HARIAN HABIS* 」\n┊ Mouu, limit *{group}* kamu hari ini udah habis nih~ (dipakai *{used} dari {quota}* kali)\n┊ ʀᴇꜱᴇᴛ: *tengah malam WIB* yaa, sabar bentar~\n┊ Mau limit lebih besar? *Premium* atau *sewa grup* naikin limit {group} jadi *{paidQuota} kali per hari* lho~\n┊ Cek status kamu pakai *.cekprem* yaa {mood}\n╰━━━━━━━',
+    groupDownload: 'download',
+    groupUpscale: 'upscale',
+  },
   sched: {
     prayer: 'Waktunya sholat {prayer} ({time} WIB). Yuk, sholat dulu~',
     religiDaily: 'Pengingat hari ini:\n{text}\n({source})',
@@ -67,6 +77,9 @@ export default {
     ownerCategoryOnly: 'Ehh? Kategori owner khusus Master aja yaa~',
     unknownCategory: 'Hmm, kategori "{category}" nggak ada nih. Kategori yang ada: {list}. Pencet .menu aja yaa~',
     subHint: 'Ketik .menu untuk menu utama atau .menu all untuk semua perintah yaa~',
+    premiumLegend: '💎 = fitur premium',
+    limitLegend: '⏳ = ada limit harian',
+    legendTitle: 'KETERANGAN',
     empty: 'Belum ada perintah di kategori ini~',
     cat: {
       main: 'MENU UTAMA',

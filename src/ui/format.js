@@ -63,13 +63,34 @@ export function formatWibDateTime(date = new Date(), lang = 'id') {
   return `${formatWibDate(date, lang)} • ${formatWibClock(date, lang)} WIB`
 }
 
+// Entri perintah menu bisa string polos ('ping') atau objek kaya
+// { name, premium, limitGroup } dari collectCategories menu.js.
+// Tanda: premium diberi akhiran 💎, limitGroup diberi akhiran ⏳.
+export function commandParts(entry) {
+  if (typeof entry === 'string') return { name: entry, premium: false, limitGroup: null }
+  return {
+    name: entry?.name ?? '',
+    premium: !!entry?.premium,
+    limitGroup: entry?.limitGroup ?? null,
+  }
+}
+
+export function commandLabel(entry) {
+  const parts = commandParts(entry)
+  return `.${parts.name}${parts.premium ? ' 💎' : ''}${parts.limitGroup ? ' ⏳' : ''}`
+}
+
 // Sub-menu satu kategori: bingkai yang sama, hanya perintah kategori itu.
 // category: { title, icon, commands: ['ping', ...] }; labels: { footer, subHint }
 export function formatMenuCategory({ category, labels }) {
   const out = []
   out.push(`╭─❏ ${category.icon} 「 ${category.title} 」`)
-  for (const name of category.commands) out.push(`│ ◦ .${name}`)
+  for (const name of category.commands) out.push(`│ ◦ ${commandLabel(name)}`)
   out.push('╰━━━━━━━')
+  const hasPremium = category.commands.some((c) => commandParts(c).premium)
+  const hasLimit = category.commands.some((c) => commandParts(c).limitGroup)
+  if (hasPremium && labels.premiumLegend) out.push(`│ ${labels.premiumLegend}`)
+  if (hasLimit && labels.limitLegend) out.push(`│ ${labels.limitLegend}`)
   out.push(`│ ${labels.subHint}`)
   out.push(`_${labels.footer}_`)
   return out.join('\n')
@@ -90,7 +111,16 @@ export function formatMenu({ botName, runtimeMs, mode, pluginCount, commandCount
   for (const cat of categories) {
     out.push('')
     out.push(`╭─❏ ${cat.icon} 「 ${cat.title} 」`)
-    for (const name of cat.commands) out.push(`│ ◦ .${name}`)
+    for (const name of cat.commands) out.push(`│ ◦ ${commandLabel(name)}`)
+    out.push('╰━━━━━━━')
+  }
+  const anyPremium = categories.some((cat) => cat.commands.some((c) => commandParts(c).premium))
+  const anyLimit = categories.some((cat) => cat.commands.some((c) => commandParts(c).limitGroup))
+  if ((anyPremium && labels.premiumLegend) || (anyLimit && labels.limitLegend)) {
+    out.push('')
+    out.push(`╭─❏ 🏷️ 「 ${labels.legendTitle ?? 'INFO'} 」`)
+    if (anyPremium && labels.premiumLegend) out.push(`│ ◦ ${labels.premiumLegend}`)
+    if (anyLimit && labels.limitLegend) out.push(`│ ◦ ${labels.limitLegend}`)
     out.push('╰━━━━━━━')
   }
   out.push('')

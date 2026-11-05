@@ -8,7 +8,10 @@
 //
 // Routing:
 // - ns 'web_login_requests' dan 'web_login_limits': selalu REST.
-// - ns 'kv' dengan key 'bot_stats': REST (statistik dashboard).
+// - ns 'premium', 'sewa_bot', dan 'usage_limits': selalu REST (panel
+//   premium web dan bot berbagi data yang sama, keputusan 2026-11-05).
+// - ns 'kv' dengan key 'bot_stats' dan 'top_users': REST (statistik
+//   dashboard dan snapshot leaderboard publik tanpa nomor HP).
 // - Semua pasangan ns dan key lain: storage utama, termasuk TTL apa adanya.
 //   Method keys(ns) hanya tahu namespace, jadi 'kv' untuk keys diteruskan
 //   ke storage utama; tidak ada pemanggil yang melisting 'kv' untuk web.
@@ -28,6 +31,7 @@ export const BRIDGE_REQUESTS_NS = REQUESTS_NS
 export const BRIDGE_LIMITS_NS = LIMITS_NS
 export const STATS_NS = 'kv'
 export const STATS_KEY = 'bot_stats'
+export const TOP_USERS_KEY = 'top_users'
 
 export function isBridgeEnabled(env = process.env) {
   return Boolean(String(env?.SUPABASE_REST_URL ?? '').trim()) &&
@@ -41,9 +45,16 @@ function resolveNowMs(now) {
   return value !== undefined && value !== null && Number.isFinite(n) ? n : Date.now()
 }
 
+// Namespace premium dan limit ikut REST (keputusan owner 2026-11-05):
+// panel owner di web menulis namespace yang sama ('premium', 'sewa_bot')
+// dan dashboard member membaca sisa limit ('usage_limits'), jadi bot dan
+// web wajib berbagi satu data lewat Supabase, bukan storage lokal bot.
+export const PREMIUM_NS_SET = new Set(['premium', 'sewa_bot', 'usage_limits'])
+
 function isRestRouted(ns, key) {
   if (ns === REQUESTS_NS || ns === LIMITS_NS) return true
-  if (ns === STATS_NS && key === STATS_KEY) return true
+  if (PREMIUM_NS_SET.has(ns)) return true
+  if (ns === STATS_NS && (key === STATS_KEY || key === TOP_USERS_KEY)) return true
   return false
 }
 
@@ -149,9 +160,9 @@ export function createBridgeStorage(baseStorage, rest, { healthFile, now } = {})
       return tracked(ns, () => rest.kvDelete(ns, key))
     },
     async keys(ns) {
-      // keys hanya membawa namespace: dua ns login selalu REST, sisanya
-      // (termasuk 'kv') ke storage utama.
-      if (ns !== REQUESTS_NS && ns !== LIMITS_NS) return baseStorage.keys(ns)
+      // keys hanya membawa namespace: ns login, premium, sewa, dan limit
+      // selalu REST, sisanya (termasuk 'kv') ke storage utama.
+      if (ns !== REQUESTS_NS && ns !== LIMITS_NS && !PREMIUM_NS_SET.has(ns)) return baseStorage.keys(ns)
       const rows = await tracked(ns, () => rest.kvList(ns))
       const nowMs = resolveNowMs(now)
       return rows

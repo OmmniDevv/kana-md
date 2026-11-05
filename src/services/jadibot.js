@@ -1,11 +1,12 @@
-// Manajer sesi jadibot (Fase 10), khusus owner.
+// Manajer sesi jadibot (Fase 10).
 //
 // PERINGATAN KEAMANAN: sesi jadibot adalah bot PENUH yang berjalan di
 // nomor WhatsApp lain memakai pipeline yang sama dengan bot utama.
-// Siapa pun yang bisa memulai sesi ini pada dasarnya menjalankan bot
-// kedua atas nama owner, jadi gerbangnya wajib isOwner di plugin dan
-// jumlah sesi dibatasi keras (MAX_SESSIONS). Jangan longgarkan tanpa
-// keputusan owner.
+// Sejak keputusan owner 2026-11-05, gerbangnya adalah PREMIUM personal
+// atau sewa jadibot (bukan lagi isOwner): lihat gate di pipeline dan
+// src/services/premium.js. Jumlah sesi tetap dibatasi keras
+// (MAX_SESSIONS), dan plugin mencatat pemegang sesi supaya pengguna
+// premium hanya bisa menghentikan sesinya sendiri.
 //
 // Cara kerja (mengikuti bentuk nyata di repo, bukan karangan):
 // - src/core/connection.js mengekspor startConnection({ auth, botNumber,

@@ -8,6 +8,8 @@ import { logger } from '../services/logger.js'
 import { sendButtons } from '../ui/buttons.js'
 import { buildFakeQuoted, cachedThumbnail, forwardedContextInfo, warmFakeThumbnail } from '../ui/fake-thumb.js'
 import * as users from '../services/user-service.js'
+import * as premiumSvc from '../services/premium.js'
+import * as limitSvc from '../services/limit.js'
 
 // Panaskan thumbnail untuk fake quoted ala _allfake.js Elaina sekali saja.
 warmFakeThumbnail(join(dirname(fileURLToPath(import.meta.url)), '../../assets/menu-banner.jpg'))
@@ -73,7 +75,7 @@ function shouldRunBefores(message) {
 // cooldown) -> handler (error boundary) -> XP.
 export function createPipeline({ registry, storage, owners = [], defaultLang = 'id' }) {
   // Statistik ringan untuk dashboard web (kv bot_stats, diflush scheduler).
-  const stats = { startedAt: Date.now(), totalCommands: 0 }
+  const stats = { startedAt: Date.now(), totalCommands: 0, commandCounts: {} }
   const cooldowns = new Map()
   const ownerDigits = owners.map(digits).filter(Boolean)
   const groupMetaCache = new Map()
@@ -261,6 +263,79 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
     if (cfg.isAdmin && !flags.isAdmin) return reply(t('common.adminOnly'))
     if (cfg.isBotAdmin && !flags.isBotAdmin) return reply(t('common.botNotAdmin'))
 
+    // Balasan gate berbayar memakai kartu tombol relevan (.cekprem dan
+    // .infopremium), fallback teks selalu ada lewat sendButtons/reply.
+    const gateReplies = [
+      { text: t('premium.btnCheck'), id: '.cekprem' },
+      { text: t('premium.btnInfo'), id: '.infopremium' },
+    ]
+    const replyGate = async (body) => {
+      try {
+        await sendButtons(sock, chat, {
+          title: 'KANA',
+          body,
+          footer: t('menu.footer'),
+          replies: gateReplies,
+          textFallback: body,
+        })
+      } catch {
+        await reply(body)
+      }
+    }
+
+    // Gate premium (keputusan owner 2026-11-05): plugin config.premium
+    // hanya lolos untuk owner, premium personal aktif, sewa grup aktif
+    // (di grup itu saja), atau jalur khusus jadibot di service premium.
+    // Detail aturan dan pengecualian ada di src/services/premium.js.
+    let paidTier = false
+    if (!isOwner) {
+      paidTier = await premiumSvc.hasPaidTier(storage, { digits: primaryDigits, chat, isGroup })
+    }
+    if (cfg.premium && !isOwner) {
+      const access = await premiumSvc.checkPremiumAccess(storage, {
+        digits: primaryDigits,
+        chat,
+        isGroup,
+        commandName: cfg.name,
+      })
+      if (!access.allowed) {
+        const prem = await premiumSvc.getPremiumStatus(storage, primaryDigits)
+        const statusText = prem.exists && prem.expired ? t('premium.statusExpired') : t('premium.statusFree')
+        const ownerNumber = ownerDigits[0] || ''
+        const body = t('premium.denied', {
+          feature: cfg.name,
+          status: statusText,
+          owner: ownerNumber || '-',
+          link: ownerNumber ? `https://wa.me/${ownerNumber}` : '-',
+          mood: say(lang, 'gagal'),
+        })
+        await replyGate(body)
+        return
+      }
+      paidTier = true
+    }
+
+    // Gate limit harian bergrup (config.limitGroup): downloader berat dan
+    // upscale tidak dikunci premium, tetapi dihitung per grup per hari.
+    // Percobaan yang ditolak tidak menambah hitungan dan tidak memakan
+    // cooldown, karena gate ini jalan sebelum cooldown diset.
+    if (cfg.limitGroup && !isOwner) {
+      const result = await limitSvc.consumeLimitGroup(storage, primaryDigits, cfg.limitGroup, { paidTier })
+      if (!result.ok) {
+        const groupKey = `premium.group${cfg.limitGroup[0].toUpperCase()}${cfg.limitGroup.slice(1)}`
+        const groupLabel = t(groupKey)
+        const body = t('premium.limitOut', {
+          group: groupLabel === groupKey ? cfg.limitGroup : groupLabel,
+          used: result.used,
+          quota: result.quota,
+          paidQuota: limitSvc.quotaFor(cfg.limitGroup, true),
+          mood: say(lang, 'gagal'),
+        })
+        await replyGate(body)
+        return
+      }
+    }
+
     const cdKey = `${cfg.name}:${primaryDigits}`
     const cdMs = (cfg.cooldown ?? 0) * 1000
     const last = cooldowns.get(cdKey) ?? 0
@@ -269,7 +344,9 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
     }
 
     // Limit harian: config.limit boolean (biaya 1) atau angka (biaya segitu).
-    if (cfg.limit && !isOwner) {
+    // Plugin limitGroup memakai kuota grupnya sendiri di gate atas, jadi
+    // limit generik ini dilewati supaya tidak kena potong dua kali.
+    if (cfg.limit && !cfg.limitGroup && !isOwner) {
       const cost = cfg.limit === true ? 1 : Number(cfg.limit) || 1
       const result = await users.consumeLimit(storage, primaryDigits, cost)
       if (!result.ok) return reply(t('common.limitOut', { limit: users.DEFAULT_DAILY_LIMIT }))
@@ -287,6 +364,7 @@ export function createPipeline({ registry, storage, owners = [], defaultLang = '
     }
 
     stats.totalCommands += 1
+    stats.commandCounts[cfg.name] = (stats.commandCounts[cfg.name] || 0) + 1
     try {
       await plugin.handler(ctx)
       const xp = !isOwner && cfg.category !== 'owner' ? users.XP_PER_COMMAND : 0

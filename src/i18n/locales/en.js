@@ -20,6 +20,16 @@ export default {
     registerAutoBtn: '✨ Auto Register',
     registerHowBtn: '📖 How to Register',
   },
+  premium: {
+    denied: '╭─❏ 💎 「 *PREMIUM FEATURE* 」\n┊ Eh, the *.{feature}* feature is premium only~ 💎\n┊ ʏᴏᴜʀ ꜱᴛᴀᴛᴜꜱ: *{status}*\n┊ To get premium or rent the bot, contact KANA owner:\n┊ *{owner}* ( {link} )\n┊ Activation is manual by the owner, just send a chat~ {mood}\n╰━━━━━━━',
+    statusFree: 'not premium yet',
+    statusExpired: 'premium has expired',
+    btnCheck: 'Check Premium',
+    btnInfo: 'Premium Info',
+    limitOut: '╭─❏ ⏳ 「 *DAILY LIMIT REACHED* 」\n┊ Mouu, your *{group}* limit for today is used up~ (used *{used} of {quota}* times)\n┊ ʀᴇꜱᴇᴛ: *midnight WIB*, please hang on~\n┊ Want a bigger limit? *Premium* or a *group rent* raises the {group} limit to *{paidQuota} times per day*~\n┊ Check your status with *.cekprem* {mood}\n╰━━━━━━━',
+    groupDownload: 'download',
+    groupUpscale: 'upscale',
+  },
   sched: {
     prayer: 'It is time for {prayer} prayer ({time} WIB). Let us pray first~',
     religiDaily: 'Today reminder:\n{text}\n({source})',
@@ -67,6 +77,9 @@ export default {
     ownerCategoryOnly: 'Eh? The owner category is for Master only~',
     unknownCategory: 'Hmm, category "{category}" does not exist. Available categories: {list}. Just tap .menu~',
     subHint: 'Type .menu for the main menu or .menu all for every command~',
+    premiumLegend: '💎 = premium feature',
+    limitLegend: '⏳ = has a daily limit',
+    legendTitle: 'LEGEND',
     empty: 'No commands in this category yet~',
     cat: {
       main: 'MAIN MENU',
