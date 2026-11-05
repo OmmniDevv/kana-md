@@ -43,8 +43,21 @@ import {
   handler as sulapHandler,
   findParticipant,
 } from '../plugins/fun/sulap.js'
+import { renderShipCard, SHIP_CARD_WIDTH, SHIP_CARD_HEIGHT } from '../src/ui/ship-card.js'
+import {
+  i18n as shipI18n,
+  handler as shipHandler,
+  resolveShipPair,
+  pickPercent,
+} from '../plugins/canvas/ship.js'
+import {
+  i18n as usercardI18n,
+  handler as usercardHandler,
+  resolveUsercardTarget,
+  rankKeyForLevel,
+} from '../plugins/main/usercard.js'
 
-for (const mod of [artinamaI18n, ramalanI18n, randomtagI18n, jodohI18n, cekpacarI18n, sulapI18n]) {
+for (const mod of [artinamaI18n, ramalanI18n, randomtagI18n, jodohI18n, cekpacarI18n, sulapI18n, shipI18n, usercardI18n]) {
   for (const [lang, messages] of Object.entries(mod)) addMessages(lang, messages)
 }
 
@@ -345,4 +358,82 @@ test('sulap: target admin kebal dan tidak dikeluarkan', async () => {
   await dispatchReply(answer.ctx)
   assert.equal(removed.length, 0)
   assert.match(sent.at(-1).content.text, /kebal/)
+})
+
+/* ---------------- Canvas: ship dan usercard ---------------- */
+
+test('ship-card: render menghasilkan PNG valid 800x400, placeholder maupun berfoto', async () => {
+  const plain = await renderShipCard({ name1: 'Budi', name2: 'Ani', percent: 73, title: 'SHIP' })
+  assert.ok(plain.subarray(0, 4).equals(PNG_MAGIC))
+  assert.equal(plain.readUInt32BE(16), SHIP_CARD_WIDTH)
+  assert.equal(plain.readUInt32BE(20), SHIP_CARD_HEIGHT)
+  assert.ok(plain.length > 10000, `PNG terlalu kecil: ${plain.length}`)
+  const withPhoto = await renderShipCard({
+    name1: 'Budi',
+    name2: 'Ani',
+    percent: 73,
+    avatar1Buffer: tinyPngBuffer(),
+    avatar2Buffer: tinyPngBuffer(),
+  })
+  assert.ok(withPhoto.subarray(0, 4).equals(PNG_MAGIC))
+  assert.notEqual(withPhoto.length, plain.length, 'kartu berfoto harus beda dari placeholder')
+})
+
+test('ship: resolveShipPair dari dua mention atau pengirim plus satu mention', () => {
+  const base = { sender: '628111@s.whatsapp.net', mentionedJids: [] }
+  assert.deepEqual(
+    resolveShipPair({ ...base, mentionedJids: ['628222@s.whatsapp.net', '628333@s.whatsapp.net'] }),
+    ['628222@s.whatsapp.net', '628333@s.whatsapp.net']
+  )
+  assert.deepEqual(resolveShipPair({ ...base, mentionedJids: ['628222@s.whatsapp.net'] }), [
+    '628111@s.whatsapp.net',
+    '628222@s.whatsapp.net',
+  ])
+  assert.equal(resolveShipPair(base), null)
+  assert.equal(pickPercent(() => 0.5), 50)
+})
+
+test('ship: handler mengirim gambar PNG valid dengan caption persen dan mentions', async () => {
+  const { sock, sent } = fakeSock()
+  const { ctx } = fakeCtx(sock, { mentionedJids: ['628222@s.whatsapp.net', '628333@s.whatsapp.net'] })
+  await shipHandler(ctx)
+  assert.equal(sent.length, 1)
+  const { content } = sent[0]
+  assert.ok(Buffer.isBuffer(content.image))
+  assert.ok(content.image.subarray(0, 4).equals(PNG_MAGIC), 'gambar ship harus PNG valid')
+  assert.match(content.caption, /SHIP RESULT/)
+  assert.match(content.caption, /Kecocokan: \*\d+%/)
+  assert.deepEqual(content.mentions, ['628222@s.whatsapp.net', '628333@s.whatsapp.net'])
+})
+
+test('usercard: resolveUsercardTarget mengutamakan mention, kutipan, nomor, diri', () => {
+  const base = { sender: '628111@s.whatsapp.net', mentionedJids: [], quoted: null, args: [] }
+  assert.equal(resolveUsercardTarget({ ...base, mentionedJids: ['628222@s.whatsapp.net'] }), '628222@s.whatsapp.net')
+  assert.equal(resolveUsercardTarget({ ...base, quoted: { sender: '628333@s.whatsapp.net' } }), '628333@s.whatsapp.net')
+  assert.equal(resolveUsercardTarget({ ...base, args: ['628444'] }), '628444@s.whatsapp.net')
+  assert.equal(resolveUsercardTarget(base), '628111@s.whatsapp.net')
+  assert.equal(rankKeyForLevel(30), 'usercard.rank5')
+})
+
+test('usercard: handler mengirim kartu profil sebagai gambar PNG berisi data user', async () => {
+  const { sock, sent } = fakeSock()
+  const { ctx } = fakeCtx(sock)
+  await ctx.storage.set('users', '628111', {
+    xp: 2450,
+    balance: 12500,
+    name: 'Penguji Hebat',
+    registered: true,
+    registeredAt: '2026-10-02T00:00:00.000Z',
+  })
+  await usercardHandler(ctx)
+  assert.equal(sent.length, 1)
+  const { content } = sent[0]
+  assert.ok(Buffer.isBuffer(content.image), 'usercard harus mengirim gambar')
+  assert.ok(content.image.subarray(0, 4).equals(PNG_MAGIC), 'gambar usercard harus PNG valid')
+  assert.equal(content.image.readUInt32BE(16), 1000)
+  assert.equal(content.image.readUInt32BE(20), 560)
+  assert.match(content.caption, /USERCARD/)
+  assert.match(content.caption, /Penguji Hebat/)
+  assert.match(content.caption, /12500/)
+  assert.deepEqual(content.mentions, ['628111@s.whatsapp.net'])
 })
