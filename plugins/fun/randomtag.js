@@ -1,53 +1,88 @@
-
-import { sendButtons } from '../../src/ui/buttons.js'
+// Randomtag: pilih satu member grup secara acak dari metadata grup lalu
+// tag beneran memakai mentions, seperti fitur Elaina-MD. Khusus grup.
 export const config = {
-  name: "randomtag",
-  alias: [],
-  category: "fun",
-  description: { id: "Tag member random di group", en: "KANA version of the Elaina-MD randomtag feature, rewritten in KANA style" },
-  usage: ".randomtag",
-  example: ".randomtag",
+  name: 'randomtag',
+  alias: ['rtag'],
+  category: 'fun',
+  description: { id: 'Tag satu member grup secara acak', en: 'Tag one random group member' },
+  usage: '.randomtag',
+  example: '.randomtag',
   cooldown: 5,
+  isGroup: true,
 }
 
 export const i18n = {
   id: {
-    "randomtag": {
-      title: "Cek randomtag",
-      result: "╭─❏ 🔮 「 *CEK RANDOMTAG* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ʜᴀꜱɪʟ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Masih kecil nih, tapi potensinya ada kok~",
-      mid: "Lumayan, di tengah tengah, kadang muncul kadang tidak~",
-      high: "Tinggi nih! Kelihatan banget dari auranya~",
-      max: "PARAH, level maksimal! Sudah level legenda~",
-      disclaimer: "Ini cuma hiburan yaa, persennya ramalan iseng KANA dari nama, bukan ukuran beneran~",
-      btnAgain: "Cek Lagi",
+    randomtag: {
+      result: '╭─❏ 🎲 「 *RANDOM TAG* 」\n┊ KANA memilih satu member secara acak...\n┊\n┊ ✨ Yang terpilih: *@{digits}*\n┊ Jangan kaget yaa, lagi diperhatikan KANA nih~\n╰━━━━━━━',
+      empty: '╭─❏ 🎲 「 *RANDOM TAG* 」\n┊ Hmm, tidak ada member lain yang bisa dipilih di grup ini~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *RANDOM TAG GAGAL* 」\n┊ Mouu, data grupnya gagal diambil: *{message}*\n╰━━━━━━━',
     },
   },
   en: {
-    "randomtag": {
-      title: "randomtag check",
-      result: "╭─❏ 🔮 「 *RANDOMTAG CHECK* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ʀᴇꜱᴜʟᴛ: *{percent}%*\n┊ {comment}\n╰━━━━━━━\n{disclaimer}",
-      low: "Still small, but the potential is there~",
-      mid: "Decent, in the middle, sometimes it shows sometimes not~",
-      high: "High! It really shows from the aura~",
-      max: "EXTREME, maximum level! Legendary tier~",
-      disclaimer: "Just for fun, the percent is KANA playful name reading, not a real measure~",
-      btnAgain: "Check Again",
+    randomtag: {
+      result: '╭─❏ 🎲 「 *RANDOM TAG* 」\n┊ KANA picked one member at random...\n┊\n┊ ✨ The chosen one: *@{digits}*\n┊ Do not be startled, KANA is watching you~\n╰━━━━━━━',
+      empty: '╭─❏ 🎲 「 *RANDOM TAG* 」\n┊ Hmm, there is no other member to pick in this group~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *RANDOM TAG FAILED* 」\n┊ Mouu, group data failed to load: *{message}*\n╰━━━━━━━',
     },
   },
 }
 
-export function hashPercent(seed) {
-  let h = 0
-  const s = String(seed ?? '')
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
-  return h % 101
+export const test = { input: '.randomtag', expect: /random tag/i }
+
+function digitsOf(value) {
+  return String(value ?? '').split('@')[0].split(':')[0].replace(/\D/g, '')
 }
-export const test = { input: '.randomtag Budi', expect: /cek|check/i }
+
+// JID tag untuk satu peserta: utamakan nomor telepon (phoneNumber), lalu
+// id/JID apa adanya supaya format LID tidak dirusak.
+export function participantJid(participant) {
+  if (!participant) return null
+  if (typeof participant === 'string') return participant
+  if (participant.phoneNumber) {
+    const digits = digitsOf(participant.phoneNumber)
+    return digits ? `${digits}@s.whatsapp.net` : null
+  }
+  return participant.id || participant.jid || participant.lid || null
+}
+
+// Daftar JID member unik selain bot.
+export function memberJids(participants, botJid) {
+  const botDigits = digitsOf(botJid)
+  const seen = new Set()
+  const out = []
+  for (const participant of participants ?? []) {
+    const jid = participantJid(participant)
+    if (!jid) continue
+    const digits = digitsOf(participant?.phoneNumber || jid)
+    if (!digits || digits === botDigits || seen.has(digits)) continue
+    seen.add(digits)
+    out.push(jid)
+  }
+  return out
+}
+
+export function pickRandomMember(participants, { botJid = '', rng = Math.random } = {}) {
+  const members = memberJids(participants, botJid)
+  if (!members.length) return null
+  return members[Math.min(members.length - 1, Math.floor(rng() * members.length))]
+}
+
 export async function handler(ctx) {
-  const target = (ctx.text || '').trim() || ctx.pushName || ctx.senderDigits
-  const percent = hashPercent(target.toLowerCase() + ':randomtag')
-  const band = percent < 30 ? 'low' : percent < 60 ? 'mid' : percent < 85 ? 'high' : 'max'
-  const body = ctx.t('randomtag.result', { name: target, percent, comment: ctx.t('randomtag.' + band), disclaimer: ctx.t('randomtag.disclaimer') })
-  return sendButtons(ctx.sock, ctx.chat, { title: ctx.t('randomtag.title'), body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('randomtag.btnAgain'), id: '.randomtag' }], textFallback: body })
+  let meta = ctx.groupMetadata
+  if (!meta) {
+    try {
+      meta = await ctx.getGroupMetadata()
+    } catch (err) {
+      return ctx.reply(ctx.t('randomtag.fail', { message: err.message }))
+    }
+  }
+  const picked = pickRandomMember(meta?.participants ?? [], { botJid: ctx.botJid })
+  if (!picked) return ctx.reply(ctx.t('randomtag.empty'))
+  const digits = digitsOf(picked)
+  return ctx.sock.sendMessage(
+    ctx.chat,
+    { text: ctx.t('randomtag.result', { digits }), mentions: [picked] },
+    { quoted: ctx.raw }
+  )
 }
