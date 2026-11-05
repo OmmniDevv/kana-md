@@ -1,6 +1,7 @@
 import { t as translate } from '../i18n/index.js'
 import { logger } from '../services/logger.js'
 import { getGroupSettings, saveGroupSettings } from '../services/group-service.js'
+import { xpLeaderboard } from '../services/user-service.js'
 
 // Scheduler ringan: tick tiap menit (timer unref, tidak menahan proses).
 // Pekerjaan:
@@ -65,13 +66,29 @@ export function startScheduler({ session, storage, defaultLang = 'id', statsSour
         }
         totalUsers = count
       } catch {}
+      const topCommands = Array.isArray(stats.topCommands) && stats.topCommands.length
+        ? stats.topCommands
+        : prev?.topCommands
       await storage.set('kv', 'bot_stats', {
         startedAt: prev?.startedAt ?? stats.startedAt,
         totalUsers,
         totalCommands: stats.totalCommands,
         pluginCount: stats.pluginCount,
+        ...(topCommands ? { topCommands } : {}),
         updatedAt: Date.now(),
       })
+      // Snapshot leaderboard publik untuk web (kv 'top_users'): maksimal
+      // 10 { name, xp, level } TANPA nomor HP, diperbarui bersama flush
+      // bot_stats. Profil user sendiri tetap lokal, snapshot ini satu-
+      // satunya data peringkat yang dibagikan ke Supabase.
+      try {
+        const topUsers = (await xpLeaderboard(storage, 10)).map((row) => ({
+          name: row.name || '',
+          xp: row.xp || 0,
+          level: row.level || 1,
+        }))
+        await storage.set('kv', 'top_users', topUsers)
+      } catch {}
     } catch (err) {
       logger.warn({ err: err.message }, 'flush bot_stats gagal')
     }

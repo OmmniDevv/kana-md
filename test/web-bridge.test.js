@@ -177,3 +177,19 @@ test('tanpa healthFile bridge tetap bekerja penuh lewat REST dan base', async ()
   assert.deepEqual(await bridge.get('web_login_requests', DIGITS), { status: 'pending' })
   assert.deepEqual(await bridge.keys('web_login_limits'), [])
 })
+
+test('routing: kv top_users ke REST untuk snapshot leaderboard web', async () => {
+  const { healthFile } = await tempHealth()
+  const base = memoryStorage()
+  const rest = fakeRest()
+  const bridge = createBridgeStorage(base, rest, { healthFile, now: NOW })
+  const top = [{ name: 'Rani', xp: 500, level: 4 }]
+  await bridge.set('kv', 'top_users', top)
+  assert.deepEqual(await bridge.get('kv', 'top_users'), top)
+  assert.equal(await base.get('kv', 'top_users'), undefined)
+  // Key kv lain tetap storage utama.
+  await bridge.set('kv', 'sched:lain', true)
+  assert.equal(await base.get('kv', 'sched:lain'), true)
+  await bridge.delete('kv', 'top_users')
+  assert.equal(await bridge.get('kv', 'top_users'), undefined)
+})

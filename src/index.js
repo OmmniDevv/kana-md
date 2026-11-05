@@ -63,6 +63,10 @@ startScheduler({
     startedAt: pipeline.stats.startedAt,
     totalCommands: pipeline.stats.totalCommands,
     pluginCount: registry.list().length,
+    topCommands: Object.entries(pipeline.stats.commandCounts ?? {})
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([name, count]) => ({ name, count })),
   }),
 })
 // Watcher login web: mengirim kode verifikasi untuk record pending di
