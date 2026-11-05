@@ -3,7 +3,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'tebaksurah',
-  alias: ['surah'],
+  alias: [],
   category: 'fun',
   description: { id: 'Kuis Tebak Surah: tebak nama surah Al-Quran dari petunjuknya', en: 'Surah quiz: guess the Quran surah name from its clue' },
   usage: '.tebaksurah lalu balas pesan pertanyaannya dengan jawabanmu',

@@ -1,6 +1,6 @@
 export const config = {
   name: 'hidetag',
-  alias: ['ht', 'announce', 'pengumuman', 'hiddentag'],
+  alias: ['ht', 'announce', 'hiddentag'],
   category: 'group',
   description: { id: 'Tag semua member grup tanpa daftar nama', en: 'Tag all group members without a name list' },
   usage: '.hidetag [teks]',

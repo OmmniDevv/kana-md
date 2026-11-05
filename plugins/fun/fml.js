@@ -13,7 +13,7 @@ const STORIES = [
 
 export const config = {
   name: 'fml',
-  alias: ['fuckmylife'],
+  alias: [],
   category: 'fun',
   description: { id: 'Cerita apes singkat acak ala FML buat bahan ketawa', en: 'A random short FML style unlucky story to laugh at' },
   usage: '.fml',

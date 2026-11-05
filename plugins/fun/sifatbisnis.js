@@ -27,7 +27,7 @@ const TRAITS = {
 
 export const config = {
   name: 'sifatbisnis',
-  alias: ['bisnissifat', 'sifatusahabisnis'],
+  alias: ['bisnissifat'],
   category: 'fun',
   description: { id: 'Ramalan sifat bisnis seseorang dari namanya', en: 'Fortune of someone\'s business traits from their name' },
   usage: '.sifatbisnis <nama>',

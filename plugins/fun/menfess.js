@@ -2,7 +2,7 @@
 // ditampilkan ke penerima. Ada cooldown per pengirim dan batas panjang.
 export const config = {
   name: 'menfess',
-  alias: ['menfes', 'confess', 'confession'],
+  alias: ['menfes', 'confession'],
   category: 'fun',
   description: { id: 'Kirim pesan anonim (menfess) ke nomor seseorang lewat bot', en: 'Send an anonymous message (menfess) to someone via the bot' },
   usage: '.menfess <nomor> | <pesan>',

@@ -4,7 +4,7 @@ import { downloadBuffer } from '../../src/scrapers/runner.js'
 
 export const config = {
   name: 'murottal',
-  alias: ['murrotal', 'tilawah'],
+  alias: ['tilawah'],
   category: 'fun',
   description: { id: 'Murottal Al-Quran per ayat dari equran.id: pilih surah dan ayat, audio dikirim langsung', en: 'Quran recitation per verse from equran.id: pick a surah and verse, audio sent directly' },
   usage: '.murottal <nomor surah | nama surah> [nomor ayat]',

@@ -3,7 +3,7 @@ import { digitsOf, resolveTargetJids } from '../../src/services/guard-rules.js'
 
 export const config = {
   name: 'warnings',
-  alias: ['warnlist', 'listwarn'],
+  alias: ['warnlist'],
   category: 'group',
   description: { id: 'Lihat daftar warn grup', en: 'Show group warnings list' },
   usage: '.warnings [@user] atau .warnings reset @user',

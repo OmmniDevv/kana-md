@@ -4,7 +4,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'mathgame',
-  alias: ['matematika', 'hitungcepat', 'math', 'maths'],
+  alias: ['hitungcepat'],
   category: 'fun',
   description: { id: 'Game hitung cepat: jawab soal matematika beruntun lewat reply, jaga streak-mu', en: 'Quick math game: answer math questions in a row via reply, keep your streak' },
   usage: '.mathgame lalu balas papan permainan dengan jawaban angkanya',

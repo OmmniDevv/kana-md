@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'cekjodoh',
-  alias: ['jodoh'],
+  alias: [],
   category: 'fun',
   description: { id: 'Cek kecocokan dua nama untuk hiburan, hasil selalu sama untuk pasangan yang sama', en: 'Check two names compatibility for fun, same pair always gives the same result' },
   usage: '.cekjodoh <nama1> & <nama2> atau mention dua orang',

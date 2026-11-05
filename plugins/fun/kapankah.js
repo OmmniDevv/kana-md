@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'kapankah',
-  alias: ['kapan'],
+  alias: [],
   category: 'fun',
   description: { id: 'Tanya kapan sesuatu terjadi, KANA jawab tebakan waktu iseng', en: 'Ask when something will happen, KANA answers a playful time guess' },
   usage: '.kapankah <pertanyaan>',

@@ -5,7 +5,7 @@ import { bindReply, clearReply, registerReplyKind } from '../../src/ui/reply-rou
 // disimpan di namespace 'couples', key = digit pengirim.
 export const config = {
   name: 'nembak',
-  alias: ['tembak'],
+  alias: [],
   category: 'fun',
   description: { id: 'Tembak seseorang: dia membalas pesan tembakanmu dengan terima atau tolak', en: 'Confess to someone: they reply to your confession message with accept or reject' },
   usage: '.nembak @user',

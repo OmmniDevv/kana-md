@@ -2,7 +2,7 @@ import { digitsOf, resolveTargetJids } from '../../src/services/guard-rules.js'
 
 export const config = {
   name: 'demote',
-  alias: ['odemote'],
+  alias: [],
   category: 'group',
   description: { id: 'Turunkan admin grup jadi member biasa', en: 'Demote a group admin to member' },
   usage: '.demote <@user|balas pesan|nomor>',

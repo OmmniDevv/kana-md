@@ -9,7 +9,7 @@ export function nameMatch(a, b) {
 
 export const config = {
   name: 'kecocokannama',
-  alias: ['ramalanjodoh', 'kecocokannamapasangan'],
+  alias: [],
   category: 'fun',
   description: { id: 'Cek persen kecocokan dua nama', en: 'Check the match percentage of two names' },
   usage: '.kecocokannama <nama1> & <nama2>',

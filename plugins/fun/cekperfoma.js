@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'cekperfoma',
-  alias: ['cekperforma'],
+  alias: [],
   category: 'fun',
   description: { id: 'Cek persen perfoma kamu hari ini, stabil sepanjang hari', en: 'Check your performance percentage today, stable all day' },
   usage: '.cekperfoma',

@@ -3,7 +3,7 @@ import { hashPercent } from './cekmood.js'
 
 export const config = {
   name: 'sisaumur',
-  alias: ['ceksisaumur'],
+  alias: [],
   category: 'fun',
   description: { id: 'Cek sisa umur versi bercanda dari umur kamu sekarang', en: 'Joke remaining-lifespan check from your current age' },
   usage: '.sisaumur <umur>',

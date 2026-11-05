@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'quotesanime',
-  alias: ['animequote', 'quotenanime', 'kataanimesad', 'katanime'],
+  alias: ['quotenanime', 'kataanimesad'],
   category: 'fun',
   description: { id: 'Kirim satu kutipan penyemangat ala anime', en: 'Send one anime style motivational quote' },
   usage: '.quotesanime',

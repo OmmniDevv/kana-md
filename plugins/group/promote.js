@@ -2,7 +2,7 @@ import { digitsOf, resolveTargetJids } from '../../src/services/guard-rules.js'
 
 export const config = {
   name: 'promote',
-  alias: ['opromote'],
+  alias: [],
   category: 'group',
   description: { id: 'Jadikan member sebagai admin grup', en: 'Promote a member to group admin' },
   usage: '.promote <@user|balas pesan|nomor>',

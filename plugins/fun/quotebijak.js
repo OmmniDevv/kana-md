@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'quotebijak',
-  alias: ['bijak', 'katabijak'],
+  alias: ['bijak'],
   category: 'fun',
   description: { id: 'Kirim satu kata bijak penyemangat hari', en: 'Send one wise quote to brighten your day' },
   usage: '.quotebijak',
