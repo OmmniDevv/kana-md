@@ -70,7 +70,9 @@ export async function handleQuizReply(ctx) {
   const session = await getSession(ctx.storage, ctx.chat)
   if (!session) return undefined
   if (!(session.questionIds ?? []).includes(stanzaId)) return undefined
-  if (session.startedBy && ctx.senderDigits !== session.startedBy) return undefined
+  // Family 100 adalah kuis grup bersama (pola Elaina): member grup mana pun
+  // boleh menebak, XP masuk ke penebak. Kuis lain tetap khusus pemulai.
+  if (session.type !== 'family100' && session.startedBy && ctx.senderDigits !== session.startedBy) return undefined
   const result = await answerQuiz(ctx.storage, ctx.chat, ctx.senderDigits, text)
   if (result.noSession) return undefined
   await reportResult(ctx, result)

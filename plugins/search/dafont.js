@@ -1,81 +1,104 @@
 
+import { bindReply, clearReply, registerReplyKind } from '../../src/ui/reply-router.js'
+import { fontSearch } from '../../src/scrapers/font/dafont.js'
+
+// Dafont: cari font lewat scraper DaFont KANA (src/scrapers/font/dafont.js,
+// hasilnya punya preview, author, downloads, license, downloadUrl).
+// Daftar ditampilkan sebagai sesi reply-router (kind dafont); balas
+// nomor untuk menerima GAMBAR PRATINJAU font itu dengan caption detail
+// dan tautan unduhnya, seperti dafontAnswerHandler di Elaina.
 export const config = {
   name: "dafont",
-  alias: [],
+  alias: ["daffont", "carifont"],
   category: "search",
-  description: { id: "Fitur dafont versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD dafont feature, rewritten in KANA style" },
-  usage: ".dafont",
-  example: ".dafont",
+  description: { id: "Cari font di DaFont, balas nomor untuk gambar pratinjaunya", en: "Search fonts on DaFont, reply with a number for its preview image" },
+  usage: ".dafont <nama font>",
+  example: ".dafont horror",
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
     "dafont": {
-      hint: "╭─❏ 🔍 「 *DAFONT* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.dafont kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+      hint: "╭─❏ 🔤 「 *DAFONT* 」\n┊ Tulis nama fontnya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.dafont horror*\n╰━━━━━━━",
+      list: "╭─❏ 🔤 「 *HASIL FONT: {q}* 」\n┊ {rows}\n┊\n┊ Balas (reply) pesan ini dengan nomornya buat lihat pratinjaunya yaa~\n╰━━━━━━━",
+      row: "┊ {n}. *{title}* oleh {author} (unduhan {downloads})",
+      detail: "╭─❏ 🔤 「 *{title}* 」\n┊ ᴀᴜᴛʜᴏʀ: *{author}*\n┊ ᴜɴᴅᴜʜᴀɴ: *{downloads}*\n┊ ʟɪꜱᴇɴꜱɪ: *{license}*\n┊ ʜᴀʟᴀᴍᴀɴ: {url}\n┊ ᴜɴᴅᴜʜ ꜰɪʟᴇ: {download}\n╰━━━━━━━",
+      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, font untuk *{q}* tidak ketemu~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
+      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━",
+      badNumber: "╭─❏ 🔤 「 *NOMOR TIDAK VALID* 」\n┊ Pilih nomor 1 sampai {count} yaa~\n╰━━━━━━━",
     },
   },
   en: {
     "dafont": {
-      hint: "╭─❏ 🔍 「 *DAFONT* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.dafont keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+      hint: "╭─❏ 🔤 「 *DAFONT* 」\n┊ Write the font name first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.dafont horror*\n╰━━━━━━━",
+      list: "╭─❏ 🔤 「 *FONT RESULTS: {q}* 」\n┊ {rows}\n┊\n┊ Reply to this message with the number to see its preview~\n╰━━━━━━━",
+      row: "┊ {n}. *{title}* by {author} ({downloads} downloads)",
+      detail: "╭─❏ 🔤 「 *{title}* 」\n┊ ᴀᴜᴛʜᴏʀ: *{author}*\n┊ ᴅᴏᴡɴʟᴏᴀᴅꜱ: *{downloads}*\n┊ ʟɪᴄᴇɴꜱᴇ: *{license}*\n┊ ᴘᴀɢᴇ: {url}\n┊ ꜰɪʟᴇ ᴅᴏᴡɴʟᴏᴀᴅ: {download}\n╰━━━━━━━",
+      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no font for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
+      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ Try again later~\n╰━━━━━━━",
+      badNumber: "╭─❏ 🔤 「 *INVALID NUMBER* 」\n┊ Pick a number from 1 to {count}~\n╰━━━━━━━",
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.dafont', expect: /tulis|write/i }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const dafontDeps = { search: fontSearch }
+export const DAFONT_KIND = 'dafont'
+
+export function formatDafontDetail(t, f) {
+  return t('dafont.detail', {
+    title: f.title, author: f.author || '-', downloads: f.downloads ?? '-', license: f.license || '-',
+    url: f.url || '-', download: f.downloadUrl || '-',
+  })
 }
+
+export async function deliverDafontPick(ctx, binding, index) {
+  const fonts = binding?.data?.fonts ?? []
+  if (!fonts.length) return false
+  if (!Number.isInteger(index) || index < 1 || index > fonts.length) {
+    await ctx.reply(ctx.t('dafont.badNumber', { count: fonts.length }))
+    return true
+  }
+  const f = fonts[index - 1]
+  await clearReply(ctx.storage, ctx.chat)
+  const caption = formatDafontDetail(ctx.t, f)
+  if (f.preview) {
+    await ctx.sock.sendMessage(ctx.chat, { image: { url: f.preview }, caption }, { quoted: ctx.raw })
+  } else {
+    await ctx.reply(caption)
+  }
+  return true
+}
+
+export const test = { input: '.dafont horror', expect: /hasil font|font results/i }
 export async function handler(ctx) {
   const q = (ctx.text || '').trim()
   if (!q) return ctx.reply(ctx.t('dafont.hint'))
+  let result
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('dafont.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('dafont.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('dafont.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('dafont.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('dafont.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('dafont.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('dafont.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('dafont.notfound', { q }))
-    return ctx.reply(ctx.t('dafont.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    result = await dafontDeps.search(q)
   } catch (err) {
     return ctx.reply(ctx.t('dafont.fail', { message: err.message }))
   }
+  const fonts = (result?.results ?? []).slice(0, 10)
+  if (!fonts.length) return ctx.reply(ctx.t('dafont.notfound', { q }))
+  const rows = fonts.map((f, i) => ctx.t('dafont.row', { n: i + 1, title: f.title, author: f.author || '-', downloads: f.downloads ?? '-' })).join('\n')
+  const body = ctx.t('dafont.list', { q, rows })
+  const sent = await ctx.sock.sendMessage(ctx.chat, { text: body }, { quoted: ctx.raw })
+  const messageId = sent?.key?.id
+  if (messageId) {
+    await bindReply(ctx.storage, ctx.chat, {
+      kind: DAFONT_KIND,
+      messageId,
+      ownerDigits: ctx.senderDigits,
+      data: { query: q, fonts },
+    })
+  }
+  return sent
 }
+
+registerReplyKind(DAFONT_KIND, async (ctx, binding) => {
+  const index = parseInt((ctx.text || '').trim(), 10)
+  if (!Number.isInteger(index)) return false
+  return deliverDafontPick(ctx, binding, index)
+})

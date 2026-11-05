@@ -45,6 +45,33 @@ export async function getClientId() {
   throw new Error('client_id SoundCloud tidak ditemukan di aset publik')
 }
 
+// Bentuk mentah hasil search SoundCloud api-v2 jadi daftar trek bersih.
+export function parseSoundcloudSearch(data, limit = 10) {
+  const rows = Array.isArray(data?.collection) ? data.collection : []
+  return rows
+    .filter((t) => t && t.kind === 'track' && t.permalink_url)
+    .slice(0, limit)
+    .map((t) => ({
+      title: t.title ?? 'SoundCloud',
+      url: t.permalink_url,
+      artist: t.user?.username ?? '',
+      durationMs: t.duration ?? 0,
+      artwork: t.artwork_url ?? null,
+    }))
+}
+
+// Cari trek SoundCloud tanpa kunci resmi (client_id publik web player,
+// jalur yang sama dengan soundcloudResolve).
+export async function soundcloudSearch(query, { fetchImpl = fetch, limit = 10 } = {}) {
+  const clientId = await getClientId()
+  const res = await fetchImpl(
+    `https://api-v2.soundcloud.com/search/tracks?q=${encodeURIComponent(query)}&client_id=${clientId}&limit=${limit}`,
+    { headers: { 'user-agent': DESKTOP_UA }, signal: AbortSignal.timeout(30000) }
+  )
+  if (!res.ok) throw new Error(`SoundCloud search membalas HTTP ${res.status}`)
+  return parseSoundcloudSearch(await res.json(), limit)
+}
+
 export async function soundcloudResolve(url) {
   const clientId = await getClientId()
   const res = await fetch(`https://api-v2.soundcloud.com/resolve?url=${encodeURIComponent(url)}&client_id=${clientId}`, {

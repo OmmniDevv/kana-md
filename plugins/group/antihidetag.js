@@ -32,6 +32,9 @@ export const i18n = {
 }
 
 const KEY = "antihidetag"
+// Penegakan antihidetag hidup di before hook plugins/group/guard.js
+// (settings.antihidetag dibaca di sana, pesan hidetag massal dihapus dan
+// pengirim kena warn). Plugin ini hanya sakelar setelan per grupnya.
 export const test = { input: '.antihidetag', expect: /antihidetag|pakai|use/i }
 export async function handler(ctx) {
   const settings = await getGroupSettings(ctx.storage, ctx.chat)

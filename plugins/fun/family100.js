@@ -9,6 +9,7 @@ export const config = {
   usage: '.family100 lalu balas pesan pertanyaannya dengan jawabanmu',
   example: '.family100',
   cooldown: 5,
+  isGroup: true,
 }
 
 export const i18n = {

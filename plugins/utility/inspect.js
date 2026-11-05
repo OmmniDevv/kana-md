@@ -1,80 +1,79 @@
 
+import { parseWhatsappLink, getChannelMetadataByInvite, getGroupInfoByInvite } from '../../src/services/whatsapp-link.js'
+
+// Inspect: periksa tautan grup/saluran WhatsApp jadi info nyata.
+// Grup via sock.groupGetInviteInfo(kode) dan saluran via
+// sock.newsletterMetadata('invite', kode), keduanya method library
+// @rexxhayanasi/elaina-baileys per README-nya. Ditulis ulang penuh:
+// file lama berisi info paket npm hasil copy-paste klon.
 export const config = {
   name: "inspect",
-  alias: [],
+  alias: ["cekgrup", "ceksaluran", "channelinfo"],
   category: "utility",
-  description: { id: "Inspect info grup atau saluran WhatsApp via link", en: "KANA version of the Elaina-MD inspect feature, rewritten in KANA style" },
-  usage: ".inspect",
-  example: ".inspect",
+  description: { id: "Inspect info grup atau saluran WhatsApp via link", en: "Inspect a WhatsApp group or channel info via its link" },
+  usage: ".inspect <link grup/saluran>",
+  example: ".inspect https://chat.whatsapp.com/xxx",
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
     "inspect": {
-      hint: "╭─❏ 🔍 「 *INSPECT* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.inspect kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+      hint: "╭─❏ 🔍 「 *INSPECT* 」\n┊ Kirim tautan grup atau salurannya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.inspect https://chat.whatsapp.com/xxxx*\n╰━━━━━━━",
+      invalid: "╭─❏ 🔍 「 *LINK TIDAK VALID* 」\n┊ Yang didukung cuma tautan grup *chat.whatsapp.com/...* dan saluran *whatsapp.com/channel/...* yaa~\n╰━━━━━━━",
+      group: "╭─❏ 👥 「 *INFO GRUP* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ɪᴅ: *{id}*\n┊ ᴘᴇᴍɪʟɪᴋ: *{owner}*\n┊ ᴘᴇꜱᴇʀᴛᴀ: *{count}*\n┊ ᴅɪʙᴜᴀᴛ: *{created}*\n┊ {desc}\n╰━━━━━━━",
+      channel: "╭─❏ 📢 「 *INFO SALURAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ɪᴅ: *{id}*\n┊ ᴘᴇɴɢɪᴋᴜᴛ: *{subs}*\n┊ {desc}\n╰━━━━━━━",
+      unavailable: "╭─❏ 🔍 「 *TIDAK BISA DIPERIKSA* 」\n┊ Koneksi bot ini tidak menyediakan cara memeriksa tautan itu~\n╰━━━━━━━",
+      fail: "╭─❏ 💦 「 *INSPECT GAGAL* 」\n┊ Mouu, gagal memeriksa tautannya: *{message}*\n┊ Tautannya mungkin sudah dicabut atau kedaluwarsa~\n╰━━━━━━━",
     },
   },
   en: {
     "inspect": {
-      hint: "╭─❏ 🔍 「 *INSPECT* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.inspect keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+      hint: "╭─❏ 🔍 「 *INSPECT* 」\n┊ Send the group or channel link please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.inspect https://chat.whatsapp.com/xxxx*\n╰━━━━━━━",
+      invalid: "╭─❏ 🔍 「 *INVALID LINK* 」\n┊ Only group links *chat.whatsapp.com/...* and channel links *whatsapp.com/channel/...* are supported~\n╰━━━━━━━",
+      group: "╭─❏ 👥 「 *GROUP INFO* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ɪᴅ: *{id}*\n┊ ᴏᴡɴᴇʀ: *{owner}*\n┊ ᴘᴀʀᴛɪᴄɪᴘᴀɴᴛꜱ: *{count}*\n┊ ᴄʀᴇᴀᴛᴇᴅ: *{created}*\n┊ {desc}\n╰━━━━━━━",
+      channel: "╭─❏ 📢 「 *CHANNEL INFO* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ɪᴅ: *{id}*\n┊ ꜰᴏʟʟᴏᴡᴇʀꜱ: *{subs}*\n┊ {desc}\n╰━━━━━━━",
+      unavailable: "╭─❏ 🔍 「 *CANNOT INSPECT* 」\n┊ This bot connection does not provide a way to inspect that link~\n╰━━━━━━━",
+      fail: "╭─❏ 💦 「 *INSPECT FAILED* 」\n┊ Mouu, failed to inspect the link: *{message}*\n┊ The link may have been revoked or expired~\n╰━━━━━━━",
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.inspect', expect: /tulis|write/i }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
+export { parseWhatsappLink }
+export const test = { input: '.inspect https://chat.whatsapp.com/AbCdEf123', expect: /info grup|group info|kode|gagal|failed/i }
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('inspect.hint'))
+  const raw = (ctx.text || '').trim()
+  if (!raw) return ctx.reply(ctx.t('inspect.hint'))
+  const parsed = parseWhatsappLink(raw)
+  if (!parsed) return ctx.reply(ctx.t('inspect.invalid'))
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('inspect.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('inspect.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('inspect.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('inspect.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('inspect.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('inspect.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('inspect.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
+    if (parsed.type === 'group') {
+      let info = null
+      if (parsed.code) info = await getGroupInfoByInvite(ctx.sock, parsed.code)
+      else if (parsed.jid && typeof ctx.sock?.groupMetadata === 'function') {
+        const meta = await ctx.sock.groupMetadata(parsed.jid)
+        info = { id: meta.id, name: meta.subject, owner: meta.owner || '', participants: meta.participants ?? [], size: meta.size ?? meta.participants?.length, description: meta.desc || '', creation: meta.creation ?? null }
       }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('inspect.notfound', { q }))
-    return ctx.reply(ctx.t('inspect.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+      if (!info?.id) return ctx.reply(ctx.t('inspect.unavailable'))
+      const ownerDigits = String(info.owner || '').split('@')[0]
+      const created = info.creation ? new Date(info.creation * 1000).toLocaleString(ctx.lang === 'en' ? 'en-GB' : 'id-ID', { timeZone: 'Asia/Jakarta' }) : '-'
+      const body = ctx.t('inspect.group', {
+        name: info.name || '-', id: info.id, owner: ownerDigits ? `@${ownerDigits}` : '-',
+        count: info.size ?? info.participants?.length ?? 0, created, desc: info.description || '-',
+      })
+      const mentions = info.owner ? [info.owner] : []
+      if (mentions.length) return ctx.sock.sendMessage(ctx.chat, { text: body, mentions }, { quoted: ctx.raw })
+      return ctx.reply(body)
+    }
+    let meta = null
+    if (parsed.code) meta = await getChannelMetadataByInvite(ctx.sock, parsed.code)
+    else if (parsed.jid && typeof ctx.sock?.newsletterMetadata === 'function') {
+      const rawMeta = await ctx.sock.newsletterMetadata('jid', parsed.jid)
+      const thread = rawMeta?.thread_metadata ?? rawMeta ?? {}
+      meta = { id: rawMeta?.id || parsed.jid, name: thread.name?.text || thread.name || '', subscribers: thread.subscribers_count ?? null, description: thread.description?.text || thread.description || '' }
+    }
+    if (!meta?.id) return ctx.reply(ctx.t('inspect.unavailable'))
+    return ctx.reply(ctx.t('inspect.channel', { name: meta.name || '-', id: meta.id, subs: meta.subscribers ?? '-', desc: meta.description || '-' }))
   } catch (err) {
     return ctx.reply(ctx.t('inspect.fail', { message: err.message }))
   }

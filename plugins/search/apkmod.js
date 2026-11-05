@@ -1,81 +1,103 @@
 
+import { bindReply, clearReply, getReplyBinding, registerReplyKind } from '../../src/ui/reply-router.js'
+import { searchApkmod } from '../../src/scrapers/search/apkmod.js'
+
+// Apkmod: cari aplikasi (scraper tanpa kunci di
+// src/scrapers/search/apkmod.js), tampilkan daftar bernomor, simpan
+// sebagai binding reply-router (kind apkmod). Balas nomor untuk detail
+// dan tautan unduh aplikasi itu; .apkmod-get <nomor> jalur perintahnya.
 export const config = {
   name: "apkmod",
-  alias: [],
+  alias: ["modapk2", "apkpremium"],
   category: "search",
-  description: { id: "Fitur apkmod versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD apkmod feature, rewritten in KANA style" },
-  usage: ".apkmod",
-  example: ".apkmod",
+  description: { id: "Cari aplikasi, balas nomor untuk detail dan tautan unduhnya", en: "Search apps, reply with a number for its detail and download link" },
+  usage: ".apkmod <kata kunci>",
+  example: ".apkmod vpn",
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
     "apkmod": {
-      hint: "╭─❏ 🔍 「 *APKMOD* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.apkmod kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+      hint: "╭─❏ 📱 「 *APKMOD* 」\n┊ Tulis nama aplikasinya dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.apkmod vpn*\n╰━━━━━━━",
+      list: "╭─❏ 📱 「 *HASIL APK: {q}* 」\n┊ {rows}\n┊\n┊ Balas (reply) pesan ini dengan nomornya, atau pakai *.apkmod-get <nomor>* yaa~\n╰━━━━━━━",
+      row: "┊ {n}. *{name}*{extra}",
+      detail: "╭─❏ 📱 「 *{name}* 」\n┊ ᴘᴀᴋᴇᴛ: *{pkg}*\n┊ ꜱᴜᴍʙᴇʀ: *{source}*\n┊ ʜᴀʟᴀᴍᴀɴ: {url}\n┊ ᴜɴᴅᴜʜ: {download}\n╰━━━━━━━",
+      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
+      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━",
+      badNumber: "╭─❏ 📱 「 *NOMOR TIDAK VALID* 」\n┊ Pilih nomor 1 sampai {count} yaa~\n╰━━━━━━━",
     },
   },
   en: {
     "apkmod": {
-      hint: "╭─❏ 🔍 「 *APKMOD* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.apkmod keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+      hint: "╭─❏ 📱 「 *APKMOD* 」\n┊ Write the app name first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.apkmod vpn*\n╰━━━━━━━",
+      list: "╭─❏ 📱 「 *APK RESULTS: {q}* 」\n┊ {rows}\n┊\n┊ Reply to this message with the number, or use *.apkmod-get <number>*~\n╰━━━━━━━",
+      row: "┊ {n}. *{name}*{extra}",
+      detail: "╭─❏ 📱 「 *{name}* 」\n┊ ᴘᴀᴄᴋᴀɢᴇ: *{pkg}*\n┊ ꜱᴏᴜʀᴄᴇ: *{source}*\n┊ ᴘᴀɢᴇ: {url}\n┊ ᴅᴏᴡɴʟᴏᴀᴅ: {download}\n╰━━━━━━━",
+      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
+      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ Try again later~\n╰━━━━━━━",
+      badNumber: "╭─❏ 📱 「 *INVALID NUMBER* 」\n┊ Pick a number from 1 to {count}~\n╰━━━━━━━",
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.apkmod', expect: /tulis|write/i }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const apkmodDeps = { search: searchApkmod }
+export const APKMOD_KIND = 'apkmod'
+
+export function formatApkmodList(t, q, apps) {
+  const rows = apps.map((a, i) => t('apkmod.row', { n: i + 1, name: a.name, extra: a.version ? ` (${a.version})` : '' })).join('\n')
+  return t('apkmod.list', { q, rows })
 }
+
+export function formatApkmodDetail(t, app) {
+  return t('apkmod.detail', { name: app.name, pkg: app.package || '-', source: app.source || '-', url: app.url || '-', download: app.downloadUrl || app.url || '-' })
+}
+
+// Kirim detail pilihan nomor dari binding sesi apkmod.
+export async function deliverApkmodPick(ctx, binding, index) {
+  const apps = binding?.data?.apps ?? []
+  if (!apps.length) return false
+  if (!Number.isInteger(index) || index < 1 || index > apps.length) {
+    await ctx.reply(ctx.t('apkmod.badNumber', { count: apps.length }))
+    return true
+  }
+  await clearReply(ctx.storage, ctx.chat)
+  await ctx.reply(formatApkmodDetail(ctx.t, apps[index - 1]))
+  return true
+}
+
+export async function getApkmodBinding(ctx) {
+  const binding = await getReplyBinding(ctx.storage, ctx.chat)
+  return binding?.kind === APKMOD_KIND ? binding : null
+}
+
+export const test = { input: '.apkmod vpn', expect: /apkmod|hasil apk|apk results/i }
 export async function handler(ctx) {
   const q = (ctx.text || '').trim()
   if (!q) return ctx.reply(ctx.t('apkmod.hint'))
+  let apps
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('apkmod.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('apkmod.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('apkmod.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('apkmod.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('apkmod.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('apkmod.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('apkmod.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('apkmod.notfound', { q }))
-    return ctx.reply(ctx.t('apkmod.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    apps = await apkmodDeps.search(q)
   } catch (err) {
     return ctx.reply(ctx.t('apkmod.fail', { message: err.message }))
   }
+  if (!apps?.length) return ctx.reply(ctx.t('apkmod.notfound', { q }))
+  const body = formatApkmodList(ctx.t, q, apps)
+  const sent = await ctx.sock.sendMessage(ctx.chat, { text: body }, { quoted: ctx.raw })
+  const messageId = sent?.key?.id
+  if (messageId) {
+    await bindReply(ctx.storage, ctx.chat, {
+      kind: APKMOD_KIND,
+      messageId,
+      ownerDigits: ctx.senderDigits,
+      data: { query: q, apps },
+    })
+  }
+  return sent
 }
+
+registerReplyKind(APKMOD_KIND, async (ctx, binding) => {
+  const index = parseInt((ctx.text || '').trim(), 10)
+  if (!Number.isInteger(index)) return false
+  return deliverApkmodPick(ctx, binding, index)
+})

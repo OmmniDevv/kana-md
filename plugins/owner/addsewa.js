@@ -39,7 +39,10 @@ export const i18n = {
 }
 
 // Urai target sewa dari argumen:
+// - token tautan chat.whatsapp.com/<kode> = grup itu (kode undangan
+//   disimpan, handler menukarnya jadi JID grup via groupGetInviteInfo)
 // - token berisi @g.us = grup itu, type group
+// - token angka 16 digit atau lebih = ID grup polos, type group
 // - token nomor 9-15 digit = sewa jadibot personal nomor itu
 // - tanpa target dan dipakai di grup = grup tempat perintah diketik
 // Token 'jadibot' diterima sebagai penegas jenis, token durasi terpisah.
@@ -47,11 +50,18 @@ export function parseAddsewaArgs(ctx) {
   let key = ''
   let type = 'group'
   let duration = ''
+  let inviteCode = ''
   for (const token of ctx.args ?? []) {
     const raw = String(token)
     const lower = raw.toLowerCase()
     if (lower === 'jadibot') {
       type = 'jadibot'
+      continue
+    }
+    const invite = raw.match(/chat\.whatsapp\.com\/([A-Za-z0-9_-]+)/i)
+    if (invite) {
+      inviteCode = invite[1]
+      type = 'group'
       continue
     }
     if (raw.includes('@g.us')) {
@@ -60,6 +70,11 @@ export function parseAddsewaArgs(ctx) {
       continue
     }
     const d = raw.replace(/\D/g, '')
+    if (!key && /^\d+$/.test(raw) && d.length >= 16) {
+      key = `${d}@g.us`
+      type = 'group'
+      continue
+    }
     if (!key && /^\d+$/.test(raw) && d.length >= 9 && d.length <= 15) {
       key = d
       type = 'jadibot'
@@ -67,17 +82,31 @@ export function parseAddsewaArgs(ctx) {
     }
     if (!duration && isDurationToken(raw)) duration = lower
   }
-  if (!key && ctx.isGroup && ctx.chat) {
+  if (!key && !inviteCode && ctx.isGroup && ctx.chat) {
     key = ctx.chat
     type = 'group'
   }
-  return { key, type, duration }
+  return { key, type, duration, inviteCode }
 }
 
 export const test = { input: '.addsewa', expect: /sewa|rent/i }
 
 export async function handler(ctx) {
-  const { key, type, duration } = parseAddsewaArgs(ctx)
+  const parsed = parseAddsewaArgs(ctx)
+  let { key, type } = parsed
+  const { duration } = parsed
+  if (!key && parsed.inviteCode) {
+    // Tautan grup: tukarkan kode undangan jadi JID grup beneran.
+    if (typeof ctx.sock?.groupGetInviteInfo !== 'function') return ctx.reply(ctx.t('addsewa.hint'))
+    try {
+      const info = await ctx.sock.groupGetInviteInfo(parsed.inviteCode)
+      if (!info?.id) return ctx.reply(ctx.t('addsewa.hint'))
+      key = info.id
+      type = 'group'
+    } catch {
+      return ctx.reply(ctx.t('addsewa.hint'))
+    }
+  }
   if (!key) return ctx.reply(ctx.t('addsewa.hint'))
   const record = await addSewa(ctx.storage, key, {
     type,

@@ -32,6 +32,9 @@ export const i18n = {
 }
 
 const KEY = "antiflood"
+// Penegakan antiflood hidup di before hook plugins/group/guard.js
+// (settings.antiflood dibaca di sana, pesan banjir dihapus). Plugin ini
+// hanya sakelar setelan per grupnya, pola antilink.
 export const test = { input: '.antiflood', expect: /antiflood|pakai|use/i }
 export async function handler(ctx) {
   const settings = await getGroupSettings(ctx.storage, ctx.chat)

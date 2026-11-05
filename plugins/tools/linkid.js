@@ -1,80 +1,71 @@
 
+import { parseWhatsappLink, getChannelMetadataByInvite, getGroupInfoByInvite } from '../../src/services/whatsapp-link.js'
+
+// Linkid: ekstrak ID dari tautan WhatsApp. Tautan saluran memberi kode
+// undangan plus ID newsletter beneran (newsletterMetadata invite),
+// tautan grup memberi kode undangan plus JID grup (groupGetInviteInfo).
+// Ditulis ulang penuh: file lama berisi info paket npm hasil copy-paste
+// klon yang tidak ada hubungannya dengan tautan WhatsApp.
 export const config = {
   name: "linkid",
-  alias: [],
+  alias: ["idlink", "getidlink"],
   category: "tools",
-  description: { id: "Ambil ID WhatsApp dari link channel atau grup", en: "KANA version of the Elaina-MD linkid feature, rewritten in KANA style" },
-  usage: ".linkid",
-  example: ".linkid",
+  description: { id: "Ambil ID WhatsApp dari link channel atau grup", en: "Get the WhatsApp ID from a channel or group link" },
+  usage: ".linkid <link channel/grup>",
+  example: ".linkid https://whatsapp.com/channel/0029Vb8dmsUElagkVPIw9X2P",
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
     "linkid": {
-      hint: "╭─❏ 🔍 「 *LINKID* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.linkid kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+      hint: "╭─❏ 🔗 「 *LINK ID* 」\n┊ Kirim tautan WhatsApp-nya yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.linkid https://whatsapp.com/channel/xxxx*\n┊ ᴀᴛᴀᴜ: *.linkid https://chat.whatsapp.com/xxxx*\n╰━━━━━━━",
+      invalid: "╭─❏ 🔗 「 *LINK TIDAK VALID* 」\n┊ Yang didukung cuma tautan saluran *whatsapp.com/channel/...* dan tautan grup *chat.whatsapp.com/...* yaa~\n╰━━━━━━━",
+      channel: "╭─❏ 📢 「 *CHANNEL DITEMUKAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ɪᴅ: *{id}*\n┊ ᴋᴏᴅᴇ ᴜɴᴅᴀɴɢᴀɴ: *{code}*\n┊ ᴘᴇɴɢɪᴋᴜᴛ: *{subs}*\n╰━━━━━━━",
+      channelCodeOnly: "╭─❏ 📢 「 *KODE SALURAN* 」\n┊ ᴋᴏᴅᴇ ᴜɴᴅᴀɴɢᴀɴ: *{code}*\n┊ ID salurannya tidak bisa diambil dari koneksi ini, tapi kodenya valid yaa~\n╰━━━━━━━",
+      group: "╭─❏ 👥 「 *GRUP DITEMUKAN* 」\n┊ ɴᴀᴍᴀ: *{name}*\n┊ ɪᴅ: *{id}*\n┊ ᴋᴏᴅᴇ ᴜɴᴅᴀɴɢᴀɴ: *{code}*\n╰━━━━━━━",
+      groupCodeOnly: "╭─❏ 👥 「 *KODE GRUP* 」\n┊ ᴋᴏᴅᴇ ᴜɴᴅᴀɴɢᴀɴ: *{code}*\n┊ ID grupnya tidak bisa diambil dari koneksi ini, tapi kodenya valid yaa~\n╰━━━━━━━",
+      direct: "╭─❏ 🆔 「 *ID LANGSUNG* 」\n┊ ᴊᴇɴɪꜱ: *{type}*\n┊ ɪᴅ: *{id}*\n╰━━━━━━━",
+      fail: "╭─❏ 💦 「 *LINK ID GAGAL* 」\n┊ Mouu, gagal memeriksa tautannya: *{message}*\n╰━━━━━━━",
     },
   },
   en: {
     "linkid": {
-      hint: "╭─❏ 🔍 「 *LINKID* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.linkid keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+      hint: "╭─❏ 🔗 「 *LINK ID* 」\n┊ Send the WhatsApp link please~\n┊ ᴇxᴀᴍᴘʟᴇ: *.linkid https://whatsapp.com/channel/xxxx*\n┊ ᴏʀ: *.linkid https://chat.whatsapp.com/xxxx*\n╰━━━━━━━",
+      invalid: "╭─❏ 🔗 「 *INVALID LINK* 」\n┊ Only channel links *whatsapp.com/channel/...* and group links *chat.whatsapp.com/...* are supported~\n╰━━━━━━━",
+      channel: "╭─❏ 📢 「 *CHANNEL FOUND* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ɪᴅ: *{id}*\n┊ ɪɴᴠɪᴛᴇ ᴄᴏᴅᴇ: *{code}*\n┊ ꜰᴏʟʟᴏᴡᴇʀꜱ: *{subs}*\n╰━━━━━━━",
+      channelCodeOnly: "╭─❏ 📢 「 *CHANNEL CODE* 」\n┊ ɪɴᴠɪᴛᴇ ᴄᴏᴅᴇ: *{code}*\n┊ The channel ID cannot be fetched on this connection, but the code is valid~\n╰━━━━━━━",
+      group: "╭─❏ 👥 「 *GROUP FOUND* 」\n┊ ɴᴀᴍᴇ: *{name}*\n┊ ɪᴅ: *{id}*\n┊ ɪɴᴠɪᴛᴇ ᴄᴏᴅᴇ: *{code}*\n╰━━━━━━━",
+      groupCodeOnly: "╭─❏ 👥 「 *GROUP CODE* 」\n┊ ɪɴᴠɪᴛᴇ ᴄᴏᴅᴇ: *{code}*\n┊ The group ID cannot be fetched on this connection, but the code is valid~\n╰━━━━━━━",
+      direct: "╭─❏ 🆔 「 *DIRECT ID* 」\n┊ ᴛʏᴘᴇ: *{type}*\n┊ ɪᴅ: *{id}*\n╰━━━━━━━",
+      fail: "╭─❏ 💦 「 *LINK ID FAILED* 」\n┊ Mouu, failed to check the link: *{message}*\n╰━━━━━━━",
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.linkid', expect: /tulis|write/i }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
+export { parseWhatsappLink }
+export const test = { input: '.linkid https://chat.whatsapp.com/AbCdEf123', expect: /kode|code|grup|group/i }
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('linkid.hint'))
+  const raw = (ctx.text || '').trim()
+  if (!raw) return ctx.reply(ctx.t('linkid.hint'))
+  const parsed = parseWhatsappLink(raw)
+  if (!parsed) return ctx.reply(ctx.t('linkid.invalid'))
+  if (parsed.jid) {
+    return ctx.reply(ctx.t('linkid.direct', { type: parsed.type === 'channel' ? 'channel/newsletter' : 'group', id: parsed.jid }))
+  }
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('linkid.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('linkid.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('linkid.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('linkid.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('linkid.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('linkid.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('linkid.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
+    if (parsed.type === 'channel') {
+      const meta = await getChannelMetadataByInvite(ctx.sock, parsed.code).catch(() => null)
+      if (meta?.id) {
+        return ctx.reply(ctx.t('linkid.channel', { name: meta.name || '-', id: meta.id, code: parsed.code, subs: meta.subscribers ?? '-' }))
       }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('linkid.notfound', { q }))
-    return ctx.reply(ctx.t('linkid.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+      return ctx.reply(ctx.t('linkid.channelCodeOnly', { code: parsed.code }))
+    }
+    const info = await getGroupInfoByInvite(ctx.sock, parsed.code).catch(() => null)
+    if (info?.id) {
+      return ctx.reply(ctx.t('linkid.group', { name: info.name || '-', id: info.id, code: parsed.code }))
+    }
+    return ctx.reply(ctx.t('linkid.groupCodeOnly', { code: parsed.code }))
   } catch (err) {
     return ctx.reply(ctx.t('linkid.fail', { message: err.message }))
   }

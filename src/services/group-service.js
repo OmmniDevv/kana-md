@@ -15,6 +15,7 @@ export const DEFAULT_GROUP_SETTINGS = {
   antitagsw: false,
   antivirtex: false,
   antihidetag: false,
+  anticulik: false,
   warnLimit: 3,
   slowmodeSec: 0,
   introTemplate: '',
