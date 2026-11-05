@@ -2,11 +2,46 @@
 > **This project is still under active development (work in progress).** Features may change, break, or be incomplete. Use at your own risk.
 > **Proyek ini masih dalam pengembangan aktif (WIP).** Fitur dapat berubah, rusak, atau belum lengkap. Gunakan dengan risiko sendiri.
 
+<div align="center">
+
 # KANA
 
 ![Thumbnail KANA](thumbnail.png)
 
 **English** | [Bahasa Indonesia](#versi-bahasa-indonesia)
+
+![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20-339933?logo=node.js&logoColor=white)
+![ESM](https://img.shields.io/badge/ESM-pure-F7DF1E?logo=javascript&logoColor=black)
+![Plugins](https://img.shields.io/badge/plugins-1408-00C853)
+![Categories](https://img.shields.io/badge/categories-38-8B5CF6)
+![Commands](https://img.shields.io/badge/commands-2002-D946EF)
+![Status](https://img.shields.io/badge/status-under%20development-orange)
+![License](https://img.shields.io/badge/license-MIT-brightgreen)
+
+**A moe WhatsApp bot: button-first, plugin-driven, and bilingual.**
+
+[Web Dashboard](https://kana.omnicorp.web.id) · [Premium](#premium-and-pricelist) · [Features](#features) · [Command Catalog](#command-catalog) · [Installation](#installation)
+
+</div>
+
+| Plugins | Categories | Command names | Languages | Prefixes |
+|---:|---:|---:|---|---|
+| 1,408 | 38 | 2,002 | Indonesian, English | `.` `!` `/` `#` |
+
+## Contents
+
+- [Features](#features)
+- [Command catalog](#command-catalog)
+- [Premium and pricelist](#premium-and-pricelist)
+- [Installation](#installation)
+- [Configuration (.env)](#configuration-env)
+- [Writing a plugin](#writing-a-plugin)
+- [Project structure](#project-structure)
+- [Web dashboard](#web-dashboard)
+- [Risk notice](#risk-notice)
+- [Thanks To](#thanks-to)
+- [License](#license)
+- [Versi Bahasa Indonesia](#versi-bahasa-indonesia)
 
 KANA is a moe WhatsApp bot with the persona of Kana: sweet, warm, and playful. It is built on `@rexxhayanasi/elaina-baileys` version 1.4.7 (pinned exact), pure ESM, Node 20 or later. Every user-facing string goes through an i18n system (Indonesian and English), every feature is an independent plugin, and interactive button navigation is a first-class rule: feature outputs that have a next step ship with buttons plus a text fallback.
 
@@ -24,8 +59,12 @@ Detailed feature status lives in [FEATURES.md](FEATURES.md), technical decisions
 - RPG and economy on a single data-driven engine (items, recipes, monsters, jobs are data, not files per action).
 - Free scrapers only, behind a shared runner: SSRF guard, retries, circuit breaker, size limits, and honest error replies when a source dies. Free scrapers break from time to time by nature.
 - Optional AI chat (rudder.chat) that activates only when the owner fills session cookies in `.env`. No paid APIs anywhere.
+- Premium, rentals, and daily limits: premium commands are marked with a diamond in the menu, heavy downloads and upscales run on daily quotas instead of a paywall (free 5 downloads and 3 upscales per day, premium or rental 50 and 20 per day), and the owner activates everything manually. No payment gateway. See [Premium and pricelist](#premium-and-pricelist).
 
 ## Command catalog
+
+<details open>
+<summary><b>Full command catalog</b> (highlights per group; the bot menu and the <a href="https://kana.omnicorp.web.id/plugins">web catalog</a> list all 2,002 command names)</summary>
 
 Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands, so tapping a button is the same as typing it.
 
@@ -39,6 +78,10 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 | `.help [command]` | Command details |
 | `.lang [id\|en]` | Change language per user |
 | `.webcode` (alias `.loginweb`) | One-time web dashboard login code |
+| `.cekprem` | Your premium status and remaining daily limits |
+| `.ceksewa` | Rental status for you or your group |
+| `.infopremium` | Premium info and pricelist |
+| `.donasi` | Support the bot with a QRIS donation |
 | `.credits` | Project credits and thanks |
 | `.daftar <name>` or `.daftar auto` | Register as a member (required before using the bot); auto uses your WhatsApp name |
 | `.profil` (alias `.me`) | Your profile: level, XP, limit, balance |
@@ -205,7 +248,27 @@ Prefix: `.` (also `!`, `/`, `#`). Buttons in bot replies carry the same commands
 | `.dbstats` | Storage usage statistics |
 | `.scraperhealth` | Scraper source health |
 | `.reload [plugin]` | Reload plugins without restarting |
-| `.jadibot <name> <number>`, `.stopjadibot <name>` | Extra bot sessions (owner only, max 3) |
+| `.addprem <number> <duration>`, `.delprem <number>`, `.listprem` | Manage premium users (duration for example 7d or 30d) |
+| `.addsewa <target> <duration>`, `.delsewa <target>`, `.listsewa` | Manage group and jadibot rentals |
+| `.jadibot <name> <number>`, `.stopjadibot <name>` | Extra bot sessions (premium personal or jadibot rental, max 3) |
+
+</details>
+
+## Premium and pricelist
+
+KANA is free to use. Premium unlocks the heavy and AI commands, marked with a diamond in the menu: AI chat and AI image generation, vision, TTS, removebg, ssweb, OCR, premium HTML games, and jadibot. Heavy downloads and upscales are not paywalled; they run on daily limits instead (free: 5 downloads and 3 upscales per day; premium or rental: 50 downloads and 20 upscales per day; owner unlimited).
+
+| Plan | 7 days | 30 days | 90 days | Permanent |
+|---|---|---|---|---|
+| Premium (per number) | Rp3.000 | Rp8.000 | Rp20.000 | Rp50.000 |
+| Group rental (per group) | Rp2.000 | Rp5.000 | Rp12.000 | Rp30.000 |
+| Jadibot rental (per number) | Rp4.000 | Rp10.000 | Rp25.000 | Rp65.000 |
+
+How it works:
+
+- Group rental unlocks premium commands for every member of that one group only. It does not unlock jadibot; jadibot needs premium personal or a jadibot rental.
+- Payment is via QRIS, shown on the [premium page](https://kana.omnicorp.web.id/premium). Send the payment proof to the owner on WhatsApp and the owner activates you manually with `.addprem` or `.addsewa`. There is no payment gateway.
+- Check your status any time with `.cekprem`, `.ceksewa`, and `.infopremium`.
 
 ## Installation
 
@@ -276,7 +339,25 @@ export async function handler(ctx) {
 
 Rules: every user-facing string goes through `ctx.t()` and the plugin `i18n` export (never hardcoded), outputs with a next step include buttons via `src/ui/buttons.js` with a text fallback, and a broken plugin is quarantined automatically by the loader so the bot never dies because of one plugin. A plugin may also export `before(ctx)` (middleware for every message) and `onParticipantsUpdate(ctx)` (group member events).
 
+## Project structure
+
+```text
+kana-md/
+├── src/          Core pipeline, services, scrapers, UI, i18n, persona, storage
+├── plugins/      1,408 plugins in 38 categories
+├── web/          Bundled web dashboard (same source as the live site)
+├── games/        HTML mini game assets
+├── assets/       Official banners and mascot assets
+├── docs/         Decisions, web contract, snippet credits
+├── test/         Unit and contract tests (node:test)
+├── scripts/      Live test harness and helpers
+├── FEATURES.md   Detailed feature status
+└── TUTORIAL.md   Beginner friendly setup guide
+```
+
 ## Web dashboard
+
+Live at [kana.omnicorp.web.id](https://kana.omnicorp.web.id): a public plugin catalog at `/plugins`, the premium page at `/premium` with the QRIS payment image, a public leaderboard at `/leaderboard`, bot status at `/status`, a member dashboard (premium status and remaining daily limits), and an owner panel for premium and rental management.
 
 A separate web team builds the KANA dashboard. The bot side contract: members type their number on the web login page, the web writes a request record, and the bot watcher sends the verification code to that WhatsApp number automatically. The manual fallback is the `.webcode` command. Dashboard statistics come from the same storage: user profiles in the `users` namespace and a `bot_stats` record in the `kv` namespace. Full contract in [docs/WEB.md](docs/WEB.md).
 
@@ -305,6 +386,10 @@ MIT, see [LICENSE](LICENSE). Copyright (c) 2026 OmniDevv.
 
 # KANA (Bahasa Indonesia)
 
+| Plugin | Kategori | Nama perintah | Bahasa | Prefix |
+|---:|---:|---:|---|---|
+| 1.408 | 38 | 2.002 | Indonesia, Inggris | `.` `!` `/` `#` |
+
 KANA adalah bot WhatsApp moe dengan persona Kana yang manis, hangat, dan playful. Dibangun di atas `@rexxhayanasi/elaina-baileys` versi 1.4.7 (di-pin exact), ESM murni, Node 20 ke atas. Semua string yang dilihat pengguna melewati sistem i18n (Indonesia dan Inggris), setiap fitur adalah plugin mandiri, dan navigasi tombol interaktif adalah aturan utama: keluaran fitur yang punya langkah lanjutan wajib disertai tombol plus fallback teks.
 
 Status fitur terperinci ada di [FEATURES.md](FEATURES.md), keputusan teknis di [docs/DECISIONS.md](docs/DECISIONS.md), sumber snippet dan kredit di [docs/SNIPPETS.md](docs/SNIPPETS.md), dan kontrak data dashboard web di [docs/WEB.md](docs/WEB.md).
@@ -321,10 +406,11 @@ Status fitur terperinci ada di [FEATURES.md](FEATURES.md), keputusan teknis di [
 - RPG dan ekonomi di atas satu engine berbasis data (item, resep, monster, pekerjaan adalah data, bukan file per aksi).
 - Scraper gratis saja, di belakang runner bersama: proteksi SSRF, retry, circuit breaker, batas ukuran, dan balasan error yang jujur saat sumber mati. Scraper gratis memang akan rusak berkala.
 - Chat AI opsional (rudder.chat) yang hanya aktif bila owner mengisi cookie sesi di `.env`. Tidak ada API berbayar di mana pun.
+- Sistem premium, sewa, dan limit harian: perintah premium bertanda berlian di menu, download berat dan upscale memakai kuota harian bukan paywall (gratis 5 download dan 3 upscale per hari, premium atau sewa 50 dan 20 per hari), dan owner mengaktifkan semuanya manual. Tanpa payment gateway. Lihat [Premium dan pricelist](#premium-dan-pricelist).
 
 ## Katalog perintah
 
-Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sama, jadi menekan tombol sama dengan mengetik perintahnya.
+Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sama, jadi menekan tombol sama dengan mengetik perintahnya. Daftar lengkap 2.002 nama perintah ada di menu bot dan [katalog web](https://kana.omnicorp.web.id/plugins).
 
 ### Utama dan profil
 
@@ -336,6 +422,10 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 | `.help [perintah]` | Detail perintah |
 | `.lang [id\|en]` | Ganti bahasa per pengguna |
 | `.webcode` (alias `.loginweb`) | Kode login dashboard web sekali pakai |
+| `.cekprem` | Status premium dan sisa limit harian kamu |
+| `.ceksewa` | Status sewa untuk kamu atau grupmu |
+| `.infopremium` | Info premium dan pricelist |
+| `.donasi` | Dukung bot lewat donasi QRIS |
 | `.credits` | Kredit dan terima kasih proyek |
 | `.daftar <nama>` atau `.daftar auto` | Daftar jadi member (wajib sebelum memakai bot); auto memakai nama WhatsApp kamu |
 | `.profil` (alias `.me`) | Profil kamu: level, XP, limit, saldo |
@@ -502,7 +592,25 @@ Prefix: `.` (juga `!`, `/`, `#`). Tombol di balasan bot membawa perintah yang sa
 | `.dbstats` | Statistik pemakaian storage |
 | `.scraperhealth` | Kesehatan sumber scraper |
 | `.reload [plugin]` | Muat ulang plugin tanpa restart |
-| `.jadibot <nama> <nomor>`, `.stopjadibot <nama>` | Sesi bot tambahan (khusus owner, maks 3) |
+| `.addprem <nomor> <durasi>`, `.delprem <nomor>`, `.listprem` | Kelola pengguna premium (durasi misalnya 7d atau 30d) |
+| `.addsewa <target> <durasi>`, `.delsewa <target>`, `.listsewa` | Kelola sewa grup dan jadibot |
+| `.jadibot <nama> <nomor>`, `.stopjadibot <nama>` | Sesi bot tambahan (premium personal atau sewa jadibot, maks 3) |
+
+## Premium dan pricelist
+
+KANA gratis dipakai. Premium membuka perintah berat dan AI yang bertanda berlian di menu: chat dan gambar AI, vision, TTS, removebg, ssweb, OCR, game HTML premium, dan jadibot. Download berat dan upscale tidak dikunci premium; keduanya memakai limit harian (gratis: 5 download dan 3 upscale per hari; premium atau sewa: 50 download dan 20 upscale per hari; owner tanpa batas).
+
+| Paket | 7 hari | 30 hari | 90 hari | Permanen |
+|---|---|---|---|---|
+| Premium (per nomor) | Rp3.000 | Rp8.000 | Rp20.000 | Rp50.000 |
+| Sewa grup (per grup) | Rp2.000 | Rp5.000 | Rp12.000 | Rp30.000 |
+| Sewa jadibot (per nomor) | Rp4.000 | Rp10.000 | Rp25.000 | Rp65.000 |
+
+Caranya:
+
+- Sewa grup membuka perintah premium untuk semua member di satu grup itu saja. Sewa grup tidak membuka jadibot; jadibot butuh premium personal atau sewa jadibot.
+- Pembayaran lewat QRIS yang tampil di [halaman premium](https://kana.omnicorp.web.id/premium). Kirim bukti bayar ke owner lewat WhatsApp dan owner mengaktifkanmu manual memakai `.addprem` atau `.addsewa`. Tidak ada payment gateway.
+- Cek statusmu kapan saja dengan `.cekprem`, `.ceksewa`, dan `.infopremium`.
 
 ## Instalasi
 
@@ -573,7 +681,25 @@ export async function handler(ctx) {
 
 Aturan: semua string yang dilihat pengguna wajib lewat `ctx.t()` dan ekspor `i18n` plugin (tidak boleh hardcoded), keluaran yang punya langkah lanjutan menyertakan tombol lewat `src/ui/buttons.js` dengan fallback teks, dan plugin yang rusak dikarantina otomatis oleh loader supaya bot tidak mati karena satu plugin. Plugin juga boleh mengekspor `before(ctx)` (middleware untuk semua pesan) dan `onParticipantsUpdate(ctx)` (event member grup).
 
+## Struktur proyek
+
+```text
+kana-md/
+├── src/          Pipeline inti, services, scrapers, UI, i18n, persona, storage
+├── plugins/      1.408 plugin dalam 38 kategori
+├── web/          Dashboard web terbundel (sumber sama dengan situs live)
+├── games/        Aset mini game HTML
+├── assets/       Banner dan aset maskot resmi
+├── docs/         Keputusan, kontrak web, kredit snippet
+├── test/         Tes unit dan kontrak (node:test)
+├── scripts/      Harness tes live dan helper
+├── FEATURES.md   Status fitur terperinci
+└── TUTORIAL.md   Panduan setup ramah pemula
+```
+
 ## Dashboard web
+
+Live di [kana.omnicorp.web.id](https://kana.omnicorp.web.id): katalog plugin publik di `/plugins`, halaman premium di `/premium` dengan gambar pembayaran QRIS, leaderboard publik di `/leaderboard`, status bot di `/status`, dashboard member (status premium dan sisa limit harian), dan panel owner untuk mengelola premium dan sewa.
 
 Tim web terpisah membangun dashboard KANA. Kontrak dari sisi bot: member memasukkan nomor di halaman login web, web menulis record permintaan, dan watcher bot mengirim kode verifikasi ke nomor WhatsApp itu secara otomatis. Cadangan manualnya adalah perintah `.webcode`. Statistik dashboard datang dari storage yang sama: profil pengguna di namespace `users` dan record `bot_stats` di namespace `kv`. Kontrak lengkap di [docs/WEB.md](docs/WEB.md).
 
