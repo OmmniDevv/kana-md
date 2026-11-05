@@ -25,8 +25,8 @@ export const i18n = {
   },
 }
 
-const ACTION = "info"
-export const test = { input: '.clanupgrade', expect: /clan|🛡️/i }
+const ACTION = "upgrade"
+export const test = { input: '.clanupgrade', expect: /di-upgrade|Kas clan kurang|Cuma leader|belum punya clan/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
@@ -141,6 +141,7 @@ export async function handler(ctx) {
     if (!isLeader) return say('Cuma leader yang bisa upgrade clan~')
     if ((clan.bank || 0) < cost) return say('Kas clan kurang. Butuh *' + cost + ' koin*, kas sekarang *' + (clan.bank || 0) + '*')
     clan.bank -= cost
+    clan.bankLog = [...(clan.bankLog || []), { delta: -cost, reason: 'upgrade', at: Date.now() }].slice(-20)
     clan.xp = (clan.xp || 0) + 100 * level
     await saveClan(ctx, clan)
     return say('Clan di-upgrade! XP clan naik, level sekarang *' + (Math.floor(Math.sqrt(clan.xp / 100)) + 1) + '*')

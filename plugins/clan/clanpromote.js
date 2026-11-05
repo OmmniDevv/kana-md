@@ -5,8 +5,8 @@ export const config = {
   alias: [],
   category: "clan",
   description: { id: "Naikkan jabatan member (Co-Leader/Elder)", en: "KANA version of the Elaina-MD clanpromote feature, rewritten in KANA style" },
-  usage: ".clanpromote",
-  example: ".clanpromote",
+  usage: ".clanpromote <nomor>",
+  example: ".clanpromote 6283157555852",
   cooldown: 5,
 }
 
@@ -25,8 +25,8 @@ export const i18n = {
   },
 }
 
-const ACTION = "info"
-export const test = { input: '.clanpromote', expect: /clan|🛡️/i }
+const ACTION = "promote"
+export const test = { input: '.clanpromote 6283157555852', expect: /sekarang \*co-leader\*|bukan member clan|belum punya clan|Cuma leader/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)

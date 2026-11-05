@@ -5,7 +5,7 @@ export const config = {
   alias: [],
   category: "clan",
   description: { id: "Set logo clan (reply gambar)", en: "KANA version of the Elaina-MD clanlogo feature, rewritten in KANA style" },
-  usage: ".clanlogo",
+  usage: ".clanlogo (balas gambar)",
   example: ".clanlogo",
   cooldown: 5,
 }
@@ -25,8 +25,8 @@ export const i18n = {
   },
 }
 
-const ACTION = "info"
-export const test = { input: '.clanlogo', expect: /clan|🛡️/i }
+const ACTION = "logo"
+export const test = { input: '.clanlogo', expect: /Balas sebuah gambar|berhasil dipasang|Logo clan/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
@@ -69,6 +69,24 @@ export async function handler(ctx) {
     await saveClan(ctx, clan)
     await updateProfile(ctx.storage, ctx.senderDigits, { clanId: '' })
     return say('Kamu keluar dari clan *' + clan.name + '*. Sampai jumpa~')
+  }
+  if (ACTION === 'logo') {
+    const qmsg = ctx.quoted?.message
+    if (qmsg?.imageMessage) {
+      if (!isLeader && myRole !== 'co-leader') return say('Cuma leader/co-leader yang bisa ganti logo clan~')
+      let buf = null
+      try { buf = await ctx.downloadQuoted() } catch { buf = null }
+      if (!buf?.length) return say('Gambarnya gagal diunduh, coba kirim ulang yaa~')
+      if (buf.length > 1024 * 1024) return say('Logonya kegedean, maksimal 1 MB yaa~')
+      clan.logo = buf.toString('base64')
+      await saveClan(ctx, clan)
+      return say('Logo clan *' + clan.name + '* berhasil dipasang!')
+    }
+    if (clan.logo) {
+      await ctx.sock.sendMessage(ctx.chat, { image: Buffer.from(clan.logo, 'base64'), caption: 'Logo clan *' + clan.name + '*' }, { quoted: ctx.raw })
+      return say('Itu logo clan *' + clan.name + '* saat ini~')
+    }
+    return say('Balas sebuah gambar dengan .clanlogo buat memasang logo clan yaa~')
   }
   if (ACTION === 'info' || ACTION === 'rank' || ACTION === 'level' || ACTION === 'xp' || ACTION === 'bank' || ACTION === 'report') {
     const level = Math.floor(Math.sqrt((clan.xp || 0) / 100)) + 1

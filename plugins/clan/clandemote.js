@@ -5,8 +5,8 @@ export const config = {
   alias: [],
   category: "clan",
   description: { id: "Turunkan jabatan member", en: "KANA version of the Elaina-MD clandemote feature, rewritten in KANA style" },
-  usage: ".clandemote",
-  example: ".clandemote",
+  usage: ".clandemote <nomor>",
+  example: ".clandemote 6283157555852",
   cooldown: 5,
 }
 
@@ -25,8 +25,8 @@ export const i18n = {
   },
 }
 
-const ACTION = "info"
-export const test = { input: '.clandemote', expect: /clan|🛡️/i }
+const ACTION = "demote"
+export const test = { input: '.clandemote 6283157555852', expect: /sekarang \*member\*|bukan member clan|belum punya clan|Cuma leader/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)

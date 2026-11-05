@@ -26,7 +26,7 @@ export const i18n = {
 }
 
 const ACTION = "bank"
-export const test = { input: '.clanbank', expect: /clan|🛡️/i }
+export const test = { input: '.clanbank', expect: /Riwayat kas terakhir/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
@@ -70,7 +70,13 @@ export async function handler(ctx) {
     await updateProfile(ctx.storage, ctx.senderDigits, { clanId: '' })
     return say('Kamu keluar dari clan *' + clan.name + '*. Sampai jumpa~')
   }
-  if (ACTION === 'info' || ACTION === 'rank' || ACTION === 'level' || ACTION === 'xp' || ACTION === 'bank' || ACTION === 'report') {
+  if (ACTION === 'bank') {
+    const lvl = Math.floor(Math.sqrt((clan.xp || 0) / 100)) + 1
+    const log = (clan.bankLog || []).slice(-5).reverse().map((e) => '- ' + (e.delta >= 0 ? '+' : '') + e.delta + ' koin (' + e.reason + ', ' + new Date(e.at).toISOString().slice(0, 10) + ')').join('\n┊ ') || 'belum ada riwayat kas tercatat'
+    const lines = ['Kas clan *' + clan.name + '*: *' + (clan.bank || 0) + ' koin*', 'Biaya upgrade ke level ' + (lvl + 1) + ': *' + (lvl * 500) + ' koin*', 'Riwayat kas terakhir:\n┊ ' + log].join('\n┊ ')
+    return say(lines)
+  }
+  if (ACTION === 'info' || ACTION === 'rank' || ACTION === 'level' || ACTION === 'xp' || ACTION === ACTION === 'report') {
     const level = Math.floor(Math.sqrt((clan.xp || 0) / 100)) + 1
     const lines = ['Clan: *' + clan.name + '* (' + clan.id + ')', 'Leader: *' + clan.leader + '*', 'Member: *' + Object.keys(clan.members).length + '*', 'Level clan: *' + level + '* (XP ' + (clan.xp || 0) + ')', 'Kas clan: *' + (clan.bank || 0) + ' koin*', 'War: menang *' + (clan.warWins || 0) + '* / kalah *' + (clan.warLosses || 0) + '*', clan.desc ? 'Deskripsi: ' + clan.desc : 'Deskripsi: -'].join('\n┊ ')
     return say(lines)

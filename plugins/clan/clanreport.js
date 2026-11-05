@@ -26,7 +26,7 @@ export const i18n = {
 }
 
 const ACTION = "report"
-export const test = { input: '.clanreport', expect: /clan|🛡️/i }
+export const test = { input: '.clanreport', expect: /Laporan aktivitas clan/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
@@ -69,6 +69,15 @@ export async function handler(ctx) {
     await saveClan(ctx, clan)
     await updateProfile(ctx.storage, ctx.senderDigits, { clanId: '' })
     return say('Kamu keluar dari clan *' + clan.name + '*. Sampai jumpa~')
+  }
+  if (ACTION === 'report') {
+    const ageDays = Math.max(0, Math.floor((Date.now() - (clan.createdAt || Date.now())) / 86400000))
+    const today = new Date().toISOString().slice(0, 10)
+    let checkins = 0
+    for (const d of Object.keys(clan.members)) { if (await ctx.storage.get('kv', 'clancheckin:' + d + ':' + today)) checkins++ }
+    const hist = (clan.warHistory || []).slice(-3).map((h) => '- vs *' + h.vs + '*: ' + (h.win ? 'menang' : 'kalah') + ' (' + new Date(h.at).toISOString().slice(0, 10) + ')').join('\n┊ ') || 'belum ada aktivitas war'
+    const lines = ['Laporan aktivitas clan *' + clan.name + '*:', 'Umur clan: *' + ageDays + ' hari* (dibuat ' + new Date(clan.createdAt || Date.now()).toISOString().slice(0, 10) + ')', 'Member terdaftar: *' + Object.keys(clan.members).length + '* orang', 'Check-in hari ini: *' + checkins + '* member', 'XP terkumpul: *' + (clan.xp || 0) + '* | Kas: *' + (clan.bank || 0) + ' koin*', 'War: menang *' + (clan.warWins || 0) + '* / kalah *' + (clan.warLosses || 0) + '*', 'Aktivitas war terakhir:\n┊ ' + hist].join('\n┊ ')
+    return say(lines)
   }
   if (ACTION === 'info' || ACTION === 'rank' || ACTION === 'level' || ACTION === 'xp' || ACTION === 'bank' || ACTION === 'report') {
     const level = Math.floor(Math.sqrt((clan.xp || 0) / 100)) + 1

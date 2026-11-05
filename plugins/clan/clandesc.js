@@ -5,8 +5,8 @@ export const config = {
   alias: [],
   category: "clan",
   description: { id: "Edit deskripsi clan", en: "KANA version of the Elaina-MD clandesc feature, rewritten in KANA style" },
-  usage: ".clandesc",
-  example: ".clandesc",
+  usage: ".clandesc <deskripsi baru>",
+  example: ".clandesc Clan paling solid",
   cooldown: 5,
 }
 
@@ -25,8 +25,8 @@ export const i18n = {
   },
 }
 
-const ACTION = "info"
-export const test = { input: '.clandesc', expect: /clan|🛡️/i }
+const ACTION = "desc"
+export const test = { input: '.clandesc Clan paling solid', expect: /diperbarui jadi|Cuma leader|belum punya clan/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)

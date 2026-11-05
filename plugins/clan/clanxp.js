@@ -26,7 +26,7 @@ export const i18n = {
 }
 
 const ACTION = "xp"
-export const test = { input: '.clanxp', expect: /clan|🛡️/i }
+export const test = { input: '.clanxp', expect: /Kontribusi member/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
@@ -70,7 +70,18 @@ export async function handler(ctx) {
     await updateProfile(ctx.storage, ctx.senderDigits, { clanId: '' })
     return say('Kamu keluar dari clan *' + clan.name + '*. Sampai jumpa~')
   }
-  if (ACTION === 'info' || ACTION === 'rank' || ACTION === 'level' || ACTION === 'xp' || ACTION === 'bank' || ACTION === 'report') {
+  if (ACTION === 'xp') {
+    const rows = []
+    for (const [d, role] of Object.entries(clan.members)) {
+      const p = await getProfile(ctx.storage, d)
+      rows.push({ d, role, xp: p.xp || 0 })
+    }
+    rows.sort((a, b) => b.xp - a.xp)
+    const list = rows.slice(0, 10).map((r, i) => (i + 1) + '. *' + r.d + '* (' + r.role + ') - XP ' + r.xp).join('\n┊ ') || '-'
+    const lines = ['XP clan *' + clan.name + '*: *' + (clan.xp || 0) + '* XP', 'Kontribusi member (XP pribadi):\n┊ ' + list].join('\n┊ ')
+    return say(lines)
+  }
+  if (ACTION === 'info' || ACTION === 'rank' || ACTION === 'level' || ACTION === ACTION === 'bank' || ACTION === 'report') {
     const level = Math.floor(Math.sqrt((clan.xp || 0) / 100)) + 1
     const lines = ['Clan: *' + clan.name + '* (' + clan.id + ')', 'Leader: *' + clan.leader + '*', 'Member: *' + Object.keys(clan.members).length + '*', 'Level clan: *' + level + '* (XP ' + (clan.xp || 0) + ')', 'Kas clan: *' + (clan.bank || 0) + ' koin*', 'War: menang *' + (clan.warWins || 0) + '* / kalah *' + (clan.warLosses || 0) + '*', clan.desc ? 'Deskripsi: ' + clan.desc : 'Deskripsi: -'].join('\n┊ ')
     return say(lines)

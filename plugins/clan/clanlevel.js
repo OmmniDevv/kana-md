@@ -26,7 +26,7 @@ export const i18n = {
 }
 
 const ACTION = "level"
-export const test = { input: '.clanlevel', expect: /clan|🛡️/i }
+export const test = { input: '.clanlevel', expect: /Progress: / }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
@@ -70,7 +70,18 @@ export async function handler(ctx) {
     await updateProfile(ctx.storage, ctx.senderDigits, { clanId: '' })
     return say('Kamu keluar dari clan *' + clan.name + '*. Sampai jumpa~')
   }
-  if (ACTION === 'info' || ACTION === 'rank' || ACTION === 'level' || ACTION === 'xp' || ACTION === 'bank' || ACTION === 'report') {
+  if (ACTION === 'level') {
+    const xp = clan.xp || 0
+    const lvl = Math.floor(Math.sqrt(xp / 100)) + 1
+    const base = (lvl - 1) * (lvl - 1) * 100
+    const next = lvl * lvl * 100
+    const pct = Math.min(100, Math.floor(((xp - base) / (next - base)) * 100))
+    const filled = Math.round(pct / 10)
+    const bar = '█'.repeat(filled) + '░'.repeat(10 - filled)
+    const lines = ['Level clan *' + clan.name + '*: *' + lvl + '*', 'XP: *' + xp + '* / ' + next + ' menuju level ' + (lvl + 1), 'Progress: ' + bar + ' ' + pct + '%'].join('\n┊ ')
+    return say(lines)
+  }
+  if (ACTION === 'info' || ACTION === 'rank' || ACTION === ACTION === 'xp' || ACTION === 'bank' || ACTION === 'report') {
     const level = Math.floor(Math.sqrt((clan.xp || 0) / 100)) + 1
     const lines = ['Clan: *' + clan.name + '* (' + clan.id + ')', 'Leader: *' + clan.leader + '*', 'Member: *' + Object.keys(clan.members).length + '*', 'Level clan: *' + level + '* (XP ' + (clan.xp || 0) + ')', 'Kas clan: *' + (clan.bank || 0) + ' koin*', 'War: menang *' + (clan.warWins || 0) + '* / kalah *' + (clan.warLosses || 0) + '*', clan.desc ? 'Deskripsi: ' + clan.desc : 'Deskripsi: -'].join('\n┊ ')
     return say(lines)

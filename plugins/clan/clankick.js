@@ -5,8 +5,8 @@ export const config = {
   alias: [],
   category: "clan",
   description: { id: "Kick member dari clan (leader only)", en: "KANA version of the Elaina-MD clankick feature, rewritten in KANA style" },
-  usage: ".clankick",
-  example: ".clankick",
+  usage: ".clankick <nomor>",
+  example: ".clankick 6283157555852",
   cooldown: 5,
 }
 
@@ -25,8 +25,8 @@ export const i18n = {
   },
 }
 
-const ACTION = "info"
-export const test = { input: '.clankick', expect: /clan|🛡️/i }
+const ACTION = "kick"
+export const test = { input: '.clankick 6283157555852', expect: /dikeluarkan dari clan|bukan member clan|belum punya clan|Cuma leader/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)

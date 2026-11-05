@@ -5,8 +5,8 @@ export const config = {
   alias: [],
   category: "clan",
   description: { id: "Gabung ke clan", en: "KANA version of the Elaina-MD clanjoin feature, rewritten in KANA style" },
-  usage: ".clanjoin",
-  example: ".clanjoin",
+  usage: ".clanjoin <id clan>",
+  example: ".clanjoin naga-sakti",
   cooldown: 5,
 }
 
@@ -25,8 +25,8 @@ export const i18n = {
   },
 }
 
-const ACTION = "info"
-export const test = { input: '.clanjoin', expect: /clan|🛡️/i }
+const ACTION = "join"
+export const test = { input: '.clanjoin naga-sakti', expect: /Selamat datang di clan|tidak ditemukan/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)

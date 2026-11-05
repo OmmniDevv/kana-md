@@ -5,8 +5,8 @@ export const config = {
   alias: [],
   category: "clan",
   description: { id: "Ganti nama clan", en: "KANA version of the Elaina-MD clanrename feature, rewritten in KANA style" },
-  usage: ".clanrename",
-  example: ".clanrename",
+  usage: ".clanrename <nama baru>",
+  example: ".clanrename Naga Emas",
   cooldown: 5,
 }
 
@@ -25,8 +25,8 @@ export const i18n = {
   },
 }
 
-const ACTION = "info"
-export const test = { input: '.clanrename', expect: /clan|🛡️/i }
+const ACTION = "rename"
+export const test = { input: '.clanrename Naga Emas', expect: /diperbarui jadi|Cuma leader|belum punya clan/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)

@@ -5,8 +5,8 @@ export const config = {
   alias: [],
   category: "clan",
   description: { id: "Buat clan baru", en: "KANA version of the Elaina-MD clancreate feature, rewritten in KANA style" },
-  usage: ".clancreate",
-  example: ".clancreate",
+  usage: ".clancreate <nama clan>",
+  example: ".clancreate Naga Sakti",
   cooldown: 5,
 }
 
@@ -25,8 +25,8 @@ export const i18n = {
   },
 }
 
-const ACTION = "info"
-export const test = { input: '.clancreate', expect: /clan|🛡️/i }
+const ACTION = "create"
+export const test = { input: '.clancreate Naga Sakti', expect: /berhasil dibuat/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
@@ -45,7 +45,7 @@ export async function handler(ctx) {
     const id = slug(arg)
     const exists = await ctx.storage.get('kv', 'clan:' + id)
     if (exists) return say('Nama clan itu sudah dipakai, coba nama lain yaa~')
-    const fresh = { id, name: arg.slice(0, 40), leader: ctx.senderDigits, members: { [ctx.senderDigits]: 'leader' }, xp: 0, bank: 0, desc: '', createdAt: Date.now(), warWins: 0, warLosses: 0, warHistory: [] }
+    const fresh = { id, name: arg.slice(0, 40), leader: ctx.senderDigits, members: { [ctx.senderDigits]: 'leader' }, xp: 0, bank: 0, desc: '', createdAt: Date.now(), warWins: 0, warLosses: 0, warHistory: [], bankLog: [] }
     await saveClan(ctx, fresh)
     await updateProfile(ctx.storage, ctx.senderDigits, { clanId: id })
     return say('Clan *' + fresh.name + '* berhasil dibuat! ID clan: *' + id + '*\n┊ Ajak temanmu gabung dengan .clanjoin ' + id)

@@ -25,8 +25,8 @@ export const i18n = {
   },
 }
 
-const ACTION = "info"
-export const test = { input: '.clanwaraccept', expect: /clan|🛡️/i }
+const ACTION = "waraccept"
+export const test = { input: '.clanwaraccept', expect: /Clan war selesai|Tidak ada tantangan war|belum punya clan/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)

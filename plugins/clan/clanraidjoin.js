@@ -25,8 +25,8 @@ export const i18n = {
   },
 }
 
-const ACTION = "info"
-export const test = { input: '.clanraidjoin', expect: /clan|🛡️/i }
+const ACTION = "raid"
+export const test = { input: '.clanraidjoin', expect: /Serangan clan berhasil|belum punya clan/ }
 function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) }
 async function myClan(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
@@ -131,6 +131,7 @@ export async function handler(ctx) {
     const gain = ACTION === 'boss' ? 50 + Math.floor(Math.random() * 80) : 30 + Math.floor(Math.random() * 50)
     clan.xp = (clan.xp || 0) + gain
     clan.bank = (clan.bank || 0) + Math.floor(gain / 2)
+    clan.bankLog = [...(clan.bankLog || []), { delta: Math.floor(gain / 2), reason: 'raid', at: Date.now() }].slice(-20)
     await saveClan(ctx, clan)
     await addXp(ctx.storage, ctx.senderDigits, 15)
     return say('Serangan clan berhasil! Clan +' + gain + ' XP dan kas +' + Math.floor(gain / 2) + ' koin. Kamu +15 XP~')
