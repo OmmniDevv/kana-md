@@ -170,7 +170,9 @@ export async function bankWithdraw(storage, digits, amount) {
   return { ok: true, amount: n, balance: (profile.balance ?? 0) + n, bank: bank - n }
 }
 
-// Power tempur: level, alat yang dimiliki, dan level pet.
+// Power tempur: level, alat yang dimiliki, level pet, dan stat yang dibeli
+// (profile.stats dari src/rpg/stats.js: attack/strength berbobot 2,
+// defense/speed berbobot 1).
 export function powerOf(profile) {
   let power = levelFromXp(profile.xp ?? 0) * 5
   const inv = profile.inventory ?? {}
@@ -178,6 +180,11 @@ export function powerOf(profile) {
     if ((inv[id] ?? 0) > 0) power += bonus
   }
   if (profile.pet) power += (profile.pet.level ?? 1) * 3
+  const stats = profile.stats ?? {}
+  power += (Number(stats.attack) || 0) * 2
+  power += (Number(stats.strength) || 0) * 2
+  power += (Number(stats.defense) || 0)
+  power += (Number(stats.speed) || 0)
   return power
 }
 
