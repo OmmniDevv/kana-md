@@ -51,3 +51,27 @@ membabi buta. Yang diadaptasi diberi kredit di header file dan FEATURES.md.
 | ambulk_generator_email_6_fa4o.js | - | Pembuatan akun layanan massal + verifikasi otomatis | DITOLAK (batas keras): akun massal dan bypass verifikasi layanan pihak ketiga. Tidak dibuatkan plugin |
 | Animeku_15_31y0.js | - | Scraper dengan ApiKey hasil ekstrak aplikasi pihak ketiga | DITOLAK: kredensial pihak ketiga tidak boleh masuk repo publik. Tidak dibuatkan plugin |
 | YTDL_16_48gp.js | - | Downloader YouTube yang menjalankan kode server asing via node:vm | DITOLAK: tidak aman dan duplikat fungsi yang sudah ada. Tidak dipakai, termasuk sebagai fallback |
+
+## File zip kiriman user 2026-11-05: Scraper_4_6ygm.zip (paket "Scraper By Zane", 44 file)
+
+Semua file dibaca penuh atau per bagian kunci sebelum dinilai; tidak ada
+yang dijalankan membabi buta. Probe sumber dilakukan dengan skrip probe
+terpisah memakai input asli, bukan menjalankan kode zip.
+
+| File | Isi | Keputusan |
+|---|---|---|
+| igexportScraper.js | API igexport.com/api/ig-photo, tanpa kunci | Diambil: cadangan .ig ketiga di src/scrapers/instagram/instagram.js (parseIgExportMedia + instagramViaIgExport). Probe VM: HTTP 200, video fbcdn asli, magic bytes ftyp lolos |
+| instaloadrScraper.js | API instaloadr.com/api/fetch, tanpa kunci/captcha | Diambil: cadangan .ig keempat (parseInstaloadrMedia + instagramViaInstaloadr, retry 422 sebagai post). Probe VM: HTTP 200, item mp4 asli, magic bytes ftyp lolos. Unduhan IPv4 paksa dari file asli tidak diambil; unduhan tetap lewat downloadBuffer repo |
+| fastdl.js | FastDL.app: kunci HMAC hasil reverse bundle app + curl untuk lolos Turnstile | DITOLAK: kredensial hasil ekstrak aplikasi pihak ketiga (pola sama dengan Animeku) dan FastDL pernah dilewati pada triage FioCode. Tidak dipakai, termasuk sebagai fallback |
+| animein.js | API animeinweb.com dengan x-proxy-secret hardcoded | DITOLAK: kredensial pihak ketiga tertanam di kode |
+| iloveimgRmBg.js, iloveimgUpscale.js | iLoveIMG dengan token TASK statis milik proyek iLoveIMG | DITOLAK: token pihak ketiga hardcoded. Fitur removebg/upscale KANA sudah punya sumber yang lulus uji |
+| ampremium.js, parxAm.js, satriaAm.js, noxxAmScraper.js, adamAmPrem.js, vinzAm.js | Aktivator premium Alight Motion via magic link (kirim, verifikasi, inject premium) | DITOLAK: aktivasi/bypass layanan berbayar, pola sama dengan tool magic link AM yang ditolak pada triage paste StinkyForged |
+| naxachat.js | Chat AI dengan auto-register akun dari email temp untuk bypass kuota | DITOLAK (batas keras): akun massal dan bypass kuota layanan pihak ketiga |
+| generatorgmail.js, tempmail.js | Generator email sementara (generator.email, emailnator) termasuk buat massal dan auto-solve captcha | DITOLAK: keluarga generator email yang sama dengan ambulk (ditolak batas keras); KANA sudah punya .tempmail sendiri |
+| igstalkScraper.js | insta-stories-viewer.com: lihat story IG tanpa login | DITOLAK: story viewer bersifat pengintai (preseden triage FioCode) |
+| tikstalkScraper.js | tik.ninja: profil/story TikTok dengan memecahkan challenge JS situs (SHA256 + AES) | Dilewati: pemecahan challenge anti-bot dan fitur story; KANA sudah punya .tiktokstalk |
+| ffStalkScraper.js | Stalk Free Fire dengan solver proof-of-work SHA256 sampai 50 juta percobaan | Dilewati: duplikat .ffstalk yang sudah ada dan beban CPU solver tidak masuk akal untuk bot |
+| spotsearchdl.js | spotmp3.net dengan rotasi proxy publik otomatis saat kuota IP habis | Dilewati: mekanisme penghindaran kuota per IP; .spotify KANA sudah memakai spotmp3 dan lulus uji |
+| chosicSpotify.js | Ambil token Spotify gratis milik chosic.com lalu panggil api.spotify.com | Dilewati: bertumpu pada token layanan pihak ketiga; metadata Spotify KANA sudah tercakup jalur embed dan iTunes |
+| Sisanya (aio/downvideo, omdown, capcutdl, facebookScraper, pinterest, sswebScraper/thum.io, soundboardScraper/myinstants, removeVocal/x-minus, 8daudio, text2img/pollinations, mangadex, komikstationScraper, anichin, donghive, ttdlzone, ttsearch, spotify partner, ytmp3/ytmp3gg/ytmp3pc/ytscrape/y2mate/invidious, amfinder, picsurf, rannd, wac) | Beragam scraper bersih tanpa kunci hardcoded | Dilewati: bersih, tetapi plugin padanannya di KANA sudah punya sumber yang lulus sapuan live (bukan sumber mati/lemah), atau tidak ada plugin padanan (removeVocal, picsurf, rannd, wac, 8daudio katalog). Tidak ditambahkan sebagai fallback tanpa bukti sumber utama bermasalah |
+| (tidak ada di zip) | Chord | Paket ini TIDAK memuat scraper chord apa pun, jadi .chord tidak mendapat fallback dari kiriman ini; statusnya tetap seperti catatan matriks sapuan (chordtela dan chordindonesia memindah pencarian ke render klien) |

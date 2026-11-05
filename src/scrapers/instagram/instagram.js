@@ -241,11 +241,121 @@ async function instagramViaEmbed(url) {
   throw lastError || new Error('media tidak ditemukan di halaman embed Instagram')
 }
 
+// Cadangan kedua dan ketiga (ditambahkan 2026-11-05 dari paket
+// scraper kiriman user "Scraper By Zane", file igexportScraper.js dan
+// instaloadrScraper.js; lihat docs/SNIPPETS.md): dua API publik tanpa
+// kunci dan tanpa captcha yang terverifikasi dari VM bot dengan reel
+// uji kanonis plugin .ig (igexport menjawab dalam hitungan detik dan
+// berkas videonya lolos cek magic bytes ftyp; instaloadr menjawab
+// HTTP 200 dengan item unduhan yang sama). Bentuk hasil disamakan
+// dengan jalur SnapSave dan embed.
+
+export function parseIgExportMedia(data) {
+  if (!data?.ok || !Array.isArray(data?.media?.items)) return null
+  const items = data.media.items.filter((it) => it?.url)
+  if (!items.length) return null
+  const downloads = items.map((it) => {
+    const video = it.type === 'video'
+    return {
+      quality: video ? 'HD' : 'photo',
+      type: video ? 'video' : 'photo',
+      url: it.url,
+      thumbnail: it.thumbnailUrl || undefined,
+    }
+  })
+  return {
+    title: 'Instagram Media',
+    thumbnail: items[0].thumbnailUrl || '',
+    type: downloads.some((d) => d.type === 'photo') ? 'photo' : 'video',
+    downloads,
+  }
+}
+
+export async function instagramViaIgExport(url) {
+  const parsed = assertSafeUrl(url)
+  if (!IG_HOST.test(parsed.hostname)) throw new Error('URL harus dari instagram.com')
+  const api = new URL('https://igexport.com/api/ig-photo/')
+  api.searchParams.set('url', parsed.href.split('?')[0])
+  const res = await fetch(api, {
+    signal: AbortSignal.timeout(30000),
+    headers: {
+      'User-Agent':
+        'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36',
+      Accept: 'application/json, text/plain, */*',
+      Referer: 'https://igexport.com/',
+    },
+  })
+  if (!res.ok) throw new Error(`IgExport membalas HTTP ${res.status}`)
+  const data = await res.json().catch(() => null)
+  const media = parseIgExportMedia(data)
+  if (!media) throw new Error(data?.message || 'Media Instagram tidak ditemukan di IgExport')
+  return { status: true, result: media }
+}
+
+export function parseInstaloadrMedia(data) {
+  const items = Array.isArray(data?.items) ? data.items.filter((it) => it?.download_url) : []
+  if (!items.length) return null
+  const downloads = items.map((it) => {
+    const video = /mp4|video/i.test(String(it.media_type || ''))
+    return {
+      quality: video ? 'HD' : 'photo',
+      type: video ? 'video' : 'photo',
+      url: it.download_url,
+      thumbnail: it.thumbnail_url || undefined,
+    }
+  })
+  return {
+    title: 'Instagram Media',
+    thumbnail: items[0].thumbnail_url || '',
+    type: downloads.some((d) => d.type === 'photo') ? 'photo' : 'video',
+    downloads,
+  }
+}
+
+export async function instagramViaInstaloadr(url) {
+  const parsed = assertSafeUrl(url)
+  if (!IG_HOST.test(parsed.hostname)) throw new Error('URL harus dari instagram.com')
+  const target = parsed.href.split('?')[0]
+  const guessed = /\/(reels?|tv)\//i.test(parsed.pathname) ? 'reel' : 'post'
+  const postFetch = async (mediaType) => {
+    const res = await fetch('https://www.instaloadr.com/api/fetch', {
+      method: 'POST',
+      signal: AbortSignal.timeout(45000),
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        Accept: 'application/json',
+        'Accept-Language': 'en-US,en;q=0.9',
+        Referer: 'https://www.instaloadr.com/',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url: target, media_type: mediaType }),
+    })
+    const body = await res.json().catch(() => null)
+    return { res, body }
+  }
+  let out = await postFetch(guessed)
+  // Tebakan tipe salah dijawab 422; coba sekali lagi sebagai post.
+  if (!out.res.ok && out.res.status === 422 && guessed !== 'post') {
+    out = await postFetch('post')
+  }
+  if (!out.res.ok) throw new Error(out.body?.detail || `Instaloadr membalas HTTP ${out.res.status}`)
+  const media = parseInstaloadrMedia(out.body)
+  if (!media) throw new Error(out.body?.detail || 'Media Instagram tidak ditemukan di Instaloadr')
+  return { status: true, result: media }
+}
+
 export async function instagramDownload(url) {
   const viaSnapSave = await instagramViaSnapSave(url)
   if (viaSnapSave.status) return viaSnapSave
   try {
     return await instagramViaEmbed(url)
+  } catch {}
+  try {
+    return await instagramViaIgExport(url)
+  } catch {}
+  try {
+    return await instagramViaInstaloadr(url)
   } catch {
     return viaSnapSave
   }

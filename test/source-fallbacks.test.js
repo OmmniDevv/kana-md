@@ -2,6 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { parseKbbiMirrorDefinitions } from '../src/scrapers/search/kbbi.js'
 import { parseMalSearchUrls, parseMalDetail } from '../src/scrapers/search/anime.js'
+import { parseIgExportMedia, parseInstaloadrMedia } from '../src/scrapers/instagram/instagram.js'
 
 // Fixture ringkas meniru struktur asli yang terverifikasi live
 // 2026-11-05: kbbi.web.id menaruh definisi di #d1 dipisah <br><br>;
@@ -44,6 +45,77 @@ const MAL_DETAIL_HTML = `<html><head><meta property="og:image" content="https://
 <div class="spaceit_pad"><span class="dark_text">Status:</span> Finished Airing</div>
 <p itemprop="description">Twelve years ago, a colossal demon fox terrorized the world. [Written by MAL Rewrite]</p>
 </body></html>`
+
+// Fixture cadangan Instagram meniru struktur asli yang terverifikasi
+// live dari VM pada 2026-11-05 memakai reel uji kanonis plugin .ig
+// (DMXCETGSC5i): igexport membalas ok:true dengan media.items berisi
+// url fbcdn (berkasnya lolos cek magic bytes ftyp), instaloadr
+// membalas items berisi download_url dan media_type mp4.
+
+const IGEXPORT_VIDEO = {
+  ok: true,
+  source: 7,
+  media: {
+    shortcode: 'DMXCETGSC5i',
+    items: [
+      {
+        type: 'video',
+        url: 'https://instagram.example.net/o1/v/t2/m367/video.mp4?dl=1',
+        thumbnailUrl: 'https://instagram.example.net/v/t51/thumb.jpg',
+        filename: 'video.mp4',
+      },
+    ],
+  },
+}
+
+test('igexport: respons video menjadi bentuk unduhan yang sama dengan SnapSave', () => {
+  const media = parseIgExportMedia(IGEXPORT_VIDEO)
+  assert.equal(media.type, 'video')
+  assert.equal(media.thumbnail, 'https://instagram.example.net/v/t51/thumb.jpg')
+  assert.deepEqual(media.downloads, [
+    {
+      quality: 'HD',
+      type: 'video',
+      url: 'https://instagram.example.net/o1/v/t2/m367/video.mp4?dl=1',
+      thumbnail: 'https://instagram.example.net/v/t51/thumb.jpg',
+    },
+  ])
+})
+
+test('igexport: respons gagal atau kosong menjadi null', () => {
+  assert.equal(parseIgExportMedia({ ok: false, message: 'gagal' }), null)
+  assert.equal(parseIgExportMedia({ ok: true, media: { items: [] } }), null)
+  assert.equal(parseIgExportMedia(null), null)
+})
+
+const INSTALOADR_VIDEO = {
+  source_url: 'https://www.instagram.com/reel/DMXCETGSC5i/',
+  items: [
+    {
+      media_type: 'mp4',
+      download_url: 'https://instagram.example.net/o1/v/t2/m367/video.mp4',
+      thumbnail_url: 'https://instagram.example.net/v/t51/thumb.jpg',
+      width: 720,
+      height: 1280,
+    },
+    { media_type: 'jpg', download_url: '', thumbnail_url: '' },
+  ],
+}
+
+test('instaloadr: item mp4 menjadi unduhan video, item tanpa URL dibuang', () => {
+  const media = parseInstaloadrMedia(INSTALOADR_VIDEO)
+  assert.equal(media.type, 'video')
+  assert.equal(media.downloads.length, 1)
+  assert.equal(media.downloads[0].type, 'video')
+  assert.equal(media.downloads[0].url, 'https://instagram.example.net/o1/v/t2/m367/video.mp4')
+  assert.equal(media.thumbnail, 'https://instagram.example.net/v/t51/thumb.jpg')
+})
+
+test('instaloadr: respons tanpa item valid menjadi null', () => {
+  assert.equal(parseInstaloadrMedia({ items: [] }), null)
+  assert.equal(parseInstaloadrMedia({ detail: 'privat' }), null)
+  assert.equal(parseInstaloadrMedia(null), null)
+})
 
 test('MAL: detail menjadi bentuk ternormalisasi yang sama dengan Jikan', () => {
   const entry = parseMalDetail(MAL_DETAIL_HTML, 'https://myanimelist.net/anime/20/Naruto', 'anime')
