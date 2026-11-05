@@ -16,6 +16,13 @@ export const DEFAULT_GROUP_SETTINGS = {
   antivirtex: false,
   antihidetag: false,
   anticulik: false,
+  autoai: false,
+  automedia: false,
+  autosticker: false,
+  autoreply: true,
+  botMode: 'publik', // 'publik' | 'admin' (onlyadmin) | 'diam'
+  banchat: false,
+  antilinkAction: 'warn', // 'warn' | 'kick'
   warnLimit: 3,
   slowmodeSec: 0,
   introTemplate: '',

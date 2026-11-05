@@ -32,6 +32,8 @@ export const i18n = {
       deletedFlood: '╭─❏ 🌊 「 *TERLALU DERAS* 」\n┊ Terlalu deras yaa *@{digits}*, pesan terakhir KANA hapus~\n┊ Pelan pelan saja~\n╰━━━━━━━',
       spamWarn: '╭─❏ 🌊 「 *JANGAN SPAM* 」\n┊ Pelan pelan yaa *@{digits}*, jangan spam~\n┊ Pesan terakhir KANA hapus~\n╰━━━━━━━',
       kicked: '╭─❏ 👋 「 *BATAS WARN TERCAPAI* 」\n┊ *@{digits}* mencapai batas warn *({limit})* jadi KANA keluarkan dari grup~\n┊ Maaf ya, demi ketertiban grup~\n╰━━━━━━━',
+      kickLink: '╭─❏ 👋 「 *KELUAR KARENA LINK* 」\n┊ *@{digits}* ngirim link dan aksi antilink grup ini *kick langsung*, jadi KANA keluarkan dari grup~\n┊ Maaf ya, demi ketertiban grup~\n╰━━━━━━━',
+      kickLinkFailed: '╭─❏ ⚠️ 「 *LINK TERDETEKSI* 」\n┊ *@{digits}* ngirim link dan aksi antilink grup ini *kick langsung*, tapi KANA belum bisa mengeluarkannya~\n┊ Bot perlu jadi admin grup dulu yaa~\n╰━━━━━━━',
       kickFailed: '╭─❏ ⚠️ 「 *BATAS WARN TERCAPAI* 」\n┊ *@{digits}* mencapai batas warn *({limit})*, tapi KANA belum bisa mengeluarkannya~\n┊ Bot perlu jadi admin grup dulu yaa~\n╰━━━━━━━',
     },
   },
@@ -52,6 +54,8 @@ export const i18n = {
       deletedFlood: '╭─❏ 🌊 「 *TOO FAST* 」\n┊ Too fast *@{digits}*, I removed the last message~\n┊ Take it slow~\n╰━━━━━━━',
       spamWarn: '╭─❏ 🌊 「 *DO NOT SPAM* 」\n┊ Slow down *@{digits}*, please do not spam~\n┊ I removed the last message~\n╰━━━━━━━',
       kicked: '╭─❏ 👋 「 *WARN LIMIT REACHED* 」\n┊ *@{digits}* reached the warn limit *({limit})* so I removed them from the group~\n┊ Sorry, for the group order~\n╰━━━━━━━',
+      kickLink: '╭─❏ 👋 「 *REMOVED FOR LINK* 」\n┊ *@{digits}* sent a link and this group antilink action is *instant kick*, so I removed them from the group~\n┊ Sorry, for the group order~\n╰━━━━━━━',
+      kickLinkFailed: '╭─❏ ⚠️ 「 *LINK DETECTED* 」\n┊ *@{digits}* sent a link and this group antilink action is *instant kick*, but I cannot remove them yet~\n┊ The bot needs to be a group admin first~\n╰━━━━━━━',
       kickFailed: '╭─❏ ⚠️ 「 *WARN LIMIT REACHED* 」\n┊ *@{digits}* reached the warn limit *({limit})*, but I cannot remove them yet~\n┊ The bot needs to be a group admin first~\n╰━━━━━━━',
     },
   },
@@ -182,6 +186,22 @@ export async function before(ctx) {
   if (settings.antilink && detectLinks(text).length) violated = 'guard.deletedLink'
   else if (settings.antijudol && detectGambling(text).length) violated = 'guard.deletedGambling'
   else if (settings.antiphising && detectPhishing(text).length) violated = 'guard.deletedPhishing'
+
+  // Aksi antilink 'kick' (diatur .setantilinkkick): link pertama langsung
+  // dikeluarkan, tanpa menunggu batas warn seperti jalur warn biasa.
+  if (violated === 'guard.deletedLink' && settings.antilinkAction === 'kick') {
+    await deleteMessage(ctx)
+    let kicked = false
+    try {
+      await ctx.sock.groupParticipantsUpdate(ctx.chat, [ctx.sender], 'remove')
+      kicked = true
+    } catch { kicked = false }
+    await ctx.sock.sendMessage(ctx.chat, {
+      text: ctx.t(kicked ? 'guard.kickLink' : 'guard.kickLinkFailed', { digits: digitsOf(ctx.sender) }),
+      mentions: [ctx.sender],
+    })
+    return false
+  }
 
   if (violated) {
     await deleteMessage(ctx)

@@ -53,6 +53,7 @@ const EXCEPTIONS = [
   { name: 'pet', reason: 'bentuk polos menampilkan status peliharaan pemain' },
   { name: 'referal', reason: 'bentuk polos menampilkan kode referal pemanggil' },
   { name: 'setgoodbye', reason: 'tanpa teks menampilkan teks goodbye grup yang sedang aktif' },
+  { name: 'goodbye', reason: 'tanpa argumen menampilkan status dan teks goodbye grup yang sedang aktif' },
   { name: 'setwelcome', reason: 'tanpa teks menampilkan teks welcome grup yang sedang aktif' },
   // Media kutipan: harness teks Mode A tidak bisa melampirkan media,
   // kasus uji hanya bisa menguji gerbang kutipnya (test/fixtures-links.md).

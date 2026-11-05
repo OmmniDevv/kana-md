@@ -83,6 +83,9 @@ export async function before(ctx) {
   if (!ctx.isGroup || !ctx.text) return
   if (/^[.!/#]/.test(ctx.text.trim())) return
   const settings = await getGroupSettings(ctx.storage, ctx.chat)
+  // Saklar autoreply grup (diatur .autoreply): mati berarti smart trigger
+  // custom command tidak dibalas sama sekali di grup ini.
+  if (settings.autoreply === false) return
   const commands = settings.customCommands ?? {}
   const trigger = ctx.text.trim().toLowerCase()
   const replyText = commands[trigger]
