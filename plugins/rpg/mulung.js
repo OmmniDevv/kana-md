@@ -19,14 +19,14 @@ export const i18n = {
     "jailed": "╭─❏ 🚔 「 *MULUNG* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *MULUNG* 」\n┊ Istirahat dulu, coba lagi *{minutes} menit* lagi yaa~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *MULUNG* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 💼 「 *MULUNG* 」\n┊ Hasil mulungmu laku dijual ke pengepul.\n┊ UPAH: *+{coins} KOIN* | XP: *+{Xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n┊ BARANG TEMUAN: *{item}*\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *MULUNG* 」\n┊ Hasil mulungmu laku dijual ke pengepul.\n┊ UPAH: *+{coins} KOIN* | XP: *+{xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n┊ BARANG TEMUAN: *{item}*\n╰━━━━━━━",
     "failed": "╭─❏ 😖 「 *MULUNG* 」\n┊ Rutenya sudah disapu pemulung lain~\n┊ ENERGI SISA: *{energy}*\n╰━━━━━━━"
 } },
   en: { "mulung": {
     "jailed": "╭─❏ 🚔 「 *MULUNG* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *MULUNG* 」\n┊ Rest first, try again in *{minutes} minutes*~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *MULUNG* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 💼 「 *MULUNG* 」\n┊ Your scavenged goods sold to the collector.\n┊ PAY: *+{coins} COINS* | XP: *+{Xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n┊ FOUND ITEM: *{item}*\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *MULUNG* 」\n┊ Your scavenged goods sold to the collector.\n┊ PAY: *+{coins} COINS* | XP: *+{xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n┊ FOUND ITEM: *{item}*\n╰━━━━━━━",
     "failed": "╭─❏ 😖 「 *MULUNG* 」\n┊ The route was already swept by another scavenger~\n┊ ENERGY LEFT: *{energy}*\n╰━━━━━━━"
 } },
 }

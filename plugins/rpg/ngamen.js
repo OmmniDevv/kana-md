@@ -19,14 +19,14 @@ export const i18n = {
     "jailed": "╭─❏ 🚔 「 *NGAMEN* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *NGAMEN* 」\n┊ Istirahat dulu, coba lagi *{minutes} menit* lagi yaa~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *NGAMEN* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 💼 「 *NGAMEN* 」\n┊ Ngamenmu ramai, saweran mengalir.\n┊ UPAH: *+{coins} KOIN* | XP: *+{Xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *NGAMEN* 」\n┊ Ngamenmu ramai, saweran mengalir.\n┊ UPAH: *+{coins} KOIN* | XP: *+{xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n╰━━━━━━━",
     "failed": "╭─❏ 😖 「 *NGAMEN* 」\n┊ Tempatnya sepi, tidak ada yang menyawer~\n┊ ENERGI SISA: *{energy}*\n╰━━━━━━━"
 } },
   en: { "ngamen": {
     "jailed": "╭─❏ 🚔 「 *NGAMEN* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *NGAMEN* 」\n┊ Rest first, try again in *{minutes} minutes*~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *NGAMEN* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 💼 「 *NGAMEN* 」\n┊ Your busking drew a crowd, tips flowed in.\n┊ PAY: *+{coins} COINS* | XP: *+{Xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *NGAMEN* 」\n┊ Your busking drew a crowd, tips flowed in.\n┊ PAY: *+{coins} COINS* | XP: *+{xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n╰━━━━━━━",
     "failed": "╭─❏ 😖 「 *NGAMEN* 」\n┊ The spot was quiet, nobody tipped~\n┊ ENERGY LEFT: *{energy}*\n╰━━━━━━━"
 } },
 }

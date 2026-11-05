@@ -19,14 +19,14 @@ export const i18n = {
     "jailed": "╭─❏ 🚔 「 *STREAMER* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *STREAMER* 」\n┊ Istirahat dulu, coba lagi *{minutes} menit* lagi yaa~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *STREAMER* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 💼 「 *STREAMER* 」\n┊ Live kamu ramai, donasi masuk deras.\n┊ UPAH: *+{coins} KOIN* | XP: *+{Xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *STREAMER* 」\n┊ Live kamu ramai, donasi masuk deras.\n┊ UPAH: *+{coins} KOIN* | XP: *+{xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n╰━━━━━━━",
     "failed": "╭─❏ 😖 「 *STREAMER* 」\n┊ Live sepi penonton, tidak ada donasi~\n┊ ENERGI SISA: *{energy}*\n╰━━━━━━━"
 } },
   en: { "streamer": {
     "jailed": "╭─❏ 🚔 「 *STREAMER* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *STREAMER* 」\n┊ Rest first, try again in *{minutes} minutes*~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *STREAMER* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 💼 「 *STREAMER* 」\n┊ Your stream was lively, donations poured in.\n┊ PAY: *+{coins} COINS* | XP: *+{Xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *STREAMER* 」\n┊ Your stream was lively, donations poured in.\n┊ PAY: *+{coins} COINS* | XP: *+{xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n╰━━━━━━━",
     "failed": "╭─❏ 😖 「 *STREAMER* 」\n┊ The stream was empty, no donations~\n┊ ENERGY LEFT: *{energy}*\n╰━━━━━━━"
 } },
 }

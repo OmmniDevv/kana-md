@@ -14,12 +14,12 @@ export const config = {
 
 export const i18n = {
   id: { "moneytopoin": {
-    "done": "╭─❏ 🔄 「 *KOIN KE POIN* 」\n┊ *{amount} KOIN* ditukar jadi *+{Xp} XP* (kurs 10:1).\n┊ SALDO: *{balance} KOIN* | TOTAL XP: *{totalXp}*\n╰━━━━━━━",
+    "done": "╭─❏ 🔄 「 *KOIN KE POIN* 」\n┊ *{amount} KOIN* ditukar jadi *+{xp} XP* (kurs 10:1).\n┊ SALDO: *{balance} KOIN* | TOTAL XP: *{totalXp}*\n╰━━━━━━━",
     "poor": "╭─❏ 💸 「 *KOIN KE POIN* 」\n┊ Saldomu *{balance} KOIN*, tidak cukup buat tukar *{amount}*~\n╰━━━━━━━",
     "bad": "╭─❏ 🔄 「 *KOIN KE POIN* 」\n┊ Jumlah minimal 10 koin yaa: *.moneytopoin 100*\n╰━━━━━━━"
 } },
   en: { "moneytopoin": {
-    "done": "╭─❏ 🔄 「 *COINS TO POINTS* 」\n┊ *{amount} COINS* eXchanged for *+{Xp} XP* (rate 10:1).\n┊ BALANCE: *{balance} COINS* | TOTAL XP: *{totalXp}*\n╰━━━━━━━",
+    "done": "╭─❏ 🔄 「 *COINS TO POINTS* 」\n┊ *{amount} COINS* eXchanged for *+{xp} XP* (rate 10:1).\n┊ BALANCE: *{balance} COINS* | TOTAL XP: *{totalXp}*\n╰━━━━━━━",
     "poor": "╭─❏ 💸 「 *COINS TO POINTS* 」\n┊ Your balance is *{balance} COINS*, not enough to eXchange *{amount}*~\n╰━━━━━━━",
     "bad": "╭─❏ 🔄 「 *COINS TO POINTS* 」\n┊ Minimum amount is 10 coins: *.moneytopoin 100*\n╰━━━━━━━"
 } },

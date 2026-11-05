@@ -19,14 +19,14 @@ export const i18n = {
     "jailed": "╭─❏ 🚔 「 *PELABUHAN* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *PELABUHAN* 」\n┊ Istirahat dulu, coba lagi *{minutes} menit* lagi yaa~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *PELABUHAN* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 💼 「 *PELABUHAN* 」\n┊ Kargo selesai dibongkar tepat waktu.\n┊ UPAH: *+{coins} KOIN* | XP: *+{Xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *PELABUHAN* 」\n┊ Kargo selesai dibongkar tepat waktu.\n┊ UPAH: *+{coins} KOIN* | XP: *+{xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n╰━━━━━━━",
     "failed": "╭─❏ 😖 「 *PELABUHAN* 」\n┊ Satu peti jatuh ke laut, upah hangus~\n┊ ENERGI SISA: *{energy}*\n╰━━━━━━━"
 } },
   en: { "pelabuhan": {
     "jailed": "╭─❏ 🚔 「 *PELABUHAN* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *PELABUHAN* 」\n┊ Rest first, try again in *{minutes} minutes*~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *PELABUHAN* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 💼 「 *PELABUHAN* 」\n┊ The cargo was unloaded right on time.\n┊ PAY: *+{coins} COINS* | XP: *+{Xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *PELABUHAN* 」\n┊ The cargo was unloaded right on time.\n┊ PAY: *+{coins} COINS* | XP: *+{xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n╰━━━━━━━",
     "failed": "╭─❏ 😖 「 *PELABUHAN* 」\n┊ One crate fell into the sea, the pay is gone~\n┊ ENERGY LEFT: *{energy}*\n╰━━━━━━━"
 } },
 }

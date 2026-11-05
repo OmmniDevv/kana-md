@@ -19,14 +19,14 @@ export const i18n = {
     "jailed": "╭─❏ 🚔 「 *KURIR* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *KURIR* 」\n┊ Istirahat dulu, coba lagi *{minutes} menit* lagi yaa~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *KURIR* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 💼 「 *KURIR* 」\n┊ Semua paket terkirim, upah kurir cair.\n┊ UPAH: *+{coins} KOIN* | XP: *+{Xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *KURIR* 」\n┊ Semua paket terkirim, upah kurir cair.\n┊ UPAH: *+{coins} KOIN* | XP: *+{xp}*\n┊ SALDO SEKARANG: *{balance} KOIN* | ENERGI: *{energy}*\n╰━━━━━━━",
     "failed": "╭─❏ 😖 「 *KURIR* 」\n┊ Satu paket nyasar, upah trip ini hangus~\n┊ ENERGI SISA: *{energy}*\n╰━━━━━━━"
 } },
   en: { "kurir": {
     "jailed": "╭─❏ 🚔 「 *KURIR* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *KURIR* 」\n┊ Rest first, try again in *{minutes} minutes*~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *KURIR* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 💼 「 *KURIR* 」\n┊ All packages delivered, courier pay received.\n┊ PAY: *+{coins} COINS* | XP: *+{Xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n╰━━━━━━━",
+    "done": "╭─❏ 💼 「 *KURIR* 」\n┊ All packages delivered, courier pay received.\n┊ PAY: *+{coins} COINS* | XP: *+{xp}*\n┊ BALANCE NOW: *{balance} COINS* | ENERGY: *{energy}*\n╰━━━━━━━",
     "failed": "╭─❏ 😖 「 *KURIR* 」\n┊ One package went missing, this trip's pay is gone~\n┊ ENERGY LEFT: *{energy}*\n╰━━━━━━━"
 } },
 }

@@ -19,13 +19,13 @@ export const i18n = {
     "jailed": "╭─❏ 🚔 「 *TRAINING* 」\n┊ Kamu masih dipenjara, sisa *{minutes} menit*. Aksi ini ditahan dulu~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *TRAINING* 」\n┊ Istirahat dulu, coba lagi *{minutes} menit* lagi yaa~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *TRAINING* 」\n┊ Energimu *{energy}*, perlu *{need}*. Makan (.eat), meditasi (.meditation), atau beli energi (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 🏋️ 「 *TRAINING* 」\n┊ Sesi training intensif selesai dengan keringat penuh.\n┊ XP LATIHAN: *+{Xp}* | LEVEL: *{level}*\n┊ ENERGI SISA: *{energy}*\n╰━━━━━━━"
+    "done": "╭─❏ 🏋️ 「 *TRAINING* 」\n┊ Sesi training intensif selesai dengan keringat penuh.\n┊ XP LATIHAN: *+{xp}* | LEVEL: *{level}*\n┊ ENERGI SISA: *{energy}*\n╰━━━━━━━"
 } },
   en: { "training": {
     "jailed": "╭─❏ 🚔 「 *TRAINING* 」\n┊ You are still jailed, *{minutes} minutes* left. This action is on hold~\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *TRAINING* 」\n┊ Rest first, try again in *{minutes} minutes*~\n╰━━━━━━━",
     "lowEnergy": "╭─❏ 🔋 「 *TRAINING* 」\n┊ Your energy is *{energy}*, needs *{need}*. Eat (.eat), meditate (.meditation), or buy energy (.buyenergi)~\n╰━━━━━━━",
-    "done": "╭─❏ 🏋️ 「 *TRAINING* 」\n┊ The intensive training session ended in full sweat.\n┊ TRAINING XP: *+{Xp}* | LEVEL: *{level}*\n┊ ENERGY LEFT: *{energy}*\n╰━━━━━━━"
+    "done": "╭─❏ 🏋️ 「 *TRAINING* 」\n┊ The intensive training session ended in full sweat.\n┊ TRAINING XP: *+{xp}* | LEVEL: *{level}*\n┊ ENERGY LEFT: *{energy}*\n╰━━━━━━━"
 } },
 }
 

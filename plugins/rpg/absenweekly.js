@@ -15,11 +15,11 @@ export const config = {
 
 export const i18n = {
   id: { "absenweekly": {
-    "done": "╭─❏ 📆 「 *ABSENWEEKLY* 」\n┊ Absen mingguanmu tercatat.\n┊ HADIAH: *+{coins} KOIN* | XP: *+{Xp}*\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
+    "done": "╭─❏ 📆 「 *ABSENWEEKLY* 」\n┊ Absen mingguanmu tercatat.\n┊ HADIAH: *+{coins} KOIN* | XP: *+{xp}*\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *ABSENWEEKLY* 」\n┊ Sudah diambil. Kembali lagi sekitar *{hours} jam* lagi yaa~\n╰━━━━━━━"
 } },
   en: { "absenweekly": {
-    "done": "╭─❏ 📆 「 *ABSENWEEKLY* 」\n┊ Your weekly check-in is recorded.\n┊ REWARD: *+{coins} COINS* | XP: *+{Xp}*\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
+    "done": "╭─❏ 📆 「 *ABSENWEEKLY* 」\n┊ Your weekly check-in is recorded.\n┊ REWARD: *+{coins} COINS* | XP: *+{xp}*\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *ABSENWEEKLY* 」\n┊ Already claimed. Come back in about *{hours} hours*~\n╰━━━━━━━"
 } },
 }

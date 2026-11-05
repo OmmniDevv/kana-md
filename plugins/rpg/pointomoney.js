@@ -15,12 +15,12 @@ export const config = {
 export const i18n = {
   id: { "pointomoney": {
     "done": "╭─❏ 🔄 「 *POIN KE KOIN* 」\n┊ *{amount} XP* ditukar jadi *+{coins} KOIN* (kurs 1:5). Levelmu ikut menyesuaikan~\n┊ SALDO: *{balance} KOIN* | SISA XP: *{totalXp}*\n╰━━━━━━━",
-    "poor": "╭─❏ 💸 「 *POIN KE KOIN* 」\n┊ XP kamu *{Xp}*, tidak cukup buat tukar *{amount}*~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *POIN KE KOIN* 」\n┊ XP kamu *{xp}*, tidak cukup buat tukar *{amount}*~\n╰━━━━━━━",
     "bad": "╭─❏ 🔄 「 *POIN KE KOIN* 」\n┊ Jumlah minimal 10 XP yaa: *.pointomoney 50*\n╰━━━━━━━"
 } },
   en: { "pointomoney": {
     "done": "╭─❏ 🔄 「 *POINTS TO COINS* 」\n┊ *{amount} XP* eXchanged for *+{coins} COINS* (rate 1:5). Your level adjusts accordingly~\n┊ BALANCE: *{balance} COINS* | XP LEFT: *{totalXp}*\n╰━━━━━━━",
-    "poor": "╭─❏ 💸 「 *POINTS TO COINS* 」\n┊ Your XP is *{Xp}*, not enough to eXchange *{amount}*~\n╰━━━━━━━",
+    "poor": "╭─❏ 💸 「 *POINTS TO COINS* 」\n┊ Your XP is *{xp}*, not enough to eXchange *{amount}*~\n╰━━━━━━━",
     "bad": "╭─❏ 🔄 「 *POINTS TO COINS* 」\n┊ Minimum amount is 10 XP: *.pointomoney 50*\n╰━━━━━━━"
 } },
 }

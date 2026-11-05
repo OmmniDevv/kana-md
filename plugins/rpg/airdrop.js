@@ -15,11 +15,11 @@ export const config = {
 
 export const i18n = {
   id: { "airdrop": {
-    "done": "╭─❏ 🪂 「 *AIRDROP* 」\n┊ Airdrop jatuh tepat di lokasimu.\n┊ HADIAH: *+{coins} KOIN* | XP: *+{Xp}*\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
+    "done": "╭─❏ 🪂 「 *AIRDROP* 」\n┊ Airdrop jatuh tepat di lokasimu.\n┊ HADIAH: *+{coins} KOIN* | XP: *+{xp}*\n┊ SALDO: *{balance} KOIN*\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *AIRDROP* 」\n┊ Sudah diambil. Kembali lagi sekitar *{hours} jam* lagi yaa~\n╰━━━━━━━"
 } },
   en: { "airdrop": {
-    "done": "╭─❏ 🪂 「 *AIRDROP* 」\n┊ The airdrop landed right at your spot.\n┊ REWARD: *+{coins} COINS* | XP: *+{Xp}*\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
+    "done": "╭─❏ 🪂 「 *AIRDROP* 」\n┊ The airdrop landed right at your spot.\n┊ REWARD: *+{coins} COINS* | XP: *+{xp}*\n┊ BALANCE: *{balance} COINS*\n╰━━━━━━━",
     "wait": "╭─❏ ⏳ 「 *AIRDROP* 」\n┊ Already claimed. Come back in about *{hours} hours*~\n╰━━━━━━━"
 } },
 }
