@@ -1,60 +1,61 @@
-
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama mesin duel
+// angka taruhan generik. Sekarang berburu sungguhan memakai gather engine
+// tabel hunting (daging, kulit, tanduk) dengan gerbang energi dan penjara,
+// sama seperti aktivitas gather gelombang 1. Alias .hunter di sini.
 import { getProfile, updateProfile } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+import { gather } from '../../src/rpg/engine.js'
+import { ITEM_MAP } from '../../src/rpg/data.js'
+import { energyOf } from '../../src/rpg/energy.js'
+import { isJailed, jailMinutesLeft } from '../../src/rpg/crime.js'
+
 export const config = {
-  name: "berburu",
-  alias: [],
-  category: "rpg",
-  description: { id: "Fitur berburu versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD berburu feature, rewritten in KANA style" },
-  usage: ".berburu",
-  example: ".berburu",
+  name: 'berburu',
+  alias: ['hunter'],
+  category: 'rpg',
+  description: { id: 'Berburu di hutan pakai gather engine: dapat daging, kulit, tanduk (alias .hunter)', en: 'Hunt in the forest with the gather engine: meat, leather, horns (alias .hunter)' },
+  usage: '.berburu',
+  example: '.berburu',
   cooldown: 5,
 }
 
+export const ENERGY_COST = 10
+
 export const i18n = {
   id: {
-    "berburu": {
-      usage: "╭─❏ 🎲 「 *BERBURU* 」\n┊ Tulis jumlah betnya yaa, contoh: *.berburu 100*\n┊ Bet 10 sampai 10000 koin~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *BERBURU* 」\n┊ Betnya harus angka bulat 10 sampai 10000 yaa~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, bet *{bet} koin*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *BERBURU* 」\n┊ {detail}\n┊ Menang! Untung *{bet} koin*~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *BERBURU* 」\n┊ {detail}\n┊ Kalah nih, *{bet} koin* melayang~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *BERBURU* 」\n┊ {detail}\n┊ Seri! Bet kamu balik utuh~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      btnAgain: "Main Lagi",
+    berburu: {
+      jailed: '╭─❏ 🚔 「 *BERBURU* 」\n┊ Kamu masih di penjara, *{minutes} menit* lagi. Berburu ditahan dulu~\n╰━━━━━━━',
+      lowEnergy: '╭─❏ 🔋 「 *BERBURU* 」\n┊ Energimu *{energy}*, butuh *{need}* buat berburu. Makan (.eat) atau istirahat (.istirahat) dulu~\n╰━━━━━━━',
+      done: '╭─❏ 🏹 「 *BERBURU* 」\n┊ Hasil buruan: *{items}*\n┊ Bonus koin: *+{coins}* | Saldo: *{balance} koin* | Energi sisa: *{energy}*\n╰━━━━━━━',
+      failed: '╭─❏ 🏹 「 *BERBURU* 」\n┊ Buruannya kabur, tangan kosong kali ini. Saldo: *{balance} koin* | Energi sisa: *{energy}*\n╰━━━━━━━',
     },
   },
   en: {
-    "berburu": {
-      usage: "╭─❏ 🎲 「 *BERBURU* 」\n┊ Write your bet amount, example: *.berburu 100*\n┊ Bet 10 to 10000 coins~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *BERBURU* 」\n┊ The bet must be a whole number from 10 to 10000~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, bet *{bet} coins*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *BERBURU* 」\n┊ {detail}\n┊ You win! Profit *{bet} coins*~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *BERBURU* 」\n┊ {detail}\n┊ You lose, *{bet} coins* gone~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *BERBURU* 」\n┊ {detail}\n┊ Draw! Your bet returns in full~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      btnAgain: "Play Again",
+    berburu: {
+      jailed: '╭─❏ 🚔 「 *BERBURU* 」\n┊ You are still jailed, *{minutes} minutes* left. Hunting is on hold~\n╰━━━━━━━',
+      lowEnergy: '╭─❏ 🔋 「 *BERBURU* 」\n┊ Your energy is *{energy}*, hunting needs *{need}*. Eat (.eat) or rest (.istirahat) first~\n╰━━━━━━━',
+      done: '╭─❏ 🏹 「 *BERBURU* 」\n┊ Your catch: *{items}*\n┊ Bonus coins: *+{coins}* | Balance: *{balance} coins* | Energy left: *{energy}*\n╰━━━━━━━',
+      failed: '╭─❏ 🏹 「 *BERBURU* 」\n┊ The prey escaped, empty handed this time. Balance: *{balance} coins* | Energy left: *{energy}*\n╰━━━━━━━',
     },
   },
 }
 
-export function resolveGame(player, bot, bet) {
-  if (player > bot) return { outcome: 'win', delta: bet }
-  if (player < bot) return { outcome: 'lose', delta: -bet }
-  return { outcome: 'draw', delta: 0 }
-}
-export const test = { input: '.berburu', expect: /bet/i }
+export const test = { input: '.berburu', expect: /hasil buruan|buruannya kabur|energimu|your catch|prey escaped|your energy/i }
+
 export async function handler(ctx) {
-  const bet = Number(ctx.args[0])
-  if (!ctx.args[0]) return ctx.reply(ctx.t('berburu.usage'))
-  if (!Number.isInteger(bet) || bet < 10 || bet > 10000) return ctx.reply(ctx.t('berburu.bad'))
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  if (balance < bet) return ctx.reply(ctx.t('berburu.poor', { balance, bet }))
-  const player = 1 + Math.floor(Math.random() * 100)
-  const bot = 1 + Math.floor(Math.random() * 100)
-  const r = resolveGame(player, bot, bet)
-  const next = balance + r.delta
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: next })
-  const detail = '🎯 Kamu: *' + player + '* vs KANA: *' + bot + '*'
-  const body = ctx.t('berburu.' + r.outcome, { detail, bet, balance: next })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('berburu.btnAgain'), id: '.berburu ' + bet }], textFallback: body })
+  if (isJailed(profile)) return ctx.reply(ctx.t('berburu.jailed', { minutes: jailMinutesLeft(profile) }))
+  const energy = energyOf(profile)
+  if (energy < ENERGY_COST) return ctx.reply(ctx.t('berburu.lowEnergy', { energy, need: ENERGY_COST }))
+  await updateProfile(ctx.storage, ctx.senderDigits, { energy: energy - ENERGY_COST })
+  const result = await gather(ctx.storage, ctx.senderDigits, 'hunting')
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  if (result.failed) {
+    return ctx.reply(ctx.t('berburu.failed', { balance: fresh.balance ?? 0, energy: energyOf(fresh) }))
+  }
+  const list = result.items.map((it) => {
+    const def = ITEM_MAP[it.id]
+    const nm = def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : it.id
+    return (def?.emoji ?? '•') + ' ' + nm + ' x' + it.qty
+  }).join(', ')
+  return ctx.reply(ctx.t('berburu.done', { items: list, coins: result.coins, balance: fresh.balance ?? 0, energy: energyOf(fresh) }))
 }

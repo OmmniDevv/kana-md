@@ -1,60 +1,52 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama mesin duel
+// angka taruhan generik tanpa guild sama sekali. Sekarang perang guild
+// nyata memakai clanWar engine yang sama dengan .clanwar: power guild
+// dihitung dari member, lawan guild lain atau guild bayangan, hadiah
+// masuk kas guild, dan ada jeda harian di data guild.
+import { clanWar } from '../../src/rpg/engine.js'
 
-import { getProfile, updateProfile } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "guildwar",
+  name: 'guildwar',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur guildwar versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD guildwar feature, rewritten in KANA style" },
-  usage: ".guildwar",
-  example: ".guildwar",
-  cooldown: 5,
+  category: 'rpg',
+  description: { id: 'Perang guild harian nyata: power guildmu lawan guild lain, hadiah masuk kas guild', en: 'Real daily guild war: your guild power against another guild, reward goes to the guild bank' },
+  usage: '.guildwar',
+  example: '.guildwar',
+  cooldown: 10,
 }
 
 export const i18n = {
   id: {
-    "guildwar": {
-      usage: "╭─❏ 🎲 「 *GUILDWAR* 」\n┊ Tulis jumlah betnya yaa, contoh: *.guildwar 100*\n┊ Bet 10 sampai 10000 koin~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *GUILDWAR* 」\n┊ Betnya harus angka bulat 10 sampai 10000 yaa~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, bet *{bet} koin*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *GUILDWAR* 」\n┊ {detail}\n┊ Menang! Untung *{bet} koin*~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *GUILDWAR* 」\n┊ {detail}\n┊ Kalah nih, *{bet} koin* melayang~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *GUILDWAR* 」\n┊ {detail}\n┊ Seri! Bet kamu balik utuh~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      btnAgain: "Main Lagi",
+    guildwar: {
+      noGuild: '╭─❏ 🏰 「 *GUILDWAR* 」\n┊ Kamu belum punya guild. Buat pakai .createguild <nama> atau gabung pakai .joinguild <id>\n╰━━━━━━━',
+      cooldown: '╭─❏ 🏰 「 *GUILDWAR* 」\n┊ Guildmu sudah perang hari ini. Istirahat dulu, lanjut besok yaa~\n╰━━━━━━━',
+      win: '╭─❏ 🏰 「 *GUILDWAR* 」\n┊ ⚔️ *{mine}* (power {mpower}) vs *{opp}* (power {opower}): MENANG!\n┊ Hadiah *+{reward} koin* masuk kas guild, kas sekarang: *{bank} koin*\n╰━━━━━━━',
+      lose: '╭─❏ 🏰 「 *GUILDWAR* 」\n┊ ⚔️ *{mine}* (power {mpower}) vs *{opp}* (power {opower}): kalah kali ini\n┊ Hadiah hiburan *+{reward} koin* tetap masuk kas guild, kas sekarang: *{bank} koin*\n╰━━━━━━━',
     },
   },
   en: {
-    "guildwar": {
-      usage: "╭─❏ 🎲 「 *GUILDWAR* 」\n┊ Write your bet amount, example: *.guildwar 100*\n┊ Bet 10 to 10000 coins~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *GUILDWAR* 」\n┊ The bet must be a whole number from 10 to 10000~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, bet *{bet} coins*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *GUILDWAR* 」\n┊ {detail}\n┊ You win! Profit *{bet} coins*~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *GUILDWAR* 」\n┊ {detail}\n┊ You lose, *{bet} coins* gone~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *GUILDWAR* 」\n┊ {detail}\n┊ Draw! Your bet returns in full~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      btnAgain: "Play Again",
+    guildwar: {
+      noGuild: '╭─❏ 🏰 「 *GUILDWAR* 」\n┊ You have no guild yet. Create one with .createguild <name> or join with .joinguild <id>\n╰━━━━━━━',
+      cooldown: '╭─❏ 🏰 「 *GUILDWAR* 」\n┊ Your guild already warred today. Rest first, continue tomorrow~\n╰━━━━━━━',
+      win: '╭─❏ 🏰 「 *GUILDWAR* 」\n┊ ⚔️ *{mine}* (power {mpower}) vs *{opp}* (power {opower}): YOU WIN!\n┊ Reward *+{reward} coins* goes to the guild bank, bank now: *{bank} coins*\n╰━━━━━━━',
+      lose: '╭─❏ 🏰 「 *GUILDWAR* 」\n┊ ⚔️ *{mine}* (power {mpower}) vs *{opp}* (power {opower}): you lose this time\n┊ Consolation *+{reward} coins* still goes to the guild bank, bank now: *{bank} coins*\n╰━━━━━━━',
     },
   },
 }
 
-export function resolveGame(player, bot, bet) {
-  if (player > bot) return { outcome: 'win', delta: bet }
-  if (player < bot) return { outcome: 'lose', delta: -bet }
-  return { outcome: 'draw', delta: 0 }
-}
-export const test = { input: '.guildwar', expect: /bet/i }
+export const test = { input: '.guildwar', expect: /belum punya guild|no guild yet|sudah perang|already warred|kas guild|guild bank/i }
+
 export async function handler(ctx) {
-  const bet = Number(ctx.args[0])
-  if (!ctx.args[0]) return ctx.reply(ctx.t('guildwar.usage'))
-  if (!Number.isInteger(bet) || bet < 10 || bet > 10000) return ctx.reply(ctx.t('guildwar.bad'))
-  const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  if (balance < bet) return ctx.reply(ctx.t('guildwar.poor', { balance, bet }))
-  const player = 1 + Math.floor(Math.random() * 100)
-  const bot = 1 + Math.floor(Math.random() * 100)
-  const r = resolveGame(player, bot, bet)
-  const next = balance + r.delta
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: next })
-  const detail = '🎯 Kamu: *' + player + '* vs KANA: *' + bot + '*'
-  const body = ctx.t('guildwar.' + r.outcome, { detail, bet, balance: next })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('guildwar.btnAgain'), id: '.guildwar ' + bet }], textFallback: body })
+  const res = await clanWar(ctx.storage, ctx.senderDigits)
+  if (!res.ok) {
+    return ctx.reply(ctx.t(res.reason === 'cooldown' ? 'guildwar.cooldown' : 'guildwar.noGuild'))
+  }
+  return ctx.reply(ctx.t(res.win ? 'guildwar.win' : 'guildwar.lose', {
+    mine: res.myClan,
+    mpower: res.myPower,
+    opp: res.oppName,
+    opower: res.oppPower,
+    reward: res.reward,
+    bank: res.clanBank,
+  }))
 }

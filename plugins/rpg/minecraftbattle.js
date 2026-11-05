@@ -1,60 +1,85 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama mesin bet
+// angka generik. Sekarang battle bertema Minecraft yang nyata: mob
+// Minecraft (Creeper, Enderman, Warden, Ender Dragon) dilawan dengan
+// power tempur profilmu (stat pedang/perisai dari inventaris ikut
+// dihitung powerOf), berbiaya energi, dan menang memberi koin, XP, dan
+// peluang drop besi/berlian dari data.js.
+import { getProfile, updateProfile, addXp } from '../../src/services/user-service.js'
+import { powerOf } from '../../src/rpg/engine.js'
+import { ITEM_MAP } from '../../src/rpg/data.js'
+import { energyOf } from '../../src/rpg/energy.js'
 
-import { getProfile, updateProfile } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "minecraftbattle",
+  name: 'minecraftbattle',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur minecraftbattle versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD minecraftbattle feature, rewritten in KANA style" },
-  usage: ".minecraftbattle",
-  example: ".minecraftbattle",
-  cooldown: 5,
+  category: 'rpg',
+  description: { id: 'Battle lawan mob Minecraft dengan power tempur nyatamu: drop besi dan berlian', en: 'Battle Minecraft mobs with your real battle power: iron and diamond drops' },
+  usage: '.minecraftbattle',
+  example: '.minecraftbattle',
+  cooldown: 15,
 }
+
+export const ENERGY_COST = 12
+
+export const MOBS = [
+  { id: 'Zombie', emoji: '🧟', power: 12, coins: [30, 70] },
+  { id: 'Skeleton', emoji: '💀', power: 22, coins: [50, 100] },
+  { id: 'Creeper', emoji: '💥', power: 34, coins: [70, 140], drop: 'besi' },
+  { id: 'Enderman', emoji: '👾', power: 55, coins: [120, 220], drop: 'besi' },
+  { id: 'Warden', emoji: '🦏', power: 85, coins: [200, 380], drop: 'berlian' },
+  { id: 'Ender Dragon', emoji: '🐉', power: 120, coins: [350, 650], drop: 'berlian' },
+]
 
 export const i18n = {
   id: {
-    "minecraftbattle": {
-      usage: "╭─❏ 🎲 「 *MINECRAFTBATTLE* 」\n┊ Tulis jumlah betnya yaa, contoh: *.minecraftbattle 100*\n┊ Bet 10 sampai 10000 koin~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *MINECRAFTBATTLE* 」\n┊ Betnya harus angka bulat 10 sampai 10000 yaa~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, bet *{bet} koin*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *MINECRAFTBATTLE* 」\n┊ {detail}\n┊ Menang! Untung *{bet} koin*~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *MINECRAFTBATTLE* 」\n┊ {detail}\n┊ Kalah nih, *{bet} koin* melayang~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *MINECRAFTBATTLE* 」\n┊ {detail}\n┊ Seri! Bet kamu balik utuh~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      btnAgain: "Main Lagi",
+    minecraftbattle: {
+      lowEnergy: '╭─❏ 🔋 「 *MINECRAFTBATTLE* 」\n┊ Energimu *{energy}*, butuh *{need}* buat masuk dunia Minecraft. Pulihkan pakai .heal~\n╰━━━━━━━',
+      win: '╭─❏ ⛏️ 「 *MINECRAFTBATTLE* 」\n┊ {emoji} *{mob}* (power {mpower}) berhasil kamu kalahkan! Power kamu *{power}*\n┊ Hadiah: *+{coins} koin*, *+{xp} XP*{drop}\n┊ Saldo: *{balance} koin*\n╰━━━━━━━',
+      drop: ' | Drop: *{item}*',
+      lose: '╭─❏ ⛏️ 「 *MINECRAFTBATTLE* 」\n┊ {emoji} *{mob}* (power {mpower}) mengalahkan kamu (power *{power}*). Craft pedang besi pakai .craft dulu yaa~\n┊ Saldo: *{balance} koin*\n╰━━━━━━━',
     },
   },
   en: {
-    "minecraftbattle": {
-      usage: "╭─❏ 🎲 「 *MINECRAFTBATTLE* 」\n┊ Write your bet amount, example: *.minecraftbattle 100*\n┊ Bet 10 to 10000 coins~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *MINECRAFTBATTLE* 」\n┊ The bet must be a whole number from 10 to 10000~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, bet *{bet} coins*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *MINECRAFTBATTLE* 」\n┊ {detail}\n┊ You win! Profit *{bet} coins*~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *MINECRAFTBATTLE* 」\n┊ {detail}\n┊ You lose, *{bet} coins* gone~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *MINECRAFTBATTLE* 」\n┊ {detail}\n┊ Draw! Your bet returns in full~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      btnAgain: "Play Again",
+    minecraftbattle: {
+      lowEnergy: '╭─❏ 🔋 「 *MINECRAFTBATTLE* 」\n┊ Your energy is *{energy}*, entering the Minecraft world needs *{need}*. Restore with .heal~\n╰━━━━━━━',
+      win: '╭─❏ ⛏️ 「 *MINECRAFTBATTLE* 」\n┊ {emoji} *{mob}* (power {mpower}) defeated! Your power *{power}*\n┊ Reward: *+{coins} coins*, *+{xp} XP*{drop}\n┊ Balance: *{balance} coins*\n╰━━━━━━━',
+      drop: ' | Drop: *{item}*',
+      lose: '╭─❏ ⛏️ 「 *MINECRAFTBATTLE* 」\n┊ {emoji} *{mob}* (power {mpower}) beat you (power *{power}*). Craft an iron sword with .craft first~\n┊ Balance: *{balance} coins*\n╰━━━━━━━',
     },
   },
 }
 
-export function resolveGame(player, bot, bet) {
-  if (player > bot) return { outcome: 'win', delta: bet }
-  if (player < bot) return { outcome: 'lose', delta: -bet }
-  return { outcome: 'draw', delta: 0 }
-}
-export const test = { input: '.minecraftbattle', expect: /bet/i }
+export const test = { input: '.minecraftbattle', expect: /minecraftbattle|mob|power kamu|your power|energimu/i }
+
 export async function handler(ctx) {
-  const bet = Number(ctx.args[0])
-  if (!ctx.args[0]) return ctx.reply(ctx.t('minecraftbattle.usage'))
-  if (!Number.isInteger(bet) || bet < 10 || bet > 10000) return ctx.reply(ctx.t('minecraftbattle.bad'))
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  if (balance < bet) return ctx.reply(ctx.t('minecraftbattle.poor', { balance, bet }))
-  const player = 1 + Math.floor(Math.random() * 100)
-  const bot = 1 + Math.floor(Math.random() * 100)
-  const r = resolveGame(player, bot, bet)
-  const next = balance + r.delta
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: next })
-  const detail = '🎯 Kamu: *' + player + '* vs KANA: *' + bot + '*'
-  const body = ctx.t('minecraftbattle.' + r.outcome, { detail, bet, balance: next })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('minecraftbattle.btnAgain'), id: '.minecraftbattle ' + bet }], textFallback: body })
+  const energy = energyOf(profile)
+  if (energy < ENERGY_COST) return ctx.reply(ctx.t('minecraftbattle.lowEnergy', { energy, need: ENERGY_COST }))
+  await updateProfile(ctx.storage, ctx.senderDigits, { energy: energy - ENERGY_COST })
+  const myPower = powerOf(profile)
+  const reachable = MOBS.filter((m) => m.power <= myPower + 40)
+  const mob = reachable[Math.floor(Math.random() * reachable.length)] ?? MOBS[0]
+  const roll = myPower + Math.floor(Math.random() * 21)
+  if (roll < mob.power) {
+    const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+    return ctx.reply(ctx.t('minecraftbattle.lose', { emoji: mob.emoji, mob: mob.id, mpower: mob.power, power: myPower, balance: fresh.balance ?? 0 }))
+  }
+  const coins = mob.coins[0] + Math.floor(Math.random() * (mob.coins[1] - mob.coins[0] + 1))
+  const xp = 10 + Math.floor(mob.power / 4)
+  const fresh = await getProfile(ctx.storage, ctx.senderDigits)
+  const patch = { balance: (fresh.balance ?? 0) + coins }
+  let dropText = ''
+  if (mob.drop && Math.random() < 0.45) {
+    const inv = { ...(fresh.inventory ?? {}) }
+    inv[mob.drop] = (inv[mob.drop] ?? 0) + 1
+    patch.inventory = inv
+    const def = ITEM_MAP[mob.drop]
+    dropText = ctx.t('minecraftbattle.drop', { item: def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : mob.drop })
+  }
+  await updateProfile(ctx.storage, ctx.senderDigits, patch)
+  const after = await addXp(ctx.storage, ctx.senderDigits, xp)
+  return ctx.reply(ctx.t('minecraftbattle.win', {
+    emoji: mob.emoji, mob: mob.id, mpower: mob.power, power: myPower,
+    coins, xp, drop: dropText, balance: after.profile.balance ?? 0,
+  }))
 }

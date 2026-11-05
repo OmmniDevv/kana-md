@@ -1,60 +1,80 @@
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama mesin bet
+// angka generik. Sekarang pertarungan boss Phoenix bertema dengan mekanik
+// bangkit: Phoenix punya dua fase (sesudah kalah pertama ia bangkit
+// dengan power lebih tinggi), ditentukan power tempur profil nyata,
+// berbiaya energi 18, hadiah koin besar dan peluang drop kristal atau
+// telur misterius dari data.js.
+import { getProfile, updateProfile, addXp } from '../../src/services/user-service.js'
+import { powerOf } from '../../src/rpg/engine.js'
+import { ITEM_MAP } from '../../src/rpg/data.js'
+import { energyOf } from '../../src/rpg/energy.js'
 
-import { getProfile, updateProfile } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
 export const config = {
-  name: "fightphonix",
+  name: 'fightphonix',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur fightphonix versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD fightphonix feature, rewritten in KANA style" },
-  usage: ".fightphonix",
-  example: ".fightphonix",
-  cooldown: 5,
+  category: 'rpg',
+  description: { id: 'Lawan boss Phoenix dua fase dengan power tempur nyatamu: ia bangkit sekali dari abu', en: 'Fight the two phase Phoenix boss with your real battle power: it rises once from the ashes' },
+  usage: '.fightphonix',
+  example: '.fightphonix',
+  cooldown: 30,
 }
+
+export const ENERGY_COST = 18
+export const PHOENIX_POWER = [70, 95]
 
 export const i18n = {
   id: {
-    "fightphonix": {
-      usage: "╭─❏ 🎲 「 *FIGHTPHONIX* 」\n┊ Tulis jumlah betnya yaa, contoh: *.fightphonix 100*\n┊ Bet 10 sampai 10000 koin~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *FIGHTPHONIX* 」\n┊ Betnya harus angka bulat 10 sampai 10000 yaa~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, bet *{bet} koin*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *FIGHTPHONIX* 」\n┊ {detail}\n┊ Menang! Untung *{bet} koin*~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *FIGHTPHONIX* 」\n┊ {detail}\n┊ Kalah nih, *{bet} koin* melayang~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *FIGHTPHONIX* 」\n┊ {detail}\n┊ Seri! Bet kamu balik utuh~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      btnAgain: "Main Lagi",
+    fightphonix: {
+      lowEnergy: '╭─❏ 🔋 「 *FIGHTPHONIX* 」\n┊ Energimu *{energy}*, melawan Phoenix butuh *{need}*. Pulihkan pakai .heal~\n╰━━━━━━━',
+      win: '╭─❏ 🔥 「 *FIGHTPHONIX* 」\n┊ Phoenix fase 1 (power {p1}) tumbang, bangkit dari abu di fase 2 (power {p2}), dan kamu menumbangkannya lagi!\n┊ Power kamu *{power}* | Hadiah: *+{coins} koin*, *+{xp} XP*{drop}\n┊ Saldo: *{balance} koin*\n╰━━━━━━━',
+      drop: ' | Drop: *{item}*',
+      phase1Lose: '╭─❏ 🔥 「 *FIGHTPHONIX* 」\n┊ Phoenix fase 1 (power {p1}) saja sudah mengalahkan kamu (power *{power}*). Naikkan stat pakai .buyattack dkk~\n┊ Saldo: *{balance} koin*\n╰━━━━━━━',
+      phase2Lose: '╭─❏ 🔥 「 *FIGHTPHONIX* 」\n┊ Kamu menumbangkan fase 1, tapi Phoenix bangkit (power {p2}) dan membalas mengalahkan kamu (power *{power}*). Sedikit lagi!\n┊ Saldo: *{balance} koin*\n╰━━━━━━━',
     },
   },
   en: {
-    "fightphonix": {
-      usage: "╭─❏ 🎲 「 *FIGHTPHONIX* 」\n┊ Write your bet amount, example: *.fightphonix 100*\n┊ Bet 10 to 10000 coins~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *FIGHTPHONIX* 」\n┊ The bet must be a whole number from 10 to 10000~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, bet *{bet} coins*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *FIGHTPHONIX* 」\n┊ {detail}\n┊ You win! Profit *{bet} coins*~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *FIGHTPHONIX* 」\n┊ {detail}\n┊ You lose, *{bet} coins* gone~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *FIGHTPHONIX* 」\n┊ {detail}\n┊ Draw! Your bet returns in full~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      btnAgain: "Play Again",
+    fightphonix: {
+      lowEnergy: '╭─❏ 🔋 「 *FIGHTPHONIX* 」\n┊ Your energy is *{energy}*, fighting the Phoenix needs *{need}*. Restore with .heal~\n╰━━━━━━━',
+      win: '╭─❏ 🔥 「 *FIGHTPHONIX* 」\n┊ Phoenix phase 1 (power {p1}) fell, rose from the ashes in phase 2 (power {p2}), and you brought it down again!\n┊ Your power *{power}* | Reward: *+{coins} coins*, *+{xp} XP*{drop}\n┊ Balance: *{balance} coins*\n╰━━━━━━━',
+      drop: ' | Drop: *{item}*',
+      phase1Lose: '╭─❏ 🔥 「 *FIGHTPHONIX* 」\n┊ Even Phoenix phase 1 (power {p1}) beat you (power *{power}*). Raise stats with .buyattack and friends~\n┊ Balance: *{balance} coins*\n╰━━━━━━━',
+      phase2Lose: '╭─❏ 🔥 「 *FIGHTPHONIX* 」\n┊ You downed phase 1, but the Phoenix rose (power {p2}) and beat you back (power *{power}*). So close!\n┊ Balance: *{balance} coins*\n╰━━━━━━━',
     },
   },
 }
 
-export function resolveGame(player, bot, bet) {
-  if (player > bot) return { outcome: 'win', delta: bet }
-  if (player < bot) return { outcome: 'lose', delta: -bet }
-  return { outcome: 'draw', delta: 0 }
-}
-export const test = { input: '.fightphonix', expect: /bet/i }
+export const test = { input: '.fightphonix', expect: /phoenix|energimu|your energy/i }
+
 export async function handler(ctx) {
-  const bet = Number(ctx.args[0])
-  if (!ctx.args[0]) return ctx.reply(ctx.t('fightphonix.usage'))
-  if (!Number.isInteger(bet) || bet < 10 || bet > 10000) return ctx.reply(ctx.t('fightphonix.bad'))
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  if (balance < bet) return ctx.reply(ctx.t('fightphonix.poor', { balance, bet }))
-  const player = 1 + Math.floor(Math.random() * 100)
-  const bot = 1 + Math.floor(Math.random() * 100)
-  const r = resolveGame(player, bot, bet)
-  const next = balance + r.delta
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: next })
-  const detail = '🎯 Kamu: *' + player + '* vs KANA: *' + bot + '*'
-  const body = ctx.t('fightphonix.' + r.outcome, { detail, bet, balance: next })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('fightphonix.btnAgain'), id: '.fightphonix ' + bet }], textFallback: body })
+  const energy = energyOf(profile)
+  if (energy < ENERGY_COST) return ctx.reply(ctx.t('fightphonix.lowEnergy', { energy, need: ENERGY_COST }))
+  await updateProfile(ctx.storage, ctx.senderDigits, { energy: energy - ENERGY_COST })
+  const myPower = powerOf(profile)
+  const [p1, p2] = PHOENIX_POWER
+  const fresh0 = await getProfile(ctx.storage, ctx.senderDigits)
+  const balance0 = fresh0.balance ?? 0
+  if (myPower + Math.floor(Math.random() * 21) < p1) {
+    return ctx.reply(ctx.t('fightphonix.phase1Lose', { p1, power: myPower, balance: balance0 }))
+  }
+  if (myPower + Math.floor(Math.random() * 21) < p2) {
+    return ctx.reply(ctx.t('fightphonix.phase2Lose', { p2, power: myPower, balance: balance0 }))
+  }
+  const coins = 400 + Math.floor(Math.random() * 301)
+  const xp = 40
+  const patch = { balance: balance0 + coins }
+  let dropText = ''
+  if (Math.random() < 0.5) {
+    const dropId = Math.random() < 0.5 ? 'kristal' : 'telurmisterius'
+    const inv = { ...(fresh0.inventory ?? {}) }
+    inv[dropId] = (inv[dropId] ?? 0) + 1
+    patch.inventory = inv
+    const def = ITEM_MAP[dropId]
+    dropText = ctx.t('fightphonix.drop', { item: def ? (ctx.lang === 'en' ? def.name.en : def.name.id) : dropId })
+  }
+  await updateProfile(ctx.storage, ctx.senderDigits, patch)
+  const after = await addXp(ctx.storage, ctx.senderDigits, xp)
+  return ctx.reply(ctx.t('fightphonix.win', {
+    p1, p2, power: myPower, coins, xp, drop: dropText, balance: after.profile.balance ?? 0,
+  }))
 }

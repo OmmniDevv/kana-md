@@ -1,60 +1,74 @@
-
+// Perbaikan audit templat 2026-11-06 (gelombang 2): versi lama mesin bet
+// angka generik yang bahkan tidak memeriksa pet. Sekarang pertarungan pet
+// sungguhan: pet milikmu (profile.pet) melawan pet liar; kekuatan dari
+// level pet, menang menaikkan XP dan level pet beneran, tersimpan.
 import { getProfile, updateProfile } from '../../src/services/user-service.js'
-import { sendButtons } from '../../src/ui/buttons.js'
+import { PET_MAP } from '../../src/rpg/data.js'
+
 export const config = {
-  name: "battlepet",
+  name: 'battlepet',
   alias: [],
-  category: "rpg",
-  description: { id: "Fitur battlepet versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD battlepet feature, rewritten in KANA style" },
-  usage: ".battlepet",
-  example: ".battlepet",
-  cooldown: 5,
+  category: 'rpg',
+  description: { id: 'Adu pet milikmu lawan pet liar: menang menaikkan XP dan level pet beneran', en: 'Battle your pet against a wild pet: winning really raises its XP and level' },
+  usage: '.battlepet',
+  example: '.battlepet',
+  cooldown: 10,
 }
+
+export const WILD_PETS = [
+  { kind: 'kucing', bonus: 0 },
+  { kind: 'anjing', bonus: 2 },
+  { kind: 'burung', bonus: 1 },
+  { kind: 'naga', bonus: 4 },
+]
 
 export const i18n = {
   id: {
-    "battlepet": {
-      usage: "╭─❏ 🎲 「 *BATTLEPET* 」\n┊ Tulis jumlah betnya yaa, contoh: *.battlepet 100*\n┊ Bet 10 sampai 10000 koin~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *BATTLEPET* 」\n┊ Betnya harus angka bulat 10 sampai 10000 yaa~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *SALDO KURANG* 」\n┊ Saldo kamu *{balance} koin*, bet *{bet} koin*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *BATTLEPET* 」\n┊ {detail}\n┊ Menang! Untung *{bet} koin*~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *BATTLEPET* 」\n┊ {detail}\n┊ Kalah nih, *{bet} koin* melayang~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *BATTLEPET* 」\n┊ {detail}\n┊ Seri! Bet kamu balik utuh~\n┊ ꜱᴀʟᴅᴏ: *{balance} ᴋᴏɪɴ*\n╰━━━━━━━",
-      btnAgain: "Main Lagi",
+    battlepet: {
+      noPet: '╭─❏ 🐾 「 *BATTLEPET* 」\n┊ Kamu belum punya pet buat diadu. Adopsi dulu pakai .petshop adopsi <jenis>~\n╰━━━━━━━',
+      win: '╭─❏ 🐾 「 *BATTLEPET* 」\n┊ {emoji} *{name}* (power {mine}) vs pet liar {wemoji} *{wild}* (power {wpower}): MENANG!\n┊ XP pet +{xp}, level pet sekarang *{level}* | Bonus *+{coins} koin*, saldo: *{balance} koin*\n╰━━━━━━━',
+      lose: '╭─❏ 🐾 「 *BATTLEPET* 」\n┊ {emoji} *{name}* (power {mine}) vs pet liar {wemoji} *{wild}* (power {wpower}): kalah, tapi tetap dapat XP pet +{xp}\n┊ Level pet: *{level}* | Saldo: *{balance} koin*\n╰━━━━━━━',
     },
   },
   en: {
-    "battlepet": {
-      usage: "╭─❏ 🎲 「 *BATTLEPET* 」\n┊ Write your bet amount, example: *.battlepet 100*\n┊ Bet 10 to 10000 coins~\n╰━━━━━━━",
-      bad: "╭─❏ 🎲 「 *BATTLEPET* 」\n┊ The bet must be a whole number from 10 to 10000~\n╰━━━━━━━",
-      poor: "╭─❏ 💸 「 *NOT ENOUGH COINS* 」\n┊ Your balance is *{balance} coins*, bet *{bet} coins*~\n╰━━━━━━━",
-      win: "╭─❏ 🎲 「 *BATTLEPET* 」\n┊ {detail}\n┊ You win! Profit *{bet} coins*~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      lose: "╭─❏ 🎲 「 *BATTLEPET* 」\n┊ {detail}\n┊ You lose, *{bet} coins* gone~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      draw: "╭─❏ 🎲 「 *BATTLEPET* 」\n┊ {detail}\n┊ Draw! Your bet returns in full~\n┊ ʙᴀʟᴀɴᴄᴇ: *{balance} ᴄᴏɪɴꜱ*\n╰━━━━━━━",
-      btnAgain: "Play Again",
+    battlepet: {
+      noPet: '╭─❏ 🐾 「 *BATTLEPET* 」\n┊ You have no pet to battle yet. Adopt one with .petshop adopsi <kind>~\n╰━━━━━━━',
+      win: '╭─❏ 🐾 「 *BATTLEPET* 」\n┊ {emoji} *{name}* (power {mine}) vs wild pet {wemoji} *{wild}* (power {wpower}): YOU WIN!\n┊ Pet XP +{xp}, pet level is now *{level}* | Bonus *+{coins} coins*, balance: *{balance} coins*\n╰━━━━━━━',
+      lose: '╭─❏ 🐾 「 *BATTLEPET* 」\n┊ {emoji} *{name}* (power {mine}) vs wild pet {wemoji} *{wild}* (power {wpower}): you lose, but still gain pet XP +{xp}\n┊ Pet level: *{level}* | Balance: *{balance} coins*\n╰━━━━━━━',
     },
   },
 }
 
-export function resolveGame(player, bot, bet) {
-  if (player > bot) return { outcome: 'win', delta: bet }
-  if (player < bot) return { outcome: 'lose', delta: -bet }
-  return { outcome: 'draw', delta: 0 }
-}
-export const test = { input: '.battlepet', expect: /bet/i }
+export const test = { input: '.battlepet', expect: /belum punya pet|no pet to battle|xp pet|pet xp/i }
+
 export async function handler(ctx) {
-  const bet = Number(ctx.args[0])
-  if (!ctx.args[0]) return ctx.reply(ctx.t('battlepet.usage'))
-  if (!Number.isInteger(bet) || bet < 10 || bet > 10000) return ctx.reply(ctx.t('battlepet.bad'))
   const profile = await getProfile(ctx.storage, ctx.senderDigits)
-  const balance = profile.balance ?? 0
-  if (balance < bet) return ctx.reply(ctx.t('battlepet.poor', { balance, bet }))
-  const player = 1 + Math.floor(Math.random() * 100)
-  const bot = 1 + Math.floor(Math.random() * 100)
-  const r = resolveGame(player, bot, bet)
-  const next = balance + r.delta
-  await updateProfile(ctx.storage, ctx.senderDigits, { balance: next })
-  const detail = '🎯 Kamu: *' + player + '* vs KANA: *' + bot + '*'
-  const body = ctx.t('battlepet.' + r.outcome, { detail, bet, balance: next })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('battlepet.btnAgain'), id: '.battlepet ' + bet }], textFallback: body })
+  if (!profile.pet) return ctx.reply(ctx.t('battlepet.noPet'))
+  const pet = { ...profile.pet }
+  const wildDef = WILD_PETS[Math.floor(Math.random() * WILD_PETS.length)]
+  const wildPet = PET_MAP[wildDef.kind]
+  const wildLevel = Math.max(1, (pet.level ?? 1) + Math.floor(Math.random() * 3) - 1)
+  const myPower = (pet.level ?? 1) * 10 + Math.floor(Math.random() * 21)
+  const wildPower = wildLevel * 10 + wildDef.bonus + Math.floor(Math.random() * 21)
+  const win = myPower >= wildPower
+  const xpGain = win ? 30 : 8
+  pet.xp = (pet.xp ?? 0) + xpGain
+  pet.level = 1 + Math.floor(pet.xp / 100)
+  const coins = win ? 40 + Math.floor(Math.random() * 61) : 0
+  const balance = (profile.balance ?? 0) + coins
+  await updateProfile(ctx.storage, ctx.senderDigits, { pet, balance })
+  const myDef = PET_MAP[pet.kind]
+  const vars = {
+    emoji: myDef?.emoji ?? '🐾',
+    name: pet.name,
+    mine: myPower,
+    wemoji: wildPet?.emoji ?? '🐾',
+    wild: (ctx.lang === 'en' ? wildPet?.name.en : wildPet?.name.id) + ' lv' + wildLevel,
+    wpower: wildPower,
+    xp: xpGain,
+    level: pet.level,
+    coins,
+    balance,
+  }
+  return ctx.reply(ctx.t(win ? 'battlepet.win' : 'battlepet.lose', vars))
 }
