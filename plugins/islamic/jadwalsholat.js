@@ -29,8 +29,16 @@ export const i18n = {
 
 const MODE = "sholat"
 export const test = { input: '.jadwalsholat', expect: /jadwalsholat/i }
+function todayJakarta() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Jakarta',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date())
+}
 const CURATED = "{}"
-export async function handler(ctx) {
+export async function handler(ctx, { fetchInfo = getPrayerInfo } = {}) {
   const say = (text) => ctx.reply(ctx.t('jadwalsholat.body', { text }))
   try {
     if (MODE === 'quran') {
@@ -46,9 +54,24 @@ export async function handler(ctx) {
       return say('Tanggal Hijriah hari ini: *' + fmt.format(new Date()) + '*')
     }
     if (MODE === 'sholat') {
-      const info = await getPrayerInfo((ctx.text || '').trim() || 'Jakarta')
-      const rows = typeof info === 'object' ? Object.entries(info).filter(([, v]) => typeof v === 'string').map(([k, v]) => '* ' + k + ': ' + v).join('\n┊ ') : String(info)
-      return say('Jadwal sholat *' + ((ctx.text || '').trim() || 'Jakarta') + '*:\n┊ ' + rows)
+      // getPrayerInfo wajib menerima tanggal 'YYYY-MM-DD'; versi lama
+      // memanggilnya tanpa tanggal sehingga selalu null dan
+      // Object.entries(null) meledak ("Cannot convert undefined or
+      // null to object"). Bentuk info: { city, times, extra }.
+      const city = (ctx.text || '').trim() || 'Jakarta'
+      const info = await fetchInfo(city, todayJakarta())
+      if (!info) throw new Error('jadwal tidak ditemukan untuk kota ' + city)
+      const rows = [
+        ['Imsak', info.times.imsak],
+        ['Subuh', info.times.subuh],
+        ['Terbit', info.extra.terbit],
+        ['Dzuhur', info.times.dzuhur],
+        ['Ashar', info.times.ashar],
+        ['Maghrib', info.times.maghrib],
+        ['Isya', info.times.isya],
+      ].filter(([, v]) => v).map(([k, v]) => '* ' + k + ': ' + v).join('\n┊ ')
+      const label = info.extra.dateLabel ? '\n┊ 📅 ' + info.extra.dateLabel : ''
+      return say('Jadwal sholat *' + (info.city.name || city) + '*:' + label + '\n┊ ' + rows)
     }
     return say(CURATED[ctx.lang] || CURATED.id || 'Bismillahirrahmanirrahim. Semoga Allah mudahkan urusanmu hari ini, jaga sholat lima waktu, perbanyak istighfar, dan sedekah semampunya. Barakallahu fiik~')
   } catch (err) {
