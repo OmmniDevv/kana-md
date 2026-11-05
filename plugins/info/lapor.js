@@ -1,81 +1,61 @@
-
+// Lapor bug atau masalah ke owner: laporan disimpan di storage
+// namespace 'reports' dan diteruskan ke chat owner saat itu juga.
 export const config = {
-  name: "lapor",
-  alias: [],
-  category: "info",
-  description: { id: "Fitur lapor versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD lapor feature, rewritten in KANA style" },
-  usage: ".lapor",
-  example: ".lapor",
-  cooldown: 5,
+  name: 'lapor',
+  alias: ['laporbug', 'reportbug', 'report'],
+  category: 'info',
+  description: { id: 'Laporkan bug atau masalah ke owner bot', en: 'Report a bug or problem to the bot owner' },
+  usage: '.lapor <isi laporan>',
+  example: '.lapor perintah .ping error terus',
+  cooldown: 30,
+  limit: 2,
 }
 
 export const i18n = {
   id: {
-    "lapor": {
-      hint: "╭─❏ 🔍 「 *LAPOR* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.lapor kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    lapor: {
+      needText: '╭─❏ 🐞 「 *TULIS LAPORANNYA* 」\n┊ ᴄᴏɴᴛᴏʜ: *.lapor perintah .ping error terus*\n┊ ᴊᴇʟᴀꜱᴋᴀɴ ᴍᴀꜱᴀʟᴀʜɴʏᴀ ꜱᴇᴅᴇᴛᴀɪʟ ᴍᴜɴɢᴋɪɴ ʏᴀ~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *LAPORAN GAGAL* 」\n┊ Mouu, laporannya gagal disimpan: *{message}*\n╰━━━━━━━',
+      done: '╭─❏ 🐞 「 *LAPORAN TERKIRIM* 」\n┊ ɪᴅ ʟᴀᴘᴏʀᴀɴ: *#{id}*\n┊ ᴍᴀᴋᴀꜱɪʜ ʏᴀ, ʟᴀᴘᴏʀᴀɴᴍᴜ ꜱᴜᴅᴀʜ ᴋᴀɴᴀ ᴛᴇʀᴜꜱᴋᴀɴ ᴋᴇ ᴏᴡɴᴇʀ~\n╰━━━━━━━',
+      ownerNote: '╭─❏ 🐞 「 *LAPORAN BARU #{id}* 」\n┊ ᴅᴀʀɪ: *{name}* ({digits})\n┊ ᴄʜᴀᴛ: *{chat}*\n┊ ɪꜱɪ: {text}\n╰━━━━━━━',
     },
   },
   en: {
-    "lapor": {
-      hint: "╭─❏ 🔍 「 *LAPOR* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.lapor keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    lapor: {
+      needText: '╭─❏ 🐞 「 *WRITE THE REPORT* 」\n┊ ᴇxᴀᴍᴘʟᴇ: *.lapor the .ping command keeps erroring*\n┊ ᴅᴇꜱᴄʀɪʙᴇ ᴛʜᴇ ᴘʀᴏʙʟᴇᴍ ᴀꜱ ᴄʟᴇᴀʀʟʏ ᴀꜱ ʏᴏᴜ ᴄᴀɴ~\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *REPORT FAILED* 」\n┊ Mouu, the report failed to save: *{message}*\n╰━━━━━━━',
+      done: '╭─❏ 🐞 「 *REPORT SENT* 」\n┊ ʀᴇᴘᴏʀᴛ ɪᴅ: *#{id}*\n┊ ᴛʜᴀɴᴋꜱ, ʏᴏᴜʀ ʀᴇᴘᴏʀᴛ ʜᴀꜱ ʙᴇᴇɴ ꜰᴏʀᴡᴀʀᴅᴇᴅ ᴛᴏ ᴛʜᴇ ᴏᴡɴᴇʀ~\n╰━━━━━━━',
+      ownerNote: '╭─❏ 🐞 「 *NEW REPORT #{id}* 」\n┊ ꜰʀᴏᴍ: *{name}* ({digits})\n┊ ᴄʜᴀᴛ: *{chat}*\n┊ ᴄᴏɴᴛᴇɴᴛ: {text}\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.lapor indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
-}
+export const test = { input: '.lapor tes laporan dari livetest', expect: /LAPORAN TERKIRIM|REPORT SENT/ }
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('lapor.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('lapor.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('lapor.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('lapor.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('lapor.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('lapor.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('lapor.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('lapor.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('lapor.notfound', { q }))
-    return ctx.reply(ctx.t('lapor.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('lapor.fail', { message: err.message }))
+  const text = (ctx.text || '').trim()
+  if (!text) return ctx.reply(ctx.t('lapor.needText'))
+  const id = String(Date.now()).slice(-6)
+  const record = {
+    id,
+    from: ctx.senderDigits,
+    name: ctx.pushName || '',
+    chat: ctx.chat,
+    text: text.slice(0, 1000),
+    at: new Date().toISOString(),
   }
+  try {
+    await ctx.storage.set('reports', `${Date.now()}-${ctx.senderDigits}`, record)
+  } catch (err) {
+    return ctx.reply(ctx.t('lapor.failed', { message: err.message }))
+  }
+  const ownerDigits = String(process.env.OWNER_NUMBER || '').replace(/\D/g, '')
+  if (ownerDigits && ownerDigits !== ctx.senderDigits) {
+    try {
+      await ctx.sock.sendMessage(`${ownerDigits}@s.whatsapp.net`, {
+        text: ctx.t('lapor.ownerNote', { id, name: record.name || '-', digits: record.from, chat: record.chat, text: record.text }),
+      })
+    } catch {}
+  }
+  return ctx.reply(ctx.t('lapor.done', { id }))
 }

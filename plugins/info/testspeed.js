@@ -1,81 +1,71 @@
-
+// Uji kecepatan unduh dari server bot memakai endpoint resmi
+// Cloudflare Speed Test (speed.cloudflare.com): unduh 5 MB terukur
+// plus latensi dasar. Hasil adalah kecepatan koneksi SERVER bot.
 export const config = {
-  name: "testspeed",
-  alias: [],
-  category: "info",
-  description: { id: "Fitur testspeed versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD testspeed feature, rewritten in KANA style" },
-  usage: ".testspeed",
-  example: ".testspeed",
-  cooldown: 5,
+  name: 'testspeed',
+  alias: ['speedtest', 'cekkecepatan'],
+  category: 'info',
+  description: { id: 'Uji kecepatan internet server bot (Cloudflare)', en: 'Test the bot server internet speed (Cloudflare)' },
+  usage: '.testspeed',
+  example: '.testspeed',
+  cooldown: 30,
+  limit: 2,
 }
 
 export const i18n = {
   id: {
-    "testspeed": {
-      hint: "╭─❏ 🔍 「 *TESTSPEED* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.testspeed kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    testspeed: {
+      working: '╭─❏ ⏳ 「 *SEBENTAR YAA* 」\n┊ KANA lagi ukur kecepatan servernya... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *TES GAGAL* 」\n┊ Mouu, tes kecepatannya gagal: *{message}*\n╰━━━━━━━',
+      body: '╭─❏ 🚀 「 *TES KECEPATAN (SERVER BOT)* 」\n┊ ⬇️ ᴜɴᴅᴜʜ: *{mbps} Mbps* ({size} ᴅᴀʟᴀᴍ {ms} ᴍꜱ)\n┊ 📶 ʟᴀᴛᴇɴꜱɪ ᴄʟᴏᴜᴅꜰʟᴀʀᴇ: *{ping} ms*\n┊ ᴄᴀᴛᴀᴛᴀɴ: ɪɴɪ ᴋᴇᴄᴇᴘᴀᴛᴀɴ ᴋᴏɴᴇᴋꜱɪ ꜱᴇʀᴠᴇʀ ʙᴏᴛ, ʙᴜᴋᴀɴ ʜᴘ ᴋᴀᴍᴜ~\n╰━━━━━━━',
     },
   },
   en: {
-    "testspeed": {
-      hint: "╭─❏ 🔍 「 *TESTSPEED* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.testspeed keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    testspeed: {
+      working: '╭─❏ ⏳ 「 *ONE SEC* 」\n┊ KANA is measuring the server speed... {mood}\n╰━━━━━━━',
+      failed: '╭─❏ 😿 「 *TEST FAILED* 」\n┊ Mouu, the speed test failed: *{message}*\n╰━━━━━━━',
+      body: '╭─❏ 🚀 「 *SPEED TEST (BOT SERVER)* 」\n┊ ⬇️ ᴅᴏᴡɴʟᴏᴀᴅ: *{mbps} Mbps* ({size} ɪɴ {ms} ᴍꜱ)\n┊ 📶 ᴄʟᴏᴜᴅꜰʟᴀʀᴇ ʟᴀᴛᴇɴᴄʏ: *{ping} ms*\n┊ ɴᴏᴛᴇ: ᴛʜɪꜱ ɪꜱ ᴛʜᴇ ʙᴏᴛ ꜱᴇʀᴠᴇʀ ᴄᴏɴɴᴇᴄᴛɪᴏɴ, ɴᴏᴛ ʏᴏᴜʀ ᴘʜᴏɴᴇ~\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.testspeed indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.testspeed', expect: /Mbps|TES KECEPATAN|SPEED TEST/ }
+
+const BYTES = 5_000_000
+
+// Ukur ping dan kecepatan unduh ke Cloudflare.
+export async function measureSpeed() {
+  const pingStart = Date.now()
+  const pingRes = await fetch('https://speed.cloudflare.com/__down?bytes=0', {
+    signal: AbortSignal.timeout(15000),
+    headers: { 'user-agent': 'KANA-Bot' },
+  })
+  if (!pingRes.ok) throw new Error(`Cloudflare HTTP ${pingRes.status}`)
+  await pingRes.arrayBuffer()
+  const ping = Date.now() - pingStart
+  const start = Date.now()
+  const res = await fetch(`https://speed.cloudflare.com/__down?bytes=${BYTES}`, {
+    signal: AbortSignal.timeout(60000),
+    headers: { 'user-agent': 'KANA-Bot' },
+  })
+  if (!res.ok) throw new Error(`Cloudflare HTTP ${res.status}`)
+  const buffer = await res.arrayBuffer()
+  const ms = Date.now() - start
+  const mbps = (buffer.byteLength * 8) / (ms / 1000) / 1e6
+  return { ping, ms, bytes: buffer.byteLength, mbps }
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('testspeed.hint'))
+
+export async function handler(ctx, { measure = measureSpeed } = {}) {
+  await ctx.reply(ctx.t('testspeed.working', { mood: ctx.say('mikir') }))
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('testspeed.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('testspeed.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('testspeed.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('testspeed.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('testspeed.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('testspeed.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('testspeed.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('testspeed.notfound', { q }))
-    return ctx.reply(ctx.t('testspeed.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    const r = await measure()
+    return ctx.reply(ctx.t('testspeed.body', {
+      mbps: r.mbps.toFixed(2),
+      size: (r.bytes / 1e6).toFixed(1) + ' MB',
+      ms: r.ms,
+      ping: r.ping,
+    }))
   } catch (err) {
-    return ctx.reply(ctx.t('testspeed.fail', { message: err.message }))
+    return ctx.reply(ctx.t('testspeed.failed', { message: err.message }))
   }
 }

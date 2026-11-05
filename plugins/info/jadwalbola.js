@@ -1,81 +1,78 @@
-
+// Jadwal sepak bola hari ini dari TheSportsDB (kunci uji publik 123).
+// Terverifikasi 2026-11-05: eventsday mengembalikan pertandingan hari
+// berjalan beserta liga dan jam mainnya.
 export const config = {
-  name: "jadwalbola",
-  alias: [],
-  category: "info",
-  description: { id: "Fitur jadwalbola versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD jadwalbola feature, rewritten in KANA style" },
-  usage: ".jadwalbola",
-  example: ".jadwalbola",
-  cooldown: 5,
+  name: 'jadwalbola',
+  alias: ['jadwalsepakbola', 'footballfixtures'],
+  category: 'info',
+  description: { id: 'Jadwal pertandingan sepak bola hari ini (TheSportsDB)', en: 'Today football fixtures (TheSportsDB)' },
+  usage: '.jadwalbola',
+  example: '.jadwalbola',
+  cooldown: 15,
+  limit: 3,
 }
 
 export const i18n = {
   id: {
-    "jadwalbola": {
-      hint: "╭─❏ 🔍 「 *JADWALBOLA* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.jadwalbola kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    jadwalbola: {
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL JADWAL* 」\n┊ Mouu, gagal ambil jadwal bolanya: *{message}*\n╰━━━━━━━',
+      empty: '╭─❏ ⚽ 「 *JADWAL BOLA {date}* 」\n┊ ʜᴀʀɪ ɪɴɪ ᴛɪᴅᴀᴋ ᴀᴅᴀ ᴘᴇʀᴛᴀɴᴅɪɴɢᴀɴ ᴅɪ ᴅᴀᴛᴀ ᴛʜᴇꜱᴘᴏʀᴛꜱᴅʙ~\n┊ ᴄᴏʙᴀ *.livescore* ʙᴜᴀᴛ ꜱᴋᴏʀ ʟᴀɴɢꜱᴜɴɢ ʏᴀ.\n╰━━━━━━━',
+      header: '╭─❏ ⚽ 「 *JADWAL BOLA {date}* 」',
+      item: '┊ 🕐 {time} | *{home} vs {away}*\n┊ 🏆 {league}',
+      footer: '╰━━━━━━━',
     },
   },
   en: {
-    "jadwalbola": {
-      hint: "╭─❏ 🔍 「 *JADWALBOLA* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.jadwalbola keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    jadwalbola: {
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH FIXTURES* 」\n┊ Mouu, failed to fetch the fixtures: *{message}*\n╰━━━━━━━',
+      empty: '╭─❏ ⚽ 「 *FOOTBALL FIXTURES {date}* 」\n┊ ɴᴏ ᴍᴀᴛᴄʜᴇꜱ ᴛᴏᴅᴀʏ ɪɴ ᴛʜᴇ ᴛʜᴇꜱᴘᴏʀᴛꜱᴅʙ ᴅᴀᴛᴀ~\n┊ ᴛʀʏ *.livescore* ꜰᴏʀ ʟɪᴠᴇ ꜱᴄᴏʀᴇꜱ.\n╰━━━━━━━',
+      header: '╭─❏ ⚽ 「 *FOOTBALL FIXTURES {date}* 」',
+      item: '┊ 🕐 {time} | *{home} vs {away}*\n┊ 🏆 {league}',
+      footer: '╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.jadwalbola indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
+export const test = { input: '.jadwalbola', expect: /JADWAL BOLA|FOOTBALL FIXTURES/ }
+
+const API_KEY = '123'
+
+// Tanggal hari ini di WIB dalam format yyyy-mm-dd.
+export function todayWib() {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date())
+}
+
+export function parseEvents(json, limit = 15) {
+  const events = json?.events
+  if (!Array.isArray(events)) return []
+  return events.slice(0, limit).map((e) => ({
+    time: (e.strTime || '').slice(0, 5) || '--:--',
+    home: e.strHomeTeam || '-',
+    away: e.strAwayTeam || '-',
+    league: e.strLeague || '-',
+  }))
+}
+
+async function fetchDay(date) {
+  const res = await fetch(`https://www.thesportsdb.com/api/v1/json/${API_KEY}/eventsday.php?d=${date}&s=Soccer`, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'KANA-Bot', accept: 'application/json' },
+  })
+  if (!res.ok) throw new Error(`TheSportsDB HTTP ${res.status}`)
   return res.json()
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('jadwalbola.hint'))
+
+export async function handler(ctx, { fetchEvents = fetchDay } = {}) {
+  const date = todayWib()
+  let events
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('jadwalbola.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('jadwalbola.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('jadwalbola.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('jadwalbola.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('jadwalbola.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('jadwalbola.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('jadwalbola.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('jadwalbola.notfound', { q }))
-    return ctx.reply(ctx.t('jadwalbola.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    events = parseEvents(await fetchEvents(date))
   } catch (err) {
-    return ctx.reply(ctx.t('jadwalbola.fail', { message: err.message }))
+    return ctx.reply(ctx.t('jadwalbola.failed', { message: err.message }))
   }
+  if (!events.length) return ctx.reply(ctx.t('jadwalbola.empty', { date }))
+  const lines = [ctx.t('jadwalbola.header', { date })]
+  events.forEach((e) => lines.push(ctx.t('jadwalbola.item', e)))
+  lines.push(ctx.t('jadwalbola.footer'))
+  return ctx.reply(lines.join('\n'))
 }

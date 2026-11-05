@@ -1,81 +1,89 @@
-
+// Skor langsung sepak bola dari TheSportsDB livescore (kunci uji
+// publik 123), fokus Liga Inggris (id 4328) plus pertandingan lain
+// yang sedang berjalan bila tersedia.
 export const config = {
-  name: "livescore",
-  alias: [],
-  category: "info",
-  description: { id: "Menampilkan live score pertandingan sepak bola dari Goal.com", en: "KANA version of the Elaina-MD livescore feature, rewritten in KANA style" },
-  usage: ".livescore",
-  example: ".livescore",
-  cooldown: 5,
+  name: 'livescore',
+  alias: ['skorlangsung', 'bola'],
+  category: 'info',
+  description: { id: 'Skor langsung pertandingan sepak bola (TheSportsDB)', en: 'Live football scores (TheSportsDB)' },
+  usage: '.livescore',
+  example: '.livescore',
+  cooldown: 15,
+  limit: 3,
 }
 
 export const i18n = {
   id: {
-    "livescore": {
-      hint: "╭─❏ 🔍 「 *LIVESCORE* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.livescore kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    livescore: {
+      failed: '╭─❏ 😿 「 *GAGAL AMBIL SKOR* 」\n┊ Mouu, gagal ambil skor langsungnya: *{message}*\n╰━━━━━━━',
+      empty: '╭─❏ ⚽ 「 *LIVESCORE* 」\n┊ ꜱᴀᴀᴛ ɪɴɪ ᴛɪᴅᴀᴋ ᴀᴅᴀ ᴘᴇʀᴛᴀɴᴅɪɴɢᴀɴ ʏᴀɴɢ ꜱᴇᴅᴀɴɢ ʙᴇʀʟᴀɴɢꜱᴜɴɢ ᴅɪ ᴅᴀᴛᴀ ᴛʜᴇꜱᴘᴏʀᴛꜱᴅʙ~\n┊ ᴄᴏʙᴀ *.jadwalbola* ʙᴜᴀᴛ ᴊᴀᴅᴡᴀʟ ʜᴀʀɪ ɪɴɪ ʏᴀ.\n╰━━━━━━━',
+      header: '╭─❏ ⚽ 「 *LIVESCORE* 」',
+      item: '┊ *{home} {hs} - {as} {away}*\n┊ 🏆 {league} | ⏱️ {status}',
+      footer: '╰━━━━━━━',
     },
   },
   en: {
-    "livescore": {
-      hint: "╭─❏ 🔍 「 *LIVESCORE* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.livescore keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    livescore: {
+      failed: '╭─❏ 😿 「 *FAILED TO FETCH SCORES* 」\n┊ Mouu, failed to fetch the live scores: *{message}*\n╰━━━━━━━',
+      empty: '╭─❏ ⚽ 「 *LIVESCORE* 」\n┊ ɴᴏ ᴍᴀᴛᴄʜᴇꜱ ᴀʀᴇ ʟɪᴠᴇ ʀɪɢʜᴛ ɴᴏᴡ ɪɴ ᴛʜᴇ ᴛʜᴇꜱᴘᴏʀᴛꜱᴅʙ ᴅᴀᴛᴀ~\n┊ ᴛʀʏ *.jadwalbola* ꜰᴏʀ ᴛᴏᴅᴀʏ ꜰɪxᴛᴜʀᴇꜱ.\n╰━━━━━━━',
+      header: '╭─❏ ⚽ 「 *LIVESCORE* 」',
+      item: '┊ *{home} {hs} - {as} {away}*\n┊ 🏆 {league} | ⏱️ {status}',
+      footer: '╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.livescore indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.livescore', expect: /LIVESCORE/ }
+
+const API_KEY = '123'
+
+export function parseLive(json, limit = 15) {
+  const events = json?.events
+  if (!Array.isArray(events)) return []
+  return events.slice(0, limit).map((e) => ({
+    home: e.strHomeTeam || '-',
+    away: e.strAwayTeam || '-',
+    hs: e.intHomeScore ?? '-',
+    as: e.intAwayScore ?? '-',
+    league: e.strLeague || '-',
+    status: e.strProgress ? `${e.strProgress}'` : (e.strStatus || 'live'),
+  }))
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('livescore.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('livescore.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('livescore.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('livescore.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('livescore.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('livescore.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('livescore.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
+
+async function fetchLive() {
+  const urls = [
+    `https://www.thesportsdb.com/api/v1/json/${API_KEY}/livescore.php?l=4328&s=Soccer`,
+    `https://www.thesportsdb.com/api/v1/json/${API_KEY}/livescore.php?s=Soccer`,
+  ]
+  let lastError = null
+  for (const url of urls) {
     try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('livescore.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('livescore.notfound', { q }))
-    return ctx.reply(ctx.t('livescore.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('livescore.fail', { message: err.message }))
+      const res = await fetch(url, {
+        signal: AbortSignal.timeout(20000),
+        headers: { 'user-agent': 'KANA-Bot', accept: 'application/json' },
+      })
+      if (!res.ok) throw new Error(`TheSportsDB HTTP ${res.status}`)
+      const json = await res.json()
+      if (Array.isArray(json?.events) && json.events.length) return json
+      if (Array.isArray(json?.events)) return json
+    } catch (err) {
+      lastError = err
+    }
   }
+  if (lastError) throw lastError
+  return { events: [] }
+}
+
+export async function handler(ctx, { fetchScores = fetchLive } = {}) {
+  let matches
+  try {
+    matches = parseLive(await fetchScores())
+  } catch (err) {
+    return ctx.reply(ctx.t('livescore.failed', { message: err.message }))
+  }
+  if (!matches.length) return ctx.reply(ctx.t('livescore.empty'))
+  const lines = [ctx.t('livescore.header')]
+  matches.forEach((m) => lines.push(ctx.t('livescore.item', m)))
+  lines.push(ctx.t('livescore.footer'))
+  return ctx.reply(lines.join('\n'))
 }

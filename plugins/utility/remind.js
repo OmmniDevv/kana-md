@@ -1,81 +1,109 @@
-
+// Pengingat berbasis jam dinding WIB: .remind 19:30 <teks> untuk sekali
+// kirim pada jam itu (hari ini, atau besok bila jamnya sudah lewat),
+// .remind 30m <teks> untuk 30 menit lagi. Disimpan di namespace
+// 'reminders' yang sama dengan .ingatkan dan dikirim scheduler yang
+// sama, jadi .remind list dan .ingatkan list saling melihat.
 export const config = {
-  name: "remind",
-  alias: [],
-  category: "utility",
-  description: { id: "Fitur remind versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD remind feature, rewritten in KANA style" },
-  usage: ".remind",
-  example: ".remind",
-  cooldown: 5,
+  name: 'remind',
+  alias: ['remindme'],
+  category: 'utility',
+  description: { id: 'Pasang pengingat jam tertentu WIB atau menit relatif', en: 'Set a reminder for a WIB clock time or relative minutes' },
+  usage: '.remind <HH:MM|30m> <teks> | .remind list | .remind batal <n>',
+  example: '.remind 19:30 jangan lupa belajar',
+  cooldown: 3,
 }
 
 export const i18n = {
   id: {
-    "remind": {
-      hint: "╭─❏ 🔍 「 *REMIND* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.remind kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    remind: {
+      usage: '╭─❏ ⏰ 「 *REMIND* 」\n┊ ᴘᴀꜱᴀɴɢ: *.remind 19:30 teksnya* (jam WIB)\n┊ ᴀᴛᴀᴜ: *.remind 30m teksnya* (30 menit lagi)\n┊ ʟɪʜᴀᴛ: *.remind list*\n┊ ʙᴀᴛᴀʟ: *.remind batal <nomor>*\n╰━━━━━━━',
+      badTime: '╭─❏ ⚠️ 「 *FORMAT WAKTU SALAH* 」\n┊ Pakai format *19:30* (WIB) atau *30m* ya~\n╰━━━━━━━',
+      saved: '╭─❏ ⏰ 「 *PENGINGAT TERPASANG* 」\n┊ *"{text}"*\n┊ ᴋɪʀɪᴍ: *{when} WIB*\n╰━━━━━━━',
+      empty: '╭─❏ ⏰ 「 *PENGINGAT AKTIF* 」\n┊ Belum ada pengingat aktif nih~\n╰━━━━━━━',
+      listTitle: '╭─❏ ⏰ 「 *PENGINGAT AKTIF* 」',
+      listItem: '┊ {n}. *{time} WIB* : {text}',
+      listFooter: '╰━━━━━━━',
+      cancelled: '╭─❏ ⏰ 「 *PENGINGAT DIBATALKAN* 」\n┊ Pengingat nomor *{n}* dibatalkan~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *PENGINGAT TIDAK ADA* 」\n┊ Pengingat nomor *{n}* nggak ada~\n╰━━━━━━━',
     },
   },
   en: {
-    "remind": {
-      hint: "╭─❏ 🔍 「 *REMIND* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.remind keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    remind: {
+      usage: '╭─❏ ⏰ 「 *REMIND* 」\n┊ ꜱᴇᴛ: *.remind 19:30 the text* (WIB clock)\n┊ ᴏʀ: *.remind 30m the text* (in 30 minutes)\n┊ ʟɪꜱᴛ: *.remind list*\n┊ ᴄᴀɴᴄᴇʟ: *.remind batal <number>*\n╰━━━━━━━',
+      badTime: '╭─❏ ⚠️ 「 *BAD TIME FORMAT* 」\n┊ Use *19:30* (WIB) or *30m*~\n╰━━━━━━━',
+      saved: '╭─❏ ⏰ 「 *REMINDER SET* 」\n┊ *"{text}"*\n┊ ꜰɪʀᴇꜱ: *{when} WIB*\n╰━━━━━━━',
+      empty: '╭─❏ ⏰ 「 *ACTIVE REMINDERS* 」\n┊ No active reminders yet~\n╰━━━━━━━',
+      listTitle: '╭─❏ ⏰ 「 *ACTIVE REMINDERS* 」',
+      listItem: '┊ {n}. *{time} WIB* : {text}',
+      listFooter: '╰━━━━━━━',
+      cancelled: '╭─❏ ⏰ 「 *REMINDER CANCELLED* 」\n┊ Reminder number *{n}* cancelled~\n╰━━━━━━━',
+      notFound: '╭─❏ 🔍 「 *REMINDER NOT FOUND* 」\n┊ Reminder number *{n}* does not exist~\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.remind indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.remind list', expect: /PENGINGAT|REMINDER/ }
+
+// Hitung epoch ms untuk jam HH:MM WIB berikutnya (hari ini/besok).
+export function nextWibTime(hhmm, nowMs = Date.now()) {
+  const m = String(hhmm || '').match(/^([01]?\d|2[0-3]):([0-5]\d)$/)
+  if (!m) return null
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(new Date(nowMs))
+  const get = (type) => parts.find((p) => p.type === type)?.value
+  let at = Date.UTC(Number(get('year')), Number(get('month')) - 1, Number(get('day')), Number(m[1]) - 7, Number(m[2]))
+  if (at <= nowMs) at += 24 * 3600 * 1000
+  return at
 }
-export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('remind.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('remind.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('remind.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('remind.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('remind.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('remind.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('remind.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('remind.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('remind.notfound', { q }))
-    return ctx.reply(ctx.t('remind.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('remind.fail', { message: err.message }))
+
+// Urai argumen pertama menjadi epoch target; sisa teks adalah isi.
+export function parseRemindArgs(text, nowMs = Date.now()) {
+  const src = String(text || '').trim()
+  const rel = src.match(/^(\d{1,5})\s*(m|mnt|menit)\s+([\s\S]+)$/i)
+  if (rel) {
+    const minutes = Number(rel[1])
+    if (minutes >= 1 && minutes <= 10080) return { at: nowMs + minutes * 60000, text: rel[3].trim() }
+    return null
   }
+  const abs = src.match(/^(\d{1,2}:\d{2})\s+([\s\S]+)$/)
+  if (abs) {
+    const at = nextWibTime(abs[1], nowMs)
+    if (at) return { at, text: abs[2].trim() }
+  }
+  return null
+}
+
+function formatWib(ts) {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Jakarta', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false,
+  }).format(new Date(ts))
+}
+
+export async function handler(ctx) {
+  const raw = (ctx.text || '').trim()
+  const items = (await ctx.storage.get('reminders', ctx.senderDigits)) || []
+  const list = Array.isArray(items) ? items : []
+  const sub = (raw.split(/\s+/)[0] || '').toLowerCase()
+  if (sub === 'list') {
+    if (!list.length) return ctx.reply(ctx.t('remind.empty'))
+    const lines = [ctx.t('remind.listTitle')]
+    list.forEach((it, i) => lines.push(ctx.t('remind.listItem', { n: i + 1, time: formatWib(it.at), text: it.text })))
+    lines.push(ctx.t('remind.listFooter'))
+    return ctx.reply(lines.join('\n'))
+  }
+  if (sub === 'batal' || sub === 'hapus' || sub === 'cancel') {
+    const n = Number(raw.split(/\s+/)[1])
+    if (!n || !list[n - 1]) return ctx.reply(ctx.t('remind.notFound', { n: n || '-' }))
+    list.splice(n - 1, 1)
+    if (list.length) await ctx.storage.set('reminders', ctx.senderDigits, list)
+    else await ctx.storage.delete('reminders', ctx.senderDigits)
+    return ctx.reply(ctx.t('remind.cancelled', { n }))
+  }
+  if (!raw) return ctx.reply(ctx.t('remind.usage'))
+  const parsed = parseRemindArgs(raw)
+  if (!parsed) return ctx.reply(ctx.t('remind.badTime'))
+  list.push({ at: parsed.at, text: parsed.text, chat: ctx.chat })
+  await ctx.storage.set('reminders', ctx.senderDigits, list)
+  return ctx.reply(ctx.t('remind.saved', { text: parsed.text, when: formatWib(parsed.at) }))
 }

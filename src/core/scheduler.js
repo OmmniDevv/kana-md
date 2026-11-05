@@ -119,6 +119,39 @@ export function startScheduler({ session, storage, defaultLang = 'id', statsSour
     return times
   }
 
+  // Pengingat harian berulang dari .notifmakan, .notiftidur, dan
+  // .remind mode harian: namespace 'daily_reminders', key = digit user,
+  // value = array { hhmm (WIB), text, chat, kind, lastSent (yyyy-mm-dd) }.
+  async function deliverDailyReminders(sock) {
+    let keys = []
+    try {
+      keys = await storage.keys('daily_reminders')
+    } catch {
+      return
+    }
+    const now = wibParts()
+    for (const digits of keys) {
+      try {
+        const items = await storage.get('daily_reminders', digits)
+        if (!Array.isArray(items) || !items.length) continue
+        let changed = false
+        const lang = (await storage.get('users', `${digits}:lang`)) || defaultLang
+        for (const item of items) {
+          if (item && item.hhmm === now.hhmm && item.lastSent !== now.date) {
+            await sock.sendMessage(item.chat, {
+              text: translate(lang, 'sched.reminder', { text: item.text }),
+            })
+            item.lastSent = now.date
+            changed = true
+          }
+        }
+        if (changed) await storage.set('daily_reminders', digits, items)
+      } catch (err) {
+        logger.warn({ err: err.message, digits }, 'scheduler: pengingat harian gagal')
+      }
+    }
+  }
+
   // Pengingat pribadi dari perintah .ingatkan: namespace 'reminders',
   // key = digit user, value = array { at (epoch ms), text, chat }.
   async function deliverReminders(sock) {
@@ -156,6 +189,7 @@ export function startScheduler({ session, storage, defaultLang = 'id', statsSour
     const sock = session?.sock
     if (!sock?.user) return
     await deliverReminders(sock)
+    await deliverDailyReminders(sock)
     const now = wibParts()
     let jids = []
     try {

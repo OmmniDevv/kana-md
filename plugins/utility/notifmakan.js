@@ -1,81 +1,73 @@
-
+// Pengingat makan harian berulang. Tersimpan di namespace
+// 'daily_reminders' dan dikirim scheduler bot tiap hari pada jam WIB
+// yang dipilih. Bawaan jam 12:00 (makan siang).
 export const config = {
-  name: "notifmakan",
-  alias: [],
-  category: "utility",
-  description: { id: "Atur pengingat waktu makan otomatis", en: "KANA version of the Elaina-MD notifmakan feature, rewritten in KANA style" },
-  usage: ".notifmakan",
-  example: ".notifmakan",
-  cooldown: 5,
+  name: 'notifmakan',
+  alias: ['ingatmakan', 'notifmkn'],
+  category: 'utility',
+  description: { id: 'Pasang pengingat makan harian pada jam WIB pilihan', en: 'Set a daily meal reminder at a chosen WIB time' },
+  usage: '.notifmakan [HH:MM|off|list]',
+  example: '.notifmakan 12:00',
+  cooldown: 3,
 }
 
 export const i18n = {
   id: {
-    "notifmakan": {
-      hint: "╭─❏ 🔍 「 *NOTIFMAKAN* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.notifmakan kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    notifmakan: {
+      usage: '╭─❏ 🍽️ 「 *NOTIF MAKAN* 」\n┊ *.notifmakan* pasang bawaan jam 12:00\n┊ *.notifmakan 19:00* pasang jam lain (WIB)\n┊ *.notifmakan list* lihat status\n┊ *.notifmakan off* matikan\n╰━━━━━━━',
+      badTime: '╭─❏ ⚠️ 「 *FORMAT JAM SALAH* 」\n┊ Pakai format *HH:MM* ya, contoh 12:00~\n╰━━━━━━━',
+      saved: '╭─❏ 🍽️ 「 *NOTIF MAKAN AKTIF* 」\n┊ KANA ingatkan makan tiap hari jam *{time} WIB* di chat ini~\n┊ Matikan dengan *.notifmakan off*.\n╰━━━━━━━',
+      off: '╭─❏ 🍽️ 「 *NOTIF MAKAN MATI* 」\n┊ Pengingat makannya sudah dimatikan~\n╰━━━━━━━',
+      statusOn: '╭─❏ 🍽️ 「 *STATUS NOTIF MAKAN* 」\n┊ ᴀᴋᴛɪꜰ ᴛɪᴀᴘ ʜᴀʀɪ ᴊᴀᴍ *{time} WIB*~\n╰━━━━━━━',
+      statusOff: '╭─❏ 🍽️ 「 *STATUS NOTIF MAKAN* 」\n┊ ʙᴇʟᴜᴍ ᴀᴋᴛɪꜰ. ᴘᴀꜱᴀɴɢ ᴘᴀᴋᴀɪ *.notifmakan* ʏᴀ~\n╰━━━━━━━',
+      reminderText: '🍽️ Waktunya makan ya, jangan sampai telat makan. Selamat makan~',
     },
   },
   en: {
-    "notifmakan": {
-      hint: "╭─❏ 🔍 「 *NOTIFMAKAN* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.notifmakan keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    notifmakan: {
+      usage: '╭─❏ 🍽️ 「 *MEAL NOTIF* 」\n┊ *.notifmakan* set the 12:00 default\n┊ *.notifmakan 19:00* set another time (WIB)\n┊ *.notifmakan list* see status\n┊ *.notifmakan off* turn off\n╰━━━━━━━',
+      badTime: '╭─❏ ⚠️ 「 *BAD TIME FORMAT* 」\n┊ Use *HH:MM*, for example 12:00~\n╰━━━━━━━',
+      saved: '╭─❏ 🍽️ 「 *MEAL NOTIF ON* 」\n┊ KANA will remind you to eat every day at *{time} WIB* in this chat~\n┊ Turn it off with *.notifmakan off*.\n╰━━━━━━━',
+      off: '╭─❏ 🍽️ 「 *MEAL NOTIF OFF* 」\n┊ The meal reminder is off~\n╰━━━━━━━',
+      statusOn: '╭─❏ 🍽️ 「 *MEAL NOTIF STATUS* 」\n┊ ᴀᴄᴛɪᴠᴇ ᴇᴠᴇʀʏ ᴅᴀʏ ᴀᴛ *{time} WIB*~\n╰━━━━━━━',
+      statusOff: '╭─❏ 🍽️ 「 *MEAL NOTIF STATUS* 」\n┊ ɴᴏᴛ ᴀᴄᴛɪᴠᴇ ʏᴇᴛ. ꜱᴇᴛ ɪᴛ ᴡɪᴛʜ *.notifmakan*~\n╰━━━━━━━',
+      reminderText: '🍽️ Time to eat, do not skip your meal. Enjoy~',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.notifmakan indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.notifmakan list', expect: /NOTIF MAKAN|MEAL NOTIF/ }
+
+const KIND = 'makan'
+const DEFAULT_TIME = '12:00'
+
+async function loadItems(ctx) {
+  const items = await ctx.storage.get('daily_reminders', ctx.senderDigits)
+  return Array.isArray(items) ? items : []
 }
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('notifmakan.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('notifmakan.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('notifmakan.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('notifmakan.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('notifmakan.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('notifmakan.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('notifmakan.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('notifmakan.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('notifmakan.notfound', { q }))
-    return ctx.reply(ctx.t('notifmakan.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('notifmakan.fail', { message: err.message }))
+  const arg = (ctx.text || '').trim().toLowerCase()
+  const items = await loadItems(ctx)
+  const mine = items.find((it) => it?.kind === KIND && it?.chat === ctx.chat)
+  if (arg === 'list' || arg === 'status') {
+    if (mine) return ctx.reply(ctx.t('notifmakan.statusOn', { time: mine.hhmm }))
+    return ctx.reply(ctx.t('notifmakan.statusOff'))
   }
+  if (arg === 'off' || arg === 'mati' || arg === 'hapus') {
+    const rest = items.filter((it) => !(it?.kind === KIND && it?.chat === ctx.chat))
+    if (rest.length) await ctx.storage.set('daily_reminders', ctx.senderDigits, rest)
+    else await ctx.storage.delete('daily_reminders', ctx.senderDigits)
+    return ctx.reply(ctx.t('notifmakan.off'))
+  }
+  const time = arg === '' || arg === 'on' ? DEFAULT_TIME : arg
+  if (!/^([01]?\d|2[0-3]):[0-5]\d$/.test(time)) {
+    if (arg) return ctx.reply(ctx.t('notifmakan.badTime'))
+    return ctx.reply(ctx.t('notifmakan.usage'))
+  }
+  const hhmm = time.split(':').map((s) => s.padStart(2, '0')).join(':')
+  const rest = items.filter((it) => !(it?.kind === KIND && it?.chat === ctx.chat))
+  rest.push({ hhmm, text: ctx.t('notifmakan.reminderText'), chat: ctx.chat, kind: KIND, lastSent: '' })
+  await ctx.storage.set('daily_reminders', ctx.senderDigits, rest)
+  return ctx.reply(ctx.t('notifmakan.saved', { time: hhmm }))
 }

@@ -1,81 +1,73 @@
-
+// Pengingat tidur harian berulang. Tersimpan di namespace
+// 'daily_reminders' dan dikirim scheduler bot tiap hari pada jam WIB
+// yang dipilih. Bawaan jam 21:30.
 export const config = {
-  name: "notiftidur",
-  alias: [],
-  category: "utility",
-  description: { id: "Atur pengingat waktu tidur otomatis", en: "KANA version of the Elaina-MD notiftidur feature, rewritten in KANA style" },
-  usage: ".notiftidur",
-  example: ".notiftidur",
-  cooldown: 5,
+  name: 'notiftidur',
+  alias: ['ingattidur', 'notiftidurmalam'],
+  category: 'utility',
+  description: { id: 'Pasang pengingat tidur harian pada jam WIB pilihan', en: 'Set a daily sleep reminder at a chosen WIB time' },
+  usage: '.notiftidur [HH:MM|off|list]',
+  example: '.notiftidur 21:30',
+  cooldown: 3,
 }
 
 export const i18n = {
   id: {
-    "notiftidur": {
-      hint: "╭─❏ 🔍 「 *NOTIFTIDUR* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.notiftidur kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    notiftidur: {
+      usage: '╭─❏ 🌙 「 *NOTIF TIDUR* 」\n┊ *.notiftidur* pasang bawaan jam 21:30\n┊ *.notiftidur 22:00* pasang jam lain (WIB)\n┊ *.notiftidur list* lihat status\n┊ *.notiftidur off* matikan\n╰━━━━━━━',
+      badTime: '╭─❏ ⚠️ 「 *FORMAT JAM SALAH* 」\n┊ Pakai format *HH:MM* ya, contoh 21:30~\n╰━━━━━━━',
+      saved: '╭─❏ 🌙 「 *NOTIF TIDUR AKTIF* 」\n┊ KANA ingatkan tidur tiap hari jam *{time} WIB* di chat ini~\n┊ Matikan dengan *.notiftidur off*.\n╰━━━━━━━',
+      off: '╭─❏ 🌙 「 *NOTIF TIDUR MATI* 」\n┊ Pengingat tidurnya sudah dimatikan~\n╰━━━━━━━',
+      statusOn: '╭─❏ 🌙 「 *STATUS NOTIF TIDUR* 」\n┊ ᴀᴋᴛɪꜰ ᴛɪᴀᴘ ʜᴀʀɪ ᴊᴀᴍ *{time} WIB*~\n╰━━━━━━━',
+      statusOff: '╭─❏ 🌙 「 *STATUS NOTIF TIDUR* 」\n┊ ʙᴇʟᴜᴍ ᴀᴋᴛɪꜰ. ᴘᴀꜱᴀɴɢ ᴘᴀᴋᴀɪ *.notiftidur* ʏᴀ~\n╰━━━━━━━',
+      reminderText: '🌙 Sudah malam, waktunya istirahat dan tidur ya. Selamat tidur, mimpi indah~',
     },
   },
   en: {
-    "notiftidur": {
-      hint: "╭─❏ 🔍 「 *NOTIFTIDUR* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.notiftidur keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    notiftidur: {
+      usage: '╭─❏ 🌙 「 *SLEEP NOTIF* 」\n┊ *.notiftidur* set the 21:30 default\n┊ *.notiftidur 22:00* set another time (WIB)\n┊ *.notiftidur list* see status\n┊ *.notiftidur off* turn off\n╰━━━━━━━',
+      badTime: '╭─❏ ⚠️ 「 *BAD TIME FORMAT* 」\n┊ Use *HH:MM*, for example 21:30~\n╰━━━━━━━',
+      saved: '╭─❏ 🌙 「 *SLEEP NOTIF ON* 」\n┊ KANA will remind you to sleep every day at *{time} WIB* in this chat~\n┊ Turn it off with *.notiftidur off*.\n╰━━━━━━━',
+      off: '╭─❏ 🌙 「 *SLEEP NOTIF OFF* 」\n┊ The sleep reminder is off~\n╰━━━━━━━',
+      statusOn: '╭─❏ 🌙 「 *SLEEP NOTIF STATUS* 」\n┊ ᴀᴄᴛɪᴠᴇ ᴇᴠᴇʀʏ ᴅᴀʏ ᴀᴛ *{time} WIB*~\n╰━━━━━━━',
+      statusOff: '╭─❏ 🌙 「 *SLEEP NOTIF STATUS* 」\n┊ ɴᴏᴛ ᴀᴄᴛɪᴠᴇ ʏᴇᴛ. ꜱᴇᴛ ɪᴛ ᴡɪᴛʜ *.notiftidur*~\n╰━━━━━━━',
+      reminderText: '🌙 It is late, time to rest and sleep. Good night, sweet dreams~',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.notiftidur indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.notiftidur list', expect: /NOTIF TIDUR|SLEEP NOTIF/ }
+
+const KIND = 'tidur'
+const DEFAULT_TIME = '21:30'
+
+async function loadItems(ctx) {
+  const items = await ctx.storage.get('daily_reminders', ctx.senderDigits)
+  return Array.isArray(items) ? items : []
 }
+
 export async function handler(ctx) {
-  const q = (ctx.text || '').trim()
-  if (!q) return ctx.reply(ctx.t('notiftidur.hint'))
-  try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('notiftidur.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('notiftidur.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('notiftidur.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('notiftidur.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('notiftidur.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('notiftidur.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('notiftidur.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
-      }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('notiftidur.notfound', { q }))
-    return ctx.reply(ctx.t('notiftidur.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
-  } catch (err) {
-    return ctx.reply(ctx.t('notiftidur.fail', { message: err.message }))
+  const arg = (ctx.text || '').trim().toLowerCase()
+  const items = await loadItems(ctx)
+  const mine = items.find((it) => it?.kind === KIND && it?.chat === ctx.chat)
+  if (arg === 'list' || arg === 'status') {
+    if (mine) return ctx.reply(ctx.t('notiftidur.statusOn', { time: mine.hhmm }))
+    return ctx.reply(ctx.t('notiftidur.statusOff'))
   }
+  if (arg === 'off' || arg === 'mati' || arg === 'hapus') {
+    const rest = items.filter((it) => !(it?.kind === KIND && it?.chat === ctx.chat))
+    if (rest.length) await ctx.storage.set('daily_reminders', ctx.senderDigits, rest)
+    else await ctx.storage.delete('daily_reminders', ctx.senderDigits)
+    return ctx.reply(ctx.t('notiftidur.off'))
+  }
+  const time = arg === '' || arg === 'on' ? DEFAULT_TIME : arg
+  if (!/^([01]?\d|2[0-3]):[0-5]\d$/.test(time)) {
+    if (arg) return ctx.reply(ctx.t('notiftidur.badTime'))
+    return ctx.reply(ctx.t('notiftidur.usage'))
+  }
+  const hhmm = time.split(':').map((s) => s.padStart(2, '0')).join(':')
+  const rest = items.filter((it) => !(it?.kind === KIND && it?.chat === ctx.chat))
+  rest.push({ hhmm, text: ctx.t('notiftidur.reminderText'), chat: ctx.chat, kind: KIND, lastSent: '' })
+  await ctx.storage.set('daily_reminders', ctx.senderDigits, rest)
+  return ctx.reply(ctx.t('notiftidur.saved', { time: hhmm }))
 }
