@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Simon Warna</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:470px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px;box-sizing:border-box}
+h1{font-size:17px;margin:2px 0;color:#C4B5FD}
+#info{font-size:14px;min-height:20px;text-align:center}
+#board{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:250px;height:250px;margin-top:4px}
+.pad{border-radius:18px;opacity:.45;cursor:pointer;touch-action:manipulation}
+.pad.on{opacity:1;box-shadow:0 0 22px #fff inset}
+#p0{background:#22C55E}#p1{background:#EF4444}#p2{background:#FACC15}#p3{background:#3B82F6}
+button{background:#7C3AED;color:#fff;border:0;border-radius:10px;padding:10px 22px;font-size:15px;cursor:pointer}
+#stat{font-size:13px;color:#DDD6FE}
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1>🎨 Simon Warna</h1>
+<div id="info">Pencet Mulai, hafalkan urutan warnanya ya~</div>
+<div id="board">
+<div class="pad" id="p0"></div><div class="pad" id="p1"></div>
+<div class="pad" id="p2"></div><div class="pad" id="p3"></div>
+</div>
+<div id="stat">Level: 0</div>
+<button id="btn">Mulai</button>
+</div>
+<script>
+var BOT=window.__BOT||{};
+function report(sc){if(!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){}}catch(e){}}
+var seq=[],idx=0,level=0,accept=false,best=0;
+var info=document.getElementById('info'),stat=document.getElementById('stat'),btn=document.getElementById('btn');
+var pads=[0,1,2,3].map(function(i){return document.getElementById('p'+i)});
+function flash(i,done){pads[i].classList.add('on');setTimeout(function(){pads[i].classList.remove('on');if(done)setTimeout(done,180)},420)}
+function playSeq(){accept=false;info.textContent='Perhatikan urutannya...';var i=0;(function next(){if(i>=seq.length){idx=0;accept=true;info.textContent='Giliranmu! Ulangi urutannya~';return}flash(seq[i],function(){i++;next()})})()}
+function nextLevel(){level++;stat.textContent='Level: '+level;seq.push(Math.floor(Math.random()*4));setTimeout(playSeq,600)}
+function start(){seq=[];level=0;btn.textContent='Ulang';info.textContent='Siap...';nextLevel()}
+pads.forEach(function(p,i){p.addEventListener('click',function(){if(!accept)return;p.classList.add('on');setTimeout(function(){p.classList.remove('on')},200);if(i===seq[idx]){idx++;if(idx===seq.length){accept=false;info.textContent='Betul semua! Lanjut level berikutnya~';if(level>best){best=level;report(best)}setTimeout(nextLevel,800)}}else{accept=false;info.textContent='Yah salah urutan... Kamu sampai level '+level+'. Skor akhir: '+best;report(best);btn.textContent='Main Lagi'}})});
+btn.addEventListener('click',start);
+window.__restart=start;
+</script>
+</body>
+</html>

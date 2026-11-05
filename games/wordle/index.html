@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KANA Wordle Kata</title>
+<style>
+html,body{margin:0;padding:0;background:#17102B;color:#fff;font-family:sans-serif;-webkit-user-select:none;user-select:none}
+#wrap{height:600px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;box-sizing:border-box;position:relative;overflow:hidden;background:#17102B}
+h1{font-size:19px;margin:2px 0;color:#EDE9FE}
+.hud{color:#D8CCFF;font-size:15px;min-height:19px;text-align:center}
+.how{color:#A78BFA;font-size:12px;text-align:center;padding:0 8px}
+.btn{background:#8B5CF6;color:#fff;border:0;border-radius:999px;padding:9px 18px;font-size:15px;cursor:pointer}
+.btn:active{background:#D946EF}
+#over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,6,28,.88);z-index:5;text-align:center}
+#overT{font-size:24px;color:#F0ABFC}
+#overLine{font-size:17px;color:#D8CCFF}
+#board{display:grid;grid-template-rows:repeat(6,1fr);gap:5px;margin:2px 0}
+.wrow{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.cell{width:44px;height:44px;border:2px solid #4C1D95;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:bold;text-transform:uppercase;background:#241845;color:#fff}
+.cell.fill{border-color:#8B5CF6}
+.cell.green{background:#16A34A;border-color:#16A34A}
+.cell.yellow{background:#D97706;border-color:#D97706}
+.cell.gray{background:#3F3F46;border-color:#3F3F46}
+.shake{animation:shk .3s}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+#kb{display:flex;flex-direction:column;gap:5px;align-items:center}
+.krow{display:flex;gap:4px}
+.key{min-width:30px;height:44px;padding:0 4px;border:0;border-radius:6px;background:#2E1065;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;text-transform:uppercase}
+.key.wide{min-width:48px;font-size:12px}
+.key.green{background:#16A34A}
+.key.yellow{background:#D97706}
+.key.gray{background:#27272A;color:#A1A1AA}
+</style>
+</head>
+<body>
+<div id="wrap">
+<h1 id="t"></h1>
+<div class="hud" id="msg"></div>
+<div id="board"></div>
+<div id="kb"></div>
+<div class="how" id="how"></div>
+<div id="over"><div id="overT"></div><div id="overLine"><span class="osl"></span> <b id="final">0</b></div><div class="hud" id="overWord"></div><button class="btn" id="again"></button></div>
+</div>
+<script>
+var BOT=null;try{BOT=window.__BOT||null}catch(e){BOT=null}
+if(!BOT){try{BOT=__BOT_VARS_JSON__}catch(e){BOT=null}}
+var LANG=(BOT&&BOT.lang==='en')?'en':'id';
+function el(i){return document.getElementById(i)}
+var AC=null;
+function beep(f,d){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f||440;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+(d||.08));o.stop(AC.currentTime+(d||.08));}catch(e){}}
+var sentScore=false;
+function submitScore(sc){if(sentScore)return;sentScore=true;sc=Math.floor(sc||0);if(sc<=0||!BOT||!BOT.ws||!BOT.token)return;try{var ws=new WebSocket(BOT.ws);ws.onopen=function(){try{ws.send(JSON.stringify({type:'score',token:BOT.token,score:sc}))}catch(e){}setTimeout(function(){try{ws.close()}catch(e){}},700)};ws.onerror=function(){try{ws.close()}catch(e){}};setTimeout(function(){try{ws.close()}catch(e){}},3000);}catch(e){}}
+function gameOver(sc){el('final').textContent=Math.floor(sc||0);el('over').style.display='flex';beep(160,.25);submitScore(sc)}
+el('again').addEventListener('click',function(){el('over').style.display='none';sentScore=false;if(window.__restart)window.__restart()});
+</script>
+<script>
+var STR={id:{t:'Wordle Kata',a:'Main Lagi',h:'Tebak kata Bahasa Indonesia 5 huruf dalam 6 percobaan. Hijau: huruf dan posisi benar. Kuning: huruf ada tapi salah posisi. Abu: huruf tidak ada.',turn:'Percobaan {n} dari 6',unknown:'Kata itu tidak ada di daftar, coba kata lain yaa',short:'Isi dulu 5 hurufnya~',win:'Yeay ketebak!',lose:'Yahh belum ketebak...',wordWas:'Katanya: {w}'},en:{t:'Wordle Word',a:'Play Again',h:'Guess the 5 letter Indonesian word in 6 tries. Green: right letter and spot. Yellow: letter exists, wrong spot. Gray: letter not in the word.',turn:'Try {n} of 6',unknown:'That word is not in the list, try another one',short:'Fill all 5 letters first~',win:'You got it!',lose:'Not this time...',wordWas:'The word was: {w}'}}[LANG];
+el('t').textContent=STR.t+' 🔤';el('how').textContent=STR.h;el('again').textContent=STR.a;document.querySelector('.osl').textContent=(LANG==='id'?'Skor':'Score')+':';
+var WORDS=('abadi abang abjad absah absen acara agama ajaib akrab aktif aktor alami alarm alibi alien ambil ampuh angin angka antar apung arang arena arsip asing atlet atlas aurat badan bagus bahan bakal bakar bakat bakso balap balas balik balok balon bambu bapak barat baris basah basmi batal batas batik batin batuk bawah bayam bayar beban bebas bedah belok belum benar benda benih beras berat beres besan besok betah beton betis biasa biaya bibir bibit bidan bidik bijak bikin bilah bilal bilas bilik bilur birah biru? bisa bisik bisu? bit? skip cabai cacat cadar cakap cakar calon canda candi candu capai catat catur cawan cegah cegat celik celup cemar cemas cendol cepat cerah cerai ceria ceruk cerut cetak cetus cicip cicak cicil cicir cicip dalam dalih dalil damai danau dapat dapur darat darah darat darih darurat? darus? datar datang datuk dauk? daun daur dawa? dawai dawam dawan dawar dawas dawat dawa? skip').split(' ');
+</script>
+</body>
+</html>
