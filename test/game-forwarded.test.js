@@ -166,7 +166,12 @@ test('payload game: struktur relay ala Elaina (fragmen, tanpa messageContextInfo
   // Relay hanya membawa botForwardedMessage; messageContextInfo bawaan
   // library (botMetadata/botResponseId) tidak boleh ada di level atas.
   assert.deepEqual(Object.keys(relay.content), ['botForwardedMessage'])
-  assert.equal(relay.content.botForwardedMessage.messageContextInfo.botMetadata, undefined)
+  assert.equal(relay.content.botForwardedMessage.messageContextInfo, undefined)
+  // Bedah total 2026-11-05: botForwardedMessage Elaina HANYA berisi
+  // message. Penjaga lama cuma mengecek botMetadata sehingga
+  // messageContextInfo deviceListMetadata sempat lolos; kunci sekarang
+  // seluruh himpunan kuncinya.
+  assert.deepEqual(Object.keys(relay.content.botForwardedMessage), ['message'])
 
   const { rich, data } = decodeGameData(relay)
   assert.equal(rich.messageType, 1)
@@ -187,6 +192,9 @@ test('payload game: struktur relay ala Elaina (fragmen, tanpa messageContextInfo
   assert.ok(primitive.payload.includes('<style>.a{color:red}</style>'))
   assert.ok(primitive.payload.includes('<div id="wrap">Halo</div>'))
   assert.ok(primitive.payload.includes('<script>var x=1;</script>'))
+  // Payload Elaina tidak diawali tempelan apa pun: style pengunci tinggi
+  // yang dulu ditempel deliverGame di depan fragmen tidak boleh kembali.
+  assert.ok(!/html,body\{height:\d+px/.test(primitive.payload), 'payload tidak boleh mengandung style pengunci tinggi tempelan')
 
   const info = rich.contextInfo
   assert.equal(info.isForwarded, true)
@@ -194,6 +202,74 @@ test('payload game: struktur relay ala Elaina (fragmen, tanpa messageContextInfo
   assert.equal(info.forwardedAiBotMessageInfo.botJid, '867051314767696@bot')
   assert.equal(info.forwardOrigin, 4)
   assert.equal(info.botMessageSharingInfo, undefined)
+})
+
+// Perbandingan kerangka struktur melawan tangkapan handler Elaina asli.
+// Fixture test/fixtures/elaina-game-relay-structure.json dibuat dari
+// tangkapan sock tiruan handler plugins/game/game-blockblast.js milik
+// Elaina-MD (bedah total 2026-11-05): semua nilai string diganti penanda,
+// angka/boolean dipertahankan, payload diringkas jadi fitur bentuknya.
+// Tes ini gagal bila struktur relay KANA menyimpang lagi dari bentuk
+// Elaina di field mana pun selain isi konten dan judul.
+import { readFile } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+function payloadFeatures(html) {
+  const s = String(html ?? '')
+  return {
+    startsWithStyle: /^\s*<style/i.test(s),
+    hasDoctype: /<!doctype/i.test(s),
+    hasHtmlTag: /<html[\s>]/i.test(s),
+    hasHeadTag: /<head[\s>]/i.test(s),
+    hasBodyTag: /<body[\s>]/i.test(s),
+    scriptCount: (s.match(/<script/gi) || []).length,
+    hasWindowBot: s.includes('window.__BOT'),
+    hasHeightLockStyle: /html,body\{height:\d+px/.test(s),
+  }
+}
+
+function skeletonOf(value, key = '') {
+  if (key === 'payload' && typeof value === 'string') return { $payloadFeatures: payloadFeatures(value) }
+  if (typeof value === 'string') return '<string>'
+  if (typeof value === 'number' || typeof value === 'boolean') return value
+  if (Array.isArray(value)) return value.map((v) => skeletonOf(v))
+  if (value && typeof value === 'object') {
+    const out = {}
+    for (const [k, v] of Object.entries(value)) out[k] = skeletonOf(v, k)
+    return out
+  }
+  return value
+}
+
+test('struktur relay KANA identik dengan kerangka tangkapan Elaina', async () => {
+  const fixturePath = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'elaina-game-relay-structure.json')
+  const fixture = JSON.parse(await readFile(fixturePath, 'utf8'))
+
+  // Dokumen contoh berbentuk seperti berkas game Elaina: style di head,
+  // satu script di body. Judul singkat dan responseId UUID seperti asli.
+  const doc = '<!doctype html><html><head><meta charset="utf-8"><style>.a{color:red}</style></head><body><div id="wrap">Halo</div><script>var x=1;</script></body></html>'
+  const relay = buildGameRelay('628123@s.whatsapp.net', { title: 'KANA Block Blast', html: doc, responseId: 'bf4aaf35-f9a6-46dd-842f-274461319cea' })
+
+  const { data } = decodeGameData(relay)
+  // data unifiedResponse adalah string base64 (sama seperti Elaina);
+  // ganti dengan hasil dekodenya supaya kerangkanya bisa dibandingkan
+  // dengan fixture Elaina.
+  assert.equal(typeof relay.content.botForwardedMessage.message.richResponseMessage.unifiedResponse.data, 'string')
+  const swapData = (node, key = '') => {
+    if (key === 'data' && typeof node === 'string') return { $decodedUnifiedResponse: data }
+    if (Array.isArray(node)) return node.map((v) => swapData(v))
+    if (node && typeof node === 'object') {
+      const out = {}
+      for (const [k, v] of Object.entries(node)) out[k] = swapData(v, k)
+      return out
+    }
+    return node
+  }
+  const kanaContent = swapData(relay.content)
+
+  assert.deepEqual(skeletonOf(kanaContent), fixture.content)
+  assert.deepEqual(skeletonOf(relay.options), fixture.options)
 })
 
 test('toGameFragment: fragmen apa adanya dibiarkan, dokumen dipecah benar', () => {

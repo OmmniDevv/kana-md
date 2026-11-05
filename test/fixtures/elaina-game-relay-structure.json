@@ -1,0 +1,62 @@
+{
+  "note": "Kerangka struktur tangkapan relayMessage handler Elaina asli plugins/game/game-blockblast.js (sock tiruan, 2026-11-05). Nilai string diganti penanda, kecuali angka/boolean yang memang bagian dari struktur. payload diringkas jadi fitur bentuknya.",
+  "jid": "<jid>",
+  "content": {
+    "botForwardedMessage": {
+      "message": {
+        "richResponseMessage": {
+          "messageType": 1,
+          "submessages": [
+            {
+              "messageType": 2,
+              "messageText": "<string>"
+            }
+          ],
+          "unifiedResponse": {
+            "data": {
+              "$decodedUnifiedResponse": {
+                "response_id": "<string>",
+                "sections": [
+                  {
+                    "view_model": {
+                      "primitive": {
+                        "__typename": "<string>",
+                        "payload": {
+                          "$payloadFeatures": {
+                            "startsWithStyle": true,
+                            "hasDoctype": false,
+                            "hasHtmlTag": false,
+                            "hasHeadTag": false,
+                            "hasBodyTag": false,
+                            "scriptCount": 1,
+                            "hasWindowBot": false,
+                            "hasHeightLockStyle": false
+                          }
+                        },
+                        "trusted_sources": [
+                          "<string>"
+                        ]
+                      },
+                      "__typename": "<string>"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "contextInfo": {
+            "forwardingScore": 1,
+            "isForwarded": true,
+            "forwardedAiBotMessageInfo": {
+              "botJid": "<string>"
+            },
+            "forwardOrigin": 4
+          }
+        }
+      }
+    }
+  },
+  "options": {
+    "messageId": "<string>"
+  }
+}

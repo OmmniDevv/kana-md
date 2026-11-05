@@ -4,18 +4,35 @@
 // milik library tiba di HP user sebagai placeholder "versi WhatsApp tidak
 // mendukung" (hanya teks fallback yang terbaca), sementara game Elaina
 // dengan payload yang sama-sama richResponseMessage tampil normal.
-// Perbedaannya ada di bentuk relay-nya, jadi pengiriman di sini meniru
-// persis relay manual Elaina (plugins/game/game-blockblast.js):
-// - relay hanya membawa botForwardedMessage, TANPA messageContextInfo
-//   botMetadata/botResponseId bawaan library di level atas;
-// - payload HTML berupa FRAGMEN (style + isi body, tanpa doctype dan
-//   tanpa tag html/head/body), bukan dokumen HTML utuh;
-// - submessage pembuka messageType 2 berisi label game;
-// - section unifiedResponse tanpa __typename luar, trusted_sources
-//   terisi, dan messageId relay sama dengan response_id di payload;
-// - contextInfo persis: forwardingScore 1, isForwarded true,
-//   forwardedAiBotMessageInfo.botJid Meta AI, forwardOrigin 4
-//   (penanda diteruskan sesuai aturan proyek).
+//
+// Bedah total 2026-11-05 (tangkapan sock tiruan dari handler Elaina asli
+// game-blockblast.js dan game-tetris.js vs handler KANA, lalu diff rekursif
+// di level argumen relayMessage DAN di level wire hasil encode proto
+// library) menyempitkan perbedaan ke titik berikut, dan file ini sekarang
+// menyamakan semuanya:
+// - botForwardedMessage Elaina HANYA berisi message. Versi sebelumnya di
+//   sini menyelipkan messageContextInfo (deviceListMetadata) di dalam
+//   botForwardedMessage; field itu memang dibuang encoder proto
+//   (FutureProofMessage hanya membaca .message), tapi tetap dihapus demi
+//   paritas argumen persis.
+// - Submessage messageType 2 Elaina berisi NAMA SINGKAT game ("Block
+//   Blast Mini", "Tetris Tetromino"). Versi KANA sebelumnya mengirim
+//   kalimat label panjang dari i18n plugin; sekarang submessage selalu
+//   judul singkat game (argumen title), label kalimat tidak lagi dipakai
+//   untuk bubble.
+// - Payload Elaina adalah fragmen game apa adanya, TANPA awalan apa pun.
+//   Versi KANA sebelumnya menempel style pengunci tinggi
+//   (html,body{height:Npx}) di depan fragmen; tempelan itu dihapus, tinggi
+//   panggung diatur CSS game sendiri seperti di Elaina. Argumen height
+//   masih diterima demi kompatibilitas pemanggil tapi tidak lagi disuntik.
+// - Sisanya sudah sama dan dipertahankan: section unifiedResponse tanpa
+//   __typename luar, trusted_sources terisi, messageId relay sama dengan
+//   response_id di payload, contextInfo forwardingScore 1, isForwarded
+//   true, forwardedAiBotMessageInfo.botJid Meta AI, forwardOrigin 4
+//   (penanda diteruskan sesuai aturan proyek). Jalur kirim library
+//   (relayMessage, encodeWAMessage, proto) terbukti identik antara
+//   elaina-baileys 1.3.10 yang dipakai Elaina dan 1.4.7 yang dipakai KANA,
+//   jadi tidak ada perbedaan stack yang perlu dikejar.
 //
 // Tanda tangan publik dipertahankan dari versi lama supaya semua plugin
 // game tidak berubah: sendHtmlGame(sock, jid, htmlPath, { title, label,
@@ -56,10 +73,6 @@ export function buildGameRelay(jid, { title, html, responseId = randomUUID() }) 
   const payload = toGameFragment(html)
   const content = {
     botForwardedMessage: {
-      messageContextInfo: {
-        deviceListMetadata: {},
-        deviceListMetadataVersion: 2,
-      },
       message: {
         richResponseMessage: {
           messageType: 1,
@@ -112,12 +125,16 @@ export function buildGameHtml(html, gameVars) {
   return source + inject
 }
 
-// Kirim satu bubble game: tempel style pengunci tinggi di awal fragmen
-// (pengganti script lockHeight library yang tidak dipakai lagi), lalu
-// relay dengan bentuk Elaina.
+// Kirim satu bubble game: relay fragmen game apa adanya dengan bentuk
+// Elaina. Submessage selalu judul singkat (argumen title); argumen label
+// diterima demi kompatibilitas pemanggil lama tapi SENGAJA tidak dipakai,
+// karena bentuk Elaina yang terbukti tampil memakai nama singkat game di
+// submessage, bukan kalimat label. Argumen height juga tidak lagi
+// disuntik ke payload (lihat catatan bedah di kepala file).
 function deliverGame(sock, jid, { title, label, html, height = 600 }) {
-  const sized = `<style>html,body{height:${height}px;overflow:hidden}</style>\n${String(html ?? '')}`
-  const relay = buildGameRelay(jid, { title: label ?? title ?? 'KANA', html: sized })
+  void label
+  void height
+  const relay = buildGameRelay(jid, { title: title ?? 'KANA', html: String(html ?? '') })
   return sock.relayMessage(relay.jid, relay.content, relay.options)
 }
 
