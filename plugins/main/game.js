@@ -4,6 +4,7 @@ import { sendHtmlGame } from '../../src/ui/htmlgame.js'
 
 export const config = {
   name: 'hello',
+  premium: true,
   alias: [],
   category: 'main',
   description: { id: 'Kirim mini game HTML contoh', en: 'Send the sample HTML mini game' },

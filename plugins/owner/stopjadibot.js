@@ -1,15 +1,16 @@
 import { sendButtons } from '../../src/ui/buttons.js'
 import { getJadibotManager, listJadibotSessions } from '../../src/services/jadibot.js'
+import { JADIBOT_SESSION_NS } from '../../src/services/premium.js'
 
 export const config = {
   name: 'stopjadibot',
+  premium: true,
   alias: ['stopbot', 'berhentijadibot'],
-  category: 'owner',
-  description: { id: 'Hentikan sesi jadibot (khusus owner)', en: 'Stop a jadibot session (owner only)' },
+  category: 'user',
+  description: { id: 'Hentikan sesi jadibot (fitur premium, sesi sendiri atau owner)', en: 'Stop a jadibot session (premium feature, own session or owner)' },
   usage: '.stopjadibot [nama]',
   example: '.stopjadibot kana2',
   cooldown: 3,
-  isOwner: true,
 }
 
 export const i18n = {
@@ -43,9 +44,24 @@ export const test = { input: '.stopjadibot', expect: /jadibot|sesi/i }
 
 export async function handler(ctx) {
   const name = (ctx.args[0] || '').trim()
-  const sessions = listJadibotSessions()
+  let sessions = listJadibotSessions()
 
   if (!name) {
+    // Non-owner hanya melihat sesinya sendiri di daftar.
+    if (!ctx.isOwner) {
+      const mine = []
+      for (const s of sessions) {
+        const marker = await ctx.storage.get(JADIBOT_SESSION_NS, s.name.toLowerCase()).catch(() => null)
+        if (
+          marker &&
+          (String(marker.startedBy ?? '').replace(/\D/g, '') === ctx.senderDigits ||
+            String(marker.number ?? '').replace(/\D/g, '') === ctx.senderDigits)
+        ) {
+          mine.push(s)
+        }
+      }
+      sessions = mine
+    }
     if (!sessions.length) {
       const body = ctx.t('stopjadibot.noSessions')
       return sendButtons(ctx.sock, ctx.chat, {
@@ -71,6 +87,17 @@ export async function handler(ctx) {
     })
   }
 
+  // Pengguna premium hanya boleh menghentikan sesinya sendiri; owner
+  // boleh menghentikan sesi siapa pun. Sesi tanpa catatan pemegang
+  // (dibuat sebelum fitur premium) hanya bisa dihentikan owner.
+  if (!ctx.isOwner) {
+    const marker = await ctx.storage.get(JADIBOT_SESSION_NS, name.toLowerCase()).catch(() => null)
+    const mine =
+      marker &&
+      (String(marker.startedBy ?? '').replace(/\D/g, '') === ctx.senderDigits ||
+        String(marker.number ?? '').replace(/\D/g, '') === ctx.senderDigits)
+    if (!mine) return ctx.reply(ctx.t('stopjadibot.notFound', { name }))
+  }
   const manager = getJadibotManager()
   if (!manager) return ctx.reply(ctx.t('stopjadibot.notFound', { name }))
   let stopped
@@ -80,6 +107,7 @@ export async function handler(ctx) {
     return ctx.reply(ctx.t('stopjadibot.failed', { message: err.message }))
   }
   if (!stopped) return ctx.reply(ctx.t('stopjadibot.notFound', { name }))
+  await ctx.storage.delete(JADIBOT_SESSION_NS, name.toLowerCase()).catch(() => {})
   const body = ctx.t('stopjadibot.stopped', { name, mood: ctx.say('pamit') })
   return sendButtons(ctx.sock, ctx.chat, {
     title: process.env.BOT_NAME || 'KANA',

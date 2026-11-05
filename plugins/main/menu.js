@@ -45,7 +45,11 @@ export function collectCategories(ctx) {
   for (const plugin of ctx.registry.list()) {
     const cat = plugin.config.category ?? 'main'
     if (!byCategory.has(cat)) byCategory.set(cat, [])
-    byCategory.get(cat).push(plugin.config.name)
+    byCategory.get(cat).push({
+      name: plugin.config.name,
+      premium: !!plugin.config.premium,
+      limitGroup: plugin.config.limitGroup ?? null,
+    })
   }
   return sortCategories([...byCategory.keys()]).map((key) => {
     const rawTitle = ctx.t(`menu.cat.${key}`)
@@ -110,6 +114,8 @@ export function buildMainMenuBody(ctx, { botName, ownerName, commandCount }) {
     ctx.t('menu.repoPrompt'),
     REPO_URL,
     ctx.t('menu.wiseUse'),
+    ctx.t('menu.premiumLegend'),
+    ctx.t('menu.limitLegend'),
   ].join('\n')
 }
 
@@ -140,7 +146,12 @@ async function sendCategory(ctx, { categories, commandCount, botName }) {
 
   const body = formatMenuCategory({
     category: requested,
-    labels: { footer: ctx.t('menu.footer'), subHint: ctx.t('menu.subHint') },
+    labels: {
+      footer: ctx.t('menu.footer'),
+      subHint: ctx.t('menu.subHint'),
+      premiumLegend: ctx.t('menu.premiumLegend'),
+      limitLegend: ctx.t('menu.limitLegend'),
+    },
   })
   const thumbnail = await loadMenuThumbnail(BANNER_PATH)
   const quoted = buildFakeTroliQuoted({
@@ -182,6 +193,9 @@ async function sendAll(ctx, { categories, plugins, commandCount, botName }) {
       hint: ctx.t('menu.hint'),
       closing: ctx.t('menu.closing'),
       footer: ctx.t('menu.footer'),
+      premiumLegend: ctx.t('menu.premiumLegend'),
+      limitLegend: ctx.t('menu.limitLegend'),
+      legendTitle: ctx.t('menu.legendTitle'),
     },
   })
   const thumbnail = await loadMenuThumbnail(BANNER_PATH)
@@ -244,7 +258,10 @@ async function sendMain(ctx, { categories, commandCount, botName, ownerName }) {
         ctx.t('menu.rowTitle', { category: cat.title }),
         ctx.t('menu.rowDescription', {
           count: cat.commands.length,
-          examples: cat.commands.slice(0, 3).join(', '),
+          examples: cat.commands
+            .slice(0, 3)
+            .map((c) => (typeof c === 'string' ? c : c.name))
+            .join(', '),
         }),
         `.menu ${cat.key}`
       )

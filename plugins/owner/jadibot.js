@@ -5,16 +5,17 @@ import {
   setJadibotManager,
   pairingCodeFor,
 } from '../../src/services/jadibot.js'
+import { JADIBOT_SESSION_NS } from '../../src/services/premium.js'
 
 export const config = {
   name: 'jadibot',
+  premium: true,
   alias: ['jadibotstart', 'jadibotqr'],
-  category: 'owner',
-  description: { id: 'Mulai sesi jadibot di nomor lain (khusus owner)', en: 'Start a jadibot session on another number (owner only)' },
+  category: 'user',
+  description: { id: 'Mulai sesi jadibot di nomor lain (fitur premium)', en: 'Start a jadibot session on another number (premium feature)' },
   usage: '.jadibot <nama> <nomor>',
   example: '.jadibot kana2 6281234567890',
   cooldown: 5,
-  isOwner: true,
 }
 
 export const i18n = {
@@ -113,6 +114,16 @@ export async function handler(ctx) {
     if (err.code === 'DUPLICATE') return ctx.reply(ctx.t('jadibot.duplicate', { name }))
     return ctx.reply(ctx.t('jadibot.failed', { message: err.message }))
   }
+  // Catat pemegang sesi: gate .stopjadibot memakai catatan ini supaya
+  // sesi tetap bisa dihentikan pemiliknya walau premiumnya berakhir,
+  // dan pengguna premium lain tidak bisa menghentikan sesi orang lain.
+  await ctx.storage
+    .set(JADIBOT_SESSION_NS, record.name.toLowerCase(), {
+      number: record.number,
+      startedBy: ctx.senderDigits,
+      startedAt: record.startedAt,
+    })
+    .catch(() => {})
   const body = ctx.t('jadibot.started', {
     name: record.name,
     number: record.number,
