@@ -1,36 +1,40 @@
+import { getRandomBlueArchiveImage } from '../../src/scrapers/random/bluearchive.js'
+import { sendImage } from '../../src/ui/media.js'
 
-import { sendButtons } from '../../src/ui/buttons.js'
+// Barandom: gambar Blue Archive acak beneran dari endpoint Nexray
+// (divalidasi magic bytes), bukan teks fakta statis.
 export const config = {
-  name: "barandom",
-  alias: [],
-  category: "random",
-  description: { id: "Random gambar Blue Archive", en: "KANA version of the Elaina-MD barandom feature, rewritten in KANA style" },
-  usage: ".barandom",
-  example: ".barandom",
+  name: 'barandom',
+  alias: ['bluearchive', 'ba'],
+  category: 'random',
+  description: { id: 'Gambar Blue Archive acak', en: 'Random Blue Archive image' },
+  usage: '.barandom',
+  example: '.barandom',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "barandom": {
-      body: "╭─❏ ✨ 「 *BARANDOM* 」\n┊ {text}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    barandom: {
+      caption: '╭─❏ 🖼️ 「 *BLUE ARCHIVE RANDOM* 」\n┊ Gambar Blue Archive acak buat kamu~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *GAMBAR GAGAL* 」\n┊ Mouu, gambarnya gagal diambil: *{message}*\n╰━━━━━━━',
     },
   },
   en: {
-    "barandom": {
-      body: "╭─❏ ✨ 「 *BARANDOM* 」\n┊ {text}\n╰━━━━━━━",
-      btnAgain: "Again",
+    barandom: {
+      caption: '╭─❏ 🖼️ 「 *BLUE ARCHIVE RANDOM* 」\n┊ A random Blue Archive image for you~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *IMAGE FAILED* 」\n┊ Mouu, the image failed to load: *{message}*\n╰━━━━━━━',
     },
   },
 }
 
-const ITEMS_ID = ["Madu adalah satu satunya makanan yang tidak pernah basi, madu berusia 3000 tahun pernah ditemukan masih layak makan.", "Gurita punya tiga jantung dan darah berwarna biru.", "Pisang secara botani termasuk buah beri, sedangkan stroberi justru bukan.", "Menara Eiffel bisa tumbuh sekitar 15 cm lebih tinggi saat musim panas karena pemuaian besi.", "Otak manusia menghasilkan listrik yang cukup untuk menyalakan lampu kecil."]
-const ITEMS_EN = ["Honey is the only food that never spoils, 3000 year old honey was found still edible.", "Octopuses have three hearts and blue blood.", "Bananas are botanically berries, while strawberries are not.", "The Eiffel Tower grows about 15 cm taller in summer due to iron expansion."]
-export const test = { input: '.barandom', expect: /barandom/i }
+export const test = { input: '.barandom', expect: /blue archive random/i }
+
 export async function handler(ctx) {
-  const items = ctx.lang === 'en' ? ITEMS_EN : ITEMS_ID
-  const text = items[Math.floor(Math.random() * items.length)]
-  const body = ctx.t('barandom.body', { text })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('barandom.btnAgain'), id: '.barandom' }], textFallback: body })
+  try {
+    const { buffer } = await getRandomBlueArchiveImage()
+    return await sendImage(ctx, buffer, { caption: ctx.t('barandom.caption') })
+  } catch (err) {
+    return ctx.reply(ctx.t('barandom.fail', { message: err.message }))
+  }
 }

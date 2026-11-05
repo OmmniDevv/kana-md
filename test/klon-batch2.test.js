@@ -56,8 +56,22 @@ import {
   resolveUsercardTarget,
   rankKeyForLevel,
 } from '../plugins/main/usercard.js'
+import { PNG } from 'pngjs'
+import { imageKind, parseMattePng, removeBackground } from '../src/scrapers/maker/removebg.js'
+import {
+  i18n as removebgI18n,
+  handler as removebgHandler,
+  fetchSourceImage,
+} from '../plugins/maker/removebg.js'
+import {
+  parseSafebooruPosts,
+  getRandomBlueArchiveImage,
+  getRandomCosplayImage,
+} from '../src/scrapers/random/bluearchive.js'
+import { parseRandomQuote } from '../src/scrapers/search/quotes.js'
+import { quoteCard } from '../src/ui/cards.js'
 
-for (const mod of [artinamaI18n, ramalanI18n, randomtagI18n, jodohI18n, cekpacarI18n, sulapI18n, shipI18n, usercardI18n]) {
+for (const mod of [artinamaI18n, ramalanI18n, randomtagI18n, jodohI18n, cekpacarI18n, sulapI18n, shipI18n, usercardI18n, removebgI18n]) {
   for (const [lang, messages] of Object.entries(mod)) addMessages(lang, messages)
 }
 
@@ -436,4 +450,98 @@ test('usercard: handler mengirim kartu profil sebagai gambar PNG berisi data use
   assert.match(content.caption, /Penguji Hebat/)
   assert.match(content.caption, /12500/)
   assert.deepEqual(content.mentions, ['628111@s.whatsapp.net'])
+})
+
+/* ---------------- Media: removebg, barandom, cosba, quotesimage ---------------- */
+
+test('removebg: imageKind membaca magic bytes dan parseMattePng menuntut alpha', () => {
+  assert.equal(imageKind(tinyPngBuffer()), 'png')
+  assert.equal(imageKind(Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0, 0, 0, 0, 0])), 'jpeg')
+  assert.equal(imageKind(Buffer.from('ini teks biasa yang panjang')), null)
+  const parsed = parseMattePng(tinyPngBuffer())
+  assert.ok(parsed, 'PNG canvas RGBA harus lolos validasi alpha')
+  assert.equal(parsed.width, 24)
+  const rgb = new PNG({ width: 2, height: 2 })
+  rgb.data = Buffer.alloc(2 * 2 * 4, 128)
+  assert.equal(parseMattePng(PNG.sync.write(rgb, { colorType: 2 })), null, 'PNG tanpa alpha harus ditolak')
+})
+
+test('removebg: removeBackground mengirim multipart dan memvalidasi hasil', async () => {
+  const png = tinyPngBuffer()
+  let seenUrl = ''
+  let seenBody = null
+  const okFetch = async (url, opts) => {
+    seenUrl = url
+    seenBody = opts.body
+    return { ok: true, status: 200, arrayBuffer: async () => png }
+  }
+  const out = await removeBackground(Buffer.from([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3, 4, 5, 6, 7, 8]), { fetchImpl: okFetch })
+  assert.ok(out.equals(png))
+  assert.match(seenUrl, /pixelcut\.app\/image\/matte\/v1/)
+  assert.ok(seenBody instanceof FormData)
+  const badFetch = async () => ({
+    ok: false,
+    status: 400,
+    arrayBuffer: async () => Buffer.from(JSON.stringify({ error: 'gambar terlalu kecil' })),
+  })
+  await assert.rejects(() => removeBackground(tinyPngBuffer(), { fetchImpl: badFetch }), /HTTP 400/)
+  await assert.rejects(() => removeBackground(Buffer.from('bukan gambar sama sekali')), /bukan gambar/)
+})
+
+test('removebg: handler menolak tanpa gambar dan berkas bukan gambar', async () => {
+  const { sock } = fakeSock()
+  const noImage = fakeCtx(sock)
+  await removebgHandler(noImage.ctx)
+  assert.match(noImage.replies[0], /HAPUS LATAR/)
+
+  const withText = fakeCtx(sock, {
+    quoted: { sender: '628111@s.whatsapp.net', stanzaId: 'Q1', message: { imageMessage: {} } },
+    downloadQuoted: async () => Buffer.from('ini bukan gambar'),
+  })
+  await removebgHandler(withText.ctx)
+  assert.match(withText.replies[0], /BUKAN GAMBAR/)
+  const src = await fetchSourceImage(withText.ctx)
+  assert.ok(Buffer.isBuffer(src))
+})
+
+test('barandom: getRandomBlueArchiveImage memvalidasi magic bytes dari respons', async () => {
+  const jpeg = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3])
+  const fetchImpl = async () => ({ ok: true, status: 200, arrayBuffer: async () => jpeg })
+  const { buffer, kind } = await getRandomBlueArchiveImage({ fetchImpl })
+  assert.equal(kind, 'jpeg')
+  assert.ok(buffer.equals(jpeg))
+  const badFetch = async () => ({ ok: true, status: 200, arrayBuffer: async () => Buffer.from('teks saja') })
+  await assert.rejects(() => getRandomBlueArchiveImage({ fetchImpl: badFetch }), /tidak mengembalikan gambar/)
+})
+
+test('cosba: parseSafebooruPosts hanya mengambil pos cosplay Blue Archive bergambar', () => {
+  const posts = parseSafebooruPosts([
+    { id: 1, tags: 'blue_archive cosplay rating:safe', file_url: 'https://safebooru.org/images/1/a.jpg' },
+    { id: 2, tags: 'blue_archive rating:safe', file_url: 'https://safebooru.org/images/2/b.jpg' },
+    { id: 3, tags: 'other cosplay', file_url: 'https://safebooru.org/images/3/c.jpg' },
+    { id: 4, tags: 'blue_archive cosplay', file_url: 'http://insecure.example/d.jpg' },
+  ])
+  assert.deepEqual(posts.map((p) => p.id), [1])
+})
+
+test('cosba: getRandomCosplayImage mengunduh kandidat dan memeriksa magic bytes', async () => {
+  const jpeg = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 9, 9, 9, 9, 9, 9, 9, 9])
+  const fetchImpl = async () => ({
+    ok: true,
+    status: 200,
+    json: async () => [{ id: 42, tags: 'blue_archive cosplay rating:safe', file_url: 'https://safebooru.org/images/42/x.jpg' }],
+  })
+  const download = async () => ({ buffer: jpeg })
+  const out = await getRandomCosplayImage({ fetchImpl, download, rng: () => 0 })
+  assert.equal(out.kind, 'jpeg')
+  assert.match(out.postUrl, /id=42/)
+})
+
+test('quotesimage: parseRandomQuote dan quoteCard menghasilkan PNG valid', async () => {
+  const parsed = parseRandomQuote({ quote: 'The desire to know your own soul will end all other desires.', author: 'Rumi' })
+  assert.equal(parsed.author, 'Rumi')
+  assert.equal(parseRandomQuote({ quote: '' }), null)
+  const image = await quoteCard({ text: parsed.quote, author: parsed.author })
+  assert.ok(image.subarray(0, 4).equals(PNG_MAGIC), 'kartu quotes harus PNG valid')
+  assert.ok(image.length > 5000)
 })

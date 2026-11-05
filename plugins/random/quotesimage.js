@@ -1,36 +1,45 @@
+import { getRandomQuote } from '../../src/scrapers/search/quotes.js'
+import { quoteCard } from '../../src/ui/cards.js'
+import { sendImage } from '../../src/ui/media.js'
 
-import { sendButtons } from '../../src/ui/buttons.js'
+// Quotesimage: gambar quotes acak beneran. Teks quotes diambil hidup
+// dari DummyJSON, lalu dirender menjadi kartu gambar lokal memakai
+// renderer quote KANA. API lama Neoxr tidak dipakai karena contoh
+// referensinya memakai API key hardcoded milik bot lain.
 export const config = {
-  name: "quotesimage",
-  alias: [],
-  category: "random",
-  description: { id: "Random quotes image", en: "KANA version of the Elaina-MD quotesimage feature, rewritten in KANA style" },
-  usage: ".quotesimage",
-  example: ".quotesimage",
+  name: 'quotesimage',
+  alias: ['quotes-image', 'qimg'],
+  category: 'random',
+  description: { id: 'Gambar quotes acak', en: 'Random quote image' },
+  usage: '.quotesimage',
+  example: '.quotesimage',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "quotesimage": {
-      body: "╭─❏ ✨ 「 *QUOTESIMAGE* 」\n┊ {text}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    quotesimage: {
+      caption: '╭─❏ 💬 「 *QUOTES IMAGE* 」\n┊ "{quote}"\n┊ - *{author}*\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *QUOTES GAGAL* 」\n┊ Mouu, quotesnya gagal dibuat: *{message}*\n╰━━━━━━━',
     },
   },
   en: {
-    "quotesimage": {
-      body: "╭─❏ ✨ 「 *QUOTESIMAGE* 」\n┊ {text}\n╰━━━━━━━",
-      btnAgain: "Again",
+    quotesimage: {
+      caption: '╭─❏ 💬 「 *QUOTES IMAGE* 」\n┊ "{quote}"\n┊ - *{author}*\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *QUOTES FAILED* 」\n┊ Mouu, the quote image failed: *{message}*\n╰━━━━━━━',
     },
   },
 }
 
-const ITEMS_ID = ["Madu adalah satu satunya makanan yang tidak pernah basi, madu berusia 3000 tahun pernah ditemukan masih layak makan.", "Gurita punya tiga jantung dan darah berwarna biru.", "Pisang secara botani termasuk buah beri, sedangkan stroberi justru bukan.", "Menara Eiffel bisa tumbuh sekitar 15 cm lebih tinggi saat musim panas karena pemuaian besi.", "Otak manusia menghasilkan listrik yang cukup untuk menyalakan lampu kecil."]
-const ITEMS_EN = ["Honey is the only food that never spoils, 3000 year old honey was found still edible.", "Octopuses have three hearts and blue blood.", "Bananas are botanically berries, while strawberries are not.", "The Eiffel Tower grows about 15 cm taller in summer due to iron expansion."]
-export const test = { input: '.quotesimage', expect: /quotesimage/i }
+export const test = { input: '.quotesimage', expect: /quotes image/i }
+
 export async function handler(ctx) {
-  const items = ctx.lang === 'en' ? ITEMS_EN : ITEMS_ID
-  const text = items[Math.floor(Math.random() * items.length)]
-  const body = ctx.t('quotesimage.body', { text })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('quotesimage.btnAgain'), id: '.quotesimage' }], textFallback: body })
+  try {
+    const { quote, author } = await getRandomQuote()
+    const image = await quoteCard({ text: quote, author })
+    if (!Buffer.isBuffer(image) || !image.length) throw new Error('hasil render kosong')
+    return await sendImage(ctx, image, { caption: ctx.t('quotesimage.caption', { quote, author }) })
+  } catch (err) {
+    return ctx.reply(ctx.t('quotesimage.fail', { message: err.message }))
+  }
 }

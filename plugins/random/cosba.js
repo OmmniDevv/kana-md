@@ -1,36 +1,43 @@
+import { getRandomCosplayImage } from '../../src/scrapers/random/bluearchive.js'
+import { sendImage } from '../../src/ui/media.js'
 
-import { sendButtons } from '../../src/ui/buttons.js'
+// Cosba: gambar cosplay Blue Archive acak dari sumber hidup. API lama
+// (ryuu-dev) mati dari VM ini, diganti DAPI Safebooru tag blue_archive
+// + cosplay + rating:safe; unduhan divalidasi magic bytes sebelum
+// dikirim. Isi sumber pengganti ini gambar bertema cosplay (sebagian
+// besar ilustrasi), bukan foto cosplayer asli.
 export const config = {
-  name: "cosba",
-  alias: [],
-  category: "random",
-  description: { id: "Fitur cosba versi KANA, ditulis ulang gaya KANA dari referensi Elaina-MD owner", en: "KANA version of the Elaina-MD cosba feature, rewritten in KANA style" },
-  usage: ".cosba",
-  example: ".cosba",
+  name: 'cosba',
+  alias: ['cosplayba'],
+  category: 'random',
+  description: { id: 'Gambar cosplay Blue Archive acak', en: 'Random Blue Archive cosplay image' },
+  usage: '.cosba',
+  example: '.cosba',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "cosba": {
-      body: "╭─❏ ✨ 「 *COSBA* 」\n┊ {text}\n╰━━━━━━━",
-      btnAgain: "Lagi",
+    cosba: {
+      caption: '╭─❏ 🎭 「 *RANDOM BLUE ARCHIVE COSPLAY* 」\n┊ Sumber: {url}\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *COSPLAY GAGAL* 」\n┊ Mouu, gambar cosplaynya gagal diambil: *{message}*\n╰━━━━━━━',
     },
   },
   en: {
-    "cosba": {
-      body: "╭─❏ ✨ 「 *COSBA* 」\n┊ {text}\n╰━━━━━━━",
-      btnAgain: "Again",
+    cosba: {
+      caption: '╭─❏ 🎭 「 *RANDOM BLUE ARCHIVE COSPLAY* 」\n┊ Source: {url}\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *COSPLAY FAILED* 」\n┊ Mouu, the cosplay image failed to load: *{message}*\n╰━━━━━━━',
     },
   },
 }
 
-const ITEMS_ID = ["Madu adalah satu satunya makanan yang tidak pernah basi, madu berusia 3000 tahun pernah ditemukan masih layak makan.", "Gurita punya tiga jantung dan darah berwarna biru.", "Pisang secara botani termasuk buah beri, sedangkan stroberi justru bukan.", "Menara Eiffel bisa tumbuh sekitar 15 cm lebih tinggi saat musim panas karena pemuaian besi.", "Otak manusia menghasilkan listrik yang cukup untuk menyalakan lampu kecil."]
-const ITEMS_EN = ["Honey is the only food that never spoils, 3000 year old honey was found still edible.", "Octopuses have three hearts and blue blood.", "Bananas are botanically berries, while strawberries are not.", "The Eiffel Tower grows about 15 cm taller in summer due to iron expansion."]
-export const test = { input: '.cosba', expect: /cosba/i }
+export const test = { input: '.cosba', expect: /blue archive cosplay/i }
+
 export async function handler(ctx) {
-  const items = ctx.lang === 'en' ? ITEMS_EN : ITEMS_ID
-  const text = items[Math.floor(Math.random() * items.length)]
-  const body = ctx.t('cosba.body', { text })
-  return sendButtons(ctx.sock, ctx.chat, { title: 'KANA', body, footer: ctx.t('menu.footer'), replies: [{ text: ctx.t('cosba.btnAgain'), id: '.cosba' }], textFallback: body })
+  try {
+    const { buffer, postUrl } = await getRandomCosplayImage()
+    return await sendImage(ctx, buffer, { caption: ctx.t('cosba.caption', { url: postUrl }) })
+  } catch (err) {
+    return ctx.reply(ctx.t('cosba.fail', { message: err.message }))
+  }
 }
