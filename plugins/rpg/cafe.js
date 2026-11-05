@@ -1,5 +1,5 @@
 import { getProfile, saveProfile } from '../../src/services/user-service.js'
-import { consumeEnergy, energyOf } from '../../src/rpg/energy.js'
+import { energyOf } from '../../src/rpg/energy.js'
 
 // Simulator kafe satu plugin dengan subperintah (peta Elaina: cafeopen,
 // cafestock, cafemenu, cafeupgrade, cafelist, cafeadd, caferename jadi
@@ -119,7 +119,8 @@ export async function handler(ctx) {
   }
   if (sub === 'layani' || sub === 'serve') {
     if (cafe.stock <= 0) return ctx.reply(ctx.t('cafe.noStock'))
-    if (!consumeEnergy(profile, 10)) return ctx.reply(ctx.t('cafe.lowEnergy', { energy: energyOf(profile) }))
+    if (energyOf(profile) < 10) return ctx.reply(ctx.t('cafe.lowEnergy', { energy: energyOf(profile) }))
+    profile.energy = energyOf(profile) - 10
     const guests = 1 + Math.floor(Math.random() * (2 + cafe.level))
     const sold = Math.min(cafe.stock, guests)
     const dish = MENU[Math.floor(Math.random() * MENU.length)]

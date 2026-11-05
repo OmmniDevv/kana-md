@@ -1,5 +1,5 @@
 import { getProfile, saveProfile } from '../../src/services/user-service.js'
-import { consumeEnergy, energyOf } from '../../src/rpg/energy.js'
+import { energyOf } from '../../src/rpg/energy.js'
 import { isJailed, jailMinutesLeft, sendToJail } from '../../src/rpg/crime.js'
 
 export const CRIMES = {
@@ -30,9 +30,17 @@ export function crimeHandler(name) {
     if (isJailed(profile)) {
       return ctx.reply(ctx.t(`${name}.jailed`, { minutes: jailMinutesLeft(profile) }))
     }
-    if (!consumeEnergy(profile, spec.energy)) {
-      return ctx.reply(ctx.t(`${name}.lowEnergy`, { energy: energyOf(profile), crime: name, need: spec.energy }))
+    // Energi dipotong langsung dari profil yang sudah dimuat, lalu
+    // disimpan oleh saveProfile di kedua cabang hasil. Versi lama
+    // memanggil consumeEnergy (async, tanda tangan storage/digits/
+    // amount) tanpa await dan dengan argumen tertukar: janjinya
+    // menggantung, meledak sebagai unhandled rejection, dan gerbang
+    // energinya tidak pernah bekerja.
+    const energyNow = energyOf(profile)
+    if (energyNow < spec.energy) {
+      return ctx.reply(ctx.t(`${name}.lowEnergy`, { energy: energyNow, crime: name, need: spec.energy }))
     }
+    profile.energy = energyNow - spec.energy
     if (Math.random() < spec.chance) {
       const gain = spec.min + Math.floor(Math.random() * (spec.max - spec.min + 1))
       profile.balance = (profile.balance ?? 0) + gain

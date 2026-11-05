@@ -89,7 +89,11 @@ export async function handler(ctx) {
       return say('Status blokir *' + target + '* diperbarui.')
     }
     if (ACTION === 'leave') {
-      const jid = arg.includes('@g.us') ? arg : ctx.chat
+      // Penjaga konteks grup (meniru plugins/owner/leave.js yang benar):
+      // tanpa JID grup yang valid, groupLeave ke JID pribadi membuat
+      // perintah ini diam tanpa balasan apa pun di chat pribadi.
+      const jid = arg.includes('@g.us') ? arg.match(/\S+@g\.us/)[0] : (ctx.chat?.endsWith('@g.us') ? ctx.chat : null)
+      if (!jid) return say('Perintah ini buat mengeluarkan bot dari grup: pakai di dalam grupnya, atau sertakan JID grupnya (berakhiran @g.us) yaa~')
       await ctx.sock.groupLeave(jid)
       return undefined
     }
