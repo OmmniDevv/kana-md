@@ -1,6 +1,8 @@
 // Cari sumber anime dari gambar: trace.moe (API publik pengenal adegan
 // anime, pengecualian setara API game di DECISIONS.md). Balas gambar
 // anime, bot menjawab judul, episode, dan menit adegannya.
+import { normalizeDownloadedMedia } from '../../src/ui/media.js'
+
 export const config = {
   name: 'animeimgsearch',
   alias: ['tracemoe', 'animesearchimg', 'caranime'],
@@ -52,8 +54,8 @@ export async function searchAnimeImage(buffer) {
 }
 
 export async function handler(ctx) {
-  const media = await ctx.downloadQuoted().catch(() => null)
-  if (!media?.buffer || media.kind !== 'image') return ctx.reply(ctx.t('animeimgsearch.need', { mood: ctx.say('mikir') }))
+  const media = normalizeDownloadedMedia(await ctx.downloadQuoted().catch(() => null), ctx.quoted?.message)
+  if (!media || media.kind !== 'image') return ctx.reply(ctx.t('animeimgsearch.need', { mood: ctx.say('mikir') }))
   try {
     const hit = await searchAnimeImage(media.buffer)
     if (!hit) return ctx.reply(ctx.t('animeimgsearch.notFound', { mood: ctx.say('gagal') }))

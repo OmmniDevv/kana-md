@@ -7,6 +7,7 @@ import { join } from 'node:path'
 
 const run = promisify(execFile)
 import { smallCaps } from '../../src/config/templates.js'
+import { normalizeDownloadedMedia } from '../../src/ui/media.js'
 
 export const config = {
   name: 'getexif',
@@ -58,8 +59,8 @@ function humanSize(bytes) {
 }
 
 export async function handler(ctx) {
-  const media = await ctx.downloadQuoted().catch(() => null)
-  if (!media?.buffer) return ctx.reply(ctx.t('getexif.need', { mood: ctx.say('mikir') }))
+  const media = normalizeDownloadedMedia(await ctx.downloadQuoted().catch(() => null), ctx.quoted?.message)
+  if (!media) return ctx.reply(ctx.t('getexif.need', { mood: ctx.say('mikir') }))
   const dir = await mkdtemp(join(tmpdir(), 'kana-exif-'))
   try {
     const input = join(dir, 'media')

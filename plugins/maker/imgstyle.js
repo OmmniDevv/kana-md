@@ -6,7 +6,7 @@ import { promisify } from 'node:util'
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { sendImage } from '../../src/ui/media.js'
+import { sendImage, normalizeDownloadedMedia } from '../../src/ui/media.js'
 
 const run = promisify(execFile)
 
@@ -53,8 +53,8 @@ const STYLE_ALIASES = { gray: 'abu', grey: 'abu', mirror: 'cermin', flip: 'cermi
 export async function handler(ctx) {
   const wanted = (ctx.text || '').trim().toLowerCase().split(/\s+/)[0]
   const style = STYLES[wanted] ? wanted : STYLE_ALIASES[wanted]
-  const media = await ctx.downloadQuoted().catch(() => null)
-  if (!style || !media?.buffer || media.kind !== 'image') {
+  const media = normalizeDownloadedMedia(await ctx.downloadQuoted().catch(() => null), ctx.quoted?.message)
+  if (!style || !media || media.kind !== 'image') {
     return ctx.reply(ctx.t('imgstyle.need', { mood: ctx.say('mikir') }))
   }
   const dir = await mkdtemp(join(tmpdir(), 'kana-style-'))

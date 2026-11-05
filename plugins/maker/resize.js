@@ -4,7 +4,7 @@ import { promisify } from 'node:util'
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { sendImage } from '../../src/ui/media.js'
+import { sendImage, normalizeDownloadedMedia } from '../../src/ui/media.js'
 
 const run = promisify(execFile)
 
@@ -39,8 +39,8 @@ export const test = { input: '.resize 512x512', expect: /BUTUH GAMBAR DAN UKURAN
 
 export async function handler(ctx) {
   const match = (ctx.text || '').match(/(\d{2,4})\s*x\s*(\d{2,4})/)
-  const media = await ctx.downloadQuoted().catch(() => null)
-  if (!match || !media?.buffer || media.kind !== 'image') {
+  const media = normalizeDownloadedMedia(await ctx.downloadQuoted().catch(() => null), ctx.quoted?.message)
+  if (!match || !media || media.kind !== 'image') {
     return ctx.reply(ctx.t('resize.need', { mood: ctx.say('mikir') }))
   }
   const w = Math.min(4096, Math.max(16, Number(match[1])))

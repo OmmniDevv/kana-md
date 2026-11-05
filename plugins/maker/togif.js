@@ -4,6 +4,7 @@ import { promisify } from 'node:util'
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { normalizeDownloadedMedia } from '../../src/ui/media.js'
 
 const run = promisify(execFile)
 
@@ -25,8 +26,8 @@ export const i18n = {
 export const test = { input: '.togif', expect: /balas|reply/i }
 
 export async function handler(ctx) {
-  const media = await ctx.downloadQuoted().catch(() => null)
-  if (!media?.buffer || media.kind !== 'video') return ctx.reply(ctx.t('togif.need', { mood: ctx.say('mikir') }))
+  const media = normalizeDownloadedMedia(await ctx.downloadQuoted().catch(() => null), ctx.quoted?.message)
+  if (!media || media.kind !== 'video') return ctx.reply(ctx.t('togif.need', { mood: ctx.say('mikir') }))
   const dir = await mkdtemp(join(tmpdir(), 'kana-togif-'))
   try {
     const input = join(dir, 'in.mp4')
