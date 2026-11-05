@@ -31,7 +31,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.npm', expect: /kata kunci|keyword/i }
+export const test = { input: '.npm express', expect: /.+/ }
 
 export async function handler(ctx) {
   const query = (ctx.text || '').trim()

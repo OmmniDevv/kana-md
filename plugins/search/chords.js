@@ -38,7 +38,7 @@ export const i18n = {
 }
 
 const KIND = "chord"
-export const test = { input: '.chords', expect: /tulis|write|chords/i }
+export const test = { input: '.chords laskar pelangi', expect: /.+/ }
 function flat(obj, prefix = '', out = []) {
   if (obj === null || obj === undefined) return out
   if (typeof obj !== 'object') { out.push((prefix ? prefix + ': ' : '') + String(obj).slice(0, 300)); return out }

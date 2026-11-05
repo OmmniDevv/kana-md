@@ -29,7 +29,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.cekip', expect: /alamat ip|ip address/i }
+export const test = { input: '.cekip 8.8.8.8', expect: /INFO IP|IP INFO/ }
 
 export async function handler(ctx) {
   const ip = (ctx.text || '').trim().split(/\s+/)[0]

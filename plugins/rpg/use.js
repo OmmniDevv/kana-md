@@ -33,7 +33,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.use', expect: /ramuan|potion/i }
+export const test = { input: '.use potion', expect: /Kamu memakai|tidak punya|bukan item konsumsi|You used/ }
 
 export async function handler(ctx) {
   const itemId = (ctx.text || '').trim().toLowerCase().split(/\s+/)[0]

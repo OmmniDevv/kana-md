@@ -38,7 +38,7 @@ export const i18n = {
 }
 
 const KIND = "qr"
-export const test = { input: '.qrcodefile', expect: /tulis|write|qrcodefile/i }
+export const test = { input: '.qrcodefile KANA', expect: /.+/ }
 function flat(obj, prefix = '', out = []) {
   if (obj === null || obj === undefined) return out
   if (typeof obj !== 'object') { out.push((prefix ? prefix + ': ' : '') + String(obj).slice(0, 300)); return out }

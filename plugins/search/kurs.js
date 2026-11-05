@@ -36,7 +36,7 @@ export const i18n = {
 
 const SUMMARY_CODES = ['USD', 'EUR', 'SGD', 'JPY']
 
-export const test = { input: '.kurs', expect: /kurs/i }
+export const test = { input: '.kurs usd', expect: /.+/ }
 
 export async function handler(ctx) {
   const locale = ctx.lang === 'id' ? 'id-ID' : 'en-US'

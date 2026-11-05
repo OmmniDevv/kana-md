@@ -29,7 +29,7 @@ export const i18n = {
 }
 
 const KIND = "wiki"
-export const test = { input: '.grammarly', expect: /tulis|write/i }
+export const test = { input: '.grammarly indonesia', expect: /ꜱᴜᴍʙᴇʀ/ }
 async function fetchJson(url) {
   const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
   if (!res.ok) throw new Error('HTTP ' + res.status)

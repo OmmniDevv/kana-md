@@ -29,7 +29,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.mcstatus', expect: /server/i }
+export const test = { input: '.mcstatus mc.hypixel.net', expect: /SERVER ONLINE|SERVER OFFLINE/ }
 
 export async function handler(ctx) {
   const host = (ctx.text || '').trim().split(/\s+/)[0]

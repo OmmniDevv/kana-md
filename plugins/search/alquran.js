@@ -36,7 +36,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.alquran', expect: /surah/i }
+export const test = { input: '.alquran 1', expect: /Fatihah/ }
 
 const MAX_VERSES = 10
 

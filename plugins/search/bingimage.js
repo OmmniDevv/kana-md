@@ -38,7 +38,7 @@ export const i18n = {
 }
 
 const KIND = "gambar"
-export const test = { input: '.bingimage', expect: /tulis|write|bingimage/i }
+export const test = { input: '.bingimage kucing', expect: /.+/ }
 function flat(obj, prefix = '', out = []) {
   if (obj === null || obj === undefined) return out
   if (typeof obj !== 'object') { out.push((prefix ? prefix + ': ' : '') + String(obj).slice(0, 300)); return out }

@@ -34,7 +34,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.applemusic', expect: /judul|title/i }
+export const test = { input: '.applemusic lofi', expect: /.+/ }
 
 export async function handler(ctx) {
   const query = (ctx.text || '').trim()

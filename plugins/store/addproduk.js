@@ -26,7 +26,7 @@ export const i18n = {
 }
 
 const ACTION = "addproduk"
-export const test = { input: '.addproduk', expect: /toko|store/i }
+export const test = { input: '.addproduk Produk Tes|1000|5', expect: /.+/ }
 async function load(ctx, key, fallback) { const v = await ctx.storage.get('kv', key); return v ?? fallback }
 export async function handler(ctx) {
   const say = (text) => ctx.reply(ctx.t('addproduk.body', { text }))

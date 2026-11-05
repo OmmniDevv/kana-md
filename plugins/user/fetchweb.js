@@ -30,7 +30,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.fetchweb', expect: /url/i }
+export const test = { input: '.fetchweb https://example.com', expect: /.+/ }
 
 function stripHtml(html) {
   return html

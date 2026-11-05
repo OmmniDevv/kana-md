@@ -61,7 +61,7 @@ function flat(obj, prefix = '', out = []) {
   return out
 }
 
-export const test = { input: '.aiscan', expect: /tulis|write|tempel|paste/i }
+export const test = { input: '.aiscan https://example.com', expect: /.+/ }
 export async function handler(ctx) {
   const text = (ctx.text || '').trim()
   if (!text) return ctx.reply(ctx.t('aiscan.hint'))

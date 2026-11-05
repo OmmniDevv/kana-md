@@ -65,7 +65,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.cafe', expect: /kafe|cafe/i }
+export const test = { input: '.cafe status', expect: /belum punya kafe|KAFE|CAFE/ }
 
 function cafeOf(profile) {
   if (!profile.cafe) return null

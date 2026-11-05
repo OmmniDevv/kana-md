@@ -35,7 +35,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.makan', expect: /makan|eat/i }
+export const test = { input: '.makan daging', expect: /Kamu makan|tidak punya|You ate/ }
 
 export async function handler(ctx) {
   const itemId = (ctx.text || '').trim().toLowerCase().split(/\s+/)[0]

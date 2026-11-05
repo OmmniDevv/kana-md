@@ -28,7 +28,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.sell', expect: /item/i }
+export const test = { input: '.sell potion', expect: /Terjual|Sold|Gagal menjual/ }
 
 export async function handler(ctx) {
   const [itemId, qtyRaw] = (ctx.text || '').trim().toLowerCase().split(/\s+/)

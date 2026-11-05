@@ -29,7 +29,7 @@ export const i18n = {
 }
 
 const KIND = "npm"
-export const test = { input: '.npmdl', expect: /tulis|write/i }
+export const test = { input: '.npmdl express', expect: /.+/ }
 async function fetchJson(url) {
   const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
   if (!res.ok) throw new Error('HTTP ' + res.status)

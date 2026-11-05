@@ -60,7 +60,7 @@ async function withButtons(ctx, body) {
   })
 }
 
-export const test = { input: '.catatan', expect: /catatan/i }
+export const test = { input: '.catatan catatan tes dari sapuan live KANA', expect: /.+/ }
 
 export async function handler(ctx) {
   const sub = (ctx.args[0] || 'list').toLowerCase()

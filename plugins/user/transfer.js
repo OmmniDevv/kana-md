@@ -36,7 +36,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.transfer', expect: /transfer/i }
+export const test = { input: '.transfer 6285187605007 100', expect: /TRANSFER BERES|TRANSFER DONE|SALDO KURANG|NOT ENOUGH BALANCE/ }
 
 export async function handler(ctx) {
   const rawNumber = String(ctx.args[0] ?? '').replace(/\D/g, '')

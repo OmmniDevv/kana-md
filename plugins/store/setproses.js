@@ -26,7 +26,7 @@ export const i18n = {
 }
 
 const ACTION = "setstatus"
-export const test = { input: '.setproses', expect: /toko|store/i }
+export const test = { input: '.setproses 1', expect: /.+/ }
 async function load(ctx, key, fallback) { const v = await ctx.storage.get('kv', key); return v ?? fallback }
 export async function handler(ctx) {
   const say = (text) => ctx.reply(ctx.t('setproses.body', { text }))

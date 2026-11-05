@@ -31,7 +31,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.tukarxp', expect: /tukar|exchange/i }
+export const test = { input: '.tukarxp 10', expect: /PENUKARAN BERES|EXCHANGE DONE|XP BELUM CUKUP/ }
 
 export async function handler(ctx) {
   const profile = await getProfile(ctx.storage, ctx.senderDigits)

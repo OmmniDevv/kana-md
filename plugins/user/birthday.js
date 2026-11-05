@@ -43,7 +43,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.birthday', expect: /ulang tahun|birthday/i }
+export const test = { input: '.birthday list', expect: /DAFTAR ULANG TAHUN|BIRTHDAY LIST/ }
 
 function todayWib() {
   const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date())

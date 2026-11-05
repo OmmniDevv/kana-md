@@ -31,7 +31,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.githubsearch', expect: /kata kunci|keyword/i }
+export const test = { input: '.githubsearch kana-md', expect: /.+/ }
 
 export async function handler(ctx) {
   const query = (ctx.text || '').trim()

@@ -36,7 +36,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.duel', expect: /duel/i }
+export const test = { input: '.duel 6285187605007', expect: /HASIL DUEL|DUEL RESULT/ }
 
 export async function handler(ctx) {
   const replies = [

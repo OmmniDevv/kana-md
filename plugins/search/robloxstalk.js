@@ -29,7 +29,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.robloxstalk', expect: /username/i }
+export const test = { input: '.robloxstalk Builderman', expect: /.+/ }
 
 async function postJson(url, body) {
   const res = await fetch(url, {

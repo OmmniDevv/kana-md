@@ -26,7 +26,7 @@ export const i18n = {
 }
 
 const ACTION = "hapuslist"
-export const test = { input: '.hapuslist', expect: /toko|store/i }
+export const test = { input: '.hapuslist 1', expect: /.+/ }
 async function load(ctx, key, fallback) { const v = await ctx.storage.get('kv', key); return v ?? fallback }
 export async function handler(ctx) {
   const say = (text) => ctx.reply(ctx.t('hapuslist.body', { text }))

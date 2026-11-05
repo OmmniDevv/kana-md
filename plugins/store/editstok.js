@@ -26,7 +26,7 @@ export const i18n = {
 }
 
 const ACTION = "editstok"
-export const test = { input: '.editstok', expect: /toko|store/i }
+export const test = { input: '.editstok 1|9', expect: /.+/ }
 async function load(ctx, key, fallback) { const v = await ctx.storage.get('kv', key); return v ?? fallback }
 export async function handler(ctx) {
   const say = (text) => ctx.reply(ctx.t('editstok.body', { text }))

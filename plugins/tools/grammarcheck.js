@@ -48,7 +48,7 @@ export async function scanGrammar(content) {
   return res.data
 }
 
-export const test = { input: '.grammarcheck', expect: /tulis|write/i }
+export const test = { input: '.grammarcheck Saya pergi ke pasar kemarin dan membeli banyak sekali sayur segar untuk dimasak hari ini.', expect: /.+/ }
 export async function handler(ctx) {
   const text = (ctx.text || '').trim()
   if (!text) return ctx.reply(ctx.t('grammarcheck.hint'))

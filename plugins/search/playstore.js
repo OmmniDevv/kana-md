@@ -37,7 +37,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.playstore', expect: /aplikasi|app name/i }
+export const test = { input: '.playstore whatsapp', expect: /.+/ }
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
 

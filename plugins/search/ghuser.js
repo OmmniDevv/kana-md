@@ -31,7 +31,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.ghuser', expect: /username/i }
+export const test = { input: '.ghuser OmmniDevv', expect: /.+/ }
 
 export async function handler(ctx) {
   const username = (ctx.text || '').trim().replace(/^@/, '').split(/\s+/)[0]

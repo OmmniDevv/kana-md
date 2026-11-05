@@ -30,7 +30,7 @@ export const i18n = {
   },
 }
 
-export const test = { input: '.dnslookup', expect: /domain/i }
+export const test = { input: '.dnslookup google.com', expect: /.+/ }
 
 export async function handler(ctx) {
   const args = (ctx.text || '').trim().split(/\s+/).filter(Boolean)

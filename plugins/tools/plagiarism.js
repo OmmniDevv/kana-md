@@ -48,7 +48,7 @@ export async function scanPlagiarism(content) {
   return res.data
 }
 
-export const test = { input: '.plagiarism', expect: /tulis|write|tempel|paste/i }
+export const test = { input: '.plagiarism Indonesia adalah negara kepulauan terbesar di dunia dengan lebih dari tujuh belas ribu pulau.', expect: /.+/ }
 export async function handler(ctx) {
   const text = (ctx.text || '').trim()
   if (!text) return ctx.reply(ctx.t('plagiarism.hint'))

@@ -47,7 +47,7 @@ export async function checkNsfw(data) {
   return { label: res.data?.labelName || '-', confidence: Number(res.data?.confidence ?? 0) }
 }
 
-export const test = { input: '.nsfwcheck', expect: /kirim|send|balas|reply/i }
+export const test = { input: '.nsfwcheck https://picsum.photos/400/600.jpg', expect: /HASIL CEK NSFW|NSFW CHECK RESULT/ }
 export async function handler(ctx) {
   const url = ((ctx.text || '').match(/https?:\/\/[^\s]+/) || [])[0]
   let data = url || null

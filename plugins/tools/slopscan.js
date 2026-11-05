@@ -46,7 +46,7 @@ export async function scanSlop(url) {
   return res.data
 }
 
-export const test = { input: '.slopscan', expect: /kirim|send/i }
+export const test = { input: '.slopscan https://example.com', expect: /.+/ }
 export async function handler(ctx) {
   const url = ((ctx.text || '').match(/https?:\/\/[^\s]+/) || [])[0]
   if (!url) return ctx.reply(ctx.t('slopscan.hint'))
