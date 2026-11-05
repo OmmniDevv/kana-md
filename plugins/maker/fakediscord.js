@@ -3,7 +3,7 @@ import { sendImage } from '../../src/ui/media.js'
 
 export const config = {
   name: 'fakediscord',
-  alias: ['fdc', 'fakediscoard'],
+  alias: ['fakediscoard'],
   category: 'maker',
   description: { id: 'Buat kartu pesan Discord versi meme berlabel jelas', en: 'Make a clearly labeled meme Discord message card' },
   usage: '.fakediscord <nama> | <isi pesan>',

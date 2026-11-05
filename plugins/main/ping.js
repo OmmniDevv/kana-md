@@ -1,6 +1,6 @@
 export const config = {
   name: 'ping',
-  alias: ['p', 'testspeed'],
+  alias: ['p'],
   category: 'main',
   description: { id: 'Cek bot hidup dan latensinya', en: 'Check that the bot is alive and its latency' },
   usage: '.ping',

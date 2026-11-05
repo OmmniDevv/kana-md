@@ -21,7 +21,7 @@ export const STYLES = {
 
 export const config = {
   name: 'imgstyle',
-  alias: ['gayaimg', 'toanime', 'tomanga', 'fotogaya', 'tocermin', 'towatercolor'],
+  alias: ['gayaimg', 'fotogaya', 'towatercolor'],
   category: 'maker',
   description: { id: 'Beri gaya ke gambar yang dikutip: anime, manga, watercolor, vintage, abu, cermin', en: 'Style a quoted image: anime, manga, watercolor, vintage, gray, mirror' },
   usage: '.imgstyle <gaya> (balas gambar)',

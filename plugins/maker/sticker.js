@@ -4,7 +4,7 @@ import { MAX_IMAGE_BYTES, MAX_VIDEO_BYTES } from '../../src/ui/media.js'
 
 export const config = {
   name: 'sticker',
-  alias: ['s', 'stiker'],
+  alias: ['s'],
   category: 'maker',
   description: { id: 'Ubah gambar atau video yang dikutip jadi stiker', en: 'Turn a quoted image or video into a sticker' },
   usage: '.sticker (kutip gambar/video) atau .sticker <pack>|<author>',

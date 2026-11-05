@@ -2,7 +2,7 @@ import { sendButtons } from '../../src/ui/buttons.js'
 
 export const config = {
   name: 'credits',
-  alias: ['thanks', 'tqto'],
+  alias: ['thanks'],
   category: 'main',
   description: { id: 'Lihat kredit dan terima kasih proyek KANA', en: 'See the KANA project credits and thanks' },
   usage: '.credits',

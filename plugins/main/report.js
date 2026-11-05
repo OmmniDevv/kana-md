@@ -2,7 +2,7 @@
 // Nomor owner dibaca dari env OWNER_NUMBER (konfigurasi, bukan rahasia).
 export const config = {
   name: 'report',
-  alias: ['lapor', 'request'],
+  alias: ['request'],
   category: 'main',
   description: { id: 'Kirim laporan atau permintaan fitur ke owner bot', en: 'Send a report or feature request to the bot owner' },
   usage: '.report <isi laporan>',
