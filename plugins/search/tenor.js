@@ -1,80 +1,71 @@
+// Cari GIF di Tenor lewat halaman pencarian publik tenor.com (scraper,
+// tanpa kunci API), unduh GIF pertama yang bisa diambil, ubah ke MP4,
+// lalu kirim sebagai video gifPlayback. GIF asli dalam pesan video tidak
+// bisa diputar WhatsApp, jadi konversi MP4 wajib (lihat services/gif-video).
+import { downloadBuffer } from '../../src/scrapers/runner.js'
+import { toGifPlaybackMp4 } from '../../src/services/gif-video.js'
 
 export const config = {
-  name: "tenor",
-  alias: [],
-  category: "search",
-  description: { id: "Cari GIF dari Tenor", en: "KANA version of the Elaina-MD tenor feature, rewritten in KANA style" },
-  usage: ".tenor",
-  example: ".tenor",
+  name: 'tenor',
+  alias: ['gif', 'carigif'],
+  category: 'search',
+  description: { id: 'Cari GIF dari Tenor', en: 'Search GIFs from Tenor' },
+  usage: '.tenor <kata kunci>',
+  example: '.tenor kucing',
   cooldown: 5,
 }
 
 export const i18n = {
   id: {
-    "tenor": {
-      hint: "╭─❏ 🔍 「 *TENOR* 」\n┊ Tulis kata kunci atau nama yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.tenor kata kunci*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴜᴍʙᴇʀ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, hasil untuk *{q}* tidak ketemu di sumber publik~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencariannya gagal: *{message}*\n┊ Sumber publiknya lagi bermasalah, coba lagi nanti ya~\n╰━━━━━━━",
+    tenor: {
+      hint: '╭─❏ 🎞️ 「 *TENOR GIF* 」\n┊ Tulis kata kunci GIF yang mau dicari dulu yaa~\n┊ ᴄᴏɴᴛᴏʜ: *.tenor kucing*\n╰━━━━━━━',
+      caption: '🎞️ GIF *{q}* dari Tenor~',
+      notfound: '╭─❏ 🔍 「 *TIDAK KETEMU* 」\n┊ Mouu, GIF untuk *{q}* tidak ketemu di Tenor~\n┊ Coba kata kunci lain yaa~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *PENCARIAN GAGAL* 」\n┊ Mouu, pencarian GIF-nya gagal: *{message}*\n┊ Coba lagi nanti ya~\n╰━━━━━━━',
     },
   },
   en: {
-    "tenor": {
-      hint: "╭─❏ 🔍 「 *TENOR* 」\n┊ Write the keyword or name to look up first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.tenor keyword*\n╰━━━━━━━",
-      body: "╭─❏ 🔍 「 *{title}* 」\n┊ {text}\n┊ ꜱᴏᴜʀᴄᴇ: {url}\n╰━━━━━━━",
-      notfound: "╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no public result for *{q}*~\n┊ Try another keyword~\n╰━━━━━━━",
-      fail: "╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the search failed: *{message}*\n┊ The public source is having trouble, try again later~\n╰━━━━━━━",
+    tenor: {
+      hint: '╭─❏ 🎞️ 「 *TENOR GIF* 」\n┊ Write the GIF keyword to search first~\n┊ ᴇxᴀᴍᴘʟᴇ: *.tenor cat*\n╰━━━━━━━',
+      caption: '🎞️ GIF *{q}* from Tenor~',
+      notfound: '╭─❏ 🔍 「 *NOT FOUND* 」\n┊ Mouu, no GIF for *{q}* on Tenor~\n┊ Try another keyword~\n╰━━━━━━━',
+      fail: '╭─❏ 💦 「 *SEARCH FAILED* 」\n┊ Mouu, the GIF search failed: *{message}*\n┊ Try again later~\n╰━━━━━━━',
     },
   },
 }
 
-const KIND = "wiki"
-export const test = { input: '.tenor', expect: /tulis|write/i }
-async function fetchJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'KANA-Bot' } })
-  if (!res.ok) throw new Error('HTTP ' + res.status)
-  return res.json()
+export const test = { input: '.tenor kucing', expect: /GIF/i }
+
+export async function scrapeTenorGifUrls(query) {
+  const slug = encodeURIComponent(query.trim().toLowerCase().replace(/\s+/g, '-'))
+  const res = await fetch(`https://tenor.com/search/${slug}-gifs`, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36' },
+  })
+  if (!res.ok) throw new Error('Tenor membalas HTTP ' + res.status)
+  const html = await res.text()
+  const urls = [...html.matchAll(/https:\/\/media1\.tenor\.com\/m\/[A-Za-z0-9_-]+\/[A-Za-z0-9._-]+\.gif/g)].map((m) => m[0])
+  return [...new Set(urls)]
 }
+
 export async function handler(ctx) {
   const q = (ctx.text || '').trim()
   if (!q) return ctx.reply(ctx.t('tenor.hint'))
   try {
-    if (KIND === 'github') {
-      const u = await fetchJson('https://api.github.com/users/' + encodeURIComponent(q.replace(/^@/, '')))
-      const body = ctx.t('tenor.body', { title: u.login, text: [u.name || '-', u.bio || '-', 'Followers: ' + (u.followers ?? 0) + ' | Repo publik: ' + (u.public_repos ?? 0), 'Dibuat: ' + String(u.created_at || '').slice(0, 10)].join('\n┊ '), url: u.html_url })
-      return ctx.reply(body)
-    }
-    if (KIND === 'npm') {
-      const u = await fetchJson('https://registry.npmjs.org/' + encodeURIComponent(q))
-      const latest = u['dist-tags']?.latest || '-'
-      const ver = u.versions?.[latest] || {}
-      const body = ctx.t('tenor.body', { title: u.name, text: [ver.description || u.description || '-', 'Versi terbaru: ' + latest, 'Lisensi: ' + (ver.license || '-'), 'Author: ' + (typeof ver.author === 'object' ? ver.author?.name || '-' : ver.author || '-')].join('\n┊ '), url: 'https://www.npmjs.com/package/' + encodeURIComponent(q) })
-      return ctx.reply(body)
-    }
-    if (KIND === 'roblox') {
-      const u = await fetchJson('https://users.roblox.com/v1/users/search?keyword=' + encodeURIComponent(q) + '&limit=10')
-      const rows = (u.data || []).slice(0, 5)
-      if (!rows.length) return ctx.reply(ctx.t('tenor.notfound', { q }))
-      const text = rows.map((r, i) => (i + 1) + '. *' + r.name + '* (@' + r.displayName + ', id ' + r.id + ')').join('\n┊ ')
-      return ctx.reply(ctx.t('tenor.body', { title: q, text, url: 'https://www.roblox.com/users' }))
-    }
-    if (KIND === 'mc') {
-      const u = await fetchJson('https://api.mcsrvstat.us/3/' + encodeURIComponent(q))
-      if (!u || u.online === undefined && !u.ip) return ctx.reply(ctx.t('tenor.notfound', { q }))
-      const text = ['Status: ' + (u.online ? 'ONLINE' : 'offline'), 'IP: ' + (u.ip || q), 'Pemain: ' + (u.players?.online ?? 0) + '/' + (u.players?.max ?? 0), 'Versi: ' + (u.version || '-')].join('\n┊ ')
-      return ctx.reply(ctx.t('tenor.body', { title: q, text, url: 'https://mcsrvstat.us' }))
-    }
-    // Default: Wikipedia ringkasan dulu, lalu DuckDuckGo Instant Answer.
-    try {
-      const w = await fetchJson('https://id.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(q.replace(/\s+/g, '_')))
-      if (w && w.extract) {
-        return ctx.reply(ctx.t('tenor.body', { title: w.title || q, text: String(w.extract).slice(0, 900), url: w.content_urls?.desktop?.page || 'https://id.wikipedia.org' }))
+    const urls = await scrapeTenorGifUrls(q)
+    if (!urls.length) return ctx.reply(ctx.t('tenor.notfound', { q }))
+    let lastErr = null
+    for (const url of urls.slice(0, 3)) {
+      try {
+        const media = await downloadBuffer(url, { maxBytes: 16 * 1024 * 1024 })
+        const mp4 = await toGifPlaybackMp4(media.buffer)
+        await ctx.sock.sendMessage(ctx.chat, { video: mp4, gifPlayback: true, caption: ctx.t('tenor.caption', { q }) }, { quoted: ctx.raw })
+        return undefined
+      } catch (err) {
+        lastErr = err
       }
-    } catch {}
-    const d = await fetchJson('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1')
-    const text = d.AbstractText || (d.RelatedTopics || []).map((t) => t.Text).filter(Boolean).slice(0, 3).join('\n┊ ')
-    if (!text) return ctx.reply(ctx.t('tenor.notfound', { q }))
-    return ctx.reply(ctx.t('tenor.body', { title: d.Heading || q, text: String(text).slice(0, 900), url: d.AbstractURL || 'https://duckduckgo.com' }))
+    }
+    throw lastErr || new Error('Semua hasil Tenor gagal diunduh')
   } catch (err) {
     return ctx.reply(ctx.t('tenor.fail', { message: err.message }))
   }

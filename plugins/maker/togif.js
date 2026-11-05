@@ -30,11 +30,14 @@ export async function handler(ctx) {
   const dir = await mkdtemp(join(tmpdir(), 'kana-togif-'))
   try {
     const input = join(dir, 'in.mp4')
-    const output = join(dir, 'out.gif')
+    const output = join(dir, 'out.mp4')
     await writeFile(input, media.buffer)
-    await run('ffmpeg', ['-y', '-t', '6', '-i', input, '-vf', 'fps=12,scale=480:-1:flags=lanczos', '-loop', '0', output], { timeout: 60000 })
+    // Keluaran tampil sebagai GIF di chat lewat gifPlayback, tapi wadah
+    // yang dikirim wajib MP4: GIF asli (GIF89a) dalam pesan video tidak
+    // bisa diputar WhatsApp (temuan tes live 2026-11-05).
+    await run('ffmpeg', ['-y', '-t', '6', '-i', input, '-vf', 'fps=15,scale=480:-2:flags=lanczos,format=yuv420p', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-an', '-movflags', '+faststart', output], { timeout: 60000 })
     const gif = await readFile(output)
-    await ctx.sock.sendMessage(ctx.chat, { video: gif, gifPlayback: true }, { quoted: ctx.raw })
+    await ctx.sock.sendMessage(ctx.chat, { video: gif, gifPlayback: true, mimetype: 'video/mp4' }, { quoted: ctx.raw })
     return undefined
   } catch (err) {
     return ctx.reply(ctx.t('togif.fail', { error: err.message }))

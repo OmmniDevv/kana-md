@@ -2,6 +2,7 @@
 // Pengganti waifu.pics yang domainnya mati dan dibajak situs judi
 // (terverifikasi 2026-11-04). Semua kategori di sini SFW.
 import { downloadBuffer } from '../scrapers/runner.js'
+import { toGifPlaybackMp4 } from '../services/gif-video.js'
 
 const BASE = 'https://nekos.best/api/v2'
 
@@ -22,7 +23,11 @@ export function animeImageHandler(category, { gif = false } = {}) {
       const source = item.anime_name || item.artist_name || ''
       const caption = source ? ctx.t(`${category}.caption`, { source }) : ctx.t(`${category}.captionPlain`)
       if (gif || item.url.endsWith('.gif')) {
-        await ctx.sock.sendMessage(ctx.chat, { video: media.buffer, gifPlayback: true, caption }, { quoted: ctx.raw })
+        // Sumber nekos.best untuk kategori GIF adalah GIF asli (GIF89a);
+        // pesan video WhatsApp wajib MP4, jadi konversi dulu atau GIF
+        // tidak bisa diputar di HP (temuan tes live 2026-11-05).
+        const mp4 = await toGifPlaybackMp4(media.buffer)
+        await ctx.sock.sendMessage(ctx.chat, { video: mp4, gifPlayback: true, caption }, { quoted: ctx.raw })
         return undefined
       }
       const { sendImage } = await import('../ui/media.js')
@@ -42,8 +47,9 @@ export function reactionHandler(category) {
       const caption = target
         ? ctx.t(`${category}.captionTarget`, { from: ctx.senderDigits, to: target.split('@')[0] })
         : ctx.t(`${category}.captionSelf`)
+      const mp4 = await toGifPlaybackMp4(media.buffer)
       await ctx.sock.sendMessage(ctx.chat, {
-        video: media.buffer,
+        video: mp4,
         gifPlayback: true,
         caption,
         mentions: target ? [target] : [],
